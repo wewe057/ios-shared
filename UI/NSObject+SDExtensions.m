@@ -6,10 +6,10 @@
 //  Copyright 2011 Set Direction. All rights reserved.
 //
 
-#import "NSObject+RFExtensions.h"
+#import "NSObject+SDExtensions.h"
 
 
-@implementation NSObject (NSObject_RFExtensions)
+@implementation NSObject (SDExtensions)
 
 + (NSString *)className
 {

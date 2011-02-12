@@ -9,7 +9,7 @@
 
 // makes loading nibs much easier.
 
-@interface NSObject (NSObject_SDExtensions)
+@interface NSObject (SDExtensions)
 
 + (NSString *)className;
 - (NSString *)className;
