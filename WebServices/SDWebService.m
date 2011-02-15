@@ -28,29 +28,66 @@
 	[super dealloc];
 }
 
-- (BOOL)performRequestWithMethod:(NSString *)requestName parameters:(NSDictionary *)parameters completion:(SDWebServiceCompletionBlock)completionBlock
+- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
 	// construct the URL based on the specification.
 	NSURL *baseURL = [NSURL URLWithString:[serviceSpecification objectForKey:@"baseURL"]];
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
-	NSDictionary *requestParams = [requestDetails objectForKey:@"queryParameters"];
+	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
+	NSString *method = [requestDetails objectForKey:@"method"];
+	NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
 	
-	// combine the contents of queryParameters and the passed in parameters to form
+	// combine the contents of routeReplacements and the passed in replacements to form
 	// a complete name and value list.
-	NSArray *defaultParams = [parameters allKeys];
-	NSMutableDictionary *actualParams = [requestParams mutableCopy];
-	for (NSString *key in defaultParams)
+	NSArray *keyList = [replacements allKeys];
+	NSMutableDictionary *actualReplacements = [routeReplacements mutableCopy];
+	for (NSString *key in keyList)
 	{
-		NSDictionary *paramDetail = [requestParams objectForKey:key];
-		NSObject *defaultValue = [paramDetail objectForKey:@"defaultValue"];
+		// this takes all the data provided in replacements and overwrites any default
+		// values specified in the plist.
+		NSObject *value = [replacements objectForKey:key];
+		[actualReplacements setObject:value forKey:key];
+	}
+	
+	// now lets take that final list and apply it to the route format.
+	keyList = [actualReplacements allKeys];
+	NSString *route = routeFormat;
+	for (NSString *key in keyList)
+	{
+		id object = [actualReplacements objectForKey:key];
+		NSString *value = nil;
+		// if its a string, assign it.
+		if ([object isKindOfClass:[NSString class]])
+			value = object;
+		else
+		{
+			// if its not, run some tests to see what we can do...
+			if ([object isKindOfClass:[NSNumber class]])
+				value = [object stringValue];
+			else
+			if ([object respondsToSelector:@selector(stringValue)])
+				value = [object stringValue];
+		}
+		if (value)
+			route = [route stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:value];
+	}
+	
+	// there are some unparsed parameters which means either the plist is wrong, or the caller 
+	// gave us a list of replacements that weren't sufficient to continue on.
+	if ([route rangeOfString:@"{"].location != NSNotFound)
+	{
+		[NSException raise:@"SDException" format:@"Unable to create request.  The URL still contains replacement markers: %@", route];
 	}
 	
 	// build the url and put it here...
-	NSURL *url = nil;
+	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseURL, route]];
+	
+	[actualReplacements release];
 	
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-	[request setDelegate:self];
+	request.delegate = self;
+	request.requestMethod = method;
 	
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
@@ -63,12 +100,12 @@
 	}];
 	[request setFailedBlock:^{
 		NSString *responseString = [request responseString];
-		NSError *error = nil;
+		NSError *error = [request error];
 		completionBlock([request responseStatusCode], responseString, &error);		
 	}];
 	
-	
 	[request startAsynchronous];
+	return YES;
 }
 
 @end

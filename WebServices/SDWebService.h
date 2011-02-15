@@ -16,5 +16,6 @@ typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response
 }
 
 - (id)initWithSpecification:(NSString *)specificationName;
+- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
 
 @end
