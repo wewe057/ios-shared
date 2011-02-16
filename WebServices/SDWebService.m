@@ -38,6 +38,12 @@
 	NSString *method = [requestDetails objectForKey:@"method"];
 	NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
 	
+	
+	// TODO: Need to put some error handling here in case the plist is jacked up...
+	
+	// end TODO
+	
+	
 	// combine the contents of routeReplacements and the passed in replacements to form
 	// a complete name and value list.
 	NSArray *keyList = [replacements allKeys];
@@ -82,7 +88,7 @@
 	
 	// build the url and put it here...
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseURL, route]];
-	
+	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
 	
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
