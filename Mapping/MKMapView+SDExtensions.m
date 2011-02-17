@@ -7,11 +7,17 @@
 //
 
 #import "MKMapView+SDExtensions.h"
-
+#import "CLLocation+SDExtensions.h"
 
 @implementation MKMapView(SDExtensions)
 
-- (SDAnnotation *) getClosestAnnotationToLocation:(CLLocation *)location andSelect:(BOOL)inSelect
+- (void)setRegionThatFits:(MKCoordinateRegion)region animated:(BOOL)animated
+{
+	MKCoordinateRegion newRegion = [self regionThatFits:region];
+	[self setRegion:newRegion animated:animated];
+}
+
+- (SDAnnotation *)getClosestAnnotationToLocation:(CLLocation *)location andSelect:(BOOL)inSelect
 {
 	NSArray *annotations = self.annotations;
 	if ([annotations count] < 1)
@@ -40,13 +46,13 @@
 	return result;
 }
 
-- (SDAnnotation *) getNextClosestAnnotation:(SDAnnotation *)referenceAnnotation andSelect:(BOOL)inSelect
+- (SDAnnotation *)getNextClosestAnnotation:(SDAnnotation *)referenceAnnotation andSelect:(BOOL)inSelect
 {
 	CLLocation *location = [[[CLLocation alloc] initWithLatitude:referenceAnnotation.coordinate.latitude longitude:referenceAnnotation.coordinate.longitude] autorelease];
 	return [self getClosestAnnotationToLocation:location andSelect:inSelect];
 }
 
-- (NSArray *) getAnnotationsByDistanceToLocation:(CLLocation *)location
+- (NSArray *)annotationsByDistanceToLocation:(CLLocation *)location
 {
 	NSMutableArray *result = [[NSMutableArray new] autorelease];
 	NSArray *annotationList = self.annotations;
@@ -87,9 +93,6 @@ double radiansToDegrees(double radians)
 	
 	for (SDAnnotation *annotation in annotationArray)
 	{
-		if ([annotation isKindOfClass:[MKUserLocation class]])
-			continue;
-		
 		CLLocationCoordinate2D coord = annotation.coordinate;
 		double latitude = degreesToRadians(coord.latitude);
 		double longitude = degreesToRadians(coord.longitude);
@@ -139,9 +142,6 @@ double radiansToDegrees(double radians)
 	
 	for(SDAnnotation *annotation in annotationArray)
 	{
-		if ([annotation isKindOfClass:[MKUserLocation class]])
-			continue;
-		
 		coord = annotation.coordinate;
 		
 		if(coord.latitude > maxCoord.latitude)
@@ -161,7 +161,7 @@ double radiansToDegrees(double radians)
 	region.span.longitudeDelta = maxCoord.longitude - minCoord.longitude;
 	region.span.latitudeDelta = maxCoord.latitude - minCoord.latitude;
 	
-	[self setRegion:region animated:YES];
+	[self setRegionThatFits:region animated:NO];
 }
 
 - (void) recenterAroundLocation:(CLLocation *)location showAnnotations:(NSArray *)annotationArray
@@ -184,9 +184,6 @@ double radiansToDegrees(double radians)
 	
 	for(SDAnnotation *annotation in annotationArray)
 	{
-		if ([annotation isKindOfClass:[MKUserLocation class]])
-			continue;
-		
 		coord = annotation.coordinate;
 		
 		if(coord.latitude > maxCoord.latitude)
@@ -199,23 +196,23 @@ double radiansToDegrees(double radians)
 		if(coord.longitude < minCoord.longitude)
 			minCoord.longitude = coord.longitude;
 	}
-	MKCoordinateRegion region = {{0.0f, 0.0f}, {0.0f, 0.0f}};
 	
-	region.center.longitude = location.coordinate.longitude;//(minCoord.longitude + maxCoord.longitude) / 2.0;
-	region.center.latitude = location.coordinate.latitude;//(minCoord.latitude + maxCoord.latitude) / 2.0;
-	region.span.longitudeDelta = (maxCoord.longitude - minCoord.longitude) * 1.2;
-	region.span.latitudeDelta = (maxCoord.latitude - minCoord.latitude) * 1.2;
+	CLLocation *minLocation = [CLLocation locationWithCoordinates:minCoord];
+	CLLocation *maxLocation = [CLLocation locationWithCoordinates:maxCoord];
+	CLLocationDistance distance = [minLocation distanceFromLocation:maxLocation] / 2;
 	
-	[self setRegion:region animated:YES];
+	MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(location.coordinate, distance, distance);
+	
+	[self setRegionThatFits:region animated:YES];
 }
 
-- (NSSet *) visibleAnnotations;
+- (NSSet *)visibleAnnotations;
 {
 	const MKCoordinateRegion theRegion = self.region;
 	
 	NSMutableSet *theVisibleAnnotations = [NSMutableSet set];
 	
-	for (id <MKAnnotation> theAnnotation in self.annotations)
+	for (id<MKAnnotation> theAnnotation in self.annotations)
 	{
 		CLLocationCoordinate2D theCoordinate = theAnnotation.coordinate;
 		

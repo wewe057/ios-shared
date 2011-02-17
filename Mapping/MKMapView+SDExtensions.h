@@ -14,9 +14,12 @@ typedef NSObject<MKAnnotation> SDAnnotation;
 
 @interface MKMapView(SDExtensions)
 
+- (void)setRegionThatFits:(MKCoordinateRegion)region animated:(BOOL)animated;
+
 - (SDAnnotation *) getClosestAnnotationToLocation:(CLLocation *)location andSelect:(BOOL)inSelect;
 - (SDAnnotation *) getNextClosestAnnotation:(SDAnnotation *)referenceAnnotation andSelect:(BOOL)inSelect;
-- (NSArray *) getAnnotationsByDistanceToLocation:(CLLocation *)location;
+
+- (NSArray *) annotationsByDistanceToLocation:(CLLocation *)location;
 
 - (CLLocationCoordinate2D) centerCoordinateForAnnotations:(NSArray *)annotationArray;
 - (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location;
