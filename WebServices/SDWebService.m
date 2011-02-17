@@ -15,7 +15,7 @@
 	self = [super init];
 	
 	NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
-	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
+	serviceSpecification = [[NSDictionary dictionaryWithContentsOfFile:specFile] retain];
 	if (!serviceSpecification)
 		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
 	
