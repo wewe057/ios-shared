@@ -49,12 +49,17 @@
 - (NSArray *) getAnnotationsByDistanceToLocation:(CLLocation *)location
 {
 	NSMutableArray *result = [[NSMutableArray new] autorelease];
+	NSArray *annotationList = self.annotations;
+	
 	SDAnnotation *annotation = [self getClosestAnnotationToLocation:location andSelect:NO];
 	if (annotation)
 		[result addObject:annotation];
 	
 	while (annotation)
 	{
+		if ([result count] >= [annotationList count])
+			break;
+
 		annotation = [self getNextClosestAnnotation:annotation andSelect:NO];
 		if (annotation)
 			[result addObject:annotation];
