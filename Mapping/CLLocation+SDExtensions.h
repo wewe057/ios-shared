@@ -14,4 +14,6 @@
 
 + (CLLocation *)locationWithCoordinates:(CLLocationCoordinate2D)coordinates;
 
+- (CLLocationDistance)getDistanceInCurrentLocaleFrom:(CLLocation *)location;
+
 @end

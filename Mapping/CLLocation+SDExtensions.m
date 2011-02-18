@@ -17,4 +17,17 @@
 	return location;
 }
 
+- (CLLocationDistance)getDistanceInCurrentLocaleFrom:(CLLocation *)location
+{
+	// are we measuring in miles or kilometers?
+	NSNumber *unit = [[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem];
+	CLLocationDistance distance = [self getDistanceFrom:location];
+	
+	if (unit)
+		distance *= 0.001;
+	else
+		distance *= 0.000621371192;
+	return distance;
+}
+
 @end
