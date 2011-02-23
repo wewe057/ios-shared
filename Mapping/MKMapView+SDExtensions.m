@@ -161,7 +161,7 @@ double radiansToDegrees(double radians)
 	region.span.longitudeDelta = maxCoord.longitude - minCoord.longitude;
 	region.span.latitudeDelta = maxCoord.latitude - minCoord.latitude;
 	
-	[self setRegionThatFits:region animated:NO];
+	[self setRegionThatFits:region animated:YES];
 }
 
 - (void) recenterAroundLocation:(CLLocation *)location showAnnotations:(NSArray *)annotationArray
