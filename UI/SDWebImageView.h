@@ -15,6 +15,6 @@
 }
 
 @property (nonatomic, copy) NSString *imageUrlString;
-@property (nonatomic, copy) UIImage *errorImage;
+@property (nonatomic, retain) UIImage *errorImage;
 
 @end

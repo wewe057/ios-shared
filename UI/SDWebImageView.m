@@ -8,6 +8,7 @@
 
 #import "SDWebImageView.h"
 #import "ASIHTTPRequest.h"
+#import "ASIDownloadCache.h"
 
 @implementation SDWebImageView
 
@@ -39,6 +40,7 @@
 	}];
 	
 	[request startAsynchronous];
+	[request setDownloadCache:[ASIDownloadCache sharedCache]];
 }
 
 
@@ -57,6 +59,7 @@
 - (void)dealloc
 {
 	[imageUrlString release];
+	[errorImage release];
 	[super dealloc];
 }
 
