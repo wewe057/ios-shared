@@ -158,8 +158,8 @@ double radiansToDegrees(double radians)
 	
 	region.center.longitude = (minCoord.longitude + maxCoord.longitude) / 2.0;
 	region.center.latitude = (minCoord.latitude + maxCoord.latitude) / 2.0;
-	region.span.longitudeDelta = maxCoord.longitude - minCoord.longitude;
-	region.span.latitudeDelta = maxCoord.latitude - minCoord.latitude;
+	region.span.longitudeDelta = (maxCoord.longitude - minCoord.longitude) + 0.035;
+	region.span.latitudeDelta = (maxCoord.latitude - minCoord.latitude) + 0.035;
 	
 	[self setRegionThatFits:region animated:YES];
 }
