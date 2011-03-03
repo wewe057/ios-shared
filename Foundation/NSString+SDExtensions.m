@@ -15,6 +15,7 @@
     NSString* fixed = self;
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
     return fixed;
 }
 
