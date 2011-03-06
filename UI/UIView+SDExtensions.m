@@ -13,9 +13,10 @@
 
 - (void)positionBelowView:(UIView *)argView offset:(CGFloat)argOffset
 {
-	CGRect theFrame = argView.frame;
-	theFrame = CGRectMake(theFrame.origin.x, theFrame.origin.y + argView.frame.size.height + argOffset, self.frame.size.width, self.frame.size.height);
-	self.frame = theFrame;
+	self.frame = CGRectMake(self.frame.origin.x,
+							argView.frame.origin.y + argView.frame.size.height + argOffset,
+							self.frame.size.width,
+							self.frame.size.height);
 }
 
 @end
