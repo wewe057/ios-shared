@@ -21,12 +21,12 @@
 {
 	// are we measuring in miles or kilometers?
 	NSNumber *unit = [[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem];
-	CLLocationDistance distance = [self getDistanceFrom:location];
+	CLLocationDistance distance = [self distanceFromLocation:location];
 	
 	if (unit)
-		distance *= 0.001;
+		distance *= 0.001; // kilometers
 	else
-		distance *= 0.000621371192;
+		distance *= 0.000621371192; // miles
 	return distance;
 }
 

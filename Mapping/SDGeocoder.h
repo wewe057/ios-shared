@@ -36,7 +36,7 @@
 
 @property (nonatomic, readonly, getter = isQuerying) BOOL querying;
 @property (nonatomic, readonly) MKPlacemark *placemark;
-@property (nonatomic, assign) id<SDGeocoderDelegate> delegate;
+@property (nonatomic, assign) NSObject<SDGeocoderDelegate> *delegate;
 @property (nonatomic, readonly) NSString *query;
 
 - (id)initWithQuery:(NSString *)queryString apiKey:(NSString *)apiKey;
