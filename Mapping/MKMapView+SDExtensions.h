@@ -29,3 +29,9 @@ typedef NSObject<MKAnnotation> SDAnnotation;
 - (NSArray *)userAnnotations;
 
 @end
+
+// helper functions
+double radiusToMeters(double radius);
+double degreesToRadians(double degrees);
+double radiansToDegrees(double radians);
+
