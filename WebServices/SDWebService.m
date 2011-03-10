@@ -30,6 +30,14 @@
 
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
+    if (![[Reachability reachabilityForInternetConnection] isReachable])
+    {
+        // we ain't got no connection Lt. Dan
+        NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
+        completionBlock(0, nil, &error);
+        return NO;
+    }
+    
 	// construct the URL based on the specification.
 	NSURL *baseURL = [NSURL URLWithString:[serviceSpecification objectForKey:@"baseURL"]];
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];

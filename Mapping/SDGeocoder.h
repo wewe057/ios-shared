@@ -7,6 +7,14 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+// this is coming from ASI-HTTP
+#import "Reachability.h"
+
+enum
+{
+    SDGeocoderErrorNoConnection = 0,
+    SDGeocoderErrorBadData = 1,
+};
 
 @class SDGeocoder;
 

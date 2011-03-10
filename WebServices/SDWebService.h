@@ -7,8 +7,16 @@
 
 #import <Foundation/Foundation.h>
 
+// this comes from ASI-HTTP
+#import "Reachability.h"
+
 typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
 
+enum
+{
+    SDWebServiceErrorNoConnection = 0,
+    // all other errors come from ASI-HTTP
+};
 
 @interface SDWebService : NSObject
 {
