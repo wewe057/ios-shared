@@ -21,7 +21,10 @@ enum
 @interface SDWebService : NSObject
 {
 	NSDictionary *serviceSpecification;
+    NSMutableArray *serviceCookies;
 }
+
+@property (nonatomic, retain) NSMutableArray *serviceCookies;
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;

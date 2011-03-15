@@ -10,6 +10,8 @@
 
 @implementation SDWebService
 
+@synthesize serviceCookies;
+
 - (id)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
@@ -26,6 +28,14 @@
 {
 	[serviceSpecification release];
 	[super dealloc];
+}
+
+- (void)setServiceCookies:(NSMutableArray *)cookies
+{
+    [serviceCookies release];
+    serviceCookies = nil;
+    if (cookies)
+        serviceCookies = [cookies retain];
 }
 
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
@@ -102,6 +112,12 @@
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
 	request.delegate = self;
 	request.requestMethod = method;
+    request.useCookiePersistence = YES;
+    if (serviceCookies)
+    {
+        request.useCookiePersistence = NO;
+        [request setRequestCookies:serviceCookies];
+    }
 	
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
