@@ -49,11 +49,17 @@
     }
     
 	// construct the URL based on the specification.
-	NSURL *baseURL = [NSURL URLWithString:[serviceSpecification objectForKey:@"baseURL"]];
+	NSString *baseURL = [NSURL URLWithString:[serviceSpecification objectForKey:@"baseURL"]];
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
 	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
+    
+    // if this method has its own baseURL use it instead.
+    NSString *altBaseURL = [requestDetails objectForKey:@"baseURL"];
+    if (altBaseURL)
+        baseURL = altBaseURL;
+    
 	NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
 	
 	
@@ -105,6 +111,7 @@
 	}
 	
 	// build the url and put it here...
+    
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseURL, route]];
 	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
@@ -126,6 +133,7 @@
 	[request setCompletionBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
+        //SDLog(@"response-headers = %@", [request responseHeaders]);
 		completionBlock([request responseStatusCode], responseString, &error);
 	}];
 	[request setFailedBlock:^{
