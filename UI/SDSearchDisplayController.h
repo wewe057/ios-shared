@@ -15,13 +15,19 @@
     NSString *filterString;
     UITableView *recentSearchTableView;
     NSUInteger maximumCount;
+    NSMutableArray *alternateResults;
+    BOOL useAlternateResultsToMatchFilter;
 }
 
 @property (nonatomic, retain) NSString *userDefaultsKey;
 @property (nonatomic, assign) NSUInteger maximumCount;
 @property (nonatomic, retain) NSString *filterString;
+@property (nonatomic, assign) BOOL useAlternateResultsToMatchFilter;
 
 - (void)addStringToHistory:(NSString *)string;
+- (void)addArrayToHistory:(NSArray *)array;
+- (void)addStringToAlternateResults:(NSString *)string;
+- (void)addArrayToAlternateResults:(NSArray *)array;
 
 @end
 

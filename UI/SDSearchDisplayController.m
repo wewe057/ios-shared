@@ -17,6 +17,7 @@
 @synthesize userDefaultsKey;
 @synthesize maximumCount;
 @synthesize filterString;
+@synthesize useAlternateResultsToMatchFilter;
 
 static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
@@ -34,12 +35,12 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)dealloc
 {
-    [self.searchBar removeObserver:self forKeyPath:@"text"];
     [searchHistory release];
     [userDefaultsKey release];
     [recentSearchTableView release];
     [filterString release];
     [filteredHistory release];
+    [alternateResults release];
     
     [super dealloc];
 }
@@ -48,6 +49,9 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 {
     self.userDefaultsKey = kSDSearchUserDefaultsKey;
     self.maximumCount = 5;
+    self.useAlternateResultsToMatchFilter = NO;
+    
+    alternateResults = [[NSMutableArray alloc] init];
 }
 
 - (void)setFilterString:(NSString *)value
@@ -56,11 +60,22 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     filterString = [value retain];
     
     [filteredHistory release];
+    filteredHistory = nil;
     
     if (filterString && [filterString length] > 0)
     {
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF contains[cd] %@)", filterString];
-        filteredHistory = [[searchHistory filteredArrayUsingPredicate:predicate] retain];
+        if (!useAlternateResultsToMatchFilter)
+        {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
+            filteredHistory = [[searchHistory filteredArrayUsingPredicate:predicate] retain];
+        }
+        else
+        {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
+            NSMutableArray *temp = [[alternateResults filteredArrayUsingPredicate:predicate] mutableCopy];
+            [temp sortUsingSelector:@selector(compare:)];
+            filteredHistory = temp;
+        }
     }
     else
     {
@@ -91,6 +106,40 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)addArrayToHistory:(NSArray *)array
+{
+    for (NSString *item in array)
+    {
+        if ([item isKindOfClass:[NSString class]])
+            [self addStringToHistory:item];
+    }
+}
+
+- (void)addStringToAlternateResults:(NSString *)string
+{
+    if (string && [string length] > 0)
+    {
+        if ([alternateResults count] == 0)
+            [alternateResults addObject:string];
+        else
+        if ([alternateResults indexOfObject:string] == NSNotFound)
+            [alternateResults insertObject:string atIndex:0];
+    }
+    
+    // may not want to do this, but it keeps things from getting out of hand.
+    if ([alternateResults count] >= 500)
+        [alternateResults removeObjectAtIndex:0];
+}
+
+- (void)addArrayToAlternateResults:(NSArray *)array
+{
+    for (NSString *item in array)
+    {
+        if ([item isKindOfClass:[NSString class]])
+            [self addStringToAlternateResults:item];
+    }
+}
+
 - (void)setActive:(BOOL)visible animated:(BOOL)animated
 {
     if (!self.searchResultsDelegate)
@@ -100,7 +149,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     
     [super setActive:visible animated:animated];
     
-    if (visible)
+    if (visible && !recentSearchTableView)
     {        
         searchHistory = [[[NSUserDefaults standardUserDefaults] arrayForKey:self.userDefaultsKey] mutableCopy];
         if (!searchHistory)
@@ -129,6 +178,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         }
     }
     else
+    if (!visible && recentSearchTableView)
     {
         if (animated)
         {
