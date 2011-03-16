@@ -24,6 +24,12 @@
 	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
+    // todo: match url to image cache and use cached copy if present instead of loading from network
+    
+    if (self.image != nil) {
+        self.image = nil;
+    }
+
 	NSURL *url = [NSURL URLWithString:imageUrlString];
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
 	request.delegate = self;
@@ -31,6 +37,8 @@
 	[request setCompletionBlock:^{
 		NSData *responseData = [request responseData];
 		self.image = [UIImage imageWithData:responseData];
+        
+        // todo: add image cache
 	}];
 	
 	[request setFailedBlock:^{
