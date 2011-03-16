@@ -10,6 +10,8 @@
 
 @implementation SDWebService
 
+@synthesize serviceCookies;
+
 - (id)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
@@ -28,14 +30,36 @@
 	[super dealloc];
 }
 
+- (void)setServiceCookies:(NSMutableArray *)cookies
+{
+    [serviceCookies release];
+    serviceCookies = nil;
+    if (cookies)
+        serviceCookies = [cookies retain];
+}
+
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
+    if (![[Reachability reachabilityForInternetConnection] isReachable])
+    {
+        // we ain't got no connection Lt. Dan
+        NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
+        completionBlock(0, nil, &error);
+        return NO;
+    }
+    
 	// construct the URL based on the specification.
-	NSURL *baseURL = [NSURL URLWithString:[serviceSpecification objectForKey:@"baseURL"]];
+	NSString *baseURL = [NSURL URLWithString:[serviceSpecification objectForKey:@"baseURL"]];
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
 	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
+    
+    // if this method has its own baseURL use it instead.
+    NSString *altBaseURL = [requestDetails objectForKey:@"baseURL"];
+    if (altBaseURL)
+        baseURL = altBaseURL;
+    
 	NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
 	
 	
@@ -87,6 +111,7 @@
 	}
 	
 	// build the url and put it here...
+    
 	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseURL, route]];
 	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
@@ -94,6 +119,12 @@
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
 	request.delegate = self;
 	request.requestMethod = method;
+    request.useCookiePersistence = YES;
+    if (serviceCookies)
+    {
+        request.useCookiePersistence = NO;
+        [request setRequestCookies:serviceCookies];
+    }
 	
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
@@ -102,6 +133,7 @@
 	[request setCompletionBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
+        //SDLog(@"response-headers = %@", [request responseHeaders]);
 		completionBlock([request responseStatusCode], responseString, &error);
 	}];
 	[request setFailedBlock:^{

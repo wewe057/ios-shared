@@ -7,6 +7,14 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+// this is coming from ASI-HTTP
+#import "Reachability.h"
+
+enum
+{
+    SDGeocoderErrorNoConnection = 0,
+    SDGeocoderErrorBadData = 1,
+};
 
 @class SDGeocoder;
 
@@ -36,7 +44,7 @@
 
 @property (nonatomic, readonly, getter = isQuerying) BOOL querying;
 @property (nonatomic, readonly) MKPlacemark *placemark;
-@property (nonatomic, assign) id<SDGeocoderDelegate> delegate;
+@property (nonatomic, assign) NSObject<SDGeocoderDelegate> *delegate;
 @property (nonatomic, readonly) NSString *query;
 
 - (id)initWithQuery:(NSString *)queryString apiKey:(NSString *)apiKey;

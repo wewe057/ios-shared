@@ -54,9 +54,18 @@
 
 - (void)start
 {
-	NSString *requestString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=json&oe=utf8&sensor=false&key=%@", query, apiKeyString];
-	NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:requestString]];
-	connection = [[NSURLConnection connectionWithRequest:request delegate:self] retain];
+    if ([[Reachability reachabilityForInternetConnection] isReachable])
+    {
+        NSString *requestString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=json&oe=utf8&sensor=false&key=%@", query, apiKeyString];
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:requestString] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60];
+        connection = [[NSURLConnection connectionWithRequest:request delegate:self] retain];
+    }
+    else
+    {
+        // we ain't got no connection Lt. Dan.
+        if (delegate && [delegate respondsToSelector:@selector(geocoder:didFailWithError:)])
+            [delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderError" code:SDGeocoderErrorNoConnection userInfo:nil]];
+    }
 }
 
 - (void)cancel
@@ -83,7 +92,7 @@
 		if (response.statusCode != 200)
 		{
 			if (delegate && [delegate respondsToSelector:@selector(gecoder:didFailWithError:)])
-				[delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderResponseStatusError" code:response.statusCode userInfo:nil]];
+				[delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderError" code:response.statusCode userInfo:nil]];
 			return;
 		}
 		
@@ -101,7 +110,7 @@
 		if (!addressDict)
 		{
 			if (delegate && [delegate respondsToSelector:@selector(geocoder:didFailWithError:)])
-				[delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderAddressError" code:0 userInfo:nil]];
+				[delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderError" code:SDGeocoderErrorBadData userInfo:nil]];
 			return;
 		}
 		
@@ -109,7 +118,7 @@
 		if (!addressDict)
 		{
 			if (delegate && [delegate respondsToSelector:@selector(geocoder:didFailWithError:)])
-				[delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderPlacemarkError" code:0 userInfo:nil]];
+				[delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderError" code:SDGeocoderErrorBadData userInfo:nil]];
 			return;
 		}
 		

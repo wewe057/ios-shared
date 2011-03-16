@@ -74,18 +74,6 @@
 	return result;
 }
 
-#ifndef degreesToRadians
-double degreesToRadians(double degrees)
-{
-	return (M_PI / 180) * degrees;
-}
-
-double radiansToDegrees(double radians)
-{
-	return (180 / M_PI) * radians;
-}
-#endif
-
 - (CLLocationCoordinate2D) centerCoordinateForAnnotations:(NSArray *)annotationArray
 {
 	double totalD = 0;
@@ -158,8 +146,8 @@ double radiansToDegrees(double radians)
 	
 	region.center.longitude = (minCoord.longitude + maxCoord.longitude) / 2.0;
 	region.center.latitude = (minCoord.latitude + maxCoord.latitude) / 2.0;
-	region.span.longitudeDelta = maxCoord.longitude - minCoord.longitude;
-	region.span.latitudeDelta = maxCoord.latitude - minCoord.latitude;
+	region.span.longitudeDelta = (maxCoord.longitude - minCoord.longitude) + 0.035;
+	region.span.latitudeDelta = (maxCoord.latitude - minCoord.latitude) + 0.035;
 	
 	[self setRegionThatFits:region animated:YES];
 }
@@ -239,3 +227,25 @@ double radiansToDegrees(double radians)
 }
 
 @end
+
+#pragma mark helper functions
+
+double radiusToMeters(double radius)
+{
+	// are we measuring in miles or kilometers?
+	NSNumber *unit = [[NSLocale currentLocale] objectForKey:NSLocaleUsesMetricSystem];
+	if (![unit boolValue])
+		return (radius * 1609.344);
+	return (radius * 1000);
+}
+
+double degreesToRadians(double degrees)
+{
+	return (M_PI / 180) * degrees;
+}
+
+double radiansToDegrees(double radians)
+{
+	return (180 / M_PI) * radians;
+}
+
