@@ -12,5 +12,6 @@
 @interface NSDate (SDExtensions)
 
 + (NSDate *)dateFromISO8601String:(NSString *)argDateString;
++ (NSDate *)dateFromRFC822String:(NSString *)argDateString;
 
 @end
