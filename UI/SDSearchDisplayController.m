@@ -10,6 +10,7 @@
 
 @interface SDSearchDisplayController(Private)
 - (void)setup;
+@property (nonatomic, retain) id selectedItem;
 @end
 
 @implementation SDSearchDisplayController
@@ -18,6 +19,7 @@
 @synthesize maximumCount;
 @synthesize filterString;
 @synthesize alternateResults;
+@synthesize selectedItem;
 
 static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
@@ -41,6 +43,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     [filterString release];
     [filteredHistory release];
     [alternateResults release];
+    [selectedItem release];
     
     [super dealloc];
 }
@@ -180,6 +183,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     {
         // set the searchbar text here.
         self.searchBar.text = [searchHistory objectAtIndex:indexPath.row];
+        self.selectedItem = [searchHistory objectAtIndex:indexPath.row];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
     else
@@ -192,6 +196,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             self.searchBar.text = (NSString *)item;
         else
             self.searchBar.text = [item description];
+        self.selectedItem = item;
 
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }

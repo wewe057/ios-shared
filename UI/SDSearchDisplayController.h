@@ -22,12 +22,14 @@
     UITableView *recentSearchTableView;
     NSUInteger maximumCount;
     NSArray *alternateResults;
+    id selectedItem;
 }
 
 @property (nonatomic, retain) NSString *userDefaultsKey;
 @property (nonatomic, assign) NSUInteger maximumCount;
 @property (nonatomic, retain) NSString *filterString;
 @property (nonatomic, retain) NSArray *alternateResults;
+@property (nonatomic, retain, readonly) id selectedItem;
 
 - (void)addStringToHistory:(NSString *)string;
 
