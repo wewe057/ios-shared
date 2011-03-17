@@ -17,7 +17,7 @@
 @synthesize userDefaultsKey;
 @synthesize maximumCount;
 @synthesize filterString;
-@synthesize useAlternateResultsToMatchFilter;
+@synthesize alternateResults;
 
 static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
@@ -49,7 +49,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 {
     self.userDefaultsKey = kSDSearchUserDefaultsKey;
     self.maximumCount = 5;
-    self.useAlternateResultsToMatchFilter = NO;
     
     alternateResults = [[NSMutableArray alloc] init];
 }
@@ -64,15 +63,16 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     
     if (filterString && [filterString length] > 0)
     {
-        if (!useAlternateResultsToMatchFilter)
+        if (!alternateResults)
         {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
             filteredHistory = [[searchHistory filteredArrayUsingPredicate:predicate] retain];
         }
         else
         {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
-            NSMutableArray *temp = [[alternateResults filteredArrayUsingPredicate:predicate] mutableCopy];
+            //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
+            //NSMutableArray *temp = [[alternateResults filteredArrayUsingPredicate:predicate] mutableCopy];
+            NSMutableArray *temp = [alternateResults mutableCopy];
             [temp sortUsingSelector:@selector(compare:)];
             filteredHistory = temp;
         }
@@ -104,40 +104,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     [[NSUserDefaults standardUserDefaults] setObject:searchHistory forKey:self.userDefaultsKey];
     // write it immediately, don't let it lazy-write.
     [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)addArrayToHistory:(NSArray *)array
-{
-    for (NSString *item in array)
-    {
-        if ([item isKindOfClass:[NSString class]])
-            [self addStringToHistory:item];
-    }
-}
-
-- (void)addStringToAlternateResults:(NSString *)string
-{
-    if (string && [string length] > 0)
-    {
-        if ([alternateResults count] == 0)
-            [alternateResults addObject:string];
-        else
-        if ([alternateResults indexOfObject:string] == NSNotFound)
-            [alternateResults insertObject:string atIndex:0];
-    }
-    
-    // may not want to do this, but it keeps things from getting out of hand.
-    if ([alternateResults count] >= 500)
-        [alternateResults removeObjectAtIndex:0];
-}
-
-- (void)addArrayToAlternateResults:(NSArray *)array
-{
-    for (NSString *item in array)
-    {
-        if ([item isKindOfClass:[NSString class]])
-            [self addStringToAlternateResults:item];
-    }
 }
 
 - (void)setActive:(BOOL)visible animated:(BOOL)animated
@@ -218,7 +184,15 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     }
     else
     {
-        self.searchBar.text = [filteredHistory objectAtIndex:indexPath.row];
+        id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
+        if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
+            self.searchBar.text = [item name];
+        else
+        if ([item isKindOfClass:[NSString class]])
+            self.searchBar.text = (NSString *)item;
+        else
+            self.searchBar.text = [item description];
+
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 
@@ -265,7 +239,14 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         if (!cell)
             cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:searchCell] autorelease];
         
-        cell.textLabel.text = [filteredHistory objectAtIndex:indexPath.row];        
+        id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
+        if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
+            cell.textLabel.text = [item displayName];
+        else
+        if ([item isKindOfClass:[NSString class]])
+            cell.textLabel.text = (NSString *)item;
+        else
+            cell.textLabel.text = [item description];
     }
     return cell;
 }

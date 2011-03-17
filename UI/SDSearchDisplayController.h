@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol SDSearchDisplayResultsProtocol <NSObject>
+- (NSString *)displayName;
+- (NSString *)name;
+@end
+
+
 @interface SDSearchDisplayController : UISearchDisplayController<UITableViewDataSource, UITableViewDelegate>
 {
     NSMutableArray *searchHistory;
@@ -15,19 +21,15 @@
     NSString *filterString;
     UITableView *recentSearchTableView;
     NSUInteger maximumCount;
-    NSMutableArray *alternateResults;
-    BOOL useAlternateResultsToMatchFilter;
+    NSArray *alternateResults;
 }
 
 @property (nonatomic, retain) NSString *userDefaultsKey;
 @property (nonatomic, assign) NSUInteger maximumCount;
 @property (nonatomic, retain) NSString *filterString;
-@property (nonatomic, assign) BOOL useAlternateResultsToMatchFilter;
+@property (nonatomic, retain) NSArray *alternateResults;
 
 - (void)addStringToHistory:(NSString *)string;
-- (void)addArrayToHistory:(NSArray *)array;
-- (void)addStringToAlternateResults:(NSString *)string;
-- (void)addArrayToAlternateResults:(NSArray *)array;
 
 @end
 
