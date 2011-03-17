@@ -60,8 +60,8 @@
 - (void)dealloc
 {
 	webView.delegate = nil;
-	RELEASE_SAFELY(titleLabel);
-	RELEASE_SAFELY(webView);
+    [titleLabel release];
+    [webView release];
 	
 	[super dealloc];
 }
