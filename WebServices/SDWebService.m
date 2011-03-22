@@ -8,14 +8,37 @@
 #import "SDWebService.h"
 #import "ASIHTTPRequest.h"
 
+@interface SDHTTPRequest : ASIHTTPRequest
+{
+    NSString *requestName;
+}
+@property (nonatomic, retain) NSString *requestName;
+@end
+
+
+@implementation SDHTTPRequest
+
+@synthesize requestName;
+
+- (void)dealloc
+{
+    [requestName release];
+    [super dealloc];
+}
+
+@end
+
+
 @implementation SDWebService
 
 @synthesize serviceCookies;
+@synthesize requests;
 
 - (id)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
 	
+    requests = [[NSMutableArray alloc] init];
 	NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
 	serviceSpecification = [[NSDictionary dictionaryWithContentsOfFile:specFile] retain];
 	if (!serviceSpecification)
@@ -27,6 +50,7 @@
 - (void)dealloc
 {
 	[serviceSpecification release];
+    [requests release];
 	[super dealloc];
 }
 
@@ -59,6 +83,31 @@
     NSString *altBaseURL = [requestDetails objectForKey:@"baseURL"];
     if (altBaseURL)
         baseURL = altBaseURL;
+    
+    // see if this is a singleton request.
+    NSNumber *singleRequestNumber = [requestDetails objectForKey:@"singleRequest"];
+    BOOL singleRequest = NO;
+    if (singleRequestNumber)
+    {
+        singleRequest = [singleRequestNumber boolValue];
+        
+        // if it is, lets cancel any with matching names. there may be multiple, however unlikely.
+        if (singleRequest)
+        {
+            @synchronized(requests)
+            {
+                NSMutableArray *requestsToCancel = [[NSMutableArray alloc] init];
+                for (SDHTTPRequest *prevRequest in requests)
+                    if ([prevRequest.requestName isEqualToString:requestName])
+                        [requestsToCancel addObject:requestsToCancel];
+
+                for (SDHTTPRequest *prevRequest in requestsToCancel)
+                    [requests removeObject:prevRequest];
+                
+                [requestsToCancel release];
+            }
+        }
+    }
     
 	NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
 	
@@ -116,10 +165,16 @@
 	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
 	
-	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+	__block SDHTTPRequest *request = [SDHTTPRequest requestWithURL:url];
 	request.delegate = self;
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
+    
+    @synchronized(requests)
+    {
+        [requests addObject:request];
+    }
+    
     if (serviceCookies)
     {
         request.useCookiePersistence = NO;
@@ -135,11 +190,19 @@
 		NSError *error = nil;
         //SDLog(@"response-headers = %@", [request responseHeaders]);
 		completionBlock([request responseStatusCode], responseString, &error);
+        @synchronized(requests)
+        {
+            [requests removeObject:request];
+        }
 	}];
 	[request setFailedBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = [request error];
-		completionBlock([request responseStatusCode], responseString, &error);		
+		completionBlock([request responseStatusCode], responseString, &error);
+        @synchronized(requests)
+        {
+            [requests removeObject:request];
+        }
 	}];
 	
 	[request startAsynchronous];
