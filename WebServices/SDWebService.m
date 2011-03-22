@@ -111,8 +111,8 @@
 	}
 	
 	// build the url and put it here...
-    
-	NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", baseURL, route]];
+    NSString* escapedUrlString = [[NSString stringWithFormat:@"%@%@", baseURL, route] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
 	
