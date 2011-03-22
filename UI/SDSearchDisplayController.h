@@ -16,20 +16,21 @@
 
 @interface SDSearchDisplayController : UISearchDisplayController<UITableViewDataSource, UITableViewDelegate>
 {
+    NSMutableArray *masterList;
     NSMutableArray *searchHistory;
     NSArray *filteredHistory;
     NSString *filterString;
     UITableView *recentSearchTableView;
     NSUInteger maximumCount;
     NSArray *alternateResults;
-    id selectedItem;
+    id selectedSearchItem;
 }
 
 @property (nonatomic, retain) NSString *userDefaultsKey;
 @property (nonatomic, assign) NSUInteger maximumCount;
 @property (nonatomic, retain) NSString *filterString;
 @property (nonatomic, retain) NSArray *alternateResults;
-@property (nonatomic, retain, readonly) id selectedItem;
+@property (nonatomic, retain) id selectedSearchItem;
 
 - (void)addStringToHistory:(NSString *)string;
 

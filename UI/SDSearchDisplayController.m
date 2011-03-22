@@ -10,7 +10,6 @@
 
 @interface SDSearchDisplayController(Private)
 - (void)setup;
-@property (nonatomic, retain) id selectedItem;
 @end
 
 @implementation SDSearchDisplayController
@@ -19,7 +18,7 @@
 @synthesize maximumCount;
 @synthesize filterString;
 @synthesize alternateResults;
-@synthesize selectedItem;
+@synthesize selectedSearchItem;
 
 static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
@@ -43,7 +42,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     [filterString release];
     [filteredHistory release];
     [alternateResults release];
-    [selectedItem release];
+    [selectedSearchItem release];
+    [masterList release];
     
     [super dealloc];
 }
@@ -54,10 +54,12 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     self.maximumCount = 5;
     
     alternateResults = [[NSMutableArray alloc] init];
+    masterList = [[NSMutableArray alloc] init];
 }
 
 - (void)setFilterString:(NSString *)value
 {
+    [masterList addObjectsFromArray:filteredHistory];
     [filterString release];
     filterString = [value retain];
     
@@ -167,6 +169,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             [recentSearchTableView release];
             recentSearchTableView = nil;            
         }
+        [masterList removeAllObjects];
     }
 }
 
@@ -179,11 +182,14 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    id oldDelegate = self.searchBar.delegate;
+    self.searchBar.delegate = nil;
+    
     if (tableView == recentSearchTableView)
     {
         // set the searchbar text here.
         self.searchBar.text = [searchHistory objectAtIndex:indexPath.row];
-        self.selectedItem = [searchHistory objectAtIndex:indexPath.row];
+        self.selectedSearchItem = [searchHistory objectAtIndex:indexPath.row];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
     else
@@ -196,10 +202,12 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             self.searchBar.text = (NSString *)item;
         else
             self.searchBar.text = [item description];
-        self.selectedItem = item;
+        self.selectedSearchItem = item;
 
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
+
+    self.searchBar.delegate = oldDelegate;
 
     if (self.searchBar.delegate && [self.searchBar.delegate respondsToSelector:@selector(searchBarSearchButtonClicked:)])
         [self.searchBar.delegate searchBarSearchButtonClicked:self.searchBar];
