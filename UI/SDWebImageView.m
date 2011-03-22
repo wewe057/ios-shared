@@ -19,19 +19,24 @@
 @synthesize imageUrlString;
 @synthesize errorImage;
 
-- (void)setImageUrlString:(NSString *)argImageUrlString
-{
+- (void)setImageUrlString:(NSString *)argImageUrlString {
 	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
     // todo: match url to image cache and use cached copy if present instead of loading from network
     
+    if (request != nil) {
+        [request clearDelegatesAndCancel];
+        [request release];
+    }
+    
     if (self.image != nil) {
         self.image = nil;
     }
-
+    
 	NSURL *url = [NSURL URLWithString:imageUrlString];
-	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    
+	request = [[ASIHTTPRequest requestWithURL:url] retain];
 	request.delegate = self;
 	
 	[request setCompletionBlock:^{
@@ -64,8 +69,8 @@
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
+    [request release];
 	[imageUrlString release];
 	[errorImage release];
 	[super dealloc];
