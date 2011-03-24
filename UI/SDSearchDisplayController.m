@@ -68,7 +68,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     
     if (filterString && [filterString length] > 0)
     {
-        if (!alternateResults)
+        if ([alternateResults count] == 0)
         {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
             filteredHistory = [[searchHistory filteredArrayUsingPredicate:predicate] retain];
