@@ -7,6 +7,7 @@
 
 #import "SDWebService.h"
 #import "ASIHTTPRequest.h"
+#import "ASIDownloadCache.h"
 
 @interface SDHTTPRequest : ASIHTTPRequest
 {
@@ -83,6 +84,10 @@
     NSString *altBaseURL = [requestDetails objectForKey:@"baseURL"];
     if (altBaseURL)
         baseURL = altBaseURL;
+    
+    // get cache details
+    NSNumber *cache = [requestDetails objectForKey:@"cache"];
+    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
     
     // see if this is a singleton request.
     NSNumber *singleRequestNumber = [requestDetails objectForKey:@"singleRequest"];
@@ -170,6 +175,15 @@
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
     
+    // setup caching
+    if (cache && [cache boolValue])
+    {
+        [request setDownloadCache:[ASIDownloadCache sharedCache]];
+        if (cacheTTL)
+            [request setSecondsToCache:[cacheTTL unsignedIntValue]];
+        [request setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+    }
+    
     @synchronized(requests)
     {
         [requests addObject:request];
@@ -188,7 +202,9 @@
 	[request setCompletionBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
-        //SDLog(@"response-headers = %@", [request responseHeaders]);
+        SDLog(@"response-headers = %@", [request responseHeaders]);
+        if ([request didUseCachedResponse])
+            SDLog(@"**** USING CACHED RESPONSE ***");
 		completionBlock([request responseStatusCode], responseString, &error);
         @synchronized(requests)
         {
