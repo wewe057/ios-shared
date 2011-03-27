@@ -31,7 +31,7 @@
     
     // kill the HTML tags
     error = NULL;
-    regex = [NSRegularExpression regularExpressionWithPattern:@"<\/*[A-Z][A-Z0-9]*>"
+    regex = [NSRegularExpression regularExpressionWithPattern:@"<\\/*[A-Z][A-Z0-9]*>"
                                                       options:NSRegularExpressionCaseInsensitive
                                                         error:&error];
     fixed = [regex stringByReplacingMatchesInString:fixed 
