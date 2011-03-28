@@ -68,7 +68,7 @@
     return YES;
 }
 
-- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
+- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
     if (![[Reachability reachabilityForInternetConnection] isReachable])
     {
@@ -224,10 +224,10 @@
             [requests removeObject:request];
         }
         
-        if (![self responseIsValid:responseString])
+        if (![self responseIsValid:responseString] && shouldRetry)
         {
             [[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-            [self performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy];
+            [self performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy shouldRetry:NO];
         }
         else
         {
@@ -255,5 +255,12 @@
 	[request startAsynchronous];
 	return YES;
 }
+
+- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
+{
+    return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
+}
+
+
 
 @end
