@@ -40,8 +40,10 @@
 			return object;
 	}
     
+#if DEBUG
 	NSString *warning = [NSString stringWithFormat:@"Could not find object of class %@ in nib %@", [self class], [self nibName]];
 	NSAssert(NO, warning);
+#endif
 	return nil;
 }
 
