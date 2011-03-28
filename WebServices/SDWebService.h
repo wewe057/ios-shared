@@ -29,5 +29,6 @@ enum
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
+- (BOOL)responseIsValid:(NSString *)response;
 
 @end

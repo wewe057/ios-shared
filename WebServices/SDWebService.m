@@ -63,6 +63,11 @@
         serviceCookies = [cookies retain];
 }
 
+- (BOOL)responseIsValid:(NSString *)response
+{
+    return YES;
+}
+
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
     if (![[Reachability reachabilityForInternetConnection] isReachable])
@@ -174,6 +179,8 @@
 	request.delegate = self;
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
+    request.numberOfTimesToRetryOnTimeout = 3;
+    [request setShouldContinueWhenAppEntersBackground:YES];
     
     // setup caching
     if (cache && [cache boolValue])
@@ -195,22 +202,42 @@
         [request setRequestCookies:serviceCookies];
     }
 	
+    // set ourselves up to retry
+    NSDictionary *replacementsCopy = [replacements copy];
+    SDWebServiceCompletionBlock completionBlockCopy = [completionBlock copy];
+    NSString *requestNameCopy = [requestName copy];
+    
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
+    
 	[request setCompletionBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
         SDLog(@"response-headers = %@", [request responseHeaders]);
         if ([request didUseCachedResponse])
             SDLog(@"**** USING CACHED RESPONSE ***");
-		completionBlock([request responseStatusCode], responseString, &error);
+        
         @synchronized(requests)
         {
             [requests removeObject:request];
         }
+        
+        if (![self responseIsValid:responseString])
+        {
+            [[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+            [self performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy];
+        }
+        else
+        {
+            completionBlock([request responseStatusCode], responseString, &error);
+            [replacementsCopy release];
+            [requestNameCopy release];
+            [completionBlockCopy release];
+        }
 	}];
+    
 	[request setFailedBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = [request error];
@@ -219,6 +246,10 @@
         {
             [requests removeObject:request];
         }
+        
+        [replacementsCopy release];
+        [requestNameCopy release];
+        [completionBlockCopy release];
 	}];
 	
 	[request startAsynchronous];
