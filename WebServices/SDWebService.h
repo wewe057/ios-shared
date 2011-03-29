@@ -21,11 +21,10 @@ enum
 {
 	NSDictionary *serviceSpecification;
     NSMutableArray *serviceCookies;
-    NSMutableArray *requests;
+    NSMutableDictionary *queues;
 }
 
 @property (nonatomic, retain) NSMutableArray *serviceCookies;
-@property (nonatomic, readonly) NSArray *requests;
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;

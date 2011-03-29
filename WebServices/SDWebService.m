@@ -8,6 +8,7 @@
 #import "SDWebService.h"
 #import "ASIHTTPRequest.h"
 #import "ASIDownloadCache.h"
+#import "ASINetworkQueue.h"
 
 @interface SDHTTPRequest : ASIHTTPRequest
 {
@@ -33,13 +34,12 @@
 @implementation SDWebService
 
 @synthesize serviceCookies;
-@synthesize requests;
 
 - (id)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
 	
-    requests = [[NSMutableArray alloc] init];
+    queues = [[NSMutableDictionary alloc] init];
 	NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
 	serviceSpecification = [[NSDictionary dictionaryWithContentsOfFile:specFile] retain];
 	if (!serviceSpecification)
@@ -51,7 +51,7 @@
 - (void)dealloc
 {
 	[serviceSpecification release];
-    [requests release];
+    [queues release];
 	[super dealloc];
 }
 
@@ -97,6 +97,7 @@
     // see if this is a singleton request.
     NSNumber *singleRequestNumber = [requestDetails objectForKey:@"singleRequest"];
     BOOL singleRequest = NO;
+    ASINetworkQueue *namedQueue = [queues objectForKey:requestName];
     if (singleRequestNumber)
     {
         singleRequest = [singleRequestNumber boolValue];
@@ -104,18 +105,9 @@
         // if it is, lets cancel any with matching names. there may be multiple, however unlikely.
         if (singleRequest)
         {
-            @synchronized(requests)
-            {
-                NSMutableArray *requestsToCancel = [[NSMutableArray alloc] init];
-                for (SDHTTPRequest *prevRequest in requests)
-                    if ([prevRequest.requestName isEqualToString:requestName])
-                        [requestsToCancel addObject:requestsToCancel];
-
-                for (SDHTTPRequest *prevRequest in requestsToCancel)
-                    [requests removeObject:prevRequest];
-                
-                [requestsToCancel release];
-            }
+            [namedQueue cancelAllOperations];
+            namedQueue = [[[ASINetworkQueue alloc] init] autorelease];
+            [queues setObject:namedQueue forKey:requestName];
         }
     }
     
@@ -182,6 +174,12 @@
     request.numberOfTimesToRetryOnTimeout = 3;
     [request setShouldContinueWhenAppEntersBackground:YES];
     
+    if (singleRequest)
+    {
+        if (namedQueue)
+            [namedQueue addOperation:request];
+    }
+    
     // setup caching
     if (cache && [cache boolValue])
     {
@@ -189,11 +187,6 @@
         if (cacheTTL)
             [request setSecondsToCache:[cacheTTL unsignedIntValue]];
         [request setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-    }
-    
-    @synchronized(requests)
-    {
-        [requests addObject:request];
     }
     
     if (serviceCookies)
@@ -219,11 +212,6 @@
         if ([request didUseCachedResponse])
             SDLog(@"**** USING CACHED RESPONSE ***");
         
-        @synchronized(requests)
-        {
-            [requests removeObject:request];
-        }
-        
         if (![self responseIsValid:responseString] && shouldRetry)
         {
             [[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
@@ -242,17 +230,16 @@
 		NSString *responseString = [request responseString];
 		NSError *error = [request error];
 		completionBlock([request responseStatusCode], responseString, &error);
-        @synchronized(requests)
-        {
-            [requests removeObject:request];
-        }
         
         [replacementsCopy release];
         [requestNameCopy release];
         [completionBlockCopy release];
 	}];
 	
-	[request startAsynchronous];
+    if (!singleRequest)
+        [request startAsynchronous];
+    else
+        [namedQueue go];
 	return YES;
 }
 
