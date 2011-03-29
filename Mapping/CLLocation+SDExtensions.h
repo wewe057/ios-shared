@@ -13,7 +13,6 @@
 @interface CLLocation(SDExtensions)
 
 + (CLLocation *)locationWithCoordinates:(CLLocationCoordinate2D)coordinates;
-
-- (CLLocationDistance)getDistanceInCurrentLocaleFrom:(CLLocation *)location;
++ (CLLocationDistance)getDistanceFromLocation:(CLLocation *)location1 toLocation:(CLLocation *)location2;
 
 @end
