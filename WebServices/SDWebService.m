@@ -196,33 +196,32 @@
     }
 	
     // set ourselves up to retry
-    NSDictionary *replacementsCopy = [replacements copy];
-    SDWebServiceCompletionBlock completionBlockCopy = [completionBlock copy];
-    NSString *requestNameCopy = [requestName copy];
+    NSDictionary *replacementsCopy = [[replacements copy] autorelease];
+    SDWebServiceCompletionBlock completionBlockCopy = [[completionBlock copy] autorelease];
+    NSString *requestNameCopy = [[requestName copy] autorelease];
     
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
     
+    __block SDWebService *blockSelf = self;
 	[request setCompletionBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
-        SDLog(@"response-headers = %@", [request responseHeaders]);
+        //SDLog(@"request-headers = %@", [request requestHeaders]);
+        //SDLog(@"response-headers = %@", [request responseHeaders]);
         if ([request didUseCachedResponse])
             SDLog(@"**** USING CACHED RESPONSE ***");
         
-        if (![self responseIsValid:responseString] && shouldRetry)
+        if (![blockSelf responseIsValid:responseString forRequest:requestName] && shouldRetry)
         {
             [[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-            [self performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy shouldRetry:NO];
+            [blockSelf performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy shouldRetry:NO];
         }
         else
         {
             completionBlock([request responseStatusCode], responseString, &error);
-            [replacementsCopy release];
-            [requestNameCopy release];
-            [completionBlockCopy release];
         }
 	}];
     
@@ -230,10 +229,6 @@
 		NSString *responseString = [request responseString];
 		NSError *error = [request error];
 		completionBlock([request responseStatusCode], responseString, &error);
-        
-        [replacementsCopy release];
-        [requestNameCopy release];
-        [completionBlockCopy release];
 	}];
 	
     if (!singleRequest)
