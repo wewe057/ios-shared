@@ -12,5 +12,6 @@
 @interface NSString(SDExtensions)
 
 - (NSString *)replaceHTMLWithUnformattedText;
+- (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets;
 
 @end

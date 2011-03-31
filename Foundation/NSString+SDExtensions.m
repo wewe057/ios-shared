@@ -12,6 +12,10 @@
 @implementation NSString(SDExtensions)
 
 - (NSString *)replaceHTMLWithUnformattedText {
+    return [self replaceHTMLWithUnformattedText:NO];
+}
+
+- (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets {
     NSString* fixed = self;
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
@@ -29,6 +33,17 @@
                                               range:NSMakeRange(0, [fixed length]) 
                                        withTemplate:@""];
     
+    if (keepBullets) {
+        error = NULL;
+        regex = [NSRegularExpression regularExpressionWithPattern:@"<li>"
+                                                          options:NSRegularExpressionCaseInsensitive
+                                                            error:&error];
+        fixed = [regex stringByReplacingMatchesInString:fixed 
+                                                options:0 
+                                                  range:NSMakeRange(0, [fixed length]) 
+                                           withTemplate:@"\n• "];
+    }
+    
     // kill the HTML tags
     error = NULL;
     regex = [NSRegularExpression regularExpressionWithPattern:@"<\\/*[A-Z][A-Z0-9]*>"
@@ -38,7 +53,9 @@
                                             options:0 
                                               range:NSMakeRange(0, [fixed length]) 
                                        withTemplate:@""];
-    
+
+    // a final trimmy trimmy
+    fixed = [fixed stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     return fixed;
 }
