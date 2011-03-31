@@ -19,7 +19,7 @@
 
 - (SDAnnotation *)getClosestAnnotationToLocation:(CLLocation *)location andSelect:(BOOL)inSelect
 {
-	NSArray *annotations = self.annotations;
+	NSArray *annotations = [self userAnnotations];
 	if ([annotations count] < 1)
 		return nil;
 	
