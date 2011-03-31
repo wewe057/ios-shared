@@ -63,7 +63,7 @@
         serviceCookies = [cookies retain];
 }
 
-- (BOOL)responseIsValid:(NSString *)response
+- (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName
 {
     return YES;
 }
