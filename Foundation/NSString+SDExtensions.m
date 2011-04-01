@@ -60,4 +60,9 @@
     return fixed;
 }
 
+- (NSString*)escapedString 
+{            
+    return [(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[[self mutableCopy] autorelease], NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8) autorelease];
+}
+
 @end
