@@ -172,6 +172,7 @@
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
     request.numberOfTimesToRetryOnTimeout = 3;
+    //[request setValidatesSecureCertificate:NO];
     [request setShouldContinueWhenAppEntersBackground:YES];
     
     if (singleRequest)
@@ -206,7 +207,10 @@
 	// passed along as well.
     
     __block SDWebService *blockSelf = self;
+    
 	[request setCompletionBlock:^{
+        
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];        
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
         //SDLog(@"request-headers = %@", [request requestHeaders]);
@@ -223,6 +227,7 @@
         {
             completionBlock([request responseStatusCode], responseString, &error);
         }
+        [pool drain];
 	}];
     
 	[request setFailedBlock:^{
