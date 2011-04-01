@@ -9,6 +9,7 @@
 #import "ASIHTTPRequest.h"
 #import "ASIDownloadCache.h"
 #import "ASINetworkQueue.h"
+#import "NSString+SDExtensions.h"
 
 @interface SDHTTPRequest : ASIHTTPRequest
 {
@@ -151,7 +152,7 @@
 				value = [object stringValue];
 		}
 		if (value)
-			route = [route stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:value];
+			route = [route stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
 	}
 	
 	// there are some unparsed parameters which means either the plist is wrong, or the caller 
@@ -162,7 +163,7 @@
 	}
 	
 	// build the url and put it here...
-    NSString* escapedUrlString = [[NSString stringWithFormat:@"%@%@", baseURL, route] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString* escapedUrlString = [NSString stringWithFormat:@"%@%@", baseURL, route];// stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
