@@ -23,25 +23,22 @@
 	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
-    // todo: match url to image cache and use cached copy if present instead of loading from network
-    
-    if (request != nil) {
-        [request clearDelegatesAndCancel];
-        [request release];
-    }
-    
     if (self.image != nil) {
         self.image = nil;
     }
     
 	NSURL *url = [NSURL URLWithString:imageUrlString];
     
-	request = [[ASIHTTPRequest requestWithURL:url] retain];
-	request.delegate = self;
+	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
+    __block SDWebImageView *blockSelf = self;
+    request.numberOfTimesToRetryOnTimeout = 3;
+    [request setShouldContinueWhenAppEntersBackground:YES];
+	[request setDownloadCache:[ASIDownloadCache sharedCache]];
+    [request setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
 	
 	[request setCompletionBlock:^{
 		NSData *responseData = [request responseData];
-		self.image = [UIImage imageWithData:responseData];
+		blockSelf.image = [UIImage imageWithData:responseData];
         
         // todo: add image cache
 	}];
@@ -49,11 +46,10 @@
 	[request setFailedBlock:^{
 		NSError *error = [request error];
 		SDLog(@"Error fetching image: %@", error);
-		self.image = self.errorImage;
+		blockSelf.image = blockSelf.errorImage;
 	}];
 	
 	[request startAsynchronous];
-	[request setDownloadCache:[ASIDownloadCache sharedCache]];
 }
 
 
@@ -70,7 +66,6 @@
 }
 
 - (void)dealloc {
-    [request release];
 	[imageUrlString release];
 	[errorImage release];
 	[super dealloc];

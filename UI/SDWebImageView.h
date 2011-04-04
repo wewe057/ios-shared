@@ -12,7 +12,6 @@
 @interface SDWebImageView : UIImageView {
 	NSString *imageUrlString;
 	UIImage *errorImage;
-    ASIHTTPRequest *request;
 }
 
 @property (nonatomic, copy) NSString *imageUrlString;
