@@ -27,6 +27,8 @@
         self.image = nil;
     }
     
+    if (imageUrlString == nil) return;
+    
 	NSURL *url = [NSURL URLWithString:imageUrlString];
     
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
