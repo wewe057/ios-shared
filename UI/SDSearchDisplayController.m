@@ -170,6 +170,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             recentSearchTableView = nil;            
         }
         [masterList removeAllObjects];
+        [searchHistory release];
+        searchHistory = nil;
     }
 }
 

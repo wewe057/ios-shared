@@ -9,6 +9,7 @@
 #import "ASIHTTPRequest.h"
 #import "ASIDownloadCache.h"
 #import "ASINetworkQueue.h"
+#import "NSString+SDExtensions.h"
 
 @interface SDHTTPRequest : ASIHTTPRequest
 {
@@ -63,7 +64,7 @@
         serviceCookies = [cookies retain];
 }
 
-- (BOOL)responseIsValid:(NSString *)response
+- (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName
 {
     return YES;
 }
@@ -151,7 +152,7 @@
 				value = [object stringValue];
 		}
 		if (value)
-			route = [route stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:value];
+			route = [route stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
 	}
 	
 	// there are some unparsed parameters which means either the plist is wrong, or the caller 
@@ -162,7 +163,7 @@
 	}
 	
 	// build the url and put it here...
-    NSString* escapedUrlString = [[NSString stringWithFormat:@"%@%@", baseURL, route] stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString* escapedUrlString = [NSString stringWithFormat:@"%@%@", baseURL, route];
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
@@ -172,6 +173,7 @@
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
     request.numberOfTimesToRetryOnTimeout = 3;
+    //[request setValidatesSecureCertificate:NO];
     [request setShouldContinueWhenAppEntersBackground:YES];
     
     if (singleRequest)
@@ -196,44 +198,43 @@
     }
 	
     // set ourselves up to retry
-    NSDictionary *replacementsCopy = [replacements copy];
-    SDWebServiceCompletionBlock completionBlockCopy = [completionBlock copy];
-    NSString *requestNameCopy = [requestName copy];
+    NSDictionary *replacementsCopy = [[replacements copy] autorelease];
+    SDWebServiceCompletionBlock completionBlockCopy = [[completionBlock copy] autorelease];
+    NSString *requestNameCopy = [[requestName copy] autorelease];
     
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
     
+    __block SDWebService *blockSelf = self;
+    
 	[request setCompletionBlock:^{
+        
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];        
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
-        SDLog(@"response-headers = %@", [request responseHeaders]);
+        //SDLog(@"request-headers = %@", [request requestHeaders]);
+        //SDLog(@"response-headers = %@", [request responseHeaders]);
         if ([request didUseCachedResponse])
             SDLog(@"**** USING CACHED RESPONSE ***");
         
-        if (![self responseIsValid:responseString] && shouldRetry)
+        if (![blockSelf responseIsValid:responseString forRequest:requestName] && shouldRetry)
         {
             [[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-            [self performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy shouldRetry:NO];
+            [blockSelf performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy shouldRetry:NO];
         }
         else
         {
             completionBlock([request responseStatusCode], responseString, &error);
-            [replacementsCopy release];
-            [requestNameCopy release];
-            [completionBlockCopy release];
         }
+        [pool drain];
 	}];
     
 	[request setFailedBlock:^{
 		NSString *responseString = [request responseString];
 		NSError *error = [request error];
 		completionBlock([request responseStatusCode], responseString, &error);
-        
-        [replacementsCopy release];
-        [requestNameCopy release];
-        [completionBlockCopy release];
 	}];
 	
     if (!singleRequest)

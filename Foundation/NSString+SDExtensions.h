@@ -13,5 +13,6 @@
 
 - (NSString *)replaceHTMLWithUnformattedText;
 - (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets;
+- (NSString *)escapedString;
 
 @end

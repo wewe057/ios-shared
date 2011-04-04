@@ -6,7 +6,7 @@
 //
 
 #import "SDGeocoder.h"
-#import "NSDictionary_JSONExtensions.h"
+#import "JSONKit.h"
 
 @interface SDGeocoder(private)
 + (NSDictionary *)addressBookDictionary:(NSDictionary *)placemarkDictionary coordinates:(CLLocationCoordinate2D *)coords;
@@ -97,7 +97,7 @@
 		}
 		
 		NSError *error = nil;
-		NSDictionary *dictionary = [NSDictionary dictionaryWithJSONData:jsonData error:&error];
+		NSDictionary *dictionary = [jsonData objectFromJSONData];
 		if (error)
 		{
 			if (delegate && [delegate respondsToSelector:@selector(geocoder:didFailWithError:)])
