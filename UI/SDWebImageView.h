@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-@class ASIHTTPRequest;
+#import "ASIHTTPRequest.h"
+#import "ASINetworkQueue.h"
 
 @interface SDWebImageView : UIImageView {
 	NSString *imageUrlString;
 	UIImage *errorImage;
+    ASINetworkQueue *queue;
 }
 
 @property (nonatomic, copy) NSString *imageUrlString;

@@ -20,6 +20,10 @@
 @synthesize errorImage;
 
 - (void)setImageUrlString:(NSString *)argImageUrlString {
+    
+    if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
+        return;
+    
 	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
@@ -31,8 +35,9 @@
     
 	NSURL *url = [NSURL URLWithString:imageUrlString];
     
+    [queue cancelAllOperations];
+    
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    __block SDWebImageView *blockSelf = self;
     request.numberOfTimesToRetryOnTimeout = 3;
     [request setShouldContinueWhenAppEntersBackground:YES];
 	[request setDownloadCache:[ASIDownloadCache sharedCache]];
@@ -40,18 +45,17 @@
 	
 	[request setCompletionBlock:^{
 		NSData *responseData = [request responseData];
-		blockSelf.image = [UIImage imageWithData:responseData];
-        
-        // todo: add image cache
+		self.image = [UIImage imageWithData:responseData];
 	}];
 	
 	[request setFailedBlock:^{
 		NSError *error = [request error];
 		SDLog(@"Error fetching image: %@", error);
-		blockSelf.image = blockSelf.errorImage;
+		self.image = self.errorImage;
 	}];
-	
-	[request startAsynchronous];
+    
+    [queue addOperation:request];
+	[queue go];
 }
 
 
@@ -62,12 +66,23 @@
     
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code.
+        queue = [[ASINetworkQueue alloc] init];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        queue = [[ASINetworkQueue alloc] init];
     }
     return self;
 }
 
 - (void)dealloc {
+    [queue cancelAllOperations];
+    [queue release];
 	[imageUrlString release];
 	[errorImage release];
 	[super dealloc];
