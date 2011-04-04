@@ -6,6 +6,7 @@
 //
 
 #import "SDGeocoder.h"
+#import "JSONKit.h"
 
 @interface SDGeocoder(private)
 + (NSDictionary *)addressBookDictionary:(NSDictionary *)placemarkDictionary coordinates:(CLLocationCoordinate2D *)coords;
