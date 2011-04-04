@@ -27,6 +27,13 @@
 	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
+    if (request)
+    {
+        [request clearDelegatesAndCancel];
+        [request release];
+        request = nil;
+    }
+    
     if (self.image != nil) {
         self.image = nil;
     }
@@ -35,28 +42,33 @@
     
 	NSURL *url = [NSURL URLWithString:imageUrlString];
     
-    if ([queue operationCount] > 0)
-        [queue cancelAllOperations];
-    
-	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
-    request.numberOfTimesToRetryOnTimeout = 3;
-    [request setShouldContinueWhenAppEntersBackground:YES];
-	[request setDownloadCache:[ASIDownloadCache sharedCache]];
-    [request setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
-	
-	[request setCompletionBlock:^{
-		NSData *responseData = [request responseData];
-		self.image = [UIImage imageWithData:responseData];
-	}];
-	
-	[request setFailedBlock:^{
-		NSError *error = [request error];
-		SDLog(@"Error fetching image: %@", error);
-		self.image = self.errorImage;
-	}];
-    
-    [queue addOperation:request];
-	[queue go];
+    ASIDownloadCache *cache = [ASIDownloadCache sharedCache];
+    NSData *data = [cache cachedResponseDataForURL:url];
+    if (data)
+    {
+        self.image = [UIImage imageWithData:data];
+    }
+    else
+    {            
+        request = [[ASIHTTPRequest requestWithURL:url] retain];
+        request.numberOfTimesToRetryOnTimeout = 3;
+        [request setShouldContinueWhenAppEntersBackground:YES];
+        [request setDownloadCache:[ASIDownloadCache sharedCache]];
+        [request setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
+        
+        [request setCompletionBlock:^{
+            NSData *responseData = [request responseData];
+            self.image = [UIImage imageWithData:responseData];
+        }];
+        
+        [request setFailedBlock:^{
+            NSError *error = [request error];
+            SDLog(@"Error fetching image: %@", error);
+            self.image = self.errorImage;
+        }];
+        
+        [request startAsynchronous];
+    }
 }
 
 
@@ -67,7 +79,6 @@
     
     self = [super initWithFrame:frame];
     if (self) {
-        queue = [[ASINetworkQueue alloc] init];
     }
     return self;
 }
@@ -76,14 +87,13 @@
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        queue = [[ASINetworkQueue alloc] init];
     }
     return self;
 }
 
 - (void)dealloc {
-    [queue cancelAllOperations];
-    [queue release];
+    [request clearDelegatesAndCancel];
+    [request release];
 	[imageUrlString release];
 	[errorImage release];
 	[super dealloc];
