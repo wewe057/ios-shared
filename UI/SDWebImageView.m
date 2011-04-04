@@ -34,6 +34,8 @@
         self.image = nil;
     }
     
+    if (imageUrlString == nil) return;
+    
 	NSURL *url = [NSURL URLWithString:imageUrlString];
     
 	request = [[ASIHTTPRequest requestWithURL:url] retain];
