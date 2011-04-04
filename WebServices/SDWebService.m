@@ -207,7 +207,7 @@
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
     
-    __block SDWebService *blockSelf = self;
+    SDWebService *blockSelf = self;
     
 	[request setCompletionBlock:^{
         
@@ -226,7 +226,8 @@
         }
         else
         {
-            completionBlock([request responseStatusCode], responseString, &error);
+            int code = [request responseStatusCode];
+            completionBlock(code, responseString, &error);
         }
         [pool drain];
 	}];

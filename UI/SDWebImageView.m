@@ -35,7 +35,8 @@
     
 	NSURL *url = [NSURL URLWithString:imageUrlString];
     
-    [queue cancelAllOperations];
+    if ([queue operationCount] > 0)
+        [queue cancelAllOperations];
     
 	__block ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:url];
     request.numberOfTimesToRetryOnTimeout = 3;
