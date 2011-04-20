@@ -209,11 +209,19 @@
     
     SDWebService *blockSelf = self;
     
+#ifdef DEBUG
+    NSDate *startDate = [NSDate date];
+#endif
+    
 	[request setCompletionBlock:^{
         
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];        
 		NSString *responseString = [request responseString];
 		NSError *error = nil;
+        
+#ifdef DEBUG
+        SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
+#endif
         //SDLog(@"request-headers = %@", [request requestHeaders]);
         //SDLog(@"response-headers = %@", [request responseHeaders]);
         if ([request didUseCachedResponse])
