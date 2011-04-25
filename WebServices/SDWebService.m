@@ -216,8 +216,8 @@
 	[request setCompletionBlock:^{
         
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];        
-		NSString *responseString = [request responseString];
-		NSError *error = nil;
+        NSString *responseString = [request responseString];
+        NSError *error = nil;
         
 #ifdef DEBUG
         SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
@@ -247,7 +247,12 @@
 	}];
 	
     if (!singleRequest)
-        [request startAsynchronous];
+    {
+        //[request startAsynchronous];
+        ASINetworkQueue *queue = [ASINetworkQueue queue];
+        [queue addOperation:request];
+        [queue go];
+    }
     else
         [namedQueue go];
 	return YES;
