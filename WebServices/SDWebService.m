@@ -167,7 +167,7 @@
 	}
 	
 	// build the url and put it here...
-    NSString* escapedUrlString = [NSString stringWithFormat:@"%@%@", baseURL, route];// stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+    NSString* escapedUrlString = [NSString stringWithFormat:@"%@%@", baseURL, route];
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	[actualReplacements release];
@@ -211,13 +211,21 @@
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
     
-    __block SDWebService *blockSelf = self;
+    SDWebService *blockSelf = self;
+    
+#ifdef DEBUG
+    NSDate *startDate = [NSDate date];
+#endif
     
 	[request setCompletionBlock:^{
         
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];        
-		NSString *responseString = [request responseString];
-		NSError *error = nil;
+        NSString *responseString = [request responseString];
+        NSError *error = nil;
+        
+#ifdef DEBUG
+        SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
+#endif
         //SDLog(@"request-headers = %@", [request requestHeaders]);
         //SDLog(@"response-headers = %@", [request responseHeaders]);
         if ([request didUseCachedResponse])
@@ -230,7 +238,8 @@
         }
         else
         {
-            completionBlock([request responseStatusCode], responseString, &error);
+            int code = [request responseStatusCode];
+            completionBlock(code, responseString, &error);
         }
         [pool drain];
 	}];
@@ -242,7 +251,12 @@
 	}];
 	
     if (!singleRequest)
-        [request startAsynchronous];
+    {
+        //[request startAsynchronous];
+        ASINetworkQueue *queue = [ASINetworkQueue queue];
+        [queue addOperation:request];
+        [queue go];
+    }
     else
         [namedQueue go];
 	return YES;

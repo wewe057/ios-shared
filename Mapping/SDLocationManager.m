@@ -44,7 +44,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 {
 	timeoutTimer = nil;
 	
-	SDLog(@"SDLocationManager - Timeout triggered!");
+	//SDLog(@"SDLocationManager - Timeout triggered!");
 	
 	// if we have a location, pass it along...
 	if (self.location)

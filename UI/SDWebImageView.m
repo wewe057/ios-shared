@@ -20,40 +20,55 @@
 @synthesize errorImage;
 
 - (void)setImageUrlString:(NSString *)argImageUrlString {
+    
+    if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
+        return;
+    
 	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
-    // todo: match url to image cache and use cached copy if present instead of loading from network
-    
-    if (request != nil) {
+    if (request)
+    {
         [request clearDelegatesAndCancel];
         [request release];
+        request = nil;
     }
     
     if (self.image != nil) {
         self.image = nil;
     }
     
+    if (imageUrlString == nil) return;
+    
 	NSURL *url = [NSURL URLWithString:imageUrlString];
     
-	request = [[ASIHTTPRequest requestWithURL:url] retain];
-	request.delegate = self;
-	
-	[request setCompletionBlock:^{
-		NSData *responseData = [request responseData];
-		self.image = [UIImage imageWithData:responseData];
+    ASIDownloadCache *cache = [ASIDownloadCache sharedCache];
+    NSData *data = [cache cachedResponseDataForURL:url];
+    if (data)
+    {
+        self.image = [UIImage imageWithData:data];
+    }
+    else
+    {            
+        request = [[ASIHTTPRequest requestWithURL:url] retain];
+        request.numberOfTimesToRetryOnTimeout = 3;
+        [request setShouldContinueWhenAppEntersBackground:YES];
+        [request setDownloadCache:[ASIDownloadCache sharedCache]];
+        [request setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
         
-        // todo: add image cache
-	}];
-	
-	[request setFailedBlock:^{
-		NSError *error = [request error];
-		SDLog(@"Error fetching image: %@", error);
-		self.image = self.errorImage;
-	}];
-	
-	[request startAsynchronous];
-	[request setDownloadCache:[ASIDownloadCache sharedCache]];
+        [request setCompletionBlock:^{
+            NSData *responseData = [request responseData];
+            self.image = [UIImage imageWithData:responseData];
+        }];
+        
+        [request setFailedBlock:^{
+            NSError *error = [request error];
+            SDLog(@"Error fetching image: %@", error);
+            self.image = self.errorImage;
+        }];
+        
+        [request startAsynchronous];
+    }
 }
 
 
@@ -64,12 +79,20 @@
     
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code.
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
     }
     return self;
 }
 
 - (void)dealloc {
+    [request clearDelegatesAndCancel];
     [request release];
 	[imageUrlString release];
 	[errorImage release];

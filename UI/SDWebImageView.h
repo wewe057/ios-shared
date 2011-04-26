@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@class ASIHTTPRequest;
+#import "ASIHTTPRequest.h"
 
 @interface SDWebImageView : UIImageView {
 	NSString *imageUrlString;

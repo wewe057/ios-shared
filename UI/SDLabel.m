@@ -14,6 +14,9 @@
 
 - (CGFloat)textHeight
 {
+    if (self.text == nil)
+        return 0;
+    
 	CGSize theSize = [self.text sizeWithFont:self.font
 						   constrainedToSize:CGSizeMake(self.frame.size.width, INFINITY)
 							   lineBreakMode:self.lineBreakMode];
