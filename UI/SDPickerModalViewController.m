@@ -80,8 +80,8 @@
 
 - (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel
 {
-    doneBlock = [done retain];
-    cancelBlock = [cancel retain];
+    doneBlock = [done copy];
+    cancelBlock = [cancel copy];
     
     backgroundView.alpha = 0;
     
