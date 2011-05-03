@@ -21,6 +21,7 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         // Custom initialization
+        [self view];
     }
     return self;
 }
