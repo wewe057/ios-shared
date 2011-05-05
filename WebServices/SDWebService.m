@@ -148,10 +148,6 @@
 			if ([object isKindOfClass:[NSNumber class]])
 				value = [object stringValue];
 			else
-            if ([object isKindOfClass:[NSArray class]])
-                // JZ FIXME Should be formatted as a JSON array
-                value = [object description];
-            else
 			if ([object respondsToSelector:@selector(stringValue)])
 				value = [object stringValue];
 		}
