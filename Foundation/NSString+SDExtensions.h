@@ -14,5 +14,6 @@
 - (NSString *)replaceHTMLWithUnformattedText;
 - (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets;
 - (NSString *)escapedString;
+- (NSString *)removeExcessWhitespace;
 
 @end

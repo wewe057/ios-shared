@@ -65,4 +65,18 @@
     return [(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[[self mutableCopy] autorelease], NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8) autorelease];
 }
 
+- (NSString *)removeExcessWhitespace
+{
+    
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\s{2,}"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:&error];
+    return [regex stringByReplacingMatchesInString:self 
+                                            options:0 
+                                              range:NSMakeRange(0, [self length]) 
+                                       withTemplate:@" "];
+}
+
 @end
+
