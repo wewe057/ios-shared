@@ -13,6 +13,5 @@
 
 + (NSDate *)dateFromISO8601String:(NSString *)argDateString;
 + (NSDate *)dateFromRFC822String:(NSString *)argDateString;
-+ (NSDate *)dateFromRFC822String:(NSString *)argDateString maintainRFC822StringTimeZone:(BOOL)maintainRFC822StringTimeZone;
 
 @end
