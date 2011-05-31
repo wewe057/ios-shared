@@ -80,7 +80,7 @@
     }
     
 	// construct the URL based on the specification.
-	NSString *baseURL = [NSURL URLWithString:[serviceSpecification objectForKey:@"baseURL"]];
+	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
 	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
@@ -90,6 +90,18 @@
     NSString *altBaseURL = [requestDetails objectForKey:@"baseURL"];
     if (altBaseURL)
         baseURL = altBaseURL;
+    
+    // this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
+    if ([baseURL rangeOfString:@"{"].location != NSNotFound)
+    {
+        NSString *prefKey = nil;
+        int startPos = [baseURL rangeOfString:@"{"].location + 1;
+        int endPos = [baseURL rangeOfString:@"}"].location;
+        NSRange range = NSMakeRange(startPos, endPos - startPos);
+        prefKey = [baseURL substringWithRange:range];
+        NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
+        baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
+    }
     
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];
