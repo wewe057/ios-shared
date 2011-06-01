@@ -22,6 +22,7 @@
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
 
     // kill the HTML entities
     NSError *error = NULL;
