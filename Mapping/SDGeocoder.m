@@ -171,7 +171,8 @@
 	NSDictionary *country = [addressDetails objectForKey:@"Country"];
 	if (country)
 	{
-		[result setObject:[country objectForKey:@"CountryName"] forKey:@"Country"];
+        NSString *countryName = [country objectForKey:@"CountryName"];
+		[result setObject:countryName ? countryName:@"" forKey:@"Country"];
 		[result setObject:[country objectForKey:@"CountryNameCode"] forKey:@"CountryCode"];
 	}
 	
