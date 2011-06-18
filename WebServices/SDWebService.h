@@ -10,10 +10,12 @@
 #import "Reachability.h"
 
 typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
+typedef void (^SDWebServiceGroupCompletionBlock)(NSArray *responseCodes, NSArray *responses, NSError **error);
 
 enum
 {
     SDWebServiceErrorNoConnection = 0,
+    SDWebServiceErrorBadParams,
     // all other errors come from ASI-HTTP
 };
 
@@ -28,6 +30,7 @@ enum
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
+- (BOOL)performRequestWithMethods:(NSArray *)requestNamesArray routeReplacements:(NSArray *)replacementsArray completion:(SDWebServiceGroupCompletionBlock)argGroupCompletionBlock;
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName;
 
 @end

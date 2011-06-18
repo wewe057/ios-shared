@@ -275,6 +275,39 @@
     return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
 }
 
+- (BOOL)performRequestWithMethods:(NSArray *)requestNamesArray routeReplacements:(NSArray *)replacementsArray completion:(SDWebServiceGroupCompletionBlock)argGroupCompletionBlock
+{
+    if (![[Reachability reachabilityForInternetConnection] isReachable])
+    {
+        // we ain't got no connection Lt. Dan
+        NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
+        argGroupCompletionBlock(nil, nil, &error);
+        return NO;
+    }
+    
+	NSUInteger numRequests = [requestNamesArray count];
+	NSUInteger numReplacements = [replacementsArray count];
+	if (numRequests == 0 || (numRequests != numReplacements)) {
+        NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorBadParams userInfo:nil];
+        argGroupCompletionBlock(nil, nil, &error);
+		return NO;
+	}
+	
+	__block NSUInteger requestCount = numRequests;
+	
+	NSUInteger theIndex = 0;
+	for (theIndex = 0; theIndex < numRequests; theIndex++) {
+		[self performRequestWithMethod:[requestNamesArray objectAtIndex:theIndex] routeReplacements:[replacementsArray objectAtIndex:theIndex] completion:^(int responseCode, NSString *response, NSError **error) {
+			requestCount--;
+			if (requestCount == 0) {
+				// TODO: Pass the codes and responses back to the completion block.
+				argGroupCompletionBlock(nil, nil, NULL);
+			}
+		}];
+	}
+	
+	return YES;
+}
 
 
 @end
