@@ -1,0 +1,88 @@
+//
+//  NSMutableDictionary+SDExtensions.m
+//  walmart
+//
+//  Created by Brandon Sneed on 6/27/11.
+//  Copyright 2011 Set Direction. All rights reserved.
+//
+
+#import "NSMutableDictionary+SDExtensions.h"
+
+@implementation NSMutableDictionary (NSMutableDictionary_SDExtensions)
+
+- (NSString *)stringForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSString class]])
+        return obj;
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj stringValue];
+    return nil;
+}
+
+- (NSInteger)intForKey:(NSString *)key { return [self integerForKey:key]; }
+- (NSInteger)integerForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSString class]])
+        return [obj integerValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj integerValue];
+    return 0;
+}
+
+- (NSUInteger)unsignedIntForKey:(NSString *)key { return [self unsignedIntegerForKey:key]; }
+- (NSUInteger)unsignedIntegerForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSString class]])
+    {
+        NSNumber *number = [NSNumber numberWithInteger:[obj integerValue]];
+        return [number unsignedIntegerValue];
+    }
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj unsignedIntegerValue];
+    return 0;
+}
+
+- (NSInteger)floatForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSString class]])
+        return [obj floatValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj floatValue];
+    return 0;
+}
+
+- (NSInteger)doubleForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSString class]])
+        return [obj doubleValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj doubleValue];
+    return 0;
+}
+
+- (long long)longLongForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSString class]])
+        return [obj longLongValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj longLongValue];
+    return 0;
+}
+
+- (BOOL)boolForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSString class]])
+        return [obj boolValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj boolValue];
+    return 0;
+}
+
+@end
