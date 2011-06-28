@@ -1,20 +1,21 @@
 //
-//  NSMutableDictionary+SDExtensions.m
+//  NSDictionary+SDExtensions.m
 //  walmart
 //
 //  Created by Brandon Sneed on 6/27/11.
 //  Copyright 2011 Set Direction. All rights reserved.
 //
 
-#import "NSMutableDictionary+SDExtensions.h"
+#import "NSDictionary+SDExtensions.h"
 
-@implementation NSMutableDictionary (NSMutableDictionary_SDExtensions)
+@implementation NSDictionary (NSDictionary_SDExtensions)
 
 - (NSString *)stringForKey:(NSString *)key
 {
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
         return obj;
+    else
     if ([obj isKindOfClass:[NSNumber class]])
         return [obj stringValue];
     return nil;
@@ -26,6 +27,7 @@
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
         return [obj integerValue];
+    else
     if ([obj isKindOfClass:[NSNumber class]])
         return [obj integerValue];
     return 0;
@@ -40,6 +42,7 @@
         NSNumber *number = [NSNumber numberWithInteger:[obj integerValue]];
         return [number unsignedIntegerValue];
     }
+    else
     if ([obj isKindOfClass:[NSNumber class]])
         return [obj unsignedIntegerValue];
     return 0;
@@ -50,6 +53,7 @@
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
         return [obj floatValue];
+    else
     if ([obj isKindOfClass:[NSNumber class]])
         return [obj floatValue];
     return 0;
@@ -60,6 +64,7 @@
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
         return [obj doubleValue];
+    else
     if ([obj isKindOfClass:[NSNumber class]])
         return [obj doubleValue];
     return 0;
@@ -70,6 +75,7 @@
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
         return [obj longLongValue];
+    else
     if ([obj isKindOfClass:[NSNumber class]])
         return [obj longLongValue];
     return 0;
@@ -80,6 +86,7 @@
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
         return [obj boolValue];
+    else
     if ([obj isKindOfClass:[NSNumber class]])
         return [obj boolValue];
     return 0;

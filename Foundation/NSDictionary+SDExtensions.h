@@ -1,5 +1,5 @@
 //
-//  NSMutableDictionary+SDExtensions.h
+//  NSDictionary+SDExtensions.h
 //  walmart
 //
 //  Created by Brandon Sneed on 6/27/11.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSMutableDictionary (NSMutableDictionary_SDExtensions)
+@interface NSDictionary (NSDictionary_SDExtensions)
 
 - (NSString *)stringForKey:(NSString *)key;
 - (NSInteger)intForKey:(NSString *)key;
