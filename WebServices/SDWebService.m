@@ -69,9 +69,14 @@
     return YES;
 }
 
+- (BOOL)isReachable
+{
+    return [[Reachability reachabilityForInternetConnection] isReachable];
+}
+
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
-    if (![[Reachability reachabilityForInternetConnection] isReachable])
+    if (![self isReachable])
     {
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
