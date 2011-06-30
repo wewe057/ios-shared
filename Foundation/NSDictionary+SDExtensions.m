@@ -48,7 +48,7 @@
     return 0;
 }
 
-- (NSInteger)floatForKey:(NSString *)key
+- (float)floatForKey:(NSString *)key
 {
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
@@ -59,7 +59,7 @@
     return 0;
 }
 
-- (NSInteger)doubleForKey:(NSString *)key
+- (double)doubleForKey:(NSString *)key
 {
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
