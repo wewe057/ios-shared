@@ -74,6 +74,48 @@
     return [[Reachability reachabilityForInternetConnection] isReachable];
 }
 
+- (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
+{
+    // combine the contents of routeReplacements and the passed in replacements to form
+	// a complete name and value list.
+	NSArray *keyList = [userReplacements allKeys];
+	NSMutableDictionary *actualReplacements = [replacements mutableCopy];
+	for (NSString *key in keyList)
+	{
+		// this takes all the data provided in replacements and overwrites any default
+		// values specified in the plist.
+		NSObject *value = [userReplacements objectForKey:key];
+		[actualReplacements setObject:value forKey:key];
+	}
+	
+	// now lets take that final list and apply it to the route format.
+	keyList = [actualReplacements allKeys];
+	NSString *result = routeFormat;
+	for (NSString *key in keyList)
+	{
+		id object = [actualReplacements objectForKey:key];
+		NSString *value = nil;
+		// if its a string, assign it.
+		if ([object isKindOfClass:[NSString class]])
+			value = object;
+		else
+		{
+			// if its not, run some tests to see what we can do...
+			if ([object isKindOfClass:[NSNumber class]])
+				value = [object stringValue];
+			else
+            if ([object respondsToSelector:@selector(stringValue)])
+                value = [object stringValue];
+		}
+		if (value)
+			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
+	}
+    
+    [actualReplacements release];
+    
+    return result;
+}
+
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
     if (![self isReachable])
@@ -130,47 +172,7 @@
     }
     
 	NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
-	
-	
-	// TODO: Need to put some error handling here in case the plist is jacked up...
-	
-	// end TODO
-	
-	
-	// combine the contents of routeReplacements and the passed in replacements to form
-	// a complete name and value list.
-	NSArray *keyList = [replacements allKeys];
-	NSMutableDictionary *actualReplacements = [routeReplacements mutableCopy];
-	for (NSString *key in keyList)
-	{
-		// this takes all the data provided in replacements and overwrites any default
-		// values specified in the plist.
-		NSObject *value = [replacements objectForKey:key];
-		[actualReplacements setObject:value forKey:key];
-	}
-	
-	// now lets take that final list and apply it to the route format.
-	keyList = [actualReplacements allKeys];
-	NSString *route = routeFormat;
-	for (NSString *key in keyList)
-	{
-		id object = [actualReplacements objectForKey:key];
-		NSString *value = nil;
-		// if its a string, assign it.
-		if ([object isKindOfClass:[NSString class]])
-			value = object;
-		else
-		{
-			// if its not, run some tests to see what we can do...
-			if ([object isKindOfClass:[NSNumber class]])
-				value = [object stringValue];
-			else
-			if ([object respondsToSelector:@selector(stringValue)])
-				value = [object stringValue];
-		}
-		if (value)
-			route = [route stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
-	}
+    NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
 	
 	// there are some unparsed parameters which means either the plist is wrong, or the caller 
 	// gave us a list of replacements that weren't sufficient to continue on.
@@ -179,11 +181,21 @@
 		[NSException raise:@"SDException" format:@"Unable to create request.  The URL still contains replacement markers: %@", route];
 	}
 	
+    // setup post data if we need to.
+    NSString *postParams = nil;
+    if ([[method uppercaseString] isEqualToString:@"POST"])
+    {
+        NSString *postFormat = [requestDetails objectForKey:@"postFormat"];
+        if (postFormat)
+        {
+            postParams = [[self performReplacements:routeReplacements andUserReplacements:replacements withFormat:postFormat] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        }
+    }
+    
 	// build the url and put it here...
     NSString* escapedUrlString = [NSString stringWithFormat:@"%@%@", baseURL, route];
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
-	[actualReplacements release];
 	
 	__block SDHTTPRequest *request = [SDHTTPRequest requestWithURL:url];
 	request.delegate = self;
@@ -193,6 +205,12 @@
     //[request setValidatesSecureCertificate:NO];
     [request setShouldContinueWhenAppEntersBackground:YES];
     
+    if (postParams)
+    {
+        SDLog(@"request post: %@", postParams);
+        [request appendPostData:[postParams dataUsingEncoding:NSUTF8StringEncoding]];
+    }
+        
     if (singleRequest)
     {
         if (namedQueue)
