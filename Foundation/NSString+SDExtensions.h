@@ -11,8 +11,17 @@
 
 @interface NSString(SDExtensions)
 
-- (NSString *)replaceHTMLWithUnformattedText;
+// a method to replace HTML in multi-line strings with an adequate plain-text alternative, using Unicode characters
+// where appropriate to replace, e.g., <li> elements.
 - (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets;
+
+- (NSString *)replaceHTMLWithUnformattedText;
+
+// a method to replace HTML in single-line strings designed for compact representation (e.g., items in a list). this
+// is similar in behavior to replaceHTMLWithUnformattedText except it makes no attempt to format text for attractive
+// multi-line display.
+- (NSString *)stripHTMLFromListItems;
+
 - (NSString *)escapedString;
 - (NSString *)removeExcessWhitespace;
 

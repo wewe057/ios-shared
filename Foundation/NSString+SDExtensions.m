@@ -61,6 +61,42 @@
     return fixed;
 }
 
+- (NSString*)stripHTMLFromListItems {
+    NSString *fixed = self;
+
+    // some common entities
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&lt;" withString:@"<"];
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
+    fixed = [fixed stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
+
+    
+    // replace any HTML tag with a space
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<*[A-Z][A-Z0-9]* ?\\/>"
+                                                                           options:NSRegularExpressionCaseInsensitive
+                                                                             error:&error];
+    fixed = [regex stringByReplacingMatchesInString:fixed 
+                                            options:0 
+                                              range:NSMakeRange(0, [fixed length]) 
+                                       withTemplate:@" "];
+
+    // replace two or more spaces with one
+    error = NULL;
+    regex = [NSRegularExpression regularExpressionWithPattern:@"\\s{2,}"
+                                                      options:NSRegularExpressionCaseInsensitive
+                                                        error:&error];
+    fixed = [regex stringByReplacingMatchesInString:fixed 
+                                            options:0 
+                                              range:NSMakeRange(0, [fixed length]) 
+                                       withTemplate:@" "];
+
+    return fixed;
+}
+
+
 - (NSString*)escapedString 
 {            
     return [(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[[self mutableCopy] autorelease], NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8) autorelease];
