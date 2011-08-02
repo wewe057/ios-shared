@@ -145,6 +145,8 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ([newLocation.timestamp timeIntervalSinceDate:timestamp] < 0)
 	{
 		SDLog(@"SDLocationManager: this location was cached.");
+        if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
+            [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
 		return; // this one is cached, lets wait for a good one.
 	}
 	
@@ -152,7 +154,10 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ((newLocation.horizontalAccuracy >= actualDesiredAccuracy) || (newLocation.horizontalAccuracy > oldLocation.horizontalAccuracy))
 	{
 		SDLog(@"SDLocationManager: this location didn't meet the accuracy requirements (%f).", newLocation.horizontalAccuracy);
-		return; // the accuracy isn't good enough, wait some more...
+		//return; // the accuracy isn't good enough, wait some more...
+        if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
+            [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
+        return;
 	}
 	
 	SDLog(@"SDLocationManager: location obtained.");
