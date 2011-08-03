@@ -23,7 +23,7 @@
 
 @end
 
-@interface SDLocationManager: CLLocationManager <SDLocationManagerDelegate, CLLocationManagerDelegate>
+@interface SDLocationManager: CLLocationManager <CLLocationManagerDelegate>
 {
 	id delegate;
 	NSTimeInterval timeout;
@@ -34,7 +34,7 @@
     BOOL gotFirstLocationUpdate;
 }
 
-@property (nonatomic, assign) id<SDLocationManagerDelegate> delegate;
+@property (nonatomic, assign) id delegate;
 @property (nonatomic, assign) NSTimeInterval timeout;
 
 + (SDLocationManager *)instance;
