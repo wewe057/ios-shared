@@ -104,8 +104,8 @@
 			if ([object isKindOfClass:[NSNumber class]])
 				value = [object stringValue];
 			else
-            if ([object respondsToSelector:@selector(stringValue)])
-                value = [object stringValue];
+                if ([object respondsToSelector:@selector(stringValue)])
+                    value = [object stringValue];
 		}
 		if (value)
 			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
@@ -133,10 +133,19 @@
 	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
     
-    // if this method has its own baseURL use it instead.
-    NSString *altBaseURL = [requestDetails objectForKey:@"baseURL"];
-    if (altBaseURL)
+    // Allowing for the dynamic specification of baseURL at runtime
+    // (initially to accomodate the suggestions search)
+    NSString *altBaseURL = [replacements objectForKey:@"baseURL"];
+    if (altBaseURL) {
         baseURL = altBaseURL;
+    }
+    else {
+        // if this method has its own baseURL use it instead.
+        altBaseURL = [requestDetails objectForKey:@"baseURL"];
+        if (altBaseURL) {
+            baseURL = altBaseURL;
+        }
+    }
     
     // this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
     if ([baseURL rangeOfString:@"{"].location != NSNotFound)
@@ -171,7 +180,7 @@
         }
     }
     
-	NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
+    NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
 	
 	// there are some unparsed parameters which means either the plist is wrong, or the caller 
@@ -210,7 +219,7 @@
         SDLog(@"request post: %@", postParams);
         [request appendPostData:[postParams dataUsingEncoding:NSUTF8StringEncoding]];
     }
-        
+    
     if (singleRequest)
     {
         if (namedQueue)
