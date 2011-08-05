@@ -33,5 +33,6 @@ enum
 - (BOOL)performRequestWithMethods:(NSArray *)requestNamesArray routeReplacements:(NSArray *)replacementsArray completion:(SDWebServiceGroupCompletionBlock)argGroupCompletionBlock;
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName;
 - (BOOL)isReachable;
+- (BOOL)isReachableToHost:(NSString *)hostName;
 
 @end
