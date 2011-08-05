@@ -3,7 +3,7 @@
 //  navbar2
 //
 //  Created by Brandon Sneed on 7/26/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011 Walmart. All rights reserved.
 //
 
 #import "NSArray+SDExtensions.h"
