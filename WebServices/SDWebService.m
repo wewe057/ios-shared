@@ -69,6 +69,11 @@
     return YES;
 }
 
+- (BOOL)isReachableToHost:(NSString *)hostName
+{
+    return [[Reachability reachabilityWithHostName:hostName] isReachable];
+}
+
 - (BOOL)isReachable
 {
     return [[Reachability reachabilityForInternetConnection] isReachable];
@@ -118,14 +123,6 @@
 
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
-    if (![self isReachable])
-    {
-        // we ain't got no connection Lt. Dan
-        NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
-        completionBlock(0, nil, &error);
-        return NO;
-    }
-    
 	// construct the URL based on the specification.
 	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
@@ -157,6 +154,15 @@
         prefKey = [baseURL substringWithRange:range];
         NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
         baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
+    }
+    
+	NSString *hostName = [[NSURL URLWithString:baseURL] host];
+    if (![self isReachableToHost:hostName])
+    {
+        // we ain't got no connection Lt. Dan
+        NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
+        completionBlock(0, nil, &error);
+        return NO;
     }
     
     // get cache details
