@@ -287,6 +287,8 @@
             int code = [request responseStatusCode];
             completionBlock(code, responseString, &error);
         }
+        [request setCompletionBlock:nil];
+        [request setFailedBlock:nil];
         [pool drain];
 	}];
     
@@ -294,6 +296,8 @@
 		NSString *responseString = [request responseString];
 		NSError *error = [request error];
 		completionBlock([request responseStatusCode], responseString, &error);
+        [request setCompletionBlock:nil];
+        [request setFailedBlock:nil];
 	}];
 	
     if (!singleRequest)
