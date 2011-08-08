@@ -9,6 +9,7 @@
 #import "SDWebImageView.h"
 #import "ASIHTTPRequest.h"
 #import "ASIDownloadCache.h"
+#import "ASINetworkQueue.h"
 
 @implementation SDWebImageView
 
@@ -49,25 +50,33 @@
         self.image = [UIImage imageWithData:data];
     }
     else
-    {            
-        request = [[ASIHTTPRequest requestWithURL:url] retain];
-        request.numberOfTimesToRetryOnTimeout = 3;
-        [request setShouldContinueWhenAppEntersBackground:YES];
-        [request setDownloadCache:[ASIDownloadCache sharedCache]];
-        [request setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
+    {   
+        __block ASIHTTPRequest *tempRequest = nil;
+        tempRequest = [ASIHTTPRequest requestWithURL:url];
+        request = [tempRequest retain];
         
-        [request setCompletionBlock:^{
+        tempRequest.numberOfTimesToRetryOnTimeout = 3;
+        tempRequest.delegate = self;
+        [tempRequest setShouldContinueWhenAppEntersBackground:YES];
+        [tempRequest setDownloadCache:[ASIDownloadCache sharedCache]];
+        [tempRequest setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
+        //[tempRequest setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+        
+        __block SDWebImageView *blockSelf = self;
+        [tempRequest setCompletionBlock:^{
             NSData *responseData = [request responseData];
-            self.image = [UIImage imageWithData:responseData];
+            blockSelf.image = [UIImage imageWithData:responseData];
         }];
         
-        [request setFailedBlock:^{
+        [tempRequest setFailedBlock:^{
             NSError *error = [request error];
             SDLog(@"Error fetching image: %@", error);
-            self.image = self.errorImage;
+            blockSelf.image = blockSelf.errorImage;
         }];
         
-        [request startAsynchronous];
+        ASINetworkQueue *queue = [ASINetworkQueue queue];
+        [queue addOperation:tempRequest];
+        [queue go];
     }
 }
 
