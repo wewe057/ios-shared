@@ -69,6 +69,25 @@
     return YES;
 }
 
+- (NSString *)baseURLInServiceSpecification
+{
+	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
+	
+    // this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
+    if ([baseURL rangeOfString:@"{"].location != NSNotFound)
+    {
+        NSString *prefKey = nil;
+        int startPos = [baseURL rangeOfString:@"{"].location + 1;
+        int endPos = [baseURL rangeOfString:@"}"].location;
+        NSRange range = NSMakeRange(startPos, endPos - startPos);
+        prefKey = [baseURL substringWithRange:range];
+        NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
+        baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
+    }
+    
+	return baseURL;
+}
+
 - (BOOL)isReachableToHost:(NSString *)hostName
 {
     return [[Reachability reachabilityWithHostName:hostName] isReachable];
