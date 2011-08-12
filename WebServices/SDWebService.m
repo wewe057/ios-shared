@@ -98,6 +98,11 @@
     return [[Reachability reachabilityForInternetConnection] isReachable];
 }
 
+- (void)clearCache
+{
+	[[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+}
+
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
 {
     // combine the contents of routeReplacements and the passed in replacements to form

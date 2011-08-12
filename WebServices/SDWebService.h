@@ -35,5 +35,6 @@ enum
 - (NSString *)baseURLInServiceSpecification;
 - (BOOL)isReachable;
 - (BOOL)isReachableToHost:(NSString *)hostName;
+- (void)clearCache;
 
 @end
