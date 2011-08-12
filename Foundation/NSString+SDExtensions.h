@@ -24,5 +24,7 @@
 
 - (NSString *)escapedString;
 - (NSString *)removeExcessWhitespace;
+- (NSString *)removeLeadingWhitespace;
+- (NSString *)removeTrailingWhitespace;
 
 @end
