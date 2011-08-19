@@ -114,5 +114,31 @@
                                        withTemplate:@" "];
 }
 
+- (NSString *)removeLeadingWhitespace 
+{
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^\\s+"
+                                                                           options:0
+                                                                             error:&error];
+    return [regex stringByReplacingMatchesInString:self 
+                                           options:0 
+                                             range:NSMakeRange(0, [self length]) 
+                                      withTemplate:@""];
+}
+
+- (NSString *)removeTrailingWhitespace 
+{
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\s+$"
+                                                                           options:0
+                                                                             error:&error];
+    return [regex stringByReplacingMatchesInString:self 
+                                           options:0 
+                                             range:NSMakeRange(0, [self length]) 
+                                      withTemplate:@""];
+}
+
+
+
 @end
 

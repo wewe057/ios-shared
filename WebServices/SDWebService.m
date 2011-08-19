@@ -69,6 +69,25 @@
     return YES;
 }
 
+- (NSString *)baseURLInServiceSpecification
+{
+	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
+	
+    // this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
+    if ([baseURL rangeOfString:@"{"].location != NSNotFound)
+    {
+        NSString *prefKey = nil;
+        int startPos = [baseURL rangeOfString:@"{"].location + 1;
+        int endPos = [baseURL rangeOfString:@"}"].location;
+        NSRange range = NSMakeRange(startPos, endPos - startPos);
+        prefKey = [baseURL substringWithRange:range];
+        NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
+        baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
+    }
+    
+	return baseURL;
+}
+
 - (BOOL)isReachableToHost:(NSString *)hostName
 {
     return [[Reachability reachabilityWithHostName:hostName] isReachable];
@@ -77,6 +96,11 @@
 - (BOOL)isReachable
 {
     return [[Reachability reachabilityForInternetConnection] isReachable];
+}
+
+- (void)clearCache
+{
+	[[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
 }
 
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
@@ -157,7 +181,7 @@
     }
     
 	NSString *hostName = [[NSURL URLWithString:baseURL] host];
-    if (![self isReachableToHost:hostName])
+    if (![self isReachable] || ![self isReachableToHost:hostName])
     {
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
