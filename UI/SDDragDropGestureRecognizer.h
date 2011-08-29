@@ -10,6 +10,8 @@
 
 @protocol SDDragViewDelegate <NSObject>
 @optional
+- (void)dragViewDidStartDragging:(UIView *)view;
+- (void)dragViewDidEndDragging:(UIView *)view;
 - (BOOL)dragViewShouldReturnToOriginalContainer:(UIView *)view;
 - (void)dragView:(UIView *)view didEnterTarget:(UIView *)dropTarget;
 - (void)dragView:(UIView *)view didLeaveTarget:(UIView *)dropTarget;

@@ -26,7 +26,7 @@
     if (self) {
         // Initialization code here.
         self.delaysTouchesBegan = NO;
-        self.cancelsTouchesInView = NO;
+        self.cancelsTouchesInView = YES;
     }
     
     return self;
@@ -64,6 +64,26 @@
 - (void)processAction:(SDDragDropGestureRecognizer *)gesture
 {
     // do nothing.
+    NSLog(@"state in-action = %u", self.state);
+    
+}
+
+- (void)startDrag
+{
+    if (!originalSuperview)
+    {
+        if (dragViewDelegate && [dragViewDelegate respondsToSelector:@selector(dragViewDidStartDragging:)])
+            [dragViewDelegate dragViewDidStartDragging:dragView];
+        
+        originalFrame = dragView.frame;
+        originalSuperview = [dragView superview];
+        [[SDDragDropManager sharedManager].dragContainer addSubview:dragView];
+        
+        CGPoint position = [self locationInView:[SDDragDropManager sharedManager].dragContainer];
+        CGPoint newPosition = CGPointMake(position.x - touchOffset.x, position.y - touchOffset.y);
+        originalCenterInContainer = newPosition;
+        dragView.center = newPosition;
+    }            
 }
 
 - (void)cancelDrag
@@ -75,7 +95,7 @@
         [originalSuperview addSubview:dragView];
         originalSuperview = nil;
     }];
-
+    
     [self setCurrentDropTarget:nil];
 }
 
@@ -110,16 +130,34 @@
     [self setCurrentDropTarget:nil];
 }
 
+- (BOOL)canPreventGestureRecognizer:(UIGestureRecognizer *)preventedGestureRecognizer
+{
+    return YES;
+}
+
+- (void)setState:(UIGestureRecognizerState)state
+{
+    [super setState:state];
+    NSLog(@"state = %u", self.state);
+    if (state == UIGestureRecognizerStateBegan)
+    {
+        [self performSelector:@selector(startDrag) withObject:nil afterDelay:0.1];
+    }
+    else
+    if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled || state == UIGestureRecognizerStateFailed)
+    {
+        if (dragViewDelegate && [dragViewDelegate respondsToSelector:@selector(dragViewDidEndDragging:)])
+            [dragViewDelegate dragViewDidEndDragging:dragView];
+    }
+}
+
 #pragma mark - Touch Handlers
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
-    
-    NSLog(@"touchesBegan: state = %u", self.state);
-
     CGPoint center = dragView.center;
-    CGPoint startPosition = [self locationInView:[SDDragDropManager sharedManager].dragContainer];
+    CGPoint startPosition = [self locationInView:[dragView superview]];
     touchOffset = CGPointMake(startPosition.x - center.x, startPosition.y - center.y);
 }
 
@@ -127,15 +165,17 @@
 {
     [super touchesMoved:touches withEvent:event];
 
-    NSLog(@"touchesMoved: state = %u", self.state);
     if (self.state == UIGestureRecognizerStateChanged)
     {
         BOOL superChanged = NO;
         if (!originalSuperview)
         {
+            //if (dragViewDelegate && [dragViewDelegate respondsToSelector:@selector(dragViewDidStartDragging:)])
+            //    [dragViewDelegate dragViewDidStartDragging:dragView];
+
             originalFrame = dragView.frame;
             originalSuperview = [dragView superview];
-            [[SDDragDropManager sharedManager].dragContainer addSubview:originalSuperview];
+            [[SDDragDropManager sharedManager].dragContainer addSubview:dragView];
             superChanged = YES;
         }
         
@@ -144,7 +184,10 @@
         CGPoint newPosition = CGPointMake(position.x - touchOffset.x, position.y - touchOffset.y);
                 
         if (superChanged)
+        {
             originalCenterInContainer = newPosition;
+            dragView.center = newPosition;
+        }
 
         // test to see if we're in our drop targets
         for (UIView *view in [SDDragDropManager sharedManager].dropTargets)
@@ -175,8 +218,6 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesEnded:touches withEvent:event];
-    
-    NSLog(@"touchesEnded: state = %u", self.state);
     
     BOOL dropped = NO;
     if (self.state == UIGestureRecognizerStateEnded && originalSuperview)
