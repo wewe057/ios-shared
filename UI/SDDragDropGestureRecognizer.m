@@ -125,7 +125,10 @@
             dragView.alpha = 1.0;
             [UIView commitAnimations];
         }];        
-    }    
+    }   
+    
+    if (targetView && [targetView respondsToSelector:@selector(dropTarget:droppedView:fromGestureRecognizer:)])
+        [targetView dropTarget:targetView droppedView:self.dragView fromGestureRecognizer:self];
     
     [self setCurrentDropTarget:nil];
 }
