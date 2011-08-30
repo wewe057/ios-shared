@@ -96,7 +96,7 @@
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSArray class]])
         return obj;
-    return 0;
+    return nil;
 }
 
 @end
