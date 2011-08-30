@@ -19,5 +19,6 @@
 - (double)doubleForKey:(NSString *)key;
 - (long long)longLongForKey:(NSString *)key;
 - (BOOL)boolForKey:(NSString *)key;
+- (NSArray*)arrayForKey:(NSString *)key;
 
 @end
