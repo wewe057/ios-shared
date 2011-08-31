@@ -30,5 +30,6 @@ typedef void (^SDPickerBlock)(void);
 - (id)init;
 
 - (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel;
+- (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel withSelectedRow:(int)row inComponent:(int)component;
 
 @end
