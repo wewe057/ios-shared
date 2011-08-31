@@ -92,4 +92,11 @@
     return 0;
 }
 
+- (NSArray*)arrayForKey:(NSString *)key {
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSArray class]])
+        return obj;
+    return nil;
+}
+
 @end
