@@ -11,5 +11,6 @@
 @interface NSArray (NSArray_SDExtensions)
 
 - (id)nextToLastObject;
+- (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...;
 
 @end
