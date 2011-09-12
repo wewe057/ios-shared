@@ -25,7 +25,9 @@
 
 @interface SDLocationManager: CLLocationManager <CLLocationManagerDelegate>
 {
-	id delegate;
+    BOOL isUpdatingLocation;
+    BOOL isUpdatingHeading;
+    NSMutableArray *delegates;
 	NSTimeInterval timeout;
 	
 	NSTimer *timeoutTimer;
@@ -34,9 +36,20 @@
     BOOL gotFirstLocationUpdate;
 }
 
-@property (nonatomic, assign) id delegate;
 @property (nonatomic, assign) NSTimeInterval timeout;
 
 + (SDLocationManager *)instance;
+
+- (void)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (void)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+
+- (void)startUpdatingLocation __deprecated;
+- (void)stopUpdatingHeading __deprecated;
+- (void)startUpdatingHeading __deprecated;
+- (void)stopUpdatingHeading __deprecated;
+- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager __deprecated;
+- (void)setDelegate:(id<CLLocationManagerDelegate>)delegate __deprecated;
 
 @end
