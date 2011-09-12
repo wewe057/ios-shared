@@ -23,33 +23,31 @@
 {
     va_list args;
 	va_start(args, arg1);
-    
-    @synchronized(self)
+
+    NSArray *items = [self copy];
+    for (id object in items)
     {
-        for (id object in self)
+        if ([object respondsToSelector:aSelector])
         {
-            if ([object respondsToSelector:aSelector])
+            NSMethodSignature *methodSig = [[object class] instanceMethodSignatureForSelector:aSelector];
+            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
+            [invocation setTarget:object];
+            [invocation setSelector:aSelector];
+            if (arg1)
+                [invocation setArgument:arg1 atIndex:2];
+            void *theArg = nil;
+            for (int i = 3; i < [methodSig numberOfArguments]; i++)
             {
-                NSMethodSignature *methodSig = [[object class] instanceMethodSignatureForSelector:aSelector];
-                NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
-                [invocation setTarget:object];
-                [invocation setSelector:aSelector];
-                if (arg1)
-                    [invocation setArgument:arg1 atIndex:2];
-                void *theArg = nil;
-                for (int i = 3; i < [methodSig numberOfArguments]; i++)
-                {
-                    theArg = va_arg(args, void *);
-                    if (theArg)
-                        [invocation setArgument:theArg atIndex:i];
-                }
-                [invocation invoke];	
-                // don't process the results.
-                //if (result)
-                //    [invocation getReturnValue:result];
+                theArg = va_arg(args, void *);
+                if (theArg)
+                    [invocation setArgument:theArg atIndex:i];
             }
+            [invocation invoke];	
+            // don't process the results.
+            //if (result)
+            //    [invocation getReturnValue:result];
         }
-    }         
+    }
     va_end(args);
 }
 
