@@ -241,9 +241,15 @@
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
     request.numberOfTimesToRetryOnTimeout = 3;
-    request.timeOutSeconds = 30;
-    //[request setValidatesSecureCertificate:NO];
     [request setShouldContinueWhenAppEntersBackground:YES];
+#ifdef DEBUG
+#warning "Ignoring SSL certifications while in DEBUG mode"
+    request.timeOutSeconds = 300;
+    [request setValidatesSecureCertificate:NO];
+#else
+    request.timeOutSeconds = 30;
+#endif
+    
     
     if (postParams)
     {
