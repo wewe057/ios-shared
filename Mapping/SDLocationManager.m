@@ -45,7 +45,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)unsupported
 {
-    [[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];    
+    //[[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];    
 }
 
 - (void)setDelegate:(id<CLLocationManagerDelegate>)delegate { [self unsupported]; }
@@ -179,7 +179,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	}
 	
 	SDLog(@"SDLocationManager: location obtained.");
-    [delegates callSelector:_cmd argumentAddresses:self, newLocation, oldLocation];
+    [delegates callSelector:_cmd argumentAddresses:&self, &newLocation, &oldLocation];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
 }

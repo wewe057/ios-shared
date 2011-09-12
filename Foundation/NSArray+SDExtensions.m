@@ -24,30 +24,32 @@
     va_list args;
 	va_start(args, arg1);
     
-    for (id object in self)
+    @synchronized(self)
     {
-        if ([object respondsToSelector:aSelector])
+        for (id object in self)
         {
-            NSMethodSignature *methodSig = [[object class] instanceMethodSignatureForSelector:aSelector];
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
-            [invocation setTarget:object];
-            [invocation setSelector:aSelector];
-            if (arg1)
-                [invocation setArgument:arg1 atIndex:2];
-            void *theArg = nil;
-            for (int i = 3; i < [methodSig numberOfArguments]; i++)
+            if ([object respondsToSelector:aSelector])
             {
-                theArg = va_arg(args, void *);
-                if (theArg)
-                    [invocation setArgument:theArg atIndex:i];
+                NSMethodSignature *methodSig = [[object class] instanceMethodSignatureForSelector:aSelector];
+                NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
+                [invocation setTarget:object];
+                [invocation setSelector:aSelector];
+                if (arg1)
+                    [invocation setArgument:arg1 atIndex:2];
+                void *theArg = nil;
+                for (int i = 3; i < [methodSig numberOfArguments]; i++)
+                {
+                    theArg = va_arg(args, void *);
+                    if (theArg)
+                        [invocation setArgument:theArg atIndex:i];
+                }
+                [invocation invoke];	
+                // don't process the results.
+                //if (result)
+                //    [invocation getReturnValue:result];
             }
-            [invocation invoke];	
-            // don't process the results.
-            //if (result)
-            //    [invocation getReturnValue:result];
         }
-    }
-         
+    }         
     va_end(args);
 }
 
