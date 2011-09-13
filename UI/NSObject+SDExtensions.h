@@ -18,4 +18,6 @@
 + (id)loadFromNib;
 + (id)loadFromNibWithOwner:(id)owner;
 
+- (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...;
+
 @end
