@@ -63,14 +63,16 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	// if we have a location, pass it along...
 	if (self.location)
 	{
-        [delegates callSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:self, self.location, self.location];
+        CLLocation *location = self.location;
+        [delegates callSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:&self, &location, &location];
 		//if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)])
 		//	[delegate locationManager:self didUpdateToLocation:self.location fromLocation:self.location];
 	}
 	else
 	{
 		// otherwise, lets simulate a failure...
-        [delegates callSelector:@selector(locationManager:didFailWithError:) argumentAddresses:self, [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil]];
+        NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
+        [delegates callSelector:@selector(locationManager:didFailWithError:) argumentAddresses:&self, &error];
 		//if (delegate && [delegate respondsToSelector:@selector(locationManager:didFailWithError:)])
 		//	[delegate locationManager:self didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil]];
 	}
@@ -161,7 +163,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ([newLocation.timestamp timeIntervalSinceDate:timestamp] < 0)
 	{
 		SDLog(@"SDLocationManager: this location was cached.");
-        [delegates callSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:self, newLocation, oldLocation];
+        [delegates callSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:&self, &newLocation, &oldLocation];
         //if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
         //    [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
 		return; // this one is cached, lets wait for a good one.
@@ -172,7 +174,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	{
 		SDLog(@"SDLocationManager: this location didn't meet the accuracy requirements (%f).", newLocation.horizontalAccuracy);
 		//return; // the accuracy isn't good enough, wait some more...
-        [delegates callSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:self, newLocation, oldLocation];
+        [delegates callSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:&self, &newLocation, &oldLocation];
         //if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
         //    [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
         return;
@@ -189,7 +191,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ([newHeading.timestamp timeIntervalSinceDate:timestamp] < 0)
 		return; // this one is cached, lets wait for a good one.
 	
-    [delegates callSelector:_cmd argumentAddresses:self, newHeading];
+    [delegates callSelector:_cmd argumentAddresses:&self, &newHeading];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self didUpdateHeading:newHeading];
 }
@@ -199,7 +201,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	// we're masking out didFail unless they've said NO to the "allow" dialog.
 	if ([error.domain isEqualToString:kCLErrorDomain] && error.code == kCLErrorDenied)
 	{
-        [delegates callSelector:_cmd argumentAddresses:self, error];
+        [delegates callSelector:_cmd argumentAddresses:&self, &error];
 		//if (delegate && [delegate respondsToSelector:_cmd])
 		//	[delegate locationManager:self didFailWithError:error];
 	}	
@@ -207,21 +209,21 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    [delegates callSelector:_cmd argumentAddresses:self, region];
+    [delegates callSelector:_cmd argumentAddresses:&self, &region];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self didEnterRegion:region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    [delegates callSelector:_cmd argumentAddresses:self, region];
+    [delegates callSelector:_cmd argumentAddresses:&self, &region];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self didExitRegion:region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
 {
-    [delegates callSelector:_cmd argumentAddresses:self, region, error];
+    [delegates callSelector:_cmd argumentAddresses:&self, &region, &error];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self monitoringDidFailForRegion:region withError:error];
 }
