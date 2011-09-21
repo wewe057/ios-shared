@@ -30,9 +30,9 @@
 	{
 		CLLocation *endPoint = [[CLLocation alloc] initWithLatitude:annotation.coordinate.latitude longitude:annotation.coordinate.longitude];
 		CLLocationDistance thisDistance = [location distanceFromLocation:endPoint];
-		if ((thisDistance < shortestDistance) &&
+		if (thisDistance < shortestDistance)/* &&
 			(location.coordinate.latitude != annotation.coordinate.latitude) &&
-			(location.coordinate.longitude != annotation.coordinate.longitude))
+			(location.coordinate.longitude != annotation.coordinate.longitude))*/
 		{
 			shortestDistance = thisDistance;
 			result = annotation;
