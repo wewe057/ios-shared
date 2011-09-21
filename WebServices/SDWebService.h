@@ -36,5 +36,6 @@ enum
 - (BOOL)isReachable;
 - (BOOL)isReachableToHost:(NSString *)hostName;
 - (void)clearCache;
+- (void)will302RedirectToUrl:(NSURL *)argUrl;
 
 @end

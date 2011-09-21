@@ -98,6 +98,11 @@
     return [[Reachability reachabilityForInternetConnection] isReachable];
 }
 
+- (void)will302RedirectToUrl:(NSURL *)argUrl
+{
+	// Implement in service subclass for specific behavior
+}
+
 - (void)clearCache
 {
 	[[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
@@ -320,6 +325,7 @@
         }
         [request setCompletionBlock:nil];
         [request setFailedBlock:nil];
+        [request setRequestRedirectedBlock:nil];
         [pool drain];
 	}];
     
@@ -329,6 +335,13 @@
 		completionBlock([request responseStatusCode], responseString, &error);
         [request setCompletionBlock:nil];
         [request setFailedBlock:nil];
+        [request setRequestRedirectedBlock:nil];
+	}];
+	
+	[request setRequestRedirectedBlock:^{
+		if (([request responseStatusCode] == 302)) {
+			[blockSelf will302RedirectToUrl:[request url]];
+		}
 	}];
 	
     if (!singleRequest)

@@ -58,13 +58,13 @@
 		[invocation setTarget:self];
 		[invocation setSelector:aSelector];
 		if (arg1)
-			[invocation setArgument:arg1 atIndex:2];
+			[invocation setArgument:&arg1 atIndex:2];
 		void *theArg = nil;
 		for (int i = 3; i < [methodSig numberOfArguments]; i++)
 		{
 			theArg = va_arg(args, void *);
 			if (theArg)
-				[invocation setArgument:theArg atIndex:i];
+				[invocation setArgument:&theArg atIndex:i];
 		}
 		[invocation invoke];	
 		if (result)

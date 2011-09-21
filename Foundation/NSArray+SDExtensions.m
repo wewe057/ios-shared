@@ -22,8 +22,7 @@
 - (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...
 {
     va_list args;
-	va_start(args, arg1);
-
+    
     NSArray *items = [self copy];
     for (id object in items)
     {
@@ -33,14 +32,15 @@
             NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
             [invocation setTarget:object];
             [invocation setSelector:aSelector];
+            va_start(args, arg1);
             if (arg1)
-                [invocation setArgument:arg1 atIndex:2];
+                [invocation setArgument:&arg1 atIndex:2];
             void *theArg = nil;
             for (int i = 3; i < [methodSig numberOfArguments]; i++)
             {
                 theArg = va_arg(args, void *);
                 if (theArg)
-                    [invocation setArgument:theArg atIndex:i];
+                    [invocation setArgument:&theArg atIndex:i];
             }
             [invocation invoke];	
             // don't process the results.
