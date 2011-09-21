@@ -325,6 +325,7 @@
         }
         [request setCompletionBlock:nil];
         [request setFailedBlock:nil];
+        [request setRequestRedirectedBlock:nil];
         [pool drain];
 	}];
     
@@ -334,6 +335,7 @@
 		completionBlock([request responseStatusCode], responseString, &error);
         [request setCompletionBlock:nil];
         [request setFailedBlock:nil];
+        [request setRequestRedirectedBlock:nil];
 	}];
 	
 	[request setRequestRedirectedBlock:^{
