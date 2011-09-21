@@ -10,6 +10,7 @@
 #import "ASIDownloadCache.h"
 #import "ASINetworkQueue.h"
 #import "NSString+SDExtensions.h"
+#import "ASIFormDataRequest.h"
 
 @interface SDHTTPRequest : ASIHTTPRequest
 {
@@ -20,6 +21,26 @@
 
 
 @implementation SDHTTPRequest
+
+@synthesize requestName;
+
+- (void)dealloc
+{
+    [requestName release];
+    [super dealloc];
+}
+
+@end
+
+@interface SDFormDataRequest : ASIFormDataRequest
+{
+    NSString *requestName;
+}
+@property (nonatomic, retain) NSString *requestName;
+@end
+
+
+@implementation SDFormDataRequest
 
 @synthesize requestName;
 
@@ -158,6 +179,7 @@
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
 	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
+	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
     
     // Allowing for the dynamic specification of baseURL at runtime
     // (initially to accomodate the suggestions search)
@@ -227,12 +249,19 @@
 	
     // setup post data if we need to.
     NSString *postParams = nil;
-    if ([[method uppercaseString] isEqualToString:@"POST"])
+    if (postMethod)
     {
         NSString *postFormat = [requestDetails objectForKey:@"postFormat"];
         if (postFormat)
         {
             postParams = [[self performReplacements:routeReplacements andUserReplacements:replacements withFormat:postFormat] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+			
+			// there are some unparsed parameters which means either the plist is wrong, or the caller 
+			// gave us a list of replacements that weren't sufficient to continue on.
+			if ([postParams rangeOfString:@"{"].location != NSNotFound)
+			{
+				[NSException raise:@"SDException" format:@"Unable to create request.  The post params still contains replacement markers: %@", postParams];
+			}
         }
     }
     
@@ -241,7 +270,13 @@
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	
-	__block SDHTTPRequest *request = [SDHTTPRequest requestWithURL:url];
+	__block ASIHTTPRequest *request = nil;
+    if ([[method uppercaseString] isEqualToString:@"POST"])
+    {
+		request = [SDFormDataRequest requestWithURL:url];
+	} else {
+		request = [SDHTTPRequest requestWithURL:url];
+	}
 	request.delegate = self;
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
@@ -256,10 +291,19 @@
 #endif
     
     
-    if (postParams)
+    if (postMethod && postParams)
     {
         SDLog(@"request post: %@", postParams);
-        [request appendPostData:[postParams dataUsingEncoding:NSUTF8StringEncoding]];
+		SDFormDataRequest *postRequest = (SDFormDataRequest *)request;
+		NSArray *parameters = [postParams componentsSeparatedByString:@"&"];
+		for (NSString *aParameter in parameters) {
+			NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
+			if ([keyVal count] == 2) {
+				[postRequest setPostValue:[keyVal objectAtIndex:1] forKey:[keyVal objectAtIndex:0]];
+			} else {
+				[NSException raise:@"SDException" format:@"Unable to create request. Post param does not have proper key value pair: %@", keyVal];
+			}
+		}
     }
     
     if (singleRequest)
