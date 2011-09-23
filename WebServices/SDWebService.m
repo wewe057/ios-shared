@@ -254,7 +254,7 @@
         NSString *postFormat = [requestDetails objectForKey:@"postFormat"];
         if (postFormat)
         {
-            postParams = [[self performReplacements:routeReplacements andUserReplacements:replacements withFormat:postFormat] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            postParams = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:postFormat];
 			
 			// there are some unparsed parameters which means either the plist is wrong, or the caller 
 			// gave us a list of replacements that weren't sufficient to continue on.
@@ -299,7 +299,9 @@
 		for (NSString *aParameter in parameters) {
 			NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
 			if ([keyVal count] == 2) {
-				[postRequest setPostValue:[keyVal objectAtIndex:1] forKey:[keyVal objectAtIndex:0]];
+                NSString *decodedKey = [[keyVal objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSString *decodedValue = [[keyVal objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+				[postRequest setPostValue:decodedValue forKey:decodedKey];
 			} else {
 				[NSException raise:@"SDException" format:@"Unable to create request. Post param does not have proper key value pair: %@", keyVal];
 			}
