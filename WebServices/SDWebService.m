@@ -171,6 +171,26 @@
     return result;
 }
 
+- (void)showNetworkActivityIfNeeded
+{
+    if (requestCount > 0)
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+- (void)hideNetworkActivity
+{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+
+- (void)hideNetworkActivityIfNeeded
+{
+    if (requestCount <= 0)
+    {
+        requestCount = 0;
+        [self performSelector:@selector(hideNetworkActivity) withObject:nil afterDelay:0.5];
+    }
+}
+
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
 	// construct the URL based on the specification.
@@ -281,6 +301,7 @@
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
     request.numberOfTimesToRetryOnTimeout = 3;
+    [ASIHTTPRequest setShouldUpdateNetworkActivityIndicator:NO];
     [request setShouldContinueWhenAppEntersBackground:YES];
 #ifdef DEBUG
 #warning "Ignoring SSL certifications while in DEBUG mode"
@@ -372,6 +393,9 @@
         [request setFailedBlock:nil];
         [request setRequestRedirectedBlock:nil];
         [request setCompletionBlock:nil];
+        requestCount--;
+        [self hideNetworkActivityIfNeeded];
+
         [pool drain];
 	}];
     
@@ -382,6 +406,8 @@
         [request setCompletionBlock:nil];
         [request setRequestRedirectedBlock:nil];
         [request setFailedBlock:nil];
+        requestCount--;
+        [self hideNetworkActivityIfNeeded];
 	}];
 	
 	[request setRequestRedirectedBlock:^{
@@ -390,6 +416,9 @@
 		}
 	}];
 	
+    requestCount++;
+    [self showNetworkActivityIfNeeded];
+    
     if (!singleRequest)
     {
         //[request startAsynchronous];

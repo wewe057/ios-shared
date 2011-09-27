@@ -24,6 +24,7 @@ enum
 	NSDictionary *serviceSpecification;
     NSMutableArray *serviceCookies;
     NSMutableDictionary *queues;
+    NSUInteger requestCount;
 }
 
 @property (nonatomic, retain) NSMutableArray *serviceCookies;
