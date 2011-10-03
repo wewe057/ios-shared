@@ -60,8 +60,10 @@
 - (void)dealloc
 {
 	webView.delegate = nil;
-    [titleLabel release];
+	[webView stopLoading];
     [webView release];
+	webView = nil;
+    [titleLabel release];
 	
 	[super dealloc];
 }
