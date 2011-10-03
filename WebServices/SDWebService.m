@@ -297,7 +297,6 @@
 	} else {
 		request = [SDHTTPRequest requestWithURL:url];
 	}
-	request.delegate = self;
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
     request.numberOfTimesToRetryOnTimeout = 3;
