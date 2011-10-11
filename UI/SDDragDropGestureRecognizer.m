@@ -159,14 +159,25 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesBegan:touches withEvent:event];
+	if (!self.enabled)
+		return;
     CGPoint center = dragView.center;
     CGPoint startPosition = [self locationInView:[dragView superview]];
     touchOffset = CGPointMake(startPosition.x - center.x, startPosition.y - center.y);
 }
 
+- (void)setEnabled:(BOOL)enabled
+{
+	if (!self.enabled)
+		NSLog(@"WTF!");
+	[super setEnabled:enabled];
+}
+
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesMoved:touches withEvent:event];
+	if (!self.enabled)
+		return;
 
     if (self.state == UIGestureRecognizerStateChanged)
     {
@@ -221,6 +232,8 @@
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesEnded:touches withEvent:event];
+	if (!self.enabled)
+		return;
     
     BOOL dropped = NO;
     if (self.state == UIGestureRecognizerStateEnded && originalSuperview)
@@ -245,6 +258,8 @@
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesCancelled:touches withEvent:event];
+	if (!self.enabled)
+		return;
     if (originalSuperview)
         [self cancelDrag];
 }
