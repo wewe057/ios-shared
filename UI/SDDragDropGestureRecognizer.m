@@ -166,13 +166,6 @@
     touchOffset = CGPointMake(startPosition.x - center.x, startPosition.y - center.y);
 }
 
-- (void)setEnabled:(BOOL)enabled
-{
-	if (!self.enabled)
-		NSLog(@"WTF!");
-	[super setEnabled:enabled];
-}
-
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
     [super touchesMoved:touches withEvent:event];
