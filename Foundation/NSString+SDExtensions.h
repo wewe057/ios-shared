@@ -11,6 +11,8 @@
 
 @interface NSString(SDExtensions)
 
++ (id)stringWithNewUUID;
+
 // a method to replace HTML in multi-line strings with an adequate plain-text alternative, using Unicode characters
 // where appropriate to replace, e.g., <li> elements.
 - (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets;

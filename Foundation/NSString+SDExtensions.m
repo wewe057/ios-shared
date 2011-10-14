@@ -139,6 +139,21 @@
 }
 
 
++ (id)stringWithNewUUID
+{
+	NSString*	uuidString = nil;
+	
+	CFUUIDRef	uuidRef = CFUUIDCreate(kCFAllocatorDefault);
+	if (uuidRef)
+	{
+		uuidString = [(NSString*)CFUUIDCreateString(kCFAllocatorDefault, uuidRef) autorelease];
+		
+		CFRelease(uuidRef);
+	}
+	
+	return uuidString;
+}
+
 
 @end
 
