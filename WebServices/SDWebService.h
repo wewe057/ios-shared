@@ -14,8 +14,8 @@ typedef void (^SDWebServiceGroupCompletionBlock)(NSArray *responseCodes, NSArray
 
 enum
 {
-    SDWebServiceErrorNoConnection = 0,
-    SDWebServiceErrorBadParams,
+    SDWebServiceErrorNoConnection = 0xBEEF,
+    SDWebServiceErrorBadParams = 0x0BADF00D,
     // all other errors come from ASI-HTTP
 };
 
