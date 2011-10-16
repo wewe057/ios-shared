@@ -31,9 +31,19 @@
     return [self loadFromNibWithOwner:self];
 }
 
++ (id)loadFromNibNamed:(NSString *)nibName
+{
+    return [self loadFromNibNamed:nibName withOwner:self];
+}
+
 + (id)loadFromNibWithOwner:(id)owner
 {
-    NSArray *objects = [[NSBundle mainBundle] loadNibNamed:[self nibName] owner:owner options:nil];
+    return [self loadFromNibNamed:[self nibName] withOwner:self];
+}
+
++ (id)loadFromNibNamed:(NSString *)nibName withOwner:(id)owner
+{
+    NSArray *objects = [[NSBundle mainBundle] loadNibNamed:nibName owner:owner options:nil];
 	for (id object in objects)
     {
 		if ([object isKindOfClass:self])

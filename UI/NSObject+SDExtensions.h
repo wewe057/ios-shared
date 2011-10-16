@@ -16,7 +16,9 @@
 
 + (NSString *)nibName;
 + (id)loadFromNib;
++ (id)loadFromNibNamed:(NSString *)nibName;
 + (id)loadFromNibWithOwner:(id)owner;
++ (id)loadFromNibNamed:(NSString *)nibName withOwner:(id)owner;
 
 - (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...;
 
