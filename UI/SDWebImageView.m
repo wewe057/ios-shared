@@ -42,7 +42,7 @@
     if (imageUrlString == nil) return;
     
 	NSURL *url = [NSURL URLWithString:imageUrlString];
-    
+	
     ASIDownloadCache *cache = [ASIDownloadCache sharedCache];
     NSData *data = [cache cachedResponseDataForURL:url];
     if (data)
@@ -51,6 +51,8 @@
     }
     else
     {   
+		self.alpha = 0;
+		
         __block ASIHTTPRequest *tempRequest = nil;
         tempRequest = [ASIHTTPRequest requestWithURL:url];
         request = [tempRequest retain];
@@ -66,12 +68,20 @@
         [tempRequest setCompletionBlock:^{
             NSData *responseData = [request responseData];
             blockSelf.image = [UIImage imageWithData:responseData];
+			
+			[UIView animateWithDuration:0.2 animations:^{
+				blockSelf.alpha = 1.0;
+			}];
         }];
         
         [tempRequest setFailedBlock:^{
             NSError *error = [request error];
             SDLog(@"Error fetching image: %@", error);
             blockSelf.image = blockSelf.errorImage;
+
+			[UIView animateWithDuration:0.2 animations:^{
+				blockSelf.alpha = 1.0;
+			}];
         }];
         
         ASINetworkQueue *queue = [ASINetworkQueue queue];
