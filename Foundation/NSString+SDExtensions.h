@@ -28,5 +28,7 @@
 - (NSString *)removeExcessWhitespace;
 - (NSString *)removeLeadingWhitespace;
 - (NSString *)removeTrailingWhitespace;
+- (NSDictionary *)parseURLQueryParams;
+
 
 @end

@@ -154,6 +154,19 @@
 	return uuidString;
 }
 
+- (NSDictionary *)parseURLQueryParams{
+    NSMutableDictionary *queryComponents = [NSMutableDictionary dictionary];
+    for(NSString *keyValuePairString in [self componentsSeparatedByString:@"&"])
+    {
+        NSArray *keyValuePairArray = [keyValuePairString componentsSeparatedByString:@"="];
+        if ([keyValuePairArray count] < 2) continue; 
+        NSString *key = [keyValuePairArray objectAtIndex:0];
+        NSString *value = [[keyValuePairArray objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+        [queryComponents setObject:value forKey:key];
+    }
+    return queryComponents;
+}
+
 
 @end
 
