@@ -33,8 +33,8 @@ enum
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName;
 - (NSString *)baseURLInServiceSpecification;
-- (BOOL)isReachable;
-- (BOOL)isReachableToHost:(NSString *)hostName;
+- (BOOL)isReachable:(BOOL)showError;
+- (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError;
 - (void)clearCache;
 - (void)will302RedirectToUrl:(NSURL *)argUrl;
 

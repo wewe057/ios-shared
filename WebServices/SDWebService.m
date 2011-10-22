@@ -109,12 +109,12 @@
 	return baseURL;
 }
 
-- (BOOL)isReachableToHost:(NSString *)hostName
+- (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError
 {
     return [[Reachability reachabilityWithHostName:hostName] isReachable];
 }
 
-- (BOOL)isReachable
+- (BOOL)isReachable:(BOOL)showError
 {
     return [[Reachability reachabilityForInternetConnection] isReachable];
 }
@@ -199,6 +199,8 @@
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
 	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
+    NSNumber *showNoConnectionAlertObj = [requestDetails objectForKey:@"showNoConnectionAlert"];
+    BOOL showNoConnectionAlert = showNoConnectionAlertObj != nil ? [showNoConnectionAlertObj boolValue] : YES;
 	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
     
     // Allowing for the dynamic specification of baseURL at runtime
@@ -228,7 +230,7 @@
     }
     
 	NSString *hostName = [[NSURL URLWithString:baseURL] host];
-    if (![self isReachable] || ![self isReachableToHost:hostName])
+    if (![self isReachable:showNoConnectionAlert] || ![self isReachableToHost:hostName showError:showNoConnectionAlert])
     {
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
