@@ -301,7 +301,7 @@
 	}
 	request.requestMethod = method;
     request.useCookiePersistence = YES;
-    request.numberOfTimesToRetryOnTimeout = 3;
+    request.numberOfTimesToRetryOnTimeout = 1;
     [ASIHTTPRequest setShouldUpdateNetworkActivityIndicator:NO];
     [request setShouldContinueWhenAppEntersBackground:YES];
 #ifdef DEBUG
