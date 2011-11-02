@@ -87,8 +87,8 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 	[passwordQuery setObject:(id) kCFBooleanTrue forKey:(__bridge id)kSecReturnData];
 
 	CFTypeRef cfResultData;
-	status = SecItemCopyMatching( (__bridge_retained CFDictionaryRef)passwordQuery, &cfResultData );
-	resultData = (__bridge_transfer NSData*)cfResultData;
+	status = SecItemCopyMatching( (__bridge CFDictionaryRef)passwordQuery, &cfResultData );
+	resultData = (__bridge NSData*)cfResultData;
 
 
 	if (status != noErr)
@@ -127,6 +127,7 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 			*error = [NSError errorWithDomain:SDKeychainErrorDomain code:-1999 userInfo:nil];
 	}
 
+	CFRelease(cfResultData);
 	return password;
 }
 
