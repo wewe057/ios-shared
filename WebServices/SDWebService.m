@@ -16,7 +16,7 @@
 {
     NSString *requestName;
 }
-@property (nonatomic, retain) NSString *requestName;
+@property (nonatomic, strong) NSString *requestName;
 @end
 
 
@@ -24,11 +24,6 @@
 
 @synthesize requestName;
 
-- (void)dealloc
-{
-    [requestName release];
-    [super dealloc];
-}
 
 @end
 
@@ -36,7 +31,7 @@
 {
     NSString *requestName;
 }
-@property (nonatomic, retain) NSString *requestName;
+@property (nonatomic, strong) NSString *requestName;
 @end
 
 
@@ -44,11 +39,6 @@
 
 @synthesize requestName;
 
-- (void)dealloc
-{
-    [requestName release];
-    [super dealloc];
-}
 
 @end
 
@@ -63,26 +53,19 @@
 	
     queues = [[NSMutableDictionary alloc] init];
 	NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
-	serviceSpecification = [[NSDictionary dictionaryWithContentsOfFile:specFile] retain];
+	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
 	if (!serviceSpecification)
 		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
 	
 	return self;
 }
 
-- (void)dealloc
-{
-	[serviceSpecification release];
-    [queues release];
-	[super dealloc];
-}
 
 - (void)setServiceCookies:(NSMutableArray *)cookies
 {
-    [serviceCookies release];
     serviceCookies = nil;
     if (cookies)
-        serviceCookies = [cookies retain];
+        serviceCookies = cookies;
 }
 
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName
@@ -166,7 +149,6 @@
 			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
 	}
     
-    [actualReplacements release];
     
     return result;
 }
@@ -254,7 +236,7 @@
         if (singleRequest)
         {
             [namedQueue cancelAllOperations];
-            namedQueue = [[[ASINetworkQueue alloc] init] autorelease];
+            namedQueue = [[ASINetworkQueue alloc] init];
             [queues setObject:namedQueue forKey:requestName];
         }
     }
@@ -292,7 +274,7 @@
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	
-	__block ASIHTTPRequest *request = nil;
+	__unsafe_unretained __block ASIHTTPRequest *request = nil;
     if ([[method uppercaseString] isEqualToString:@"POST"])
     {
 		request = [SDFormDataRequest requestWithURL:url];
@@ -352,9 +334,9 @@
     }
 	
     // set ourselves up to retry
-    NSDictionary *replacementsCopy = [[replacements copy] autorelease];
-    SDWebServiceCompletionBlock completionBlockCopy = [[completionBlock copy] autorelease];
-    NSString *requestNameCopy = [[requestName copy] autorelease];
+    NSDictionary *replacementsCopy = [replacements copy];
+    SDWebServiceCompletionBlock completionBlockCopy = [completionBlock copy];
+    NSString *requestNameCopy = [requestName copy];
     
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
@@ -369,7 +351,7 @@
     
 	[request setCompletionBlock:^{
         
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];        
+        @autoreleasepool {        
         NSString *responseString = [request responseString];
         NSError *error = nil;
         
@@ -397,7 +379,7 @@
         requestCount--;
         [self hideNetworkActivityIfNeeded];
 
-        [pool drain];
+        }
 	}];
     
 	[request setFailedBlock:^{

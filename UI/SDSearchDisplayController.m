@@ -34,19 +34,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     [self setup];
 }
 
-- (void)dealloc
-{
-    [searchHistory release];
-    [userDefaultsKey release];
-    [recentSearchTableView release];
-    [filterString release];
-    [filteredHistory release];
-    [alternateResults release];
-    [selectedSearchItem release];
-    [masterList release];
-    
-    [super dealloc];
-}
 
 - (void)setup
 {
@@ -60,10 +47,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 - (void)setFilterString:(NSString *)value
 {
     [masterList addObjectsFromArray:filteredHistory];
-    [filterString release];
-    filterString = [value retain];
+    filterString = value;
     
-    [filteredHistory release];
     filteredHistory = nil;
     
     if (filterString && [filterString length] > 0)
@@ -71,7 +56,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         if ([alternateResults count] == 0)
         {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
-            filteredHistory = [[searchHistory filteredArrayUsingPredicate:predicate] retain];
+            filteredHistory = [searchHistory filteredArrayUsingPredicate:predicate];
         }
         else
         {
@@ -84,7 +69,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     }
     else
     {
-        filteredHistory = [searchHistory retain];
+        filteredHistory = searchHistory;
         UIView *superview = self.searchContentsController.view;
         // this is sketchy, but needs to happen.  if it doesn't, our tableview ends up in the BG because something
         // internal to the searchDisplayController puts the darkened overlay over us.
@@ -159,18 +144,15 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
                              }
                              completion:^(BOOL finished){
                                  [recentSearchTableView removeFromSuperview];
-                                 [recentSearchTableView release];
                                  recentSearchTableView = nil;
                              }];            
         }
         else
         {
             [recentSearchTableView removeFromSuperview];
-            [recentSearchTableView release];
             recentSearchTableView = nil;            
         }
         [masterList removeAllObjects];
-        [searchHistory release];
         searchHistory = nil;
     }
 }
@@ -243,7 +225,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         static NSString *identifier = @"SDSearchDisplayControllerHistoryCell";
         cell = [tableView dequeueReusableCellWithIdentifier:identifier];
         if (!cell)
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier] autorelease];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         
         cell.textLabel.text = [searchHistory objectAtIndex:indexPath.row];
     }
@@ -252,7 +234,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         static NSString *searchCell = @"SDSearchDisplayControllerCell";
         cell = [tableView dequeueReusableCellWithIdentifier:searchCell];
         if (!cell)
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:searchCell] autorelease];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:searchCell];
         
         id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
         if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])

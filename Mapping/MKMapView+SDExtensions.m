@@ -37,7 +37,6 @@
 			shortestDistance = thisDistance;
 			result = annotation;
 		}
-		[endPoint release];
 	}
 	
 	if (inSelect && result)
@@ -48,13 +47,13 @@
 
 - (SDAnnotation *)getNextClosestAnnotation:(SDAnnotation *)referenceAnnotation andSelect:(BOOL)inSelect
 {
-	CLLocation *location = [[[CLLocation alloc] initWithLatitude:referenceAnnotation.coordinate.latitude longitude:referenceAnnotation.coordinate.longitude] autorelease];
+	CLLocation *location = [[CLLocation alloc] initWithLatitude:referenceAnnotation.coordinate.latitude longitude:referenceAnnotation.coordinate.longitude];
 	return [self getClosestAnnotationToLocation:location andSelect:inSelect];
 }
 
 - (NSArray *)annotationsByDistanceToLocation:(CLLocation *)location
 {
-	NSMutableArray *result = [[NSMutableArray new] autorelease];
+	NSMutableArray *result = [NSMutableArray new];
 	NSArray *annotationList = self.annotations;
 	
 	SDAnnotation *annotation = [self getClosestAnnotationToLocation:location andSelect:NO];

@@ -17,8 +17,8 @@
 }
 
 @property (nonatomic, assign) BOOL active;
-@property (nonatomic, retain) IBOutlet UIViewController *controller;
-@property (nonatomic, readonly) UIView *obscuringView;
+@property (nonatomic, strong) IBOutlet UIViewController *controller;
+@property (strong, nonatomic, readonly) UIView *obscuringView;
 
 - (void)setActive:(BOOL)active animated:(BOOL)animated;
 

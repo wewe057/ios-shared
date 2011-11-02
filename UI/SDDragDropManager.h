@@ -20,7 +20,7 @@
     NSMutableArray *dropTargets;
 }
 
-@property (nonatomic, retain) UIView *dragContainer;
+@property (nonatomic, strong) UIView *dragContainer;
 @property (nonatomic, readonly) NSArray *dropTargets;
 
 + (SDDragDropManager *)sharedManager;

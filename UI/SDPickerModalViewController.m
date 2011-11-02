@@ -26,18 +26,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [doneBlock release];
-    [cancelBlock release];
-    
-    [toolbar release];
-    [pickerView release];
-    [cancelButton release];
-    [doneButton release];
-    [backgroundView release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -57,15 +45,10 @@
 
 - (void)viewDidUnload
 {
-    [toolbar release];
     toolbar = nil;
-    [pickerView release];
     pickerView = nil;
-    [cancelButton release];
     cancelButton = nil;
-    [doneButton release];
     doneButton = nil;
-    [backgroundView release];
     backgroundView = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.

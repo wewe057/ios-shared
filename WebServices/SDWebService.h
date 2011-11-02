@@ -27,7 +27,7 @@ enum
     NSUInteger requestCount;
 }
 
-@property (nonatomic, retain) NSMutableArray *serviceCookies;
+@property (nonatomic, strong) NSMutableArray *serviceCookies;
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;

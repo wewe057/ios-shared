@@ -48,7 +48,6 @@
             //    [invocation getReturnValue:result];
         }
     }
-    [items release];
     va_end(args);
 }
 

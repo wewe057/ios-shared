@@ -12,20 +12,20 @@ typedef void (^SDPickerBlock)(void);
 
 @interface SDPickerModalViewController : UIViewController
 {
-    IBOutlet UIBarButtonItem *doneButton;
-    IBOutlet UIBarButtonItem *cancelButton;
-    IBOutlet UIPickerView *pickerView;
-    IBOutlet UIToolbar *toolbar;
-    IBOutlet UIView *backgroundView;
+	UIBarButtonItem *doneButton;
+    UIBarButtonItem *cancelButton;
+    UIPickerView *pickerView;
+    UIToolbar *toolbar;
+    UIView *backgroundView;
     
     SDPickerBlock doneBlock;
     SDPickerBlock cancelBlock;
 }
 
-@property (nonatomic, readonly) UIToolbar *toolbar;
-@property (nonatomic, readonly) UIPickerView *pickerView;
-@property (nonatomic, readonly) UIBarButtonItem *doneButton;
-@property (nonatomic, readonly) UIBarButtonItem *cancelButton;
+@property (nonatomic, strong, readonly) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong, readonly) IBOutlet UIPickerView *pickerView;
+@property (nonatomic, strong, readonly) IBOutlet UIBarButtonItem *doneButton;
+@property (nonatomic, strong, readonly) IBOutlet UIBarButtonItem *cancelButton;
 
 - (id)init;
 

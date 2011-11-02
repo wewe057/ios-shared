@@ -25,13 +25,11 @@
     if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
         return;
     
-	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
     if (request)
     {
         [request clearDelegatesAndCancel];
-        [request release];
         request = nil;
     }
     
@@ -53,9 +51,9 @@
     {   
 		self.alpha = 0;
 		
-        __block ASIHTTPRequest *tempRequest = nil;
+        __unsafe_unretained ASIHTTPRequest *tempRequest = nil;
         tempRequest = [ASIHTTPRequest requestWithURL:url];
-        request = [tempRequest retain];
+        request = tempRequest;
         
         tempRequest.numberOfTimesToRetryOnTimeout = 3;
         tempRequest.delegate = self;
@@ -64,9 +62,9 @@
         [tempRequest setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
         //[tempRequest setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
         
-        __block SDWebImageView *blockSelf = self;
+        __unsafe_unretained SDWebImageView *blockSelf = self;
         [tempRequest setCompletionBlock:^{
-            NSData *responseData = [request responseData];
+            NSData *responseData = [tempRequest responseData];
             blockSelf.image = [UIImage imageWithData:responseData];
 			
 			[UIView animateWithDuration:0.2 animations:^{
@@ -75,7 +73,7 @@
         }];
         
         [tempRequest setFailedBlock:^{
-            NSError *error = [request error];
+            NSError *error = [tempRequest error];
             SDLog(@"Error fetching image: %@", error);
             blockSelf.image = blockSelf.errorImage;
 
@@ -112,10 +110,6 @@
 
 - (void)dealloc {
     [request clearDelegatesAndCancel];
-    [request release];
-	[imageUrlString release];
-	[errorImage release];
-	[super dealloc];
 }
 
 

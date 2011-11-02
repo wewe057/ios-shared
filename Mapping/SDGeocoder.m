@@ -25,8 +25,8 @@
 {
 	self = [super init];
 	
-	query = (NSString *)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)queryString, nil, (CFStringRef)@"/?+!", kCFStringEncodingUTF8);
-	apiKeyString = [apiKey retain];
+	query = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(nil, (__bridge CFStringRef)queryString, nil, (CFStringRef)@"/?+!", kCFStringEncodingUTF8);
+	apiKeyString = apiKey;
 	jsonData = [[NSMutableData alloc] init];
 	
 	return self;
@@ -36,13 +36,7 @@
 {
 	[self closeConnection];
 	
-	[apiKeyString release];
-	[query release];
-	[jsonData release];
-	[placemark release];
-	[response release];
 	
-	[super dealloc];
 }
 
 - (BOOL)isQuerying
@@ -58,7 +52,7 @@
     {
         NSString *requestString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=json&oe=utf8&sensor=false&key=%@", query, apiKeyString];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:requestString] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60];
-        connection = [[NSURLConnection connectionWithRequest:request delegate:self] retain];
+        connection = [NSURLConnection connectionWithRequest:request delegate:self];
     }
     else
     {
@@ -78,9 +72,7 @@
 	if (connection)
 	{
 		[connection cancel];
-		[connection release];
 		connection = nil;
-		[response release];
 		response = nil;
 	}
 }
@@ -134,7 +126,7 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)theResponse
 {
-	response = [theResponse retain];
+	response = theResponse;
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
@@ -150,7 +142,7 @@
 	// the result dictionary's format is correct.  it seems very US specific to me, and i can't find
 	// any documentation on the format, so i reversed it from MKReverseGeocoder.
 	
-	NSMutableDictionary *result = [[NSMutableDictionary new] autorelease];
+	NSMutableDictionary *result = [NSMutableDictionary new];
 	
 	NSArray *topLevel = [placemarkDictionary objectForKey:@"Placemark"];
 	if (!topLevel)

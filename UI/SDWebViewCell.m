@@ -61,11 +61,7 @@
 {
 	webView.delegate = nil;
 	[webView stopLoading];
-    [webView release];
-	webView = nil;
-    [titleLabel release];
 	
-	[super dealloc];
 }
 
 - (void)awakeFromNib

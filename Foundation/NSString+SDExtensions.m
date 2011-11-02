@@ -99,7 +99,10 @@
 
 - (NSString*)escapedString 
 {            
-    return [(NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (CFStringRef)[[self mutableCopy] autorelease], NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8) autorelease];
+	NSString *selfCopy = [self mutableCopy];
+	CFStringRef stringRef = CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge_retained CFStringRef)selfCopy, NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
+	NSString *newString = [NSString stringWithString:(__bridge_transfer NSString *)stringRef];
+    return newString;
 }
 
 - (NSString *)removeExcessWhitespace 
@@ -146,7 +149,7 @@
 	CFUUIDRef	uuidRef = CFUUIDCreate(kCFAllocatorDefault);
 	if (uuidRef)
 	{
-		uuidString = [(NSString*)CFUUIDCreateString(kCFAllocatorDefault, uuidRef) autorelease];
+		uuidString = (__bridge_transfer NSString*)CFUUIDCreateString(kCFAllocatorDefault, uuidRef);
 		
 		CFRelease(uuidRef);
 	}

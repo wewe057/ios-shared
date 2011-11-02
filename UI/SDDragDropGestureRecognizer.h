@@ -24,11 +24,11 @@
     CGRect originalFrame;
     CGPoint originalCenterInContainer;
     CGPoint touchOffset;
-    UIView *currentDropTarget;
+    UIView *__unsafe_unretained currentDropTarget;
 }
 
-@property (nonatomic, assign) UIView *dragView;
+@property (nonatomic, unsafe_unretained) UIView *dragView;
 @property (nonatomic, readonly) UIView *currentDropTarget;
-@property (nonatomic, assign) id<SDDragViewDelegate> dragViewDelegate;
+@property (nonatomic, unsafe_unretained) id<SDDragViewDelegate> dragViewDelegate;
 
 @end

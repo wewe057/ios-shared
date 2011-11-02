@@ -33,11 +33,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [dropTargets release];
-    [super dealloc];
-}
 
 - (NSArray *)dropTargets
 {

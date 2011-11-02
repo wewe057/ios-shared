@@ -37,15 +37,15 @@ enum
 	NSString *apiKeyString;
 	NSString *query;
 	NSMutableData *jsonData;
-	NSObject<SDGeocoderDelegate> *delegate;
+	NSObject<SDGeocoderDelegate> *__unsafe_unretained delegate;
 	MKPlacemark *placemark;
 	NSHTTPURLResponse *response;
 }
 
 @property (nonatomic, readonly, getter = isQuerying) BOOL querying;
 @property (nonatomic, readonly) MKPlacemark *placemark;
-@property (nonatomic, assign) NSObject<SDGeocoderDelegate> *delegate;
-@property (nonatomic, readonly) NSString *query;
+@property (nonatomic, unsafe_unretained) NSObject<SDGeocoderDelegate> *delegate;
+@property (nonatomic, strong, readonly) NSString *query;
 
 - (id)initWithQuery:(NSString *)queryString apiKey:(NSString *)apiKey;
 - (void)start;
