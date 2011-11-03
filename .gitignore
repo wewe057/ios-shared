@@ -8,3 +8,4 @@ build
 xcuserdata
 
 .DS_Store
+Temp/
