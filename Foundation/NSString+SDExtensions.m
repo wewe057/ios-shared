@@ -100,9 +100,7 @@
 - (NSString*)escapedString 
 {            
 	NSString *selfCopy = [self mutableCopy];
-	CFStringRef stringRef = CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)selfCopy, NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
-	NSString *newString = (__bridge_transfer  NSString *)stringRef;
-    return newString;
+	return (__bridge_transfer  NSString *) CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)selfCopy, NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
 }
 
 - (NSString *)removeExcessWhitespace 
