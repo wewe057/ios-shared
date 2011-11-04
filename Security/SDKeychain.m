@@ -63,9 +63,10 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 
 	NSMutableDictionary *attributeQuery = [query mutableCopy];
 	[attributeQuery setObject:(id) kCFBooleanTrue forKey:(__bridge id)kSecReturnAttributes];
-	CFTypeRef cfResult;
+	CFTypeRef cfResult = nil;
 	OSStatus status = SecItemCopyMatching( (__bridge CFDictionaryRef)attributeQuery, &cfResult);
-	CFRelease(cfResult);
+	if (cfResult)
+		CFRelease(cfResult);
 
 
 	if (status != noErr)
