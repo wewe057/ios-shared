@@ -8,7 +8,7 @@
 
 #import "SDWebImageView.h"
 #import "ASIHTTPRequest.h"
-#import "ASIDownloadCache.h"
+#import "SDDownloadCache.h"
 #import "ASINetworkQueue.h"
 
 @implementation SDWebImageView
@@ -43,7 +43,7 @@
     
 	NSURL *url = [NSURL URLWithString:imageUrlString];
 	
-    ASIDownloadCache *cache = [ASIDownloadCache sharedCache];
+    SDDownloadCache *cache = [SDDownloadCache sharedCache];
     NSData *data = [cache cachedResponseDataForURL:url];
     if (data)
     {
@@ -60,7 +60,7 @@
         tempRequest.numberOfTimesToRetryOnTimeout = 3;
         tempRequest.delegate = self;
         [tempRequest setShouldContinueWhenAppEntersBackground:YES];
-        [tempRequest setDownloadCache:[ASIDownloadCache sharedCache]];
+        [tempRequest setDownloadCache:[SDDownloadCache sharedCache]];
         [tempRequest setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
         //[tempRequest setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
         
