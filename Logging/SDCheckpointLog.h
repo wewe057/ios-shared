@@ -10,6 +10,7 @@
 
 @interface SDCheckpointLog : NSObject
 
++ (void)passCheckpointClass:(Class)class selector:(SEL)selector;
 +(void)passCheckpoint:(NSString*)checkpointName;
 
 +(void)passCheckpointVCDidAppearWithFilePath:(const char*)filePath;

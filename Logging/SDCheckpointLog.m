@@ -14,6 +14,11 @@
 
 @implementation SDCheckpointLog
 
++ (void)passCheckpointClass:(Class)class selector:(SEL)selector
+{
+	[self passCheckpoint:[NSString stringWithFormat:@"%@ - %@",NSStringFromClass(class), NSStringFromSelector(selector)]];
+}
+
 +(void)passCheckpoint:(NSString*)checkpointName
 {
     #ifdef TESTFLIGHT
