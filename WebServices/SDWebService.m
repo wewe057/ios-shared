@@ -275,6 +275,8 @@
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	
+	[CheckpointLog passCheckpointServiceCallBegan:requestName url:url postParams:postParams];
+	
 	__unsafe_unretained __block ASIHTTPRequest *request = nil;
     if ([[method uppercaseString] isEqualToString:@"POST"])
     {
