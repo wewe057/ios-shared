@@ -6,6 +6,7 @@
 //
 
 #import "SDWebService.h"
+#import "CheckpointLog.h"
 #import "ASIHTTPRequest.h"
 #import "ASIDownloadCache.h"
 #import "ASINetworkQueue.h"
@@ -358,6 +359,8 @@
 #ifdef DEBUG
         SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
 #endif
+        [CheckpointLog passCheckpointServiceCallFinished:requestName];
+        
         //SDLog(@"request-headers = %@", [request requestHeaders]);
         //SDLog(@"response-headers = %@", [request responseHeaders]);
         if ([request didUseCachedResponse])

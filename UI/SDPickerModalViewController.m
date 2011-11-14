@@ -7,6 +7,7 @@
 //
 
 #import "SDPickerModalViewController.h"
+#import "CheckpointLog.h"
 
 
 @implementation SDPickerModalViewController
@@ -53,6 +54,12 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [CheckpointLog passCheckpointVCDidAppearWithFilePath:__FILE__];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
