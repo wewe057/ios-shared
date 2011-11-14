@@ -1,5 +1,5 @@
 //
-//  CheckpointLog.h
+//  SDCheckpointLog.h
 //  walmart
 //
 //  Created by Joel Bernstein on 11/8/11.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CheckpointLog : NSObject
+@interface SDCheckpointLog : NSObject
 
 +(void)passCheckpoint:(NSString*)checkpointName;
 

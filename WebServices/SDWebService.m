@@ -6,7 +6,7 @@
 //
 
 #import "SDWebService.h"
-#import "CheckpointLog.h"
+#import "SDCheckpointLog.h"
 #import "ASIHTTPRequest.h"
 #import "ASIDownloadCache.h"
 #import "ASINetworkQueue.h"
@@ -275,7 +275,7 @@
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	
-	[CheckpointLog passCheckpointServiceCallBegan:requestName url:url postParams:postParams];
+	[SDCheckpointLog passCheckpointServiceCallBegan:requestName url:url postParams:postParams];
 	
 	__unsafe_unretained __block ASIHTTPRequest *request = nil;
     if ([[method uppercaseString] isEqualToString:@"POST"])
@@ -361,7 +361,7 @@
 #ifdef DEBUG
         SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
 #endif
-        [CheckpointLog passCheckpointServiceCallFinished:requestName];
+        [SDCheckpointLog passCheckpointServiceCallFinished:requestName];
         
         //SDLog(@"request-headers = %@", [request requestHeaders]);
         //SDLog(@"response-headers = %@", [request responseHeaders]);

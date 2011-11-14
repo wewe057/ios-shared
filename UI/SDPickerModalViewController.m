@@ -7,7 +7,7 @@
 //
 
 #import "SDPickerModalViewController.h"
-#import "CheckpointLog.h"
+#import "SDCheckpointLog.h"
 
 
 @implementation SDPickerModalViewController
@@ -59,7 +59,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [CheckpointLog passCheckpointVCDidAppearWithFilePath:__FILE__];
+    [SDCheckpointLog passCheckpointVCDidAppearWithFilePath:__FILE__];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

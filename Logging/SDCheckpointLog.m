@@ -1,18 +1,18 @@
 //
-//  CheckpointLog.m
+//  SDCheckpointLog.m
 //  walmart
 //
 //  Created by Joel Bernstein on 11/8/11.
 //  Copyright (c) 2011 Walmart. All rights reserved.
 //
 
-#import "CheckpointLog.h"
+#import "SDCheckpointLog.h"
 
 #ifdef TESTFLIGHT
     #import "TestFlight.h"
 #endif
 
-@implementation CheckpointLog
+@implementation SDCheckpointLog
 
 +(void)passCheckpoint:(NSString*)checkpointName
 {
