@@ -12,6 +12,7 @@
 #import "ASINetworkQueue.h"
 #import "NSString+SDExtensions.h"
 #import "ASIFormDataRequest.h"
+#import "SDDownloadCache.h"
 
 @interface SDHTTPRequest : ASIHTTPRequest
 {
@@ -52,12 +53,14 @@
 {
 	self = [super init];
 	
-    queues = [[NSMutableDictionary alloc] init];
-	NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
-	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
-	if (!serviceSpecification)
-		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
-	
+	if (self)
+	{
+		queues = [[NSMutableDictionary alloc] init];
+		NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
+		serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
+		if (!serviceSpecification)
+			[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
+	}
 	return self;
 }
 
@@ -110,7 +113,7 @@
 
 - (void)clearCache
 {
-	[[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+	[[SDDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
 }
 
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
@@ -324,7 +327,7 @@
     // setup caching
     if (cache && [cache boolValue])
     {
-        [request setDownloadCache:[ASIDownloadCache sharedCache]];
+        [request setDownloadCache:[SDDownloadCache sharedCache]];
         if (cacheTTL)
             [request setSecondsToCache:[cacheTTL unsignedIntValue]];
         [request setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
@@ -370,7 +373,7 @@
         
         if (![blockSelf responseIsValid:responseString forRequest:requestName] && shouldRetry)
         {
-            [[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+            [[SDDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
             [blockSelf performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy shouldRetry:NO];
         }
         else
