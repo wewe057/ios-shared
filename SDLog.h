@@ -19,4 +19,10 @@
 #define SDLog
 #endif
 
+#if defined(DEBUG)
+#define SDLogResponse(__FORMAT__, ...) { if ([[NSUserDefaults standardUserDefaults] boolForKey:@"kIncludeResponsesInLogs"]) SDLog(__FORMAT__, ##__VA_ARGS__); }
+#else
+#define SDLogResponse
+#endif
+
 #define SDTFLog(__FORMAT__, ...) TFLog((@"%s [Line %d] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
