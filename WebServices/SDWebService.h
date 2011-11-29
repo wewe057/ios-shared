@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-// this comes from ASI-HTTP
+#import "SDURLConnection.h"
 #import "Reachability.h"
 
 typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
@@ -21,13 +21,10 @@ enum
 
 @interface SDWebService : NSObject
 {
+	NSMutableDictionary *singleRequests;
 	NSDictionary *serviceSpecification;
-    NSMutableArray *serviceCookies;
-    NSMutableDictionary *queues;
     NSUInteger requestCount;
 }
-
-@property (nonatomic, strong) NSMutableArray *serviceCookies;
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
