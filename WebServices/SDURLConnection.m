@@ -15,7 +15,6 @@
 	NSMutableData *responseData;
 	NSHTTPURLResponse *httpResponse;
     BOOL shouldCache;
-	long long dataLength;
 }
 
 - (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler
@@ -102,7 +101,6 @@
 {
     SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:handler shouldCache:cache];
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:YES];
-	//NSURLConnection *connection = [NSURLConnection connectionWithRequest:request delegate:delegate];
 	
     delegate = nil;
 	
