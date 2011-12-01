@@ -6,3 +6,4 @@ build
 *.log
 *.xcworkspace
 xcuserdata
+.DS_Store
