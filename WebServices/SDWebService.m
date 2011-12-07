@@ -293,8 +293,10 @@
 			}
 		}
 		
-		[request setValue:@"application/x-www-form-urlencoded" forKey:@"Content-Type"];
-		[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forKey:@"Content-Length"];
+		postData = [post dataUsingEncoding:NSUTF8StringEncoding];
+		
+		[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+		[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
 		[request setHTTPBody:postData];
     }
     
