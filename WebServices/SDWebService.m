@@ -346,8 +346,14 @@
 			// remove from the singleRequests list
 			[singleRequests removeObjectForKey:requestName];
 			
+			// Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
+			// So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
+			int code = SDWTFResponseCode;
 			NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-			int code = [httpResponse statusCode];
+			if ([response isKindOfClass:[NSHTTPURLResponse class]])
+			{
+				code = [httpResponse statusCode];
+			}
 			
 			// handle redirects in a crappy way.. need to rework this to be done inside of SDURLConnection.
 			if (code == 302)

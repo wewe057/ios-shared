@@ -19,6 +19,11 @@ enum
     // all other errors come from ASI-HTTP
 };
 
+enum
+{
+	SDWTFResponseCode = -1
+};
+
 @interface SDWebService : NSObject
 {
 	NSMutableDictionary *singleRequests;
