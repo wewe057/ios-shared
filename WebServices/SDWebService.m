@@ -382,7 +382,9 @@
         //SDLog(@"request-headers = %@", [request requestHeaders]);
         //SDLog(@"response-headers = %@", [request responseHeaders]);
         if ([request didUseCachedResponse])
-            SDLog(@"**** USING CACHED RESPONSE ***");
+            SDLog(@"**** USING CACHED RESPONSE FOR URL %@ ***", url);
+		else
+            SDLog(@"**** USING SERVER RESPONSE FOR URL %@ ***", url);
         
         if (![blockSelf responseIsValid:responseString forRequest:requestName] && shouldRetry)
         {
