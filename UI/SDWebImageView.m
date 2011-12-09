@@ -20,6 +20,16 @@
 @synthesize imageUrlString;
 @synthesize errorImage;
 
+- (void)clearRequest
+{
+	if (request)
+	{
+		[request clearDelegatesAndCancel];
+		[request release];
+		request = nil;
+	}
+}
+
 - (void)setImageUrlString:(NSString *)argImageUrlString {
     
     if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
@@ -28,13 +38,9 @@
 	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
-    if (request)
-    {
-        [request clearDelegatesAndCancel];
-        [request release];
-        request = nil;
-    }
-    
+
+    [self clearRequest];
+	
     if (self.image != nil) {
         self.image = nil;
     }
@@ -54,8 +60,8 @@
 		self.alpha = 0;
 		
         __block ASIHTTPRequest *tempRequest = nil;
-        tempRequest = [ASIHTTPRequest requestWithURL:url];
-        request = [tempRequest retain];
+        request = [[ASIHTTPRequest requestWithURL:url] retain];
+        tempRequest = request;
         
         tempRequest.numberOfTimesToRetryOnTimeout = 3;
         tempRequest.delegate = self;
@@ -66,22 +72,24 @@
         
         __block SDWebImageView *blockSelf = self;
         [tempRequest setCompletionBlock:^{
-            NSData *responseData = [request responseData];
+            NSData *responseData = [tempRequest responseData];
             blockSelf.image = [UIImage imageWithData:responseData];
 			
 			[UIView animateWithDuration:0.2 animations:^{
 				blockSelf.alpha = 1.0;
 			}];
-        }];
+			[self clearRequest];
+       }];
         
         [tempRequest setFailedBlock:^{
-            NSError *error = [request error];
+            NSError *error = [tempRequest error];
             SDLog(@"Error fetching image: %@", error);
             blockSelf.image = blockSelf.errorImage;
 
 			[UIView animateWithDuration:0.2 animations:^{
 				blockSelf.alpha = 1.0;
 			}];
+			[self clearRequest];
         }];
         
         ASINetworkQueue *queue = [ASINetworkQueue queue];
