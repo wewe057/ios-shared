@@ -7,7 +7,6 @@
 //
 
 #import "SDWebImageView.h"
-#import "ASIHTTPRequest.h"
 #import "SDDownloadCache.h"
 #import "ASINetworkQueue.h"
 
@@ -29,7 +28,6 @@
 	
     if (request)
     {
-        [request clearDelegatesAndCancel];
         request = nil;
     }
     
@@ -51,40 +49,59 @@
     {   
 		self.alpha = 0;
 		
-        __unsafe_unretained ASIHTTPRequest *tempRequest = nil;
-        tempRequest = [ASIHTTPRequest requestWithURL:url];
+        __unsafe_unretained NSMutableURLRequest *tempRequest = nil;
+        tempRequest = [NSMutableURLRequest requestWithURL:url]; 
         request = tempRequest;
-        
-        tempRequest.numberOfTimesToRetryOnTimeout = 3;
-        tempRequest.delegate = self;
-        [tempRequest setShouldContinueWhenAppEntersBackground:YES];
-        [tempRequest setDownloadCache:[SDDownloadCache sharedCache]];
-        [tempRequest setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
-        //[tempRequest setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-        
-        __unsafe_unretained SDWebImageView *blockSelf = self;
-        [tempRequest setCompletionBlock:^{
-            NSData *responseData = [tempRequest responseData];
-            blockSelf.image = [UIImage imageWithData:responseData];
-			
-			[UIView animateWithDuration:0.2 animations:^{
-				blockSelf.alpha = 1.0;
-			}];
-        }];
-        
-        [tempRequest setFailedBlock:^{
-            NSError *error = [tempRequest error];
-            SDLog(@"Error fetching image: %@", error);
-            blockSelf.image = blockSelf.errorImage;
+		
+		[request setHTTPMethod:@"GET"];
+		[request setHTTPShouldHandleCookies:YES];
+		[request setHTTPShouldUsePipelining:YES];
+#ifdef DEBUG
+		[request setTimeoutInterval:300000];
+#else
+		[request setTimeoutInterval:30];
+#endif
+		
+		SDWebImageView *blockSelf = self;
+		
+#ifdef DEBUG
+		NSDate *startDate = [NSDate date];
+#endif
+		
+		__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
+			@autoreleasepool {
+				
+#ifdef DEBUG
+				SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
+#endif
+				
+				if ([error code] == NSURLErrorTimedOut)
+				{
+					SDLog(@"Error fetching image: %@", error);
+					
+					// remove it from the cache if its there.
+					NSURLCache *cache = [NSURLCache sharedURLCache];
+					[cache removeCachedResponseForRequest:request];
+					
+					// set image
+					blockSelf.image = blockSelf.errorImage;
+					[UIView animateWithDuration:0.2 animations:^{
+						blockSelf.alpha = 1.0;
+					}];
+					
+				} else {
+					
+					// set image
+					blockSelf.image = [UIImage imageWithData:responseData];
+					[UIView animateWithDuration:0.2 animations:^{
+						blockSelf.alpha = 1.0;
+					}];
 
-			[UIView animateWithDuration:0.2 animations:^{
-				blockSelf.alpha = 1.0;
-			}];
-        }];
-        
-        ASINetworkQueue *queue = [ASINetworkQueue queue];
-        [queue addOperation:tempRequest];
-        [queue go];
+				}
+			}
+		};
+		
+		[SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
     }
 }
 
@@ -106,10 +123,6 @@
     if (self) {
     }
     return self;
-}
-
-- (void)dealloc {
-    [request clearDelegatesAndCancel];
 }
 
 

@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ASIHTTPRequest.h"
+#import "SDURLConnection.h"
 
 @interface SDWebImageView : UIImageView {
 	NSString *imageUrlString;
 	UIImage *errorImage;
-    ASIHTTPRequest *request;
+    NSMutableURLRequest *request;
 }
 
 @property (nonatomic, copy) NSString *imageUrlString;
