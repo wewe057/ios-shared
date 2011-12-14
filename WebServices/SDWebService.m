@@ -7,6 +7,7 @@
 
 #import "SDWebService.h"
 #import "NSString+SDExtensions.h"
+#import "AFCacheLib.h"
 
 #ifdef DEBUG
 @interface NSURLRequest(SDExtensionsDebug)
@@ -306,13 +307,15 @@
     }
     
     // setup caching
-    /*if (cache && [cache boolValue])
+    if (cache && [cache boolValue])
     {
-        [request setDownloadCache:[ASIDownloadCache sharedCache]];
-        if (cacheTTL)
-            [request setSecondsToCache:[cacheTTL unsignedIntValue]];
-        [request setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-    }*/
+        //[request setDownloadCache:[ASIDownloadCache sharedCache]];
+        //if (cacheTTL)
+        //    [request setSecondsToCache:[cacheTTL unsignedIntValue]];
+        [request setCachePolicy:NSURLCacheStorageAllowed];
+    }
+	else
+		[request setCachePolicy:NSURLCacheStorageNotAllowed];
     
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
@@ -323,8 +326,10 @@
     
 #ifdef DEBUG
     NSDate *startDate = [NSDate date];
+	if ([[AFCache sharedInstance] hasCachedItemForURL:request.URL])
+		NSLog(@"*** Will use cached response ***");
 #endif
-    
+	
 	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
 		@autoreleasepool {
 			NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];

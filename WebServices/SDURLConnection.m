@@ -8,6 +8,7 @@
 
 #import "SDURLConnection.h"
 #import "NSString+SDExtensions.h"
+#import "AFCacheLib.h"
 
 @interface SDURLResponseCompletionDelegate : NSObject
 {
@@ -29,7 +30,7 @@
     if (self = [super init])
 	{
         responseHandler = [newHandler copy];
-        shouldCache = NO;
+        shouldCache = cache;
 		responseData = [[NSMutableData alloc] initWithCapacity:1024];
     }
 	
@@ -68,10 +69,10 @@
 	[connection cancel];	
 }
 
-/*- (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
+- (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
     return shouldCache ? cachedResponse : nil;
-}*/
+}
 
 @end
 
@@ -81,6 +82,17 @@
 
 @synthesize requestName;
 @dynamic identifier;
+
++ (void)load
+{
+	@autoreleasepool 
+	{
+		NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"ServiceCache"];
+		AFURLCache *urlCache = [[AFURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 15 diskPath:cachePath];
+		[NSURLCache setSharedURLCache:urlCache];
+	}
+
+}
 
 - (void)dealloc
 {
