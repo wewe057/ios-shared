@@ -13,6 +13,7 @@
 	NSString *imageUrlString;
 	UIImage *errorImage;
     NSMutableURLRequest *request;
+	__unsafe_unretained SDURLConnection *currentRequest;
 }
 
 @property (nonatomic, copy) NSString *imageUrlString;
