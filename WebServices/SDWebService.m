@@ -226,7 +226,7 @@
     
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];
-    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
+    //NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
     
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
