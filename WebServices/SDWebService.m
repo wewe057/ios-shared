@@ -323,9 +323,11 @@
 	// passed along as well.
     
     SDWebService *blockSelf = self;
+	
+	__unsafe_unretained SDMutableURLRequest *blockRequest = request; // Prevent retain loop
     
 #ifdef DEBUG
-    NSDate *startDate = [NSDate date];
+    __block NSDate *startDate = [NSDate date];
 	if ([[AFCache sharedInstance] hasCachedItemForURL:request.URL])
 		NSLog(@"*** Will use cached response ***");
 #endif
@@ -340,14 +342,14 @@
 			
 			if ([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName])
 			{
-				request.retryCount = request.retryCount-1;
-				if (request.retryCount > 0)
+				blockRequest.retryCount = blockRequest.retryCount-1;
+				if (blockRequest.retryCount > 0)
 				{
 					// remove it from the cache if its there.
 					NSURLCache *cache = [NSURLCache sharedURLCache];
-					[cache removeCachedResponseForRequest:request];
+					[cache removeCachedResponseForRequest:blockRequest];
 					
-					[SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+					[SDURLConnection sendAsynchronousRequest:blockRequest shouldCache:YES withResponseHandler:urlCompletionBlock];
 					// get out, lets try again.
 					return;
 				}
