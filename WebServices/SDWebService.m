@@ -286,8 +286,8 @@
 		for (NSString *aParameter in parameters) {
 			NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
 			if ([keyVal count] == 2) {
-                NSString *decodedKey = [[keyVal objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                NSString *decodedValue = [[keyVal objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSString *decodedKey = [keyVal objectAtIndex:0];			// Pass encoded values to NSURLConnection
+                NSString *decodedValue = [keyVal objectAtIndex:1];
 				[post appendFormat:@"%@=%@&", decodedKey, decodedValue];
 			} else {
 				[NSException raise:@"SDException" format:@"Unable to create request. Post param does not have proper key value pair: %@", keyVal];
