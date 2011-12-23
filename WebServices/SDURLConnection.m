@@ -139,17 +139,13 @@
     
 #if USE_THREADED_URLCONNECTION
     
-    __block SDURLConnection *connection = nil;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);    
+    __block SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
+    __block SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
+    if (!connection)
+        SDLog(@"Unable to create a connection!");
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{        
-        SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
-        connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
-        if (!connection)
-            SDLog(@"Unable to create a connection!");
-        
-        if (semaphore)
-            dispatch_semaphore_signal(semaphore);
         
         [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         [connection start];
@@ -162,13 +158,7 @@
         if (delegate->responseHandler)
             SDLog(@"Response handler not called!");
     });
-	
-    // if we don't have a semaphore, ultimately we're likely to return nil for the connection, which should be ok.
-    if (semaphore)
-    {
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-        dispatch_release(semaphore);
-    }
+    
 #else
     
     SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
