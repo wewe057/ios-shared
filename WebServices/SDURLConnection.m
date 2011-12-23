@@ -162,7 +162,7 @@
     });
 	
     dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
+    dispatch_release(semaphore);
 #else
     
     SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
