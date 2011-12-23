@@ -8,15 +8,23 @@
 
 #import "SDURLConnection.h"
 #import "NSString+SDExtensions.h"
-#import "AFCacheLib.h"
+#import "SDURLCache.h"
+#import <libkern/OSAtomic.h>
+
+#define USE_THREADED_URLCONNECTION 1
 
 @interface SDURLResponseCompletionDelegate : NSObject
 {
+@public
     SDURLConnectionResponseBlock responseHandler;
+@private
 	NSMutableData *responseData;
 	NSHTTPURLResponse *httpResponse;
     BOOL shouldCache;
+    BOOL isRunning;
 }
+
+@property (atomic, assign) BOOL isRunning;
 
 - (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler
                   shouldCache:(BOOL)cache;
@@ -25,6 +33,8 @@
 
 @implementation SDURLResponseCompletionDelegate
 
+@synthesize isRunning;
+
 - (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler shouldCache:(BOOL)cache
 {
     if (self = [super init])
@@ -32,6 +42,7 @@
         responseHandler = [newHandler copy];
         shouldCache = cache;
 		responseData = [[NSMutableData alloc] initWithCapacity:1024];
+        self.isRunning = YES;
     }
 	
     return self;
@@ -52,8 +63,15 @@
 
 - (void)connection:(SDURLConnection *)connection didFailWithError:(NSError *)error
 {
-    responseHandler(connection, nil, responseData, error);
-    responseHandler = nil;
+#if USE_THREADED_URLCONNECTION
+    dispatch_async(dispatch_get_main_queue(), ^{
+#endif
+        responseHandler(connection, nil, responseData, error);
+        responseHandler = nil;
+        self.isRunning = NO;
+#if USE_THREADED_URLCONNECTION
+    });
+#endif
 }
 
 - (void)connection:(SDURLConnection *)connection didReceiveData:(NSData *)data
@@ -63,10 +81,15 @@
 
 - (void)connectionDidFinishLoading:(SDURLConnection *)connection
 {
-    responseHandler(connection, httpResponse, responseData, nil);
-	responseHandler = nil;
-	 
-	[connection cancel];	
+#if USE_THREADED_URLCONNECTION
+    dispatch_async(dispatch_get_main_queue(), ^{
+#endif
+        responseHandler(connection, httpResponse, responseData, nil);
+        responseHandler = nil;
+        self.isRunning = NO;
+#if USE_THREADED_URLCONNECTION
+    });
+#endif
 }
 
 - (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
@@ -87,8 +110,8 @@
 {
 	@autoreleasepool 
 	{
-		NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"ServiceCache"];
-		AFURLCache *urlCache = [[AFURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 15 diskPath:cachePath];
+		NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"NSURLCache"];
+		SDURLCache *urlCache = [[SDURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 300 diskPath:cachePath];
 		[NSURLCache setSharedURLCache:urlCache];
 	}
 
@@ -111,11 +134,45 @@
 
 + (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler
 {
-    SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:handler shouldCache:cache];
-    SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:YES];
+    if (!handler)
+        @throw @"sendAsynchronousRequest must be given a handler!";
+    
+#if USE_THREADED_URLCONNECTION
+    
+    __block SDURLConnection *connection = nil;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{        
+        SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
+        connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
+        if (!connection)
+            SDLog(@"Unable to create a connection!");
+        dispatch_semaphore_signal(semaphore);
+        
+        [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [connection start];
+        
+        while (delegate.isRunning)
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        
+        [connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        
+        if (delegate->responseHandler)
+            SDLog(@"Response handler not called!");
+    });
 	
-    delegate = nil;
-	
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+
+#else
+    
+    SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
+    SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
+    if (!connection)
+        SDLog(@"Unable to create a connection!");
+    [connection start];
+    
+#endif
+    
     return connection;
 }
 
