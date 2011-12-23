@@ -8,7 +8,7 @@
 
 #import "SDWebImageView.h"
 #import "SDDownloadCache.h"
-#import "ASINetworkQueue.h"
+#import "SDURLCache.h"
 
 @implementation SDWebImageView
 
@@ -98,6 +98,15 @@
 		}
 	};
 	
+    if ([(SDURLCache *)[SDURLCache sharedURLCache] isCached:request.URL])
+    {
+        NSURLCache *urlCache = [NSURLCache sharedURLCache];
+        NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
+        urlCompletionBlock(nil, response.response, response.data, nil);
+        currentRequest = nil;
+        return;
+    }
+
 	currentRequest = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
 }
 

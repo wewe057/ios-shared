@@ -7,7 +7,8 @@
 
 #import "SDWebService.h"
 #import "NSString+SDExtensions.h"
-#import "AFCacheLib.h"
+//#import "AFCacheLib.h"
+#import "SDURLCache.h"
 
 #ifdef DEBUG
 @interface NSURLRequest(SDExtensionsDebug)
@@ -326,8 +327,9 @@
     
 #ifdef DEBUG
     NSDate *startDate = [NSDate date];
-	if ([[AFCache sharedInstance] hasCachedItemForURL:request.URL])
-		NSLog(@"*** Will use cached response ***");
+	//if ([[AFCache sharedInstance] hasCachedItemForURL:request.URL])
+    //if ([[NSURLCache sharedURLCache] cachedResponseForRequest:request] != nil)
+	//	NSLog(@"*** Will use cached response ***");
 #endif
 	
 	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
@@ -377,6 +379,17 @@
 			[self hideNetworkActivityIfNeeded];
 		}
 	};
+    
+    if ([(SDURLCache *)[SDURLCache sharedURLCache] isCached:request.URL])
+    {
+        SDLog(@"*** Using cached response ***");
+        NSURLCache *urlCache = [NSURLCache sharedURLCache];
+        NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
+        requestCount++;
+        urlCompletionBlock(nil, response.response, response.data, nil);
+        return YES;
+    }
+
 	
     requestCount++;
     [self showNetworkActivityIfNeeded];
