@@ -178,6 +178,18 @@
     }
 }
 
+- (void)incrementRequests
+{
+    requestCount++;
+    [self showNetworkActivityIfNeeded];
+}
+
+- (void)decrementRequests
+{
+	requestCount--;
+	[self hideNetworkActivityIfNeeded];
+}
+
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
 	// construct the URL based on the specification.
@@ -336,7 +348,7 @@
 			NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
 
 #ifdef DEBUG
-			SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
+			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
 #endif
 			
 			if ([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName])
@@ -373,9 +385,8 @@
 			}
 			
 			completionBlock(code, responseString, &error);
-
-			requestCount--;
-			[self hideNetworkActivityIfNeeded];
+			
+			[self decrementRequests];
 		}
 	};
     
@@ -389,9 +400,7 @@
         return YES;
     }
 
-	
-    requestCount++;
-    [self showNetworkActivityIfNeeded];
+	[self incrementRequests];
     
 	// see if this is a singleton request.
     BOOL singleRequest = NO;
@@ -406,8 +415,10 @@
 			SDURLConnection *existingConnection = [singleRequests objectForKey:requestName];
 			if (existingConnection)
 			{
+				SDLog(@"Cancelling call.");
 				[existingConnection cancel];
 				[singleRequests removeObjectForKey:requestName];
+				[self decrementRequests];
 			}
         }
     }

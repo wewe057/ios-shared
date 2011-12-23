@@ -68,7 +68,7 @@
 		@autoreleasepool {
 			
 #ifdef DEBUG
-			SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
+			SDLog(@"Image retrieval call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
 #endif
 			currentRequest = nil;
 			
