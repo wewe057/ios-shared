@@ -287,8 +287,8 @@
 		for (NSString *aParameter in parameters) {
 			NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
 			if ([keyVal count] == 2) {
-                NSString *decodedKey = [[keyVal objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                NSString *decodedValue = [[keyVal objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                NSString *decodedKey = [keyVal objectAtIndex:0];			// Pass encoded values to NSURLConnection
+                NSString *decodedValue = [keyVal objectAtIndex:1];
 				[post appendFormat:@"%@=%@&", decodedKey, decodedValue];
 			} else {
 				[NSException raise:@"SDException" format:@"Unable to create request. Post param does not have proper key value pair: %@", keyVal];
@@ -324,12 +324,11 @@
 	// passed along as well.
     
     SDWebService *blockSelf = self;
+	
+	__unsafe_unretained SDMutableURLRequest *blockRequest = request; // Prevent retain loop
     
 #ifdef DEBUG
-    NSDate *startDate = [NSDate date];
-	//if ([[AFCache sharedInstance] hasCachedItemForURL:request.URL])
-    //if ([[NSURLCache sharedURLCache] cachedResponseForRequest:request] != nil)
-	//	NSLog(@"*** Will use cached response ***");
+    __block NSDate *startDate = [NSDate date];
 #endif
 	
 	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
@@ -342,14 +341,14 @@
 			
 			if ([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName])
 			{
-				request.retryCount = request.retryCount-1;
-				if (request.retryCount > 0)
+				blockRequest.retryCount = blockRequest.retryCount-1;
+				if (blockRequest.retryCount > 0)
 				{
 					// remove it from the cache if its there.
 					NSURLCache *cache = [NSURLCache sharedURLCache];
-					[cache removeCachedResponseForRequest:request];
+					[cache removeCachedResponseForRequest:blockRequest];
 					
-					[SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+					[SDURLConnection sendAsynchronousRequest:blockRequest shouldCache:YES withResponseHandler:urlCompletionBlock];
 					// get out, lets try again.
 					return;
 				}
