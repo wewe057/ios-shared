@@ -190,6 +190,14 @@
 	[self hideNetworkActivityIfNeeded];
 }
 
+- (NSString *)responseFromData:(NSData *)data
+{
+    NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (!responseString)
+        responseString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    return responseString;
+}
+
 - (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
 	// construct the URL based on the specification.
@@ -343,9 +351,7 @@
 	
 	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
 		@autoreleasepool {
-			NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-			if (!responseString)
-                responseString = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
+			NSString *responseString = [self responseFromData:responseData];
 
 #ifdef DEBUG
 			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
@@ -395,9 +401,16 @@
         SDLog(@"*** Using cached response ***");
         NSURLCache *urlCache = [NSURLCache sharedURLCache];
         NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
-        requestCount++;
-        urlCompletionBlock(nil, response.response, response.data, nil);
-        return YES;
+        if (response && response.response && response.data)
+        {
+            NSString *cachedString = [self responseFromData:response.data];
+            if (cachedString)
+            {
+                requestCount++;
+                urlCompletionBlock(nil, response.response, response.data, nil);
+                return YES;            
+            }
+        }
     }
 
 	[self incrementRequests];
