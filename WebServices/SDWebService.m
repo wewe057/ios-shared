@@ -344,6 +344,8 @@
 	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
 		@autoreleasepool {
 			NSString *responseString = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+			if (!responseString)
+                responseString = [[NSString alloc] initWithData:responseData encoding:NSASCIIStringEncoding];
 
 #ifdef DEBUG
 			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
