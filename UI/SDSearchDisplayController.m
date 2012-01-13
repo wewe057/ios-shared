@@ -172,25 +172,26 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     if (tableView == recentSearchTableView)
     {
         // set the searchbar text here.
-        self.searchBar.text = [searchHistory objectAtIndex:indexPath.row];
-        self.selectedSearchItem = [searchHistory objectAtIndex:indexPath.row];
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if (indexPath.row < [searchHistory count]) {
+            self.searchBar.text = [searchHistory objectAtIndex:indexPath.row];
+            self.selectedSearchItem = [searchHistory objectAtIndex:indexPath.row];
+        }
     }
     else
     {
-        id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
-        if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
-            self.searchBar.text = [item name];
-        else
-        if ([item isKindOfClass:[NSString class]])
-            self.searchBar.text = (NSString *)item;
-        else
-            self.searchBar.text = [item description];
-        self.selectedSearchItem = item;
-
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        if (indexPath.row < [filteredHistory count]) {
+            id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
+            if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
+				self.searchBar.text = [item name];
+			else if ([item isKindOfClass:[NSString class]])
+				self.searchBar.text = (NSString *)item;
+			else
+				self.searchBar.text = [item description];
+			self.selectedSearchItem = item;
+        }
     }
 
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     self.searchBar.delegate = oldDelegate;
 
     if (self.searchBar.delegate && [self.searchBar.delegate respondsToSelector:@selector(searchBarSearchButtonClicked:)])
@@ -227,7 +228,10 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         if (!cell)
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         
-        cell.textLabel.text = [searchHistory objectAtIndex:indexPath.row];
+        if (indexPath.row < [searchHistory count])
+			cell.textLabel.text = [searchHistory objectAtIndex:indexPath.row];
+		else
+			cell.textLabel.text = nil;
     }
     else
     {
@@ -236,14 +240,17 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         if (!cell)
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:searchCell];
         
-        id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
-        if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
-            cell.textLabel.text = [item displayName];
-        else
-        if ([item isKindOfClass:[NSString class]])
-            cell.textLabel.text = (NSString *)item;
-        else
-            cell.textLabel.text = [item description];
+        if (indexPath.row < [filteredHistory count]) {
+			id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
+			if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
+				cell.textLabel.text = [item displayName];
+			else if ([item isKindOfClass:[NSString class]])
+				cell.textLabel.text = (NSString *)item;
+			else
+				cell.textLabel.text = [item description];
+		} else {
+			cell.textLabel.text = nil;
+		}
     }
     return cell;
 }

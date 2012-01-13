@@ -7,7 +7,6 @@
 //
 
 #import "SDWebImageView.h"
-#import "SDDownloadCache.h"
 #import "SDURLCache.h"
 
 @implementation SDWebImageView
