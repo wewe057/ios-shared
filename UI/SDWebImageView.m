@@ -19,6 +19,11 @@
 @synthesize imageUrlString;
 @synthesize errorImage;
 
+- (void)internalSetImage:(UIImage *)image
+{
+    self.image = image;
+}
+
 - (void)setImageUrlString:(NSString *)argImageUrlString {
     
     if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
@@ -55,6 +60,7 @@
 #endif
 	
 	SDWebImageView *blockSelf = self;
+    blockSelf.alpha = 1.0;
 
 	// if we've got one going, kill it so we don't get junk.
 	[currentRequest cancel];
@@ -81,18 +87,24 @@
 				[cache removeCachedResponseForRequest:request];
 				
 				// set image
-				blockSelf.image = blockSelf.errorImage;
+				/*blockSelf.image = blockSelf.errorImage;
 				[UIView animateWithDuration:0.2 animations:^{
 					blockSelf.alpha = 1.0;
-				}];
+				}];*/
+                //[blockSelf performSelector:@selector(internalSetImage:) withObject:blockSelf.errorImage afterDelay:0.1];
+                blockSelf.image = blockSelf.errorImage;
 				
 			} else {
 				
 				// set image
-				blockSelf.image = [UIImage imageWithData:responseData];
+				/*blockSelf.image = [UIImage imageWithData:responseData];
 				[UIView animateWithDuration:0.2 animations:^{
 					blockSelf.alpha = 1.0;
-				}];
+				}];*/
+                
+                UIImage *image = [UIImage imageWithData:responseData];
+                blockSelf.image = image;
+                //[blockSelf performSelector:@selector(internalSetImage:) withObject:[image copy] afterDelay:0.1];
 
 			}
 		}
