@@ -348,8 +348,13 @@
 #ifdef DEBUG
     __block NSDate *startDate = [NSDate date];
 #endif
-	
-	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
+
+	// Note we do a copy at the end of the following block definition/assignment. If we don't do the copy, the original block
+	// variable gets moved to the heap due to a compiler optimization (with __block) and we get a bad access crash on the first
+	// reference below this block definition. But we have to declare the block with __block to get the block self-reference within
+	// the block to work. So the solution is to pass a copy on the assignment line. See bbum's blog post, section 7 about
+	// recursive blocks: http://www.friday.com/bbum/2009/08/29/blocks-tips-tricks
+	__block SDURLConnectionResponseBlock urlCompletionBlock = [^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
 		@autoreleasepool {
 			NSString *responseString = [self responseFromData:responseData];
 
@@ -365,7 +370,6 @@
 					// remove it from the cache if its there.
 					NSURLCache *cache = [NSURLCache sharedURLCache];
 					[cache removeCachedResponseForRequest:request];
-					
 					[SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
 					// get out, lets try again.
 					return;
@@ -394,8 +398,8 @@
 			
 			[self decrementRequests];
 		}
-	};
-    
+	} copy];
+
     if ([(SDURLCache *)[SDURLCache sharedURLCache] isCached:request.URL])
     {
         SDLog(@"*** Using cached response ***");
