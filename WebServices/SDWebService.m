@@ -407,14 +407,22 @@
         NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
         if (response && response.response && response.data)
         {
-            NSString *cachedString = [self responseFromData:response.data];
-            if (cachedString)
-            {
-                requestCount++;
-                urlCompletionBlock(nil, response.response, response.data, nil);
-                return YES;            
-            }
-        }
+			NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
+			if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
+			{
+				NSDate *expirationDate = [SDURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
+				if ([expirationDate timeIntervalSinceNow] > 0)
+				{
+					NSString *cachedString = [self responseFromData:response.data];
+					if (cachedString)
+					{
+						requestCount++;
+						urlCompletionBlock(nil, response.response, response.data, nil);
+						return YES;            
+					}
+				}
+			}
+		}
     }
 
 	[self incrementRequests];
