@@ -7,7 +7,7 @@
 //
 
 #import "SDWebImageView.h"
-#import "SDURLCache.h"
+#import "SDURLCacheWalmartExtensions.h"
 
 @implementation SDWebImageView
 
@@ -109,10 +109,10 @@
 		}
 	};
 	
-    if ([(SDURLCache *)[SDURLCache sharedURLCache] isCached:request.URL])
-    {
-        NSURLCache *urlCache = [NSURLCache sharedURLCache];
-        NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
+	SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
+	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
+	if (response && response.response && response.data)
+	{
         urlCompletionBlock(nil, response.response, response.data, nil);
         currentRequest = nil;
         return;

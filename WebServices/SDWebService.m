@@ -8,7 +8,7 @@
 #import "SDWebService.h"
 #import "NSString+SDExtensions.h"
 //#import "AFCacheLib.h"
-#import "SDURLCache.h"
+#import "SDURLCacheWalmartExtensions.h"
 
 #ifdef DEBUG
 @interface NSURLRequest(SDExtensionsDebug)
@@ -400,30 +400,18 @@
 		}
 	} copy];
 
-    if ([(SDURLCache *)[SDURLCache sharedURLCache] isCached:request.URL])
-    {
-        SDLog(@"*** Using cached response ***");
-        NSURLCache *urlCache = [NSURLCache sharedURLCache];
-        NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
-        if (response && response.response && response.data)
-        {
-			NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
-			if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
-			{
-				NSDate *expirationDate = [SDURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
-				if ([expirationDate timeIntervalSinceNow] > 0)
-				{
-					NSString *cachedString = [self responseFromData:response.data];
-					if (cachedString)
-					{
-						requestCount++;
-						urlCompletionBlock(nil, response.response, response.data, nil);
-						return YES;            
-					}
-				}
-			}
+	SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
+	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
+	if (response && response.response && response.data)
+	{
+		NSString *cachedString = [self responseFromData:response.data];
+		if (cachedString)
+		{
+			requestCount++;
+			urlCompletionBlock(nil, response.response, response.data, nil);
+			return YES;            
 		}
-    }
+	}
 
 	[self incrementRequests];
     
