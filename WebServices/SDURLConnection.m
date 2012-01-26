@@ -11,7 +11,7 @@
 #import "SDURLCache.h"
 #import <libkern/OSAtomic.h>
 
-#define USE_THREADED_URLCONNECTION 1
+#define USE_THREADED_URLCONNECTION 0
 
 @interface SDURLResponseCompletionDelegate : NSObject
 {
@@ -136,6 +136,12 @@
 	return idendifier;
 }
 
+- (void)cancel
+{
+    self->pseudoDelegate.isRunning = NO;
+    [super cancel];
+}
+
 + (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler
 {
     if (!handler)
@@ -159,11 +165,11 @@
         [connection scheduleInRunLoop:runLoop forMode:NSDefaultRunLoopMode];
         [connection start];
         
-        //while (delegate.isRunning)
-        //    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-        [runLoop run];
+        while (delegate.isRunning)
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        //[runLoop run];
         
-        //[runLoop removePort:dummyPort forMode:NSDefaultRunLoopMode];
+        [runLoop removePort:dummyPort forMode:NSDefaultRunLoopMode];
         [connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         
         if (delegate->responseHandler)

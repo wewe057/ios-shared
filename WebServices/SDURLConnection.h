@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class SDURLConnection;
+@class SDURLResponseCompletionDelegate;
 
 typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error);
 
@@ -18,7 +19,9 @@ typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLR
 	NSString *idendifier;
 @public
     NSPort *runPort;
+    SDURLResponseCompletionDelegate *pseudoDelegate;
 }
+
 @property (nonatomic, retain) NSString *requestName;
 @property (nonatomic, readonly) NSString *identifier;
 
