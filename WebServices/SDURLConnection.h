@@ -16,6 +16,8 @@ typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLR
 {
     NSString *requestName;
 	NSString *idendifier;
+@public
+    NSPort *runPort;
 }
 @property (nonatomic, retain) NSString *requestName;
 @property (nonatomic, readonly) NSString *identifier;

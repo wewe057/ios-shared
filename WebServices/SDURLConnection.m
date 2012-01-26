@@ -64,6 +64,8 @@
 - (void)connection:(SDURLConnection *)connection didFailWithError:(NSError *)error
 {
 #if USE_THREADED_URLCONNECTION
+    [[NSRunLoop currentRunLoop] removePort:connection->runPort forMode:NSDefaultRunLoopMode];
+    connection->runPort = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
 #endif
         responseHandler(connection, nil, responseData, error);
@@ -82,6 +84,8 @@
 - (void)connectionDidFinishLoading:(SDURLConnection *)connection
 {
 #if USE_THREADED_URLCONNECTION
+    [[NSRunLoop currentRunLoop] removePort:connection->runPort forMode:NSDefaultRunLoopMode];
+    connection->runPort = nil;
     dispatch_async(dispatch_get_main_queue(), ^{
 #endif
         responseHandler(connection, httpResponse, responseData, nil);
@@ -147,12 +151,19 @@
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{        
         
-        [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        NSPort *dummyPort = [NSPort port];
+        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+        [runLoop addPort:dummyPort forMode:NSDefaultRunLoopMode];
+        connection->runPort = dummyPort;
+        
+        [connection scheduleInRunLoop:runLoop forMode:NSDefaultRunLoopMode];
         [connection start];
         
-        while (delegate.isRunning)
-            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        //while (delegate.isRunning)
+        //    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+        [runLoop run];
         
+        //[runLoop removePort:dummyPort forMode:NSDefaultRunLoopMode];
         [connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         
         if (delegate->responseHandler)

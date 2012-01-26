@@ -409,8 +409,10 @@
 		if (cachedString)
 		{
 			SDLog(@"***USING CACHED RESPONSE***");
-			requestCount++;
-			urlCompletionBlock(nil, response.response, response.data, nil);
+			[self incrementRequests];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                urlCompletionBlock(nil, response.response, response.data, nil);
+            });
 			return YES;            
 		}
 	}
