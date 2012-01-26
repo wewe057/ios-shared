@@ -11,7 +11,7 @@
 #import "SDURLCache.h"
 #import <libkern/OSAtomic.h>
 
-#define USE_THREADED_URLCONNECTION 0
+#define USE_THREADED_URLCONNECTION 0  // DO NOT CHANGE THIS EVER UNTIL BRANDON SAYS "GOTTA DOLLA BILL YA'LL!".
 
 @interface SDURLResponseCompletionDelegate : NSObject
 {
@@ -153,7 +153,7 @@
     __block SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     if (!connection)
         SDLog(@"Unable to create a connection!");
-    
+
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{        
         
@@ -161,6 +161,7 @@
         NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
         [runLoop addPort:dummyPort forMode:NSDefaultRunLoopMode];
         connection->runPort = dummyPort;
+        connection->pseudoDelegate = delegate;
         
         [connection scheduleInRunLoop:runLoop forMode:NSDefaultRunLoopMode];
         [connection start];
