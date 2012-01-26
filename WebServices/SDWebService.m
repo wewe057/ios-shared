@@ -285,7 +285,8 @@
 	SDMutableURLRequest *request = [SDMutableURLRequest requestWithURL:url];
 	[request setHTTPMethod:method];
 	[request setHTTPShouldHandleCookies:YES];
-	[request setHTTPShouldUsePipelining:YES];
+	[request setHTTPShouldUsePipelining:NO];	// THIS WILL FUCK YOUR SHIT UP BRAH! 7 WAYS FROM SUNDAY!  In other words, this cannot be YES or our servers will return incorrect data
+												// Service A's data will be returned for Service B, and vice-versa
 #ifdef DEBUG
 	[request setTimeoutInterval:300000];
 #else
@@ -407,6 +408,7 @@
 		NSString *cachedString = [self responseFromData:response.data];
 		if (cachedString)
 		{
+			SDLog(@"***USING CACHED RESPONSE***");
 			requestCount++;
 			urlCompletionBlock(nil, response.response, response.data, nil);
 			return YES;            
