@@ -19,6 +19,13 @@ enum
     // all other errors come from ASI-HTTP
 };
 
+typedef enum
+{
+    SDWebServiceResultFailed = NO,
+    SDWebServiceResultSuccess = YES,
+    SDWebServiceResultCached = 2
+} SDWebServiceResult;
+
 enum
 {
 	SDWTFResponseCode = -1
@@ -32,7 +39,7 @@ enum
 }
 
 - (id)initWithSpecification:(NSString *)specificationName;
-- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName;
 - (NSString *)baseURLInServiceSpecification;
 - (BOOL)isReachable:(BOOL)showError;

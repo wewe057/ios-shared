@@ -113,7 +113,7 @@
 
 - (void)clearCache
 {
-	//[[ASIDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
@@ -198,7 +198,7 @@
     return responseString;
 }
 
-- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
 	// construct the URL based on the specification.
 	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
@@ -242,12 +242,11 @@
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
         completionBlock(0, nil, &error);
-        return NO;
+        return SDWebServiceResultFailed;
     }
     
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];
-    //NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
     
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
@@ -330,12 +329,7 @@
     
     // setup caching
     if (cache && [cache boolValue])
-    {
-        //[request setDownloadCache:[ASIDownloadCache sharedCache]];
-        //if (cacheTTL)
-        //    [request setSecondsToCache:[cacheTTL unsignedIntValue]];
         [request setCachePolicy:NSURLCacheStorageAllowed];
-    }
 	else
 		[request setCachePolicy:NSURLCacheStorageNotAllowed];
     
@@ -344,7 +338,7 @@
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
     
-    SDWebService *blockSelf = self;
+    __block SDWebService *blockSelf = self;
 	    
 #ifdef DEBUG
     __block NSDate *startDate = [NSDate date];
@@ -363,18 +357,13 @@
 			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
 #endif
 			
-			if ([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName])
+			if (([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName]) && shouldRetry)
 			{
-				request.retryCount = request.retryCount-1;
-				if (request.retryCount > 0)
-				{
-					// remove it from the cache if its there.
-					NSURLCache *cache = [NSURLCache sharedURLCache];
-					[cache removeCachedResponseForRequest:request];
-					[SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
-					// get out, lets try again.
-					return;
-				}
+                // remove it from the cache if its there.
+                NSURLCache *cache = [NSURLCache sharedURLCache];
+                [cache removeCachedResponseForRequest:request];
+                [blockSelf performRequestWithMethod:requestName routeReplacements:routeReplacements completion:completionBlock shouldRetry:NO];
+                return;
 			}
 			
 			// remove from the singleRequests list
@@ -392,28 +381,31 @@
 			// handle redirects in a crappy way.. need to rework this to be done inside of SDURLConnection.
 			if (code == 302)
 			{
-				[self will302RedirectToUrl:httpResponse.URL];
+				[blockSelf will302RedirectToUrl:httpResponse.URL];
 			}
 			
 			completionBlock(code, responseString, &error);
 			
-			[self decrementRequests];
+			[blockSelf decrementRequests];
 		}
 	} copy];
 
 	SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
 	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
-	if (response && response.response && response.data)
+	if (cache && response && response.response && response.data)
 	{
 		NSString *cachedString = [self responseFromData:response.data];
 		if (cachedString)
 		{
 			SDLog(@"***USING CACHED RESPONSE***");
 			[self incrementRequests];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                urlCompletionBlock(nil, response.response, response.data, nil);
-            });
-			return YES;            
+            __block SDURLConnectionResponseBlock cachedBlock = [urlCompletionBlock copy];
+            
+            // Need ot pay special attention here when enabling threading again.
+            //dispatch_async(dispatch_get_main_queue(), ^{
+                cachedBlock(nil, response.response, response.data, nil);
+            //});
+			return SDWebServiceResultCached;            
 		}
 	}
 
@@ -440,14 +432,14 @@
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:[urlCompletionBlock copy]];
 	if (singleRequest)
 		[singleRequests setObject:connection forKey:requestName];
 	
-	return YES;
+	return SDWebServiceResultSuccess;
 }
 
-- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
     return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
 }
