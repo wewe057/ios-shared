@@ -52,7 +52,7 @@
 	[request setHTTPMethod:@"GET"];
 	[request setHTTPShouldHandleCookies:YES];
 	[request setHTTPShouldUsePipelining:NO];
-#ifdef DEBUG
+#ifdef HUGE_SERVICES_TIMEOUT
 	[request setTimeoutInterval:300000];
 #else
 	[request setTimeoutInterval:30];
