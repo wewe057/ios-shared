@@ -51,7 +51,7 @@
 	
 	[request setHTTPMethod:@"GET"];
 	[request setHTTPShouldHandleCookies:YES];
-	[request setHTTPShouldUsePipelining:YES];
+	[request setHTTPShouldUsePipelining:NO];
 #ifdef DEBUG
 	[request setTimeoutInterval:300000];
 #else
