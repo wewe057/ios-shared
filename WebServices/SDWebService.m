@@ -362,7 +362,7 @@
                 // remove it from the cache if its there.
                 NSURLCache *cache = [NSURLCache sharedURLCache];
                 [cache removeCachedResponseForRequest:request];
-                [blockSelf performRequestWithMethod:requestName routeReplacements:routeReplacements completion:completionBlock shouldRetry:NO];
+                [blockSelf performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:NO];
                 return;
 			}
 			
