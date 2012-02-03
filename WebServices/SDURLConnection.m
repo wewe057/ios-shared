@@ -183,6 +183,11 @@
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     if (!connection)
         SDLog(@"Unable to create a connection!");
+    
+	// To keep the smooth scrolling on the iPhone app Shelf w/o affecting iPad
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)
+        [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    
     [connection start];
     
 #endif
