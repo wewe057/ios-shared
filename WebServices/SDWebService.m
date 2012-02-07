@@ -346,9 +346,9 @@
     
     // setup caching
     if (cache && [cache boolValue])
-        [request setCachePolicy:NSURLCacheStorageAllowed];
+        [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
 	else
-		[request setCachePolicy:NSURLCacheStorageNotAllowed];
+		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
