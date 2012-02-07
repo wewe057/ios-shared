@@ -329,7 +329,7 @@
     
     // setup caching
     if (cache && [cache boolValue])
-        [request setCachePolicy:NSURLRequestReloadRevalidatingCacheData];
+        [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
 	else
 		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     
