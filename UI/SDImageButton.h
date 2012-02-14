@@ -10,7 +10,7 @@
 
 @interface SDImageButton : UIControl
 
-@property (nonatomic, retain) UIImage *image;
-@property (nonatomic, retain) UIImage *selectedImage;
+@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong) UIImage *selectedImage;
 
 @end

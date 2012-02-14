@@ -7,9 +7,7 @@
 //
 
 #import "SDWebImageView.h"
-#import "ASIHTTPRequest.h"
-#import "SDDownloadCache.h"
-#import "ASINetworkQueue.h"
+#import "SDURLCacheWalmartExtensions.h"
 
 @implementation SDWebImageView
 
@@ -20,14 +18,9 @@
 @synthesize imageUrlString;
 @synthesize errorImage;
 
-- (void)clearRequest
+- (void)internalSetImage:(UIImage *)image
 {
-	if (request)
-	{
-		[request clearDelegatesAndCancel];
-		[request release];
-		request = nil;
-	}
+    self.image = image;
 }
 
 - (void)setImageUrlString:(NSString *)argImageUrlString {
@@ -35,12 +28,13 @@
     if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
         return;
     
-	[imageUrlString release];
 	imageUrlString = [argImageUrlString copy];
 	
-
-    [self clearRequest];
-	
+    if (request)
+    {
+        request = nil;
+    }
+    
     if (self.image != nil) {
         self.image = nil;
     }
@@ -49,53 +43,82 @@
     
 	NSURL *url = [NSURL URLWithString:imageUrlString];
 	
-    SDDownloadCache *cache = [SDDownloadCache sharedCache];
-    NSData *data = [cache cachedResponseDataForURL:url];
-    if (data)
-    {
-        self.image = [UIImage imageWithData:data];
-    }
-    else
-    {   
-		self.alpha = 0;
-		
-        __block ASIHTTPRequest *tempRequest = nil;
-        request = [[ASIHTTPRequest requestWithURL:url] retain];
-        tempRequest = request;
-        
-        tempRequest.numberOfTimesToRetryOnTimeout = 3;
-        tempRequest.delegate = self;
-        [tempRequest setShouldContinueWhenAppEntersBackground:YES];
-        [tempRequest setDownloadCache:[SDDownloadCache sharedCache]];
-        [tempRequest setCacheStoragePolicy:ASICacheForSessionDurationCacheStoragePolicy];
-        //[tempRequest setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-        
-        __block SDWebImageView *blockSelf = self;
-        [tempRequest setCompletionBlock:^{
-            NSData *responseData = [tempRequest responseData];
-            blockSelf.image = [UIImage imageWithData:responseData];
-			
-			[UIView animateWithDuration:0.2 animations:^{
-				blockSelf.alpha = 1.0;
-			}];
-			[self clearRequest];
-       }];
-        
-        [tempRequest setFailedBlock:^{
-            NSError *error = [tempRequest error];
-            SDLog(@"Error fetching image: %@", error);
-            blockSelf.image = blockSelf.errorImage;
+	self.alpha = 0;
+	
+	__unsafe_unretained NSMutableURLRequest *tempRequest = nil;
+	tempRequest = [NSMutableURLRequest requestWithURL:url]; 
+	request = tempRequest;
+	
+	[request setHTTPMethod:@"GET"];
+	[request setHTTPShouldHandleCookies:YES];
+	[request setHTTPShouldUsePipelining:NO];
+#ifdef HUGE_SERVICES_TIMEOUT
+	[request setTimeoutInterval:300000];
+#else
+	[request setTimeoutInterval:30];
+#endif
+	
+	SDWebImageView *blockSelf = self;
+    blockSelf.alpha = 1.0;
 
-			[UIView animateWithDuration:0.2 animations:^{
-				blockSelf.alpha = 1.0;
-			}];
-			[self clearRequest];
-        }];
-        
-        ASINetworkQueue *queue = [ASINetworkQueue queue];
-        [queue addOperation:tempRequest];
-        [queue go];
+	// if we've got one going, kill it so we don't get junk.
+	[currentRequest cancel];
+	currentRequest = nil;
+	
+#ifdef DEBUG
+	NSDate *startDate = [NSDate date];
+#endif
+	
+	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
+		@autoreleasepool {
+			
+#ifdef DEBUG
+			SDLog(@"Image retrieval call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
+#endif
+			currentRequest = nil;
+			
+			if ([error code] == NSURLErrorTimedOut)
+			{
+				SDLog(@"Error fetching image: %@", error);
+				
+				// remove it from the cache if its there.
+				NSURLCache *cache = [NSURLCache sharedURLCache];
+				[cache removeCachedResponseForRequest:request];
+				
+				// set image
+				/*blockSelf.image = blockSelf.errorImage;
+				[UIView animateWithDuration:0.2 animations:^{
+					blockSelf.alpha = 1.0;
+				}];*/
+                //[blockSelf performSelector:@selector(internalSetImage:) withObject:blockSelf.errorImage afterDelay:0.1];
+                blockSelf.image = blockSelf.errorImage;
+				
+			} else {
+				
+				// set image
+				/*blockSelf.image = [UIImage imageWithData:responseData];
+				[UIView animateWithDuration:0.2 animations:^{
+					blockSelf.alpha = 1.0;
+				}];*/
+                
+                UIImage *image = [UIImage imageWithData:responseData];
+                blockSelf.image = image;
+                //[blockSelf performSelector:@selector(internalSetImage:) withObject:[image copy] afterDelay:0.1];
+
+			}
+		}
+	};
+	
+	SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
+	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
+	if (response && response.response && response.data)
+	{
+        urlCompletionBlock(nil, response.response, response.data, nil);
+        currentRequest = nil;
+        return;
     }
+
+	currentRequest = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
 }
 
 
@@ -116,14 +139,6 @@
     if (self) {
     }
     return self;
-}
-
-- (void)dealloc {
-    [request clearDelegatesAndCancel];
-    [request release];
-	[imageUrlString release];
-	[errorImage release];
-	[super dealloc];
 }
 
 

@@ -26,11 +26,11 @@
     id selectedSearchItem;
 }
 
-@property (nonatomic, retain) NSString *userDefaultsKey;
+@property (nonatomic, strong) NSString *userDefaultsKey;
 @property (nonatomic, assign) NSUInteger maximumCount;
-@property (nonatomic, retain) NSString *filterString;
-@property (nonatomic, retain) NSArray *alternateResults;
-@property (nonatomic, retain) id selectedSearchItem;
+@property (nonatomic, strong) NSString *filterString;
+@property (nonatomic, strong) NSArray *alternateResults;
+@property (nonatomic, strong) id selectedSearchItem;
 
 - (void)addStringToHistory:(NSString *)string;
 

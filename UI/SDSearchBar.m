@@ -14,12 +14,6 @@
 @synthesize controller;
 @synthesize active = isActive;
 
-- (void)dealloc
-{
-	[obscuringView release];
-	[controller release];
-    [super dealloc];
-}
 
 - (UIView *)obscuringView
 {

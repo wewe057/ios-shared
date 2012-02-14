@@ -15,8 +15,8 @@
 	CGFloat webViewHeight;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *titleLabel;
-@property (nonatomic, retain) IBOutlet UIWebView *webView;
+@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
+@property (nonatomic, strong) IBOutlet UIWebView *webView;
 
 // It's the responsibility of the VC that manages this cell to set the height after it loads the HTML.
 @property (nonatomic, assign) CGFloat webViewHeight;

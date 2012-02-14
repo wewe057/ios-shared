@@ -13,7 +13,7 @@
 
 + (CLLocation *)locationWithCoordinates:(CLLocationCoordinate2D)coordinates
 {
-	CLLocation *location = [[[CLLocation alloc] initWithLatitude:coordinates.latitude longitude:coordinates.longitude] autorelease];
+	CLLocation *location = [[CLLocation alloc] initWithLatitude:coordinates.latitude longitude:coordinates.longitude];
 	return location;
 }
 

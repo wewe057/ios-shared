@@ -6,86 +6,70 @@
 //
 
 #import "SDWebService.h"
-#import "ASIHTTPRequest.h"
-#import "ASIDownloadCache.h"
-#import "ASINetworkQueue.h"
 #import "NSString+SDExtensions.h"
-#import "ASIFormDataRequest.h"
-#import "SDDownloadCache.h"
+//#import "AFCacheLib.h"
+#import "SDURLCacheWalmartExtensions.h"
 
-@interface SDHTTPRequest : ASIHTTPRequest
+#ifdef DEBUG
+@interface NSURLRequest(SDExtensionsDebug)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
+@end
+
+@implementation NSURLRequest(SDExtensionsDebug)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host
+{
+	return YES;
+}
+@end
+#endif
+
+@interface SDMutableURLRequest : NSMutableURLRequest
+@property (nonatomic, assign) int retryCount;
+@end
+
+@implementation SDMutableURLRequest
+@synthesize retryCount;
+@end
+
+/*@interface SDFormDataRequest : ASIFormDataRequest
 {
     NSString *requestName;
 }
 @property (nonatomic, retain) NSString *requestName;
-@end
+@end*/
 
 
-@implementation SDHTTPRequest
+/*@implementation SDFormDataRequest
 
 @synthesize requestName;
 
 - (void)dealloc
 {
-    [requestName release];
-    [super dealloc];
+    requestName = nil;
 }
 
-@end
-
-@interface SDFormDataRequest : ASIFormDataRequest
-{
-    NSString *requestName;
-}
-@property (nonatomic, retain) NSString *requestName;
-@end
-
-
-@implementation SDFormDataRequest
-
-@synthesize requestName;
-
-- (void)dealloc
-{
-    [requestName release];
-    [super dealloc];
-}
-
-@end
+@end*/
 
 
 @implementation SDWebService
-
-@synthesize serviceCookies;
 
 - (id)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
 	
-	if (self) {
-		queues = [[NSMutableDictionary alloc] init];
-		NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
-		serviceSpecification = [[NSDictionary dictionaryWithContentsOfFile:specFile] retain];
-		if (!serviceSpecification)
-			[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
-	}
+    singleRequests = [[NSMutableDictionary alloc] init];
+	NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
+	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
+	if (!serviceSpecification)
+		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
 	
 	return self;
 }
 
 - (void)dealloc
 {
-	[serviceSpecification release];
-    [queues release];
-	[super dealloc];
-}
-
-- (void)setServiceCookies:(NSMutableArray *)cookies
-{
-    [serviceCookies release];
-    serviceCookies = nil;
-    if (cookies)
-        serviceCookies = [cookies retain];
+	serviceSpecification = nil;
+    singleRequests = nil;
 }
 
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName
@@ -129,7 +113,7 @@
 
 - (void)clearCache
 {
-	[[SDDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
@@ -169,7 +153,7 @@
 			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
 	}
     
-    [actualReplacements release];
+    actualReplacements = nil;
     
     return result;
 }
@@ -194,7 +178,27 @@
     }
 }
 
-- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
+- (void)incrementRequests
+{
+    requestCount++;
+    [self showNetworkActivityIfNeeded];
+}
+
+- (void)decrementRequests
+{
+	requestCount--;
+	[self hideNetworkActivityIfNeeded];
+}
+
+- (NSString *)responseFromData:(NSData *)data
+{
+    NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (!responseString)
+        responseString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+    return responseString;
+}
+
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
 	// construct the URL based on the specification.
 	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
@@ -238,29 +242,11 @@
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
         completionBlock(0, nil, &error);
-        return NO;
+        return SDWebServiceResultFailed;
     }
     
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];
-    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
-    
-    // see if this is a singleton request.
-    NSNumber *singleRequestNumber = [requestDetails objectForKey:@"singleRequest"];
-    BOOL singleRequest = NO;
-    ASINetworkQueue *namedQueue = [queues objectForKey:requestName];
-    if (singleRequestNumber)
-    {
-        singleRequest = [singleRequestNumber boolValue];
-        
-        // if it is, lets cancel any with matching names. there may be multiple, however unlikely.
-        if (singleRequest)
-        {
-            [namedQueue cancelAllOperations];
-            namedQueue = [[[ASINetworkQueue alloc] init] autorelease];
-            [queues setObject:namedQueue forKey:requestName];
-        }
-    }
     
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
@@ -295,149 +281,165 @@
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	
-	__block ASIHTTPRequest *request = nil;
-    if ([[method uppercaseString] isEqualToString:@"POST"])
-    {
-		request = [SDFormDataRequest requestWithURL:url];
-	} else {
-		request = [SDHTTPRequest requestWithURL:url];
-	}
-	request.requestMethod = method;
-    request.useCookiePersistence = YES;
-    request.numberOfTimesToRetryOnTimeout = 1;
-    [ASIHTTPRequest setShouldUpdateNetworkActivityIndicator:NO];
-    [request setShouldContinueWhenAppEntersBackground:YES];
-#ifdef DEBUG
-#warning "Ignoring SSL certifications while in DEBUG mode"
-    request.timeOutSeconds = 300;
-    [request setValidatesSecureCertificate:NO];
+	SDMutableURLRequest *request = [SDMutableURLRequest requestWithURL:url];
+	[request setHTTPMethod:method];
+	[request setHTTPShouldHandleCookies:YES];
+	[request setHTTPShouldUsePipelining:NO];	// THIS WILL FUCK YOUR SHIT UP BRAH! 7 WAYS FROM SUNDAY!  In other words, this cannot be YES or our servers will return incorrect data
+												// Service A's data will be returned for Service B, and vice-versa
+#ifdef HUGE_SERVICES_TIMEOUT
+	[request setTimeoutInterval:300000];
 #else
-    request.timeOutSeconds = 30;
+	[request setTimeoutInterval:30];
 #endif
-    
-    
+
+	if (shouldRetry)
+		[request setRetryCount:3];
+	else
+		[request setRetryCount:0];
+	
     if (postMethod && postParams)
     {
+		NSMutableString *post = [[NSMutableString alloc] init];
+		NSData *postData = nil;
+		
         SDLog(@"request post: %@", postParams);
-		SDFormDataRequest *postRequest = (SDFormDataRequest *)request;
 		NSArray *parameters = [postParams componentsSeparatedByString:@"&"];
 		for (NSString *aParameter in parameters) {
 			NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
 			if ([keyVal count] == 2) {
-                NSString *decodedKey = [[keyVal objectAtIndex:0] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-                NSString *decodedValue = [[keyVal objectAtIndex:1] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-				[postRequest setPostValue:decodedValue forKey:decodedKey];
+                NSString *decodedKey = [keyVal objectAtIndex:0];			// Pass encoded values to NSURLConnection
+                NSString *decodedValue = [keyVal objectAtIndex:1];
+				[post appendFormat:@"%@=%@&", decodedKey, decodedValue];
 			} else {
 				[NSException raise:@"SDException" format:@"Unable to create request. Post param does not have proper key value pair: %@", keyVal];
 			}
 		}
-    }
-    
-    if (singleRequest)
-    {
-        if (namedQueue)
-            [namedQueue addOperation:request];
+		
+		// Remove dangling '&' after simple sanity check
+		if ([post length]) {
+			post = [NSMutableString stringWithString:[post substringToIndex:[post length] - 1]];
+		}
+		
+		postData = [post dataUsingEncoding:NSUTF8StringEncoding];
+		
+		[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+		[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
+		[request setHTTPBody:postData];
     }
     
     // setup caching
     if (cache && [cache boolValue])
-    {
-        [request setDownloadCache:[SDDownloadCache sharedCache]];
-        if (cacheTTL)
-            [request setSecondsToCache:[cacheTTL unsignedIntValue]];
-        [request setCacheStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-    }
-    
-    if (serviceCookies)
-    {
-        request.useCookiePersistence = NO;
-        [request setRequestCookies:serviceCookies];
-    }
-	
-    // set ourselves up to retry
-    NSDictionary *replacementsCopy = [[replacements copy] autorelease];
-    SDWebServiceCompletionBlock completionBlockCopy = [[completionBlock copy] autorelease];
-    NSString *requestNameCopy = [[requestName copy] autorelease];
+        [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+	else
+		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     
 	// setup the completion blocks.  we call the same block because failure means
 	// different things with different APIs.  pass along the info we've gathered
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
     
-    SDWebService *blockSelf = self;
-    
+    __block SDWebService *blockSelf = self;
+	    
 #ifdef DEBUG
-    NSDate *startDate = [NSDate date];
+    __block NSDate *startDate = [NSDate date];
 #endif
-    
-	[request setCompletionBlock:^{
-        
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];        
-        NSString *responseString = [request responseString];
-        NSError *error = nil;
-        
-#ifdef DEBUG
-        SDLog(@"Service call took %lf seconds.", [[NSDate date] timeIntervalSinceDate:startDate]);
-#endif
-        //SDLog(@"request-headers = %@", [request requestHeaders]);
-        //SDLog(@"response-headers = %@", [request responseHeaders]);
-        if ([request didUseCachedResponse])
-            SDLog(@"**** USING CACHED RESPONSE FOR URL %@ ***", url);
-		else
-            SDLog(@"**** USING SERVER RESPONSE FOR URL %@ ***", url);
-        
-        if (![blockSelf responseIsValid:responseString forRequest:requestName] && shouldRetry)
-        {
-            [[SDDownloadCache sharedCache] clearCachedResponsesForStoragePolicy:ASICachePermanentlyCacheStoragePolicy];
-            [blockSelf performRequestWithMethod:requestNameCopy routeReplacements:replacementsCopy completion:completionBlockCopy shouldRetry:NO];
-        }
-        else
-        {
-            int code = [request responseStatusCode];
-            completionBlock(code, responseString, &error);
-        }
-        [request setFailedBlock:nil];
-        [request setRequestRedirectedBlock:nil];
-        [request setCompletionBlock:nil];
-        requestCount--;
-        [self hideNetworkActivityIfNeeded];
 
-        [pool drain];
-	}];
-    
-	[request setFailedBlock:^{
-		NSString *responseString = [request responseString];
-		NSError *error = [request error];
-		completionBlock([request responseStatusCode], responseString, &error);
-        [request setCompletionBlock:nil];
-        [request setRequestRedirectedBlock:nil];
-        [request setFailedBlock:nil];
-        requestCount--;
-        [self hideNetworkActivityIfNeeded];
-	}];
-	
-	[request setRequestRedirectedBlock:^{
-		if (([request responseStatusCode] == 302)) {
-			[blockSelf will302RedirectToUrl:[request url]];
+	// Note we do a copy at the end of the following block definition/assignment. If we don't do the copy, the original block
+	// variable gets moved to the heap due to a compiler optimization (with __block) and we get a bad access crash on the first
+	// reference below this block definition. But we have to declare the block with __block to get the block self-reference within
+	// the block to work. So the solution is to pass a copy on the assignment line. See bbum's blog post, section 7 about
+	// recursive blocks: http://www.friday.com/bbum/2009/08/29/blocks-tips-tricks
+	__block SDURLConnectionResponseBlock urlCompletionBlock = [^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
+		@autoreleasepool {
+			NSString *responseString = [self responseFromData:responseData];
+
+#ifdef DEBUG
+			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
+#endif
+			
+			if (([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName]) && shouldRetry)
+			{
+                // remove it from the cache if its there.
+                NSURLCache *cache = [NSURLCache sharedURLCache];
+                [cache removeCachedResponseForRequest:request];
+                [blockSelf performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:NO];
+                return;
+			}
+			
+			// remove from the singleRequests list
+			[singleRequests removeObjectForKey:requestName];
+			
+			// Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
+			// So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
+			int code = SDWTFResponseCode;
+			NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+			if ([response isKindOfClass:[NSHTTPURLResponse class]])
+			{
+				code = [httpResponse statusCode];
+			}
+			
+			// handle redirects in a crappy way.. need to rework this to be done inside of SDURLConnection.
+			if (code == 302)
+			{
+				[blockSelf will302RedirectToUrl:httpResponse.URL];
+			}
+			
+			completionBlock(code, responseString, &error);
+			
+			[blockSelf decrementRequests];
 		}
-	}];
-	
-    requestCount++;
-    [self showNetworkActivityIfNeeded];
+	} copy];
+
+	SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
+	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
+	if (cache && response && response.response && response.data)
+	{
+		NSString *cachedString = [self responseFromData:response.data];
+		if (cachedString)
+		{
+			SDLog(@"***USING CACHED RESPONSE***");
+			[self incrementRequests];
+            __block SDURLConnectionResponseBlock cachedBlock = [urlCompletionBlock copy];
+            
+            // Need ot pay special attention here when enabling threading again.
+            //dispatch_async(dispatch_get_main_queue(), ^{
+                cachedBlock(nil, response.response, response.data, nil);
+            //});
+			return SDWebServiceResultCached;            
+		}
+	}
+
+	[self incrementRequests];
     
-    if (!singleRequest)
+	// see if this is a singleton request.
+    BOOL singleRequest = NO;
+	NSNumber *singleRequestNumber = [requestDetails objectForKey:@"singleRequest"];
+    if (singleRequestNumber)
     {
-        //[request startAsynchronous];
-        ASINetworkQueue *queue = [ASINetworkQueue queue];
-        [queue addOperation:request];
-        [queue go];
+        singleRequest = [singleRequestNumber boolValue];
+        
+        // if it is, lets cancel any with matching names.
+        if (singleRequest)
+        {
+			SDURLConnection *existingConnection = [singleRequests objectForKey:requestName];
+			if (existingConnection)
+			{
+				SDLog(@"Cancelling call.");
+				[existingConnection cancel];
+				[singleRequests removeObjectForKey:requestName];
+				[self decrementRequests];
+			}
+        }
     }
-    else
-        [namedQueue go];
-	return YES;
+
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:[urlCompletionBlock copy]];
+	if (singleRequest)
+		[singleRequests setObject:connection forKey:requestName];
+	
+	return SDWebServiceResultSuccess;
 }
 
-- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
     return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
 }

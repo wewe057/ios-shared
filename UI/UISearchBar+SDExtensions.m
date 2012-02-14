@@ -15,7 +15,7 @@
 {
 	static UIImage *image = nil;
 	if (image == nil)
-		image = [[UIImage imageNamed:@"searchBarBackground.png"] retain];
+		image = [UIImage imageNamed:@"searchBarBackground.png"];
 	
 	return image;
 }

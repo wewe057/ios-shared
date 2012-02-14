@@ -7,6 +7,7 @@
 //
 
 #import "SDPickerModalViewController.h"
+#import "SDCheckpointLog.h"
 
 
 @implementation SDPickerModalViewController
@@ -26,18 +27,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [doneBlock release];
-    [cancelBlock release];
-    
-    [toolbar release];
-    [pickerView release];
-    [cancelButton release];
-    [doneButton release];
-    [backgroundView release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -57,19 +46,20 @@
 
 - (void)viewDidUnload
 {
-    [toolbar release];
     toolbar = nil;
-    [pickerView release];
     pickerView = nil;
-    [cancelButton release];
     cancelButton = nil;
-    [doneButton release];
     doneButton = nil;
-    [backgroundView release];
     backgroundView = nil;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [SDCheckpointLog passCheckpointVCDidAppearWithFilePath:__FILE__];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

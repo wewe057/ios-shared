@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-// this comes from ASI-HTTP
+#import "SDURLConnection.h"
 #import "Reachability.h"
 
 typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
@@ -19,18 +19,27 @@ enum
     // all other errors come from ASI-HTTP
 };
 
+typedef enum
+{
+    SDWebServiceResultFailed = NO,
+    SDWebServiceResultSuccess = YES,
+    SDWebServiceResultCached = 2
+} SDWebServiceResult;
+
+enum
+{
+	SDWTFResponseCode = -1
+};
+
 @interface SDWebService : NSObject
 {
+	NSMutableDictionary *singleRequests;
 	NSDictionary *serviceSpecification;
-    NSMutableArray *serviceCookies;
-    NSMutableDictionary *queues;
     NSUInteger requestCount;
 }
 
-@property (nonatomic, retain) NSMutableArray *serviceCookies;
-
 - (id)initWithSpecification:(NSString *)specificationName;
-- (BOOL)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName;
 - (NSString *)baseURLInServiceSpecification;
 - (BOOL)isReachable:(BOOL)showError;
