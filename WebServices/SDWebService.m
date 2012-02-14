@@ -260,18 +260,27 @@
 	
     // setup post data if we need to.
     NSString *postParams = nil;
+	NSString *postJSON = nil;
     if (postMethod)
     {
         NSString *postFormat = [requestDetails objectForKey:@"postFormat"];
         if (postFormat)
         {
-            postParams = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:postFormat];
-			
-			// there are some unparsed parameters which means either the plist is wrong, or the caller 
-			// gave us a list of replacements that weren't sufficient to continue on.
-			if ([postParams rangeOfString:@"{"].location != NSNotFound)
+			if ([postFormat isEqualToString:@"JSON"])
 			{
-				[NSException raise:@"SDException" format:@"Unable to create request.  The post params still contains replacement markers: %@", postParams];
+				// post data is raw JSON
+				postJSON = [replacements objectForKey:@"JSON"];
+			}
+			else
+			{
+				// post data is in 'foo1={bar1}&foo2={bar2}...' form
+				postParams = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:postFormat];
+				// there are some unparsed parameters which means either the plist is wrong, or the caller 
+				// gave us a list of replacements that weren't sufficient to continue on.
+				if ([postParams rangeOfString:@"{"].location != NSNotFound)
+				{
+					[NSException raise:@"SDException" format:@"Unable to create request.  The post params still contains replacement markers: %@", postParams];
+				}
 			}
         }
     }
@@ -297,34 +306,42 @@
 	else
 		[request setRetryCount:0];
 	
-    if (postMethod && postParams)
+    if (postMethod)
     {
-		NSMutableString *post = [[NSMutableString alloc] init];
-		NSData *postData = nil;
-		
-        SDLog(@"request post: %@", postParams);
-		NSArray *parameters = [postParams componentsSeparatedByString:@"&"];
-		for (NSString *aParameter in parameters) {
-			NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
-			if ([keyVal count] == 2) {
-                NSString *decodedKey = [keyVal objectAtIndex:0];			// Pass encoded values to NSURLConnection
-                NSString *decodedValue = [keyVal objectAtIndex:1];
-				[post appendFormat:@"%@=%@&", decodedKey, decodedValue];
-			} else {
-				[NSException raise:@"SDException" format:@"Unable to create request. Post param does not have proper key value pair: %@", keyVal];
+		NSString *post = nil;
+		if (postParams)
+		{
+			NSMutableString *mutablePost = [[NSMutableString alloc] init];
+			SDLog(@"request post: %@", postParams);
+			NSArray *parameters = [postParams componentsSeparatedByString:@"&"];
+			for (NSString *aParameter in parameters) {
+				NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
+				if ([keyVal count] == 2) {
+					NSString *decodedKey = [keyVal objectAtIndex:0];			// Pass encoded values to NSURLConnection
+					NSString *decodedValue = [keyVal objectAtIndex:1];
+					[mutablePost appendFormat:@"%@=%@&", decodedKey, decodedValue];
+				} else {
+					[NSException raise:@"SDException" format:@"Unable to create request. Post param does not have proper key value pair: %@", keyVal];
+				}
 			}
+			// Remove dangling '&' after simple sanity check
+			if ([mutablePost length]) {
+				mutablePost = [NSMutableString stringWithString:[mutablePost substringToIndex:[mutablePost length] - 1]];
+			}
+			post = mutablePost;
+			[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
 		}
-		
-		// Remove dangling '&' after simple sanity check
-		if ([post length]) {
-			post = [NSMutableString stringWithString:[post substringToIndex:[post length] - 1]];
+		else if (postJSON)
+		{
+			post = postJSON;
+			[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 		}
-		
-		postData = [post dataUsingEncoding:NSUTF8StringEncoding];
-		
-		[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-		[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
-		[request setHTTPBody:postData];
+		if (post)
+		{
+			NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
+			[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
+			[request setHTTPBody:postData];
+		}
     }
     
     // setup caching
