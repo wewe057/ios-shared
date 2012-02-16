@@ -28,7 +28,7 @@
 }
 
 @property (nonatomic, unsafe_unretained) UIView *dragView;
-@property (nonatomic, readonly) UIView *currentDropTarget;
+@property (nonatomic, readonly, assign) UIView *currentDropTarget;
 @property (nonatomic, unsafe_unretained) id<SDDragViewDelegate> dragViewDelegate;
 
 @end
