@@ -16,13 +16,13 @@
 #elif defined(DEBUG) && !defined(TESTFLIGHT)
 #define SDLog NSLog
 #else
-#define SDLog
+#define SDLog(x...)
 #endif
 
 #if defined(DEBUG)
 #define SDLogResponse(__FORMAT__, ...) { if ([[NSUserDefaults standardUserDefaults] boolForKey:@"kIncludeResponsesInLogs"]) SDLog(__FORMAT__, ##__VA_ARGS__); }
 #else
-#define SDLogResponse
+#define SDLogResponse(x...)
 #endif
 
 #define SDTFLog(__FORMAT__, ...) TFLog((@"%s [Line %d] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
