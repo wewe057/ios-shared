@@ -128,7 +128,8 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 			*error = [NSError errorWithDomain:SDKeychainErrorDomain code:-1999 userInfo:nil];
 	}
 
-	CFRelease(cfResultData);
+    if (cfResultData)
+        CFRelease(cfResultData);
 	return password;
 }
 
