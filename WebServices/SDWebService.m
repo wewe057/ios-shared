@@ -66,6 +66,17 @@
 	return self;
 }
 
+- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost
+{
+	self = [self initWithSpecification:specificationName];
+    
+    NSMutableDictionary *altServiceSpecification = [serviceSpecification mutableCopy];
+    [altServiceSpecification setObject:defaultHost forKey:@"baseURL"];
+    serviceSpecification = altServiceSpecification;
+	
+	return self;
+}
+
 - (void)dealloc
 {
 	serviceSpecification = nil;
