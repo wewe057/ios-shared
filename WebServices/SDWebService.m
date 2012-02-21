@@ -133,6 +133,8 @@
 	// a complete name and value list.
 	NSArray *keyList = [userReplacements allKeys];
 	NSMutableDictionary *actualReplacements = [replacements mutableCopy];
+    if (!actualReplacements)
+        actualReplacements = [NSMutableDictionary dictionary];
 	for (NSString *key in keyList)
 	{
 		// this takes all the data provided in replacements and overwrites any default
