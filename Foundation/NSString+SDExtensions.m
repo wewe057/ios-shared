@@ -56,8 +56,15 @@
     fixed = [regex stringByReplacingMatchesInString:fixed 
                                             options:0 
                                               range:NSMakeRange(0, [fixed length]) 
-                                       withTemplate:@""];
+                                       withTemplate:@" "];
+    
+    regex = [NSRegularExpression regularExpressionWithPattern:@"\\s+" options:NSRegularExpressionCaseInsensitive error:&error];
 
+    fixed = [regex stringByReplacingMatchesInString:fixed 
+                                            options:0 
+                                              range:NSMakeRange(0, [fixed length]) 
+                                       withTemplate:@" "];
+    
     // a final trimmy trimmy
     fixed = [fixed stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
