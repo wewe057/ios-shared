@@ -8,9 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+
+@interface NSMutableArray (NSMutableArray_SDExtensions)
+
+- (void)shuffle;
+
+@end
+
 @interface NSArray (NSArray_SDExtensions)
 
 - (id)nextToLastObject;
 - (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...;
+- (NSArray*) shuffledArray;
 
 @end

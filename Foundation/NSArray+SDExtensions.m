@@ -8,6 +8,18 @@
 
 #import "NSArray+SDExtensions.h"
 
+@implementation NSMutableArray (NSMutableArray_SDExtensions)
+
+- (void)shuffle
+{
+	for (NSInteger i = [self count] - 1; i > 0; --i) {
+		[self exchangeObjectAtIndex: arc4random() % (i+1) withObjectAtIndex: i];
+	}
+}
+
+@end
+
+
 @implementation NSArray (NSArray_SDExtensions)
 
 - (id)nextToLastObject
@@ -49,6 +61,13 @@
         }
     }
     va_end(args);
+}
+
+- (NSArray*)shuffledArray
+{
+	NSMutableArray* shuffledArray = [NSMutableArray arrayWithArray: self];
+	[shuffledArray shuffle];
+	return shuffledArray;
 }
 
 @end
