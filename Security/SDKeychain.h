@@ -41,4 +41,7 @@
 + (BOOL)storeUsername:(NSString *)username andPassword:(NSString *)password forServiceName:(NSString *)serviceName updateExisting:(BOOL)updateExisting error:(NSError **)error;
 + (BOOL)deleteItemForUsername:(NSString *)username andServiceName:(NSString *)serviceName error:(NSError **)error;
 
++ (NSString*)stringForKey:(NSString*)key serviceName:(NSString *)serviceName;
++ (BOOL)setString:(NSString*)string forKey:(NSString*)key serviceName:(NSString *)serviceName;
+
 @end

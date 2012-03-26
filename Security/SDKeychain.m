@@ -38,6 +38,58 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 
 @implementation SDKeychain
 
++ (NSString*)stringForKey:(NSString*)key serviceName:(NSString *)serviceName
+{
+	OSStatus status;
+
+    NSDictionary *query = [NSDictionary dictionaryWithObjectsAndKeys:(id)kCFBooleanTrue, kSecReturnData,
+                           kSecClassGenericPassword, kSecClass,
+                           key, kSecAttrAccount,
+                           serviceName, kSecAttrService,
+                           nil];
+    
+    CFDataRef stringData = NULL;
+    status = SecItemCopyMatching((__bridge CFDictionaryRef)query, (CFTypeRef*)&stringData);
+
+	if (status) 
+        return nil;
+	
+    NSString *string = [[NSString alloc] initWithData:(__bridge id)stringData encoding:NSUTF8StringEncoding];
+    CFRelease(stringData);
+
+	return string;	
+}
+
++ (BOOL)setString:(NSString*)string forKey:(NSString*)key serviceName:(NSString *)serviceName
+{
+	if (!string)  
+    {
+		//Need to delete the Key 
+        NSDictionary *spec = [NSDictionary dictionaryWithObjectsAndKeys:(__bridge id)kSecClassGenericPassword, kSecClass, key, kSecAttrAccount, serviceName, kSecAttrService, nil];
+        return !SecItemDelete((__bridge CFDictionaryRef)spec);
+    } 
+    else
+    {
+        NSData *stringData = [string dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *spec = [NSDictionary dictionaryWithObjectsAndKeys:(__bridge id)kSecClassGenericPassword, kSecClass, key, kSecAttrAccount, serviceName, kSecAttrService, nil];
+        
+        if(!string)
+            return !SecItemDelete((__bridge CFDictionaryRef)spec);
+        else
+        if ([SDKeychain stringForKey:key serviceName:serviceName])
+        {
+            NSDictionary *update = [NSDictionary dictionaryWithObject:stringData forKey:(__bridge id)kSecValueData];
+            return !SecItemUpdate((__bridge CFDictionaryRef)spec, (__bridge CFDictionaryRef)update);
+        }
+        else
+        {
+            NSMutableDictionary *data = [NSMutableDictionary dictionaryWithDictionary:spec];
+            [data setObject:stringData forKey:(__bridge id)kSecValueData];
+            return !SecItemAdd((__bridge CFDictionaryRef)data, NULL);
+        }
+    }
+}
+
 + (NSString *)getPasswordForUsername:(NSString *)username andServiceName:(NSString *)serviceName error:(NSError **)error
 {
 	if (!username || !serviceName)
