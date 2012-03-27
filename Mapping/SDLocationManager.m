@@ -8,9 +8,12 @@
 #import "SDLocationManager.h"
 #import "NSArray+SDExtensions.h"
 
+NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationManagerHasReceivedLocationUpdate";
+
 @implementation SDLocationManager
 
 @synthesize timeout;
+@synthesize hasReceivedLocationUpdate;
 
 static SDLocationManager *sdLocationManagerInstance = NULL;
 
@@ -44,6 +47,11 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 - (void)unsupported
 {
     //[[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];    
+}
+
+-(BOOL)hasReceivedLocationUpdate
+{
+	return [[NSUserDefaults standardUserDefaults] boolForKey: kSDLocationManagerHasReceivedLocationUpdateDefaultsKey];
 }
 
 - (void)setDelegate:(id<CLLocationManagerDelegate>)delegate { [self unsupported]; }
@@ -151,6 +159,10 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
         // Apple's built-in prompt to use current location, or if use of location was pre-approved in a previous run. And once
         // approved, this should always get called at least once, so we should never have a case of waiting forever to get here
         gotFirstLocationUpdate = YES;
+		
+		//Ensure this is set as well. This BOOL differs slightly from 'gotFirstLocationUpdate' and is handled separately as such:
+		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: kSDLocationManagerHasReceivedLocationUpdateDefaultsKey];
+		
         // timeout in 60 (or whatever they set it to) seconds.
         timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(timeoutHandler) userInfo:nil repeats:NO];
     }
