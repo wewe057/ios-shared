@@ -41,6 +41,7 @@ enum
 - (id)initWithSpecification:(NSString *)specificationName;
 - (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost;
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry;
 - (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName;
 - (NSString *)baseURLInServiceSpecification;
 - (BOOL)isReachable:(BOOL)showError;
