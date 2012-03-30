@@ -19,6 +19,7 @@
 @synthesize filterString;
 @synthesize alternateResults;
 @synthesize selectedSearchItem;
+@synthesize showsClearRecentSearchResultsRow;
 
 static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
@@ -84,8 +85,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         if ([searchHistory count] == 0)
             [searchHistory addObject:string];
         else
-        if ([searchHistory indexOfObject:string] == NSNotFound)
-            [searchHistory insertObject:string atIndex:0];
+			if ([searchHistory indexOfObject:string] == NSNotFound)
+				[searchHistory insertObject:string atIndex:0];
     }
     
     if ([searchHistory count] >= self.maximumCount)
@@ -134,27 +135,27 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         }
     }
     else
-    if (!visible && recentSearchTableView)
-    {
-        if (animated)
-        {
-            [UIView animateWithDuration:0.2 
-                             animations:^{
-                                 recentSearchTableView.alpha = 0;
-                             }
-                             completion:^(BOOL finished){
-                                 [recentSearchTableView removeFromSuperview];
-                                 recentSearchTableView = nil;
-                             }];            
-        }
-        else
-        {
-            [recentSearchTableView removeFromSuperview];
-            recentSearchTableView = nil;            
-        }
-        [masterList removeAllObjects];
-        searchHistory = nil;
-    }
+		if (!visible && recentSearchTableView)
+		{
+			if (animated)
+			{
+				[UIView animateWithDuration:0.2 
+								 animations:^{
+									 recentSearchTableView.alpha = 0;
+								 }
+								 completion:^(BOOL finished){
+									 [recentSearchTableView removeFromSuperview];
+									 recentSearchTableView = nil;
+								 }];            
+			}
+			else
+			{
+				[recentSearchTableView removeFromSuperview];
+				recentSearchTableView = nil;            
+			}
+			[masterList removeAllObjects];
+			searchHistory = nil;
+		}
 }
 
 #pragma mark tableview delegate/datasource methods
@@ -172,10 +173,25 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     if (tableView == recentSearchTableView)
     {
         // set the searchbar text here.
-        if (indexPath.row < [searchHistory count]) {
+        if (indexPath.row < [searchHistory count])
+		{
             self.searchBar.text = [searchHistory objectAtIndex:indexPath.row];
             self.selectedSearchItem = [searchHistory objectAtIndex:indexPath.row];
         }
+		else
+		{
+			if(showsClearRecentSearchResultsRow)
+			{
+				[searchHistory removeAllObjects];
+				[[NSUserDefaults standardUserDefaults] setObject:searchHistory forKey:self.userDefaultsKey];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+				[recentSearchTableView reloadSections: [NSIndexSet indexSetWithIndex: 0] withRowAnimation: UITableViewRowAnimationFade];
+				self.searchBar.delegate = oldDelegate;
+				// ---------------------------------------------------------------- //
+				return;
+				// ---------------------------------------------------------------- //
+			}
+		}
     }
     else
     {
@@ -190,10 +206,10 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 			self.selectedSearchItem = item;
         }
     }
-
+	
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     self.searchBar.delegate = oldDelegate;
-
+	
     if (self.searchBar.delegate && [self.searchBar.delegate respondsToSelector:@selector(searchBarSearchButtonClicked:)])
         [self.searchBar.delegate searchBarSearchButtonClicked:self.searchBar];
 }
@@ -208,7 +224,17 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     if (tableView == recentSearchTableView)
     {
         if (searchHistory)
-            return [searchHistory count];
+		{
+			int searchHistoryCount = [searchHistory count];
+			if(showsClearRecentSearchResultsRow && (searchHistoryCount > 0))
+			{
+				return searchHistoryCount + 1;
+			}
+			else
+			{
+				return searchHistoryCount;
+			}
+		}
     }
     else
     {
@@ -230,6 +256,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         
         if (indexPath.row < [searchHistory count])
 			cell.textLabel.text = [searchHistory objectAtIndex:indexPath.row];
+		else if(showsClearRecentSearchResultsRow)
+			cell.textLabel.text = @"Clear All Recent Searches";
 		else
 			cell.textLabel.text = nil;
     }
