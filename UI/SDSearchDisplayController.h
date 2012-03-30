@@ -31,7 +31,7 @@
 @property (nonatomic, strong) NSString *filterString;
 @property (nonatomic, strong) NSArray *alternateResults;
 @property (nonatomic, strong) id selectedSearchItem;
-@property (nonatomic, readwrite) BOOL showsClearRecentSearchResultsRow; /** Shows a 'Clear Search Results' row at the bottom of results. Defualt is NO. */
+@property (nonatomic, readwrite) BOOL showsClearRecentSearchResultsRow; /** Shows a 'Clear Search Results' row at the bottom of results. Default is NO. */
 
 - (void)addStringToHistory:(NSString *)string;
 
