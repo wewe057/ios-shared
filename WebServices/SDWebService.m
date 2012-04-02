@@ -250,7 +250,9 @@
     }
     
 	NSString *hostName = [[NSURL URLWithString:baseURL] host];
-    if (![self isReachable:showNoConnectionAlert] || ![self isReachableToHost:hostName showError:showNoConnectionAlert])
+    if (![self isReachable:showNoConnectionAlert]) 
+        // || ![self isReachableToHost:hostName showError:showNoConnectionAlert])
+        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^ don't ever do that on the main thread.
     {
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
