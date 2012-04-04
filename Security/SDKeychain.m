@@ -55,7 +55,8 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
         return nil;
 	
     NSString *string = [[NSString alloc] initWithData:(__bridge id)stringData encoding:NSUTF8StringEncoding];
-    CFRelease(stringData);
+    if (stringData)
+        CFRelease(stringData);
 
 	return string;	
 }
