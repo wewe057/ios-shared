@@ -14,4 +14,8 @@
 // Layout
 - (void)positionBelowView:(UIView *)argView offset:(CGFloat)argOffset;
 
+// Frame adjustment
+-(void)setFrameOriginY:(CGFloat)newY;
+-(void)setFrameOriginX:(CGFloat)newX;
+
 @end

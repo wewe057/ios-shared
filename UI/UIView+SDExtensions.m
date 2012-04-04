@@ -19,4 +19,18 @@
 							self.frame.size.height);
 }
 
+-(void)setFrameOriginY:(CGFloat)newY
+{
+	CGRect f = self.frame;
+	f.origin.y = newY;
+	self.frame = f;
+}
+
+-(void)setFrameOriginX:(CGFloat)newX
+{
+	CGRect f = self.frame;
+	f.origin.x = newX;
+	self.frame = f;
+}
+
 @end
