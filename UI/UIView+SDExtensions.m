@@ -33,4 +33,20 @@
 	self.frame = f;
 }
 
+-(void)setIntegralCenter:(CGPoint)integralCenter
+{
+	CGRect integralFrame = self.frame;
+	integralFrame.origin = integralCenter;
+	integralFrame = CGRectIntegral(integralFrame);
+	self.center = integralFrame.origin;
+}
+
+-(CGPoint)integralCenter
+{
+	CGRect integralFrame = self.frame;
+	integralFrame.origin = self.center;
+	integralFrame = CGRectIntegral(integralFrame);
+	return integralFrame.origin;
+}
+
 @end

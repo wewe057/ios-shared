@@ -11,11 +11,14 @@
 
 @interface UIView (SDExtensions)
 
+@property (nonatomic, assign) CGPoint integralCenter; // Ensures frame is positioned on integrals
+
 // Layout
 - (void)positionBelowView:(UIView *)argView offset:(CGFloat)argOffset;
 
 // Frame adjustment
 -(void)setFrameOriginY:(CGFloat)newY;
 -(void)setFrameOriginX:(CGFloat)newX;
+
 
 @end
