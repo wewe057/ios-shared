@@ -35,11 +35,21 @@
 
 -(void)setIntegralCenter:(CGPoint)integralCenter
 {
-	CGRect integralFrame = self.frame;
-	integralFrame.origin.x = integralCenter.x - (integralFrame.size.width / 2);
-	integralFrame.origin.y = integralCenter.y - (integralFrame.size.height / 2);
-	integralFrame = CGRectIntegral(integralFrame);
-	self.frame = integralFrame;}
+//	CGRect integralFrame = self.frame;
+//	integralFrame.origin.x = integralCenter.x - (integralFrame.size.width / 2);
+//	integralFrame.origin.y = integralCenter.y - (integralFrame.size.height / 2);
+//	integralFrame = CGRectIntegral(integralFrame);
+//	self.frame = integralFrame;
+	CGRect theFrame = self.frame;
+	CGFloat halfWidth = theFrame.size.width / 2.0f;
+	CGFloat halfHeight = theFrame.size.height / 2.0f;
+	CGPoint newCenter;
+	newCenter.x = roundf(integralCenter.x - halfWidth) + halfWidth;
+	newCenter.y = roundf(integralCenter.y - halfHeight) + halfHeight;
+	self.center = newCenter;
+//SDLog(@"passed in center: %@, new center: %@",NSStringFromCGPoint(integralCenter),NSStringFromCGPoint(self.center));
+//SDLog(@"new frame: %@",NSStringFromCGRect(self.frame));
+}
 
 -(CGPoint)integralCenter
 {
