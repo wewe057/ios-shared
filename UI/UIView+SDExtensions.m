@@ -49,4 +49,14 @@
 	return integralFrame.origin;
 }
 
+- (void)setIntegralFrame:(CGRect)viewFrame
+{
+	self.frame = CGRectIntegral(viewFrame);
+}
+
+- (CGRect)integralFrame
+{
+	return CGRectIntegral(self.frame);
+}
+
 @end

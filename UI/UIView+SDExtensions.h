@@ -11,7 +11,8 @@
 
 @interface UIView (SDExtensions)
 
-@property (nonatomic, assign) CGPoint integralCenter; // Ensures frame is positioned on integrals
+@property (nonatomic, assign) CGPoint integralCenter; // Ensures frame is positioned on pixels
+@property (nonatomic, assign) CGRect integralFrame; // Ensures frame is positioned on pixels
 
 // Layout
 - (void)positionBelowView:(UIView *)argView offset:(CGFloat)argOffset;
