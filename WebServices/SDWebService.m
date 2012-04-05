@@ -249,7 +249,7 @@
         baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
     }
     
-	NSString *hostName = [[NSURL URLWithString:baseURL] host];
+	//NSString *hostName = [[NSURL URLWithString:baseURL] host];
     if (![self isReachable:showNoConnectionAlert]) 
         // || ![self isReachableToHost:hostName showError:showNoConnectionAlert])
         //  ^^^^^^^^^^^^^^^^^^^^^^^^^^ don't ever do that on the main thread.
