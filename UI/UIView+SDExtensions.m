@@ -36,10 +36,10 @@
 -(void)setIntegralCenter:(CGPoint)integralCenter
 {
 	CGRect integralFrame = self.frame;
-	integralFrame.origin = integralCenter;
+	integralFrame.origin.x = integralCenter.x - (integralFrame.size.width / 2);
+	integralFrame.origin.y = integralCenter.y - (integralFrame.size.height / 2);
 	integralFrame = CGRectIntegral(integralFrame);
-	self.center = integralFrame.origin;
-}
+	self.frame = integralFrame;}
 
 -(CGPoint)integralCenter
 {
