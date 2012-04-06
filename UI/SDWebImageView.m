@@ -17,6 +17,7 @@
 
 @synthesize imageUrlString;
 @synthesize errorImage;
+@synthesize delegate;
 
 - (void)internalSetImage:(UIImage *)image
 {
@@ -93,6 +94,12 @@
                 //[blockSelf performSelector:@selector(internalSetImage:) withObject:blockSelf.errorImage afterDelay:0.1];
                 blockSelf.image = blockSelf.errorImage;
 				
+				if (self.delegate)
+				{
+					if ([self.delegate respondsToSelector:@selector(webImage:didReceiveError:)])
+						[self.delegate webImage:self didReceiveError:error];
+				}
+				
 			} else {
 				
 				// set image
@@ -104,6 +111,12 @@
                 UIImage *image = [UIImage imageWithData:responseData];
                 blockSelf.image = image;
                 //[blockSelf performSelector:@selector(internalSetImage:) withObject:[image copy] afterDelay:0.1];
+
+				if (self.delegate)
+				{
+					if ([self.delegate respondsToSelector:@selector(webImageDidFinishLoading:)])
+						[self.delegate webImageDidFinishLoading:self];
+				}
 
 			}
 		}
@@ -117,6 +130,12 @@
         currentRequest = nil;
         return;
     }
+	
+	if (self.delegate)
+	{
+		if ([self.delegate respondsToSelector:@selector(webImageDidStartLoading:)])
+			[self.delegate webImageDidStartLoading:self];
+	}
 
 	currentRequest = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
 }
