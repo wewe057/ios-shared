@@ -20,5 +20,6 @@
 - (id)nextToLastObject;
 - (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...;
 - (NSArray*) shuffledArray;
+- (NSArray *)reversedArray;
 
 @end

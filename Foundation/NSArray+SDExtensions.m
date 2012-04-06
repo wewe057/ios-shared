@@ -70,4 +70,10 @@
 	return shuffledArray;
 }
 
+// From: http://stackoverflow.com/a/586529/27153
+- (NSArray *)reversedArray
+{
+	return [[self reverseObjectEnumerator] allObjects];
+}
+
 @end
