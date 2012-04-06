@@ -21,6 +21,7 @@
 - (long long)longLongForKey:(NSString *)key;
 - (BOOL)boolForKey:(NSString *)key;
 - (NSArray*)arrayForKey:(NSString *)key;
+- (BOOL)keyExists:(NSString *)key;
 
 // keypath values
 - (NSString *)stringForKeyPath:(NSString *)key;

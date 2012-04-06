@@ -99,6 +99,10 @@
     return nil;
 }
 
+- (BOOL)keyExists:(NSString *)key {
+	return [self objectForKey:key] != nil;
+}
+
 // values for keypath
 
 - (NSString *)stringForKeyPath:(NSString *)key
