@@ -83,8 +83,20 @@
 				SDLog(@"Error fetching image: %@", error);
 				
 				// remove it from the cache if its there.
-				NSURLCache *cache = [NSURLCache sharedURLCache];
-				[cache removeCachedResponseForRequest:request];
+				
+//				NSURLCache *cache = [NSURLCache sharedURLCache];
+//				[cache removeCachedResponseForRequest:request];
+				
+				SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
+				NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:connection.originalRequest];
+				if (cachedResponse && cachedResponse.response && cachedResponse.data)
+				{
+					urlCompletionBlock(nil, cachedResponse.response, cachedResponse.data, nil);
+					currentRequest = nil;
+					return;
+				}
+
+				imageUrlString = nil; 
 				
 				// set image
 				/*blockSelf.image = blockSelf.errorImage;
