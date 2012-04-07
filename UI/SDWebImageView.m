@@ -24,7 +24,7 @@
     self.image = image;
 }
 
-- (void)setImageUrlString:(NSString *)argImageUrlString {
+- (void)setImageUrlString:(NSString *)argImageUrlString shouldRetry:(BOOL)shouldRetry {
     
     if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
         return;
@@ -81,12 +81,7 @@
 			if ([error code] == NSURLErrorTimedOut)
 			{
 				SDLog(@"Error fetching image: %@", error);
-				
-				// remove it from the cache if its there.
-				
-//				NSURLCache *cache = [NSURLCache sharedURLCache];
-//				[cache removeCachedResponseForRequest:request];
-				
+								
 				SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
 				NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:connection.originalRequest];
 				if (cachedResponse && cachedResponse.response && cachedResponse.data)
@@ -97,6 +92,12 @@
 				}
 
 				imageUrlString = nil; 
+				
+				if (shouldRetry)
+				{
+					[blockSelf setImageUrlString:argImageUrlString shouldRetry:NO];
+					return;
+				}
 				
 				// set image
 				/*blockSelf.image = blockSelf.errorImage;
@@ -150,6 +151,11 @@
 	}
 
 	currentRequest = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+}
+
+- (void)setImageUrlString:(NSString *)argImageUrlString
+{
+	[self setImageUrlString:argImageUrlString shouldRetry:YES];
 }
 
 
