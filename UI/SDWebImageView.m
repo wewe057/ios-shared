@@ -42,7 +42,7 @@
     
     if (imageUrlString == nil) return;
     
-	NSURL *url = [NSURL URLWithString:imageUrlString];
+	NSURL *url = [NSURL URLWithString:[imageUrlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	
 	self.alpha = 0;
 	
