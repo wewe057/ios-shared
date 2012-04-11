@@ -82,15 +82,6 @@
 			{
 				SDLog(@"Error fetching image: %@", error);
 								
-				SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
-				NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:connection.originalRequest];
-				if (cachedResponse && cachedResponse.response && cachedResponse.data)
-				{
-					urlCompletionBlock(nil, cachedResponse.response, cachedResponse.data, nil);
-					currentRequest = nil;
-					return;
-				}
-
 				imageUrlString = nil; 
 				
 				if (shouldRetry)
