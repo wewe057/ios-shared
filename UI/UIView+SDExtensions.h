@@ -21,5 +21,8 @@
 -(void)setFrameOriginY:(CGFloat)newY;
 -(void)setFrameOriginX:(CGFloat)newX;
 
+// Finding subviews
+-(id)firstSubviewOfClass:(Class)aViewClass;
+
 
 @end

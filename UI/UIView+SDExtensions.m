@@ -69,4 +69,21 @@
 	return CGRectIntegral(self.frame);
 }
 
+-(id)firstSubviewOfClass:(Class)aViewClass
+{
+	NSArray *subs = [self subviews];
+	id aView = nil;
+	
+	NSEnumerator *e = [subs objectEnumerator];
+	while((aView = [e nextObject]))
+	{
+		if([aView isKindOfClass: aViewClass])
+		{
+			return aView;
+		}
+	}
+	
+	return nil;
+}
+
 @end
