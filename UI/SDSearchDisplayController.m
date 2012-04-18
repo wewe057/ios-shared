@@ -158,6 +158,12 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 		}
 }
 
+-(int)recentSearchesSectionNumber
+{
+	//Subclasses can (and shoud) override if needed to customize
+	return 0;
+}
+
 #pragma mark tableview delegate/datasource methods
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -185,7 +191,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 				[searchHistory removeAllObjects];
 				[[NSUserDefaults standardUserDefaults] setObject:searchHistory forKey:self.userDefaultsKey];
 				[[NSUserDefaults standardUserDefaults] synchronize];
-				[recentSearchTableView reloadSections: [NSIndexSet indexSetWithIndex: 0] withRowAnimation: UITableViewRowAnimationFade];
+				
+				[recentSearchTableView reloadSections: [NSIndexSet indexSetWithIndex: [self recentSearchesSectionNumber]] withRowAnimation: UITableViewRowAnimationFade];
 				self.searchBar.delegate = oldDelegate;
 				// ---------------------------------------------------------------- //
 				return;
