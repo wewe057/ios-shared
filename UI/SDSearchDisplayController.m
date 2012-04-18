@@ -160,7 +160,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 -(int)recentSearchesSectionNumber
 {
-	//Subclasses can (and shoud) override if needed to customize
+	//Subclasses can (and should) override if needed to customize
 	return 0;
 }
 
