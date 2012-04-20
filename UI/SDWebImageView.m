@@ -54,7 +54,7 @@
 	[request setHTTPShouldHandleCookies:YES];
 	[request setHTTPShouldUsePipelining:NO];
 #ifdef HUGE_SERVICES_TIMEOUT
-	[request setTimeoutInterval:300000];
+	[request setTimeoutInterval:60];
 #else
 	[request setTimeoutInterval:30];
 #endif
