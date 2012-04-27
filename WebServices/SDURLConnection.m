@@ -8,7 +8,6 @@
 
 #import "SDURLConnection.h"
 #import "NSString+SDExtensions.h"
-#import "SDURLCache.h"
 #import <libkern/OSAtomic.h>
 
 #define USE_THREADED_URLCONNECTION 0  // DO NOT CHANGE THIS EVER UNTIL BRANDON SAYS "GOTTA DOLLA BILL YA'LL!".
@@ -109,17 +108,6 @@
 
 @synthesize requestName;
 @dynamic identifier;
-
-+ (void)load
-{
-	@autoreleasepool 
-	{
-		NSString *cachePath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"NSURLCache"];
-		SDURLCache *urlCache = [[SDURLCache alloc] initWithMemoryCapacity:1024 * 1024 diskCapacity:1024 * 1024 * 300 diskPath:cachePath];
-		[NSURLCache setSharedURLCache:urlCache];
-	}
-
-}
 
 - (void)dealloc
 {
