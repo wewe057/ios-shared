@@ -8,7 +8,7 @@
 #import "SDWebService.h"
 #import "NSString+SDExtensions.h"
 //#import "AFCacheLib.h"
-#import "SDURLCacheWalmartExtensions.h"
+#import "NSURLCacheWalmartExtensions.h"
 
 #ifdef DEBUG
 @interface NSURLRequest(SDExtensionsDebug)
@@ -422,7 +422,7 @@
 		}
 	} copy];
 
-	SDURLCache *urlCache = (SDURLCache*)[SDURLCache sharedURLCache];
+	NSURLCache *urlCache = [NSURLCache sharedURLCache];
 	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
 	if (cache && response && response.response && response.data)
 	{
