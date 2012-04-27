@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSURLCache (SDURLCacheWalmartExtensions)
+@interface NSURLCache (NSURLCacheWalmartExtensions)
 
 - (BOOL)isCachedAndValid:(NSURLRequest*)request;	// YES if url is in the cache and valid (ie non-expired)
 - (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request;	// Makes sure the response is not expired, otherwise nil
