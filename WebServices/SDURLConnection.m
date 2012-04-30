@@ -8,6 +8,8 @@
 
 #import "SDURLConnection.h"
 #import "NSString+SDExtensions.h"
+#import "NSCachedURLResponse+LeakFix.h"
+
 #import <libkern/OSAtomic.h>
 
 @interface SDURLResponseCompletionDelegate : NSObject
@@ -80,7 +82,7 @@
 
 - (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
-    NSCachedURLResponse *realCache = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:responseData userInfo:nil storagePolicy:NSURLCacheStorageAllowed];
+    NSCachedURLResponse *realCache = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.responseData userInfo:nil storagePolicy:NSURLCacheStorageAllowed];
     return shouldCache ? realCache : nil;
 }
 
