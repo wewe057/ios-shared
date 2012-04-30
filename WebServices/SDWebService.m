@@ -428,7 +428,7 @@
 	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue]];
 	if (cache && response && response.response)
 	{
-		NSString *cachedString = [self responseFromData:response.data];
+		NSString *cachedString = [self responseFromData:response.responseData];
 		if (cachedString)
 		{
 			SDLog(@"***USING CACHED RESPONSE***");

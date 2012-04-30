@@ -210,7 +210,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
 {
     NSURLCache *urlCache = [NSURLCache sharedURLCache];
     NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
-    if (response && response.response && response.data)
+    if (response && response.response && response.responseData)
     {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
         if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
