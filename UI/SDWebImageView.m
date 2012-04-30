@@ -8,6 +8,7 @@
 
 #import "SDWebImageView.h"
 #import "NSURLCacheWalmartExtensions.h"
+#import "NSCachedURLResponse+LeakFix.h"
 
 @implementation SDWebImageView
 
@@ -128,9 +129,9 @@
 	
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
 	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
-	if (response && response.response && response.data)
+	if (response && response.response && response.responseData)
 	{
-        urlCompletionBlock(nil, response.response, response.data, nil);
+        urlCompletionBlock(nil, response.response, response.responseData, nil);
         currentRequest = nil;
         return;
     }

@@ -6,7 +6,8 @@
 //  Copyright (c) 2012 Walmart. All rights reserved.
 //
 
-#import "SDURLCacheWalmartExtensions.h"
+#import "NSURLCacheWalmartExtensions.h"
+#import "NSCachedURLResponse+LeakFix.h"
 
 static float const kSDURLCacheDefault = 3600; // Default cache expiration delay if none defined (1 hour)
 static float const kNSURLCacheLastModFraction = 0.1f; // 10% since Last-Modified suggested by RFC2616 section 13.2.4
@@ -57,6 +58,39 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
 /*
  * This method tries to determine the expiration date based on a response headers dictionary.
  */
+
++ (NSDate *)fetchDateFromHeaders:(NSDictionary *)headers withStatusCode:(NSInteger)status
+{
+    if (status != 200 && status != 203 && status != 300 && status != 301 && status != 302 && status != 307 && status != 410)
+    {
+        // Uncacheable response status code
+        return nil;
+    }
+    
+    // Check Pragma: no-cache
+    NSString *pragma = [headers objectForKey:@"Pragma"];
+    if (pragma && [pragma isEqualToString:@"no-cache"])
+    {
+        // Uncacheable response
+        return nil;
+    }
+    
+    // Define "now" based on the request
+    NSString *date = [headers objectForKey:@"Date"];
+    NSDate *now;
+    if (date)
+    {
+        now = [NSURLCache dateFromHttpDateString:date];
+    }
+    else
+    {
+        // If no Date: header, define now from local clock
+        now = [NSDate date];
+    }
+    
+    return now;
+}
+
 + (NSDate *)expirationDateFromHeaders:(NSDictionary *)headers withStatusCode:(NSInteger)status
 {
     if (status != 200 && status != 203 && status != 300 && status != 301 && status != 302 && status != 307 && status != 410)
@@ -176,7 +210,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
 {
     NSURLCache *urlCache = [NSURLCache sharedURLCache];
     NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
-    if (response && response.response && response.data)
+    if (response && response.response && response.responseData)
     {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
         if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
@@ -188,6 +222,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
             }
         }
     }
+    response = nil;
 	return NO;
 }	
 
@@ -196,13 +231,34 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
 {
     NSURLCache *urlCache = [NSURLCache sharedURLCache];
     NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
-    if (response && response.response && response.data)
+    if (response && response.response && response.responseData)
     {
         NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
         if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
         {
             NSDate *expirationDate = [NSURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
             if ([expirationDate timeIntervalSinceNow] > 0)
+            {
+                return response;
+            }
+        }
+    }
+	return nil; // Valid cached response not found
+}
+
+- (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl
+{
+    NSURLCache *urlCache = [NSURLCache sharedURLCache];
+    NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
+    if (response && response.response && response.responseData)
+    {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
+        if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
+        {
+            NSDate *expirationDate = [NSURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
+            NSDate *fetchDate = [NSURLCache fetchDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
+            NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:fetchDate];
+            if ([expirationDate timeIntervalSinceNow] > 0 && timePassed < ttl)
             {
                 return response;
             }

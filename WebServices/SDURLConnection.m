@@ -10,8 +10,6 @@
 #import "NSString+SDExtensions.h"
 #import <libkern/OSAtomic.h>
 
-#define USE_THREADED_URLCONNECTION 0  // DO NOT CHANGE THIS EVER UNTIL BRANDON SAYS "GOTTA DOLLA BILL YA'LL!".
-
 @interface SDURLResponseCompletionDelegate : NSObject
 {
 @public
@@ -40,7 +38,7 @@
 	{
         responseHandler = [newHandler copy];
         shouldCache = cache;
-		responseData = [[NSMutableData alloc] initWithCapacity:1024];
+		responseData = [NSMutableData dataWithCapacity:0];
         self.isRunning = YES;
     }
 	
@@ -50,6 +48,7 @@
 - (void)dealloc
 {
     responseHandler = nil;
+    responseData = nil;
 }
 
 #pragma mark NSURLConnection delegate
@@ -62,17 +61,9 @@
 
 - (void)connection:(SDURLConnection *)connection didFailWithError:(NSError *)error
 {
-#if USE_THREADED_URLCONNECTION
-    [[NSRunLoop currentRunLoop] removePort:connection->runPort forMode:NSDefaultRunLoopMode];
-    connection->runPort = nil;
-    dispatch_async(dispatch_get_main_queue(), ^{
-#endif
-        responseHandler(connection, nil, responseData, error);
-        responseHandler = nil;
-        self.isRunning = NO;
-#if USE_THREADED_URLCONNECTION
-    });
-#endif
+    responseHandler(connection, nil, responseData, error);
+    responseHandler = nil;
+    self.isRunning = NO;
 }
 
 - (void)connection:(SDURLConnection *)connection didReceiveData:(NSData *)data
@@ -82,22 +73,15 @@
 
 - (void)connectionDidFinishLoading:(SDURLConnection *)connection
 {
-#if USE_THREADED_URLCONNECTION
-    [[NSRunLoop currentRunLoop] removePort:connection->runPort forMode:NSDefaultRunLoopMode];
-    connection->runPort = nil;
-    dispatch_async(dispatch_get_main_queue(), ^{
-#endif
-        responseHandler(connection, httpResponse, responseData, nil);
-        responseHandler = nil;
-        self.isRunning = NO;
-#if USE_THREADED_URLCONNECTION
-    });
-#endif
+    responseHandler(connection, httpResponse, responseData, nil);
+    responseHandler = nil;
+    self.isRunning = NO;
 }
 
 - (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
-    return shouldCache ? cachedResponse : nil;
+    NSCachedURLResponse *realCache = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:responseData userInfo:nil storagePolicy:NSURLCacheStorageAllowed];
+    return shouldCache ? realCache : nil;
 }
 
 @end
@@ -135,38 +119,6 @@
     if (!handler)
         @throw @"sendAsynchronousRequest must be given a handler!";
     
-#if USE_THREADED_URLCONNECTION
-    
-    __block SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
-    __block SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
-    if (!connection)
-        SDLog(@"Unable to create a connection!");
-
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(queue, ^{        
-        
-        NSPort *dummyPort = [NSPort port];
-        NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
-        [runLoop addPort:dummyPort forMode:NSDefaultRunLoopMode];
-        connection->runPort = dummyPort;
-        connection->pseudoDelegate = delegate;
-        
-        [connection scheduleInRunLoop:runLoop forMode:NSDefaultRunLoopMode];
-        [connection start];
-        
-        while (delegate.isRunning)
-            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
-        //[runLoop run];
-        
-        [runLoop removePort:dummyPort forMode:NSDefaultRunLoopMode];
-        [connection unscheduleFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        
-        if (delegate->responseHandler)
-            SDLog(@"Response handler not called!");
-    });
-    
-#else
-    
     SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     if (!connection)
@@ -177,8 +129,6 @@
         [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
     
     [connection start];
-    
-#endif
     
     return connection;
 }

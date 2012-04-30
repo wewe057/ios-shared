@@ -9,6 +9,7 @@
 #import "NSString+SDExtensions.h"
 //#import "AFCacheLib.h"
 #import "NSURLCacheWalmartExtensions.h"
+#import "NSCachedURLResponse+LeakFix.h"
 
 #ifdef DEBUG
 @interface NSURLRequest(SDExtensionsDebug)
@@ -262,6 +263,7 @@
     
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];
+    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
     
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
@@ -423,10 +425,10 @@
 	} copy];
 
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
-	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
-	if (cache && response && response.response && response.data)
+	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue]];
+	if (cache && response && response.response)
 	{
-		NSString *cachedString = [self responseFromData:response.data];
+		NSString *cachedString = [self responseFromData:response.responseData];
 		if (cachedString)
 		{
 			SDLog(@"***USING CACHED RESPONSE***");
@@ -435,7 +437,7 @@
             
             // Need ot pay special attention here when enabling threading again.
             //dispatch_async(dispatch_get_main_queue(), ^{
-                cachedBlock(nil, response.response, response.data, nil);
+                cachedBlock(nil, response.response, response.responseData, nil);
             //});
 			return SDWebServiceResultCached;            
 		}
