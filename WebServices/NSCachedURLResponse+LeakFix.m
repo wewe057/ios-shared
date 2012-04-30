@@ -13,20 +13,20 @@
 - (NSData *)responseData
 {
     NSData *result = nil;
-    NSData *first = self.data;
-    NSData *second = self.data;
+
+    __unsafe_unretained NSData *first = self.data;
     NSUInteger firstCount = CFGetRetainCount((__bridge CFTypeRef)first);
+    __unsafe_unretained NSData *second = self.data;
     NSUInteger secondCount = CFGetRetainCount((__bridge CFTypeRef)second);
-    result = self.data;
+    result = first;
 
     if (first == second)
     {
         if (firstCount != secondCount)
         {
-            // this os build has the leak...  commence bullshit.
+            // this os build has the leak...  commence serious bullshit.
             
             // release our 3 total accesses that incurred a retain.
-            CFRelease((__bridge CFTypeRef)result);
             CFRelease((__bridge CFTypeRef)result);
             CFRelease((__bridge CFTypeRef)result);
         }
