@@ -7,168 +7,59 @@
 //
 
 #import "SDWebImageView.h"
-#import "NSURLCacheWalmartExtensions.h"
-#import "NSCachedURLResponse+LeakFix.h"
+#import "UIImageView+WebCache.h" // SDWebImage Submodule
+
+typedef void (^SDWebImageSuccessBlock)(UIImage *image);
+typedef void (^SDWebImageFailureBlock)(NSError *error);
 
 @implementation SDWebImageView
-
 
 #pragma mark -
 #pragma mark Properties
 
-@synthesize imageUrlString;
-@synthesize errorImage;
 @synthesize delegate;
+@synthesize imageUrlString;
 
-- (void)internalSetImage:(UIImage *)image
-{
-    self.image = image;
-}
-
+// SDWebImageView wrapper around SDWebImage
+// Caveats:  SDWebImageView would only send webImageDidStartLoading if the image was not cached.  Now it always sends it
 - (void)setImageUrlString:(NSString *)argImageUrlString shouldRetry:(BOOL)shouldRetry {
-    
-    if (imageUrlString && [imageUrlString isEqualToString:argImageUrlString])
-        return;
-    
-	imageUrlString = [argImageUrlString copy];
 	
-    if (request)
-    {
-        request = nil;
-    }
+	imageUrlString = argImageUrlString;
     
-    if (self.image != nil) {
-        self.image = nil;
-    }
-    
-    if (imageUrlString == nil) return;
-    
-	NSURL *url = [NSURL URLWithString:[imageUrlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-	
-	self.alpha = 0;
-	
-	__unsafe_unretained NSMutableURLRequest *tempRequest = nil;
-	tempRequest = [NSMutableURLRequest requestWithURL:url]; 
-	request = tempRequest;
-	
-	[request setHTTPMethod:@"GET"];
-	[request setHTTPShouldHandleCookies:YES];
-	[request setHTTPShouldUsePipelining:NO];
-#ifdef HUGE_SERVICES_TIMEOUT
-	[request setTimeoutInterval:60];
-#else
-	[request setTimeoutInterval:30];
-#endif
-	
-	SDWebImageView *blockSelf = self;
-    blockSelf.alpha = 1.0;
+	NSURL *url = [NSURL URLWithString:argImageUrlString];
 
-	// if we've got one going, kill it so we don't get junk.
-	[currentRequest cancel];
-	currentRequest = nil;
-	
-#ifdef DEBUG
-	NSDate *startDate = [NSDate date];
-#endif
-	
-	__block SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error){
-		@autoreleasepool {
-			
-#ifdef DEBUG
-			SDLog(@"Image retrieval call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
-#endif
-			currentRequest = nil;
-			
-			if ([error code] == NSURLErrorTimedOut)
-			{
-				SDLog(@"Error fetching image: %@", error);
-								
-				imageUrlString = nil; 
-				
-				if (shouldRetry)
-				{
-					[blockSelf setImageUrlString:argImageUrlString shouldRetry:NO];
-					return;
-				}
-				
-				// set image
-				/*blockSelf.image = blockSelf.errorImage;
-				[UIView animateWithDuration:0.2 animations:^{
-					blockSelf.alpha = 1.0;
-				}];*/
-                //[blockSelf performSelector:@selector(internalSetImage:) withObject:blockSelf.errorImage afterDelay:0.1];
-                blockSelf.image = blockSelf.errorImage;
-				
-				if (self.delegate)
-				{
-					if ([self.delegate respondsToSelector:@selector(webImage:didReceiveError:)])
-						[self.delegate webImage:self didReceiveError:error];
-				}
-				
-			} else {
-				
-				// set image
-				/*blockSelf.image = [UIImage imageWithData:responseData];
-				[UIView animateWithDuration:0.2 animations:^{
-					blockSelf.alpha = 1.0;
-				}];*/
-                
-                UIImage *image = [UIImage imageWithData:responseData];
-                blockSelf.image = image;
-                //[blockSelf performSelector:@selector(internalSetImage:) withObject:[image copy] afterDelay:0.1];
-
-				if (self.delegate)
-				{
-					if ([self.delegate respondsToSelector:@selector(webImageDidFinishLoading:)])
-						[self.delegate webImageDidFinishLoading:self];
-				}
-
-			}
-		}
-	};
-	
-	NSURLCache *urlCache = [NSURLCache sharedURLCache];
-	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request];
-	if (response && response.response && response.responseData)
-	{
-        urlCompletionBlock(nil, response.response, response.responseData, nil);
-        currentRequest = nil;
-        return;
-    }
-	
+	// First, tell our delegate that we are about to start loading
 	if (self.delegate)
 	{
 		if ([self.delegate respondsToSelector:@selector(webImageDidStartLoading:)])
 			[self.delegate webImageDidStartLoading:self];
 	}
+	
+	// Create our success and failure blocks
+	__block SDWebImageSuccessBlock successBlock = ^(UIImage *image) {
+		if (self.delegate)
+		{
+			if ([self.delegate respondsToSelector:@selector(webImageDidFinishLoading:)])
+				[self.delegate webImageDidFinishLoading:self];
+		}		
+	};
+	
+	__block SDWebImageFailureBlock failureBlock = ^(NSError *error) {
+		if (self.delegate)
+		{
+			if ([self.delegate respondsToSelector:@selector(webImage:didReceiveError:)])
+				[self.delegate webImage:self didReceiveError:error];
+		}		
+	};
+		
+	// Make the call
+	[self setImageWithURL:url success:successBlock failure:failureBlock];
 
-	currentRequest = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
 }
 
 - (void)setImageUrlString:(NSString *)argImageUrlString
 {
 	[self setImageUrlString:argImageUrlString shouldRetry:YES];
 }
-
-
-#pragma mark -
-#pragma mark Object and Memory
-
-- (id)initWithFrame:(CGRect)frame {
-    
-    self = [super initWithFrame:frame];
-    if (self) {
-    }
-    return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-    }
-    return self;
-}
-
 
 @end
