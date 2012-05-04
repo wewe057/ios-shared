@@ -397,6 +397,7 @@
                 NSURLCache *cache = [NSURLCache sharedURLCache];
                 [cache removeCachedResponseForRequest:request];
                 [blockSelf performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:NO];
+                [blockSelf decrementRequests];
                 return;
 			}
 			
