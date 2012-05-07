@@ -8,9 +8,14 @@
 
 #import "SDWebImageView.h"
 #import "UIImageView+WebCache.h" // SDWebImage Submodule
+#import "SDImageCache.h"
 
 typedef void (^SDWebImageSuccessBlock)(UIImage *image);
 typedef void (^SDWebImageFailureBlock)(NSError *error);
+
+@interface SDWebImageView ()
+@property (nonatomic, assign) NSUInteger badImageRetryCount; // How many times have we tried to reload for a 0,0 image?
+@end
 
 @implementation SDWebImageView
 
@@ -19,10 +24,20 @@ typedef void (^SDWebImageFailureBlock)(NSError *error);
 
 @synthesize delegate;
 @synthesize imageUrlString;
+@synthesize badImageRetryCount;
+
+- (void)retryImage
+{
+	[[SDImageCache sharedImageCache] removeImageForKey:imageUrlString];
+	[self setImageUrlString:imageUrlString shouldRetry:NO];
+}
 
 // SDWebImageView wrapper around SDWebImage
 // Caveats:  SDWebImageView would only send webImageDidStartLoading if the image was not cached.  Now it always sends it
 - (void)setImageUrlString:(NSString *)argImageUrlString shouldRetry:(BOOL)shouldRetry {
+	
+	if ([imageUrlString isEqualToString:argImageUrlString] == NO)
+		self.badImageRetryCount = 0;
 	
 	imageUrlString = argImageUrlString;
     
@@ -39,6 +54,16 @@ typedef void (^SDWebImageFailureBlock)(NSError *error);
 	__block SDWebImageSuccessBlock successBlock = ^(UIImage *image) {
 		if (self.delegate)
 		{
+			// We have seen SDWebImage cache 0x0 images before.  If we run into one of these, let's retry once after killing the cache
+			if ((self.image.size.width == 0) || (self.image.size.height == 0))
+			{
+				if (self.badImageRetryCount < 1)
+				{
+					self.badImageRetryCount++;
+					[self performSelector:@selector(retryImage) withObject:self afterDelay:0.1]; // Must exit out of this completion block first!
+					return;
+				}
+			}
 			if ([self.delegate respondsToSelector:@selector(webImageDidFinishLoading:)])
 				[self.delegate webImageDidFinishLoading:self];
 		}		
