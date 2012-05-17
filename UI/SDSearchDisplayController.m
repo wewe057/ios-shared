@@ -20,6 +20,7 @@
 @synthesize alternateResults;
 @synthesize selectedSearchItem;
 @synthesize showsClearRecentSearchResultsRow;
+@synthesize recentSearchTableView;
 
 static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
