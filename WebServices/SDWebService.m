@@ -313,9 +313,9 @@
 	[request setHTTPShouldUsePipelining:NO];	// THIS WILL FUCK YOUR SHIT UP BRAH! 7 WAYS FROM SUNDAY!  In other words, this cannot be YES or our servers will return incorrect data
 												// Service A's data will be returned for Service B, and vice-versa
 #ifdef HUGE_SERVICES_TIMEOUT
-	[request setTimeoutInterval:60];
+	[request setTimeoutInterval:120];
 #else
-	[request setTimeoutInterval:30];
+	[request setTimeoutInterval:60];
 #endif
 
 	if (shouldRetry)
