@@ -14,6 +14,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 @synthesize timeout;
 @synthesize hasReceivedLocationUpdate;
+@synthesize isUpdatingLocation;
 
 static SDLocationManager *sdLocationManagerInstance = NULL;
 
