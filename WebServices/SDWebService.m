@@ -482,7 +482,7 @@
 
 - (void)serviceCallDidTimeoutForUrl:(NSURL*)url
 {
-	// currently handling in superclass
+	// currently handling in subclass
 }
 
 @end
