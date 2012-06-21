@@ -391,6 +391,7 @@
 			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
 #endif
 			
+			if ([error code] == NSURLErrorTimedOut) [self serviceCallDidTimeoutForUrl:url];
 			if (([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName]) && shouldRetry)
 			{
                 // remove it from the cache if its there.
@@ -477,6 +478,11 @@
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
     return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
+}
+
+- (void)serviceCallDidTimeoutForUrl:(NSURL*)url
+{
+	// currently handling in superclass
 }
 
 @end
