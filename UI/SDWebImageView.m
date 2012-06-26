@@ -9,6 +9,7 @@
 #import "SDWebImageView.h"
 #import "UIImageView+WebCache.h" // SDWebImage Submodule
 #import "SDImageCache.h"
+#import "WMAniviaClient.h"
 
 typedef void (^SDWebImageSuccessBlock)(UIImage *image);
 typedef void (^SDWebImageFailureBlock)(NSError *error);
@@ -73,8 +74,16 @@ typedef void (^SDWebImageFailureBlock)(NSError *error);
 		if (self.delegate)
 		{
 			if ([self.delegate respondsToSelector:@selector(webImage:didReceiveError:)])
-				[self.delegate webImage:self didReceiveError:error];
-		}		
+			{
+				// Report the URL because with a delegate pattern, this instance may have been changed by the time the error happens
+				NSDictionary *userInfo = [NSDictionary dictionaryWithObject:argImageUrlString forKey:@"imageUrlString"];
+				NSError *imageError = [NSError errorWithDomain:error.domain code:error.code userInfo:userInfo];
+				[self.delegate webImage:self didReceiveError:imageError];
+			}
+		}
+		// Analytics - Not sure I like this code this deep in the system
+		NSString *errorString = [NSString stringWithFormat:@"Error loading image %@",argImageUrlString];
+		[[WMAniviaClient sharedInstance] trackEvent:[WMAniviaEvent errorEventWithDesc:errorString]];
 	};
 		
 	// Make the call
