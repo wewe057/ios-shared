@@ -79,6 +79,41 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     }
 }
 
+- (void)removeSearchItemFromHistory:(NSString*)string
+{
+	if([string length])
+	{
+		NSMutableArray *theArray = nil;
+		theArray = searchHistory;
+		if(theArray == nil)
+		{
+			//See if we have nil'd it out but we have it saved to NSUserDefaults
+			theArray = [[[NSUserDefaults standardUserDefaults] objectForKey: [self userDefaultsKey]] mutableCopy];
+		}
+		
+		if([theArray count])
+		{
+			int itemIndex = [theArray indexOfObject: string];
+			if(itemIndex != NSNotFound)
+			{
+				@try {
+					[theArray removeObjectAtIndex: itemIndex];
+				}
+				@catch (NSException *exception) {
+					SDLog(@"ERR: Couldn't remove history string '%@' from search history", string);
+				}
+				@finally {
+					
+				}
+				
+				[[NSUserDefaults standardUserDefaults] setObject:theArray forKey:self.userDefaultsKey];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+			}
+		}
+	}
+	[self.recentSearchTableView reloadData];
+}
+
 - (void)addStringToHistory:(NSString *)string
 {
     if (string && [string length] > 0)

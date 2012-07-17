@@ -48,5 +48,6 @@ enum
 - (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError;
 - (void)clearCache;
 - (void)will302RedirectToUrl:(NSURL *)argUrl;
+- (void)serviceCallDidTimeoutForUrl:(NSURL*)url;
 
 @end

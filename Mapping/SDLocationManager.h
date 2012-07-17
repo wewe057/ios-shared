@@ -40,6 +40,7 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 
 @property (nonatomic, assign) NSTimeInterval timeout;
 @property (nonatomic, readonly) BOOL hasReceivedLocationUpdate;
+@property (nonatomic, readonly) BOOL isUpdatingLocation;
 
 + (SDLocationManager *)instance;
 

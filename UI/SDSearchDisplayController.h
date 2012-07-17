@@ -35,6 +35,7 @@
 @property (nonatomic, readwrite) BOOL showsClearRecentSearchResultsRow; /** Shows a 'Clear Search Results' row at the bottom of results. Default is NO. */
 
 - (void)addStringToHistory:(NSString *)string;
+- (void)removeSearchItemFromHistory:(NSString*)string;
 - (int)recentSearchesSectionNumber; /** Provides subclass customization if needed */
 
 @end

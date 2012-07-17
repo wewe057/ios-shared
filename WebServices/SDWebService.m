@@ -313,9 +313,9 @@
 	[request setHTTPShouldUsePipelining:NO];	// THIS WILL FUCK YOUR SHIT UP BRAH! 7 WAYS FROM SUNDAY!  In other words, this cannot be YES or our servers will return incorrect data
 												// Service A's data will be returned for Service B, and vice-versa
 #ifdef HUGE_SERVICES_TIMEOUT
-	[request setTimeoutInterval:60];
+	[request setTimeoutInterval:120];
 #else
-	[request setTimeoutInterval:30];
+	[request setTimeoutInterval:60];
 #endif
 
 	if (shouldRetry)
@@ -391,6 +391,7 @@
 			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
 #endif
 			
+			if ([error code] == NSURLErrorTimedOut) [self serviceCallDidTimeoutForUrl:url];
 			if (([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName]) && shouldRetry)
 			{
                 // remove it from the cache if its there.
@@ -477,6 +478,11 @@
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
     return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
+}
+
+- (void)serviceCallDidTimeoutForUrl:(NSURL*)url
+{
+	// currently handling in subclass
 }
 
 @end
