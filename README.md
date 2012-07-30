@@ -5,8 +5,8 @@ SetDirection's iOS-Shared
 	
 Purpose
 -------
-The intention of iOS-Shared is to serve as a repository for generic iOS code written by Set Direction and'
-its clients, authorized external contributors, etc.  Its intent is NOT to be a dumping ground for random
+The intention of iOS-Shared is to serve as a repository for generic iOS code written by Set Direction and
+it's clients, authorized external contributors, etc.  Its intent is NOT to be a dumping ground for random
 code snippets found on the internet.
 
 	
