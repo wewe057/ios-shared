@@ -33,6 +33,11 @@ typedef void (^SDWebImageFailureBlock)(NSError *error);
 	[self setImageUrlString:imageUrlString shouldRetry:NO];
 }
 
+- (void)dealloc
+{
+	self.delegate = nil;
+}
+
 // SDWebImageView wrapper around SDWebImage
 // Caveats:  SDWebImageView would only send webImageDidStartLoading if the image was not cached.  Now it always sends it
 - (void)setImageUrlString:(NSString *)argImageUrlString shouldRetry:(BOOL)shouldRetry {
