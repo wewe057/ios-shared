@@ -7,9 +7,10 @@
 
 #import "SDWebService.h"
 #import "NSString+SDExtensions.h"
-//#import "AFCacheLib.h"
-#import "NSURLCacheWalmartExtensions.h"
+#import "NSURLCache+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
+
+NSString *const SDWebServiceError = @"SDWebServiceError";
 
 #ifdef DEBUG
 @interface NSURLRequest(SDExtensionsDebug)
@@ -24,33 +25,15 @@
 @end
 #endif
 
-@interface SDMutableURLRequest : NSMutableURLRequest
-@property (nonatomic, assign) int retryCount;
-@end
-
-@implementation SDMutableURLRequest
-@synthesize retryCount;
-@end
-
-/*@interface SDFormDataRequest : ASIFormDataRequest
+@implementation SDRequestResult
++ (SDRequestResult *)objectForResult:(SDWebServiceResult)result identifier:(NSString *)identifier
 {
-    NSString *requestName;
+    SDRequestResult *object = [[SDRequestResult alloc] init];
+    object.result = result;
+    object.identifier = identifier;
+    return object;
 }
-@property (nonatomic, retain) NSString *requestName;
-@end*/
-
-
-/*@implementation SDFormDataRequest
-
-@synthesize requestName;
-
-- (void)dealloc
-{
-    requestName = nil;
-}
-
-@end*/
-
+@end
 
 @implementation SDWebService
 
@@ -59,11 +42,19 @@
 	self = [super init];
 	
     singleRequests = [[NSMutableDictionary alloc] init];
-	NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
+    normalRequests = [[NSMutableDictionary alloc] init];
+    dictionaryLock = [[NSLock alloc] init];
+    
+    self.timeout = 60; // 1-minute default.
+	
+    NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
 	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
 	if (!serviceSpecification)
 		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
-	
+    
+    dataProcessingQueue = [[NSOperationQueue alloc] init];
+    dataProcessingQueue.maxConcurrentOperationCount = 4;
+    
 	return self;
 }
 
@@ -80,13 +71,10 @@
 
 - (void)dealloc
 {
+    dataProcessingQueue = nil;
 	serviceSpecification = nil;
     singleRequests = nil;
-}
-
-- (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName
-{
-    return YES;
+    normalRequests = nil;
 }
 
 - (NSString *)baseURLInServiceSpecification
@@ -116,11 +104,6 @@
 - (BOOL)isReachable:(BOOL)showError
 {
     return [[Reachability reachabilityForInternetConnection] isReachable];
-}
-
-- (void)will302RedirectToUrl:(NSURL *)argUrl
-{
-	// Implement in service subclass for specific behavior
 }
 
 - (void)clearCache
@@ -175,12 +158,7 @@
 - (void)showNetworkActivityIfNeeded
 {
     if (requestCount > 0)
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
-}
-
-- (void)hideNetworkActivity
-{
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [self showNetworkActivity];
 }
 
 - (void)hideNetworkActivityIfNeeded
@@ -212,16 +190,12 @@
     return responseString;
 }
 
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
+- (NSMutableURLRequest *)buildRequestForURL:(NSString *)baseURL details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
-	// construct the URL based on the specification.
-	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
-	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
-	NSDictionary *requestDetails = [requestList objectForKey:requestName];
-	NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
+    NSMutableURLRequest *request = nil;
+    
+    NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
-    NSNumber *showNoConnectionAlertObj = [requestDetails objectForKey:@"showNoConnectionAlert"];
-    BOOL showNoConnectionAlert = showNoConnectionAlertObj != nil ? [showNoConnectionAlertObj boolValue] : YES;
 	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
     
     // Allowing for the dynamic specification of baseURL at runtime
@@ -250,25 +224,12 @@
         baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
     }
     
-	//NSString *hostName = [[NSURL URLWithString:baseURL] host];
-    if (![self isReachable:showNoConnectionAlert]) 
-        // || ![self isReachableToHost:hostName showError:showNoConnectionAlert])
-        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^ don't ever do that on the main thread.
-    {
-        // we ain't got no connection Lt. Dan
-        NSError *error = [NSError errorWithDomain:@"SDWebServiceError" code:SDWebServiceErrorNoConnection userInfo:nil];
-        completionBlock(0, nil, &error);
-        return SDWebServiceResultFailed;
-    }
-    
-    // get cache details
-    NSNumber *cache = [requestDetails objectForKey:@"cache"];
-    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
-    
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
+    if (!routeReplacements)
+        routeReplacements = [NSDictionary dictionary];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
 	
-	// there are some unparsed parameters which means either the plist is wrong, or the caller 
+	// there are some unparsed parameters which means either the plist is wrong, or the caller
 	// gave us a list of replacements that weren't sufficient to continue on.
 	if ([route rangeOfString:@"{"].location != NSNotFound)
 	{
@@ -292,7 +253,7 @@
 			{
 				// post data is in 'foo1={bar1}&foo2={bar2}...' form
 				postParams = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:postFormat];
-				// there are some unparsed parameters which means either the plist is wrong, or the caller 
+				// there are some unparsed parameters which means either the plist is wrong, or the caller
 				// gave us a list of replacements that weren't sufficient to continue on.
 				if ([postParams rangeOfString:@"{"].location != NSNotFound)
 				{
@@ -307,29 +268,24 @@
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
 	SDLog(@"outgoing request = %@", url);
 	
-	SDMutableURLRequest *request = [SDMutableURLRequest requestWithURL:url];
+	request = [NSMutableURLRequest requestWithURL:url];
 	[request setHTTPMethod:method];
 	[request setHTTPShouldHandleCookies:YES];
 	[request setHTTPShouldUsePipelining:NO];	// THIS WILL FUCK YOUR SHIT UP BRAH! 7 WAYS FROM SUNDAY!  In other words, this cannot be YES or our servers will return incorrect data
-												// Service A's data will be returned for Service B, and vice-versa
+    // Service A's data will be returned for Service B, and vice-versa
 #ifdef HUGE_SERVICES_TIMEOUT
 	[request setTimeoutInterval:120];
 #else
-	[request setTimeoutInterval:60];
+	[request setTimeoutInterval:_timeout];
 #endif
-
-	if (shouldRetry)
-		[request setRetryCount:3];
-	else
-		[request setRetryCount:0];
-	
+    
     if (postMethod)
     {
 		NSString *post = nil;
 		if (postParams)
 		{
 			NSMutableString *mutablePost = [[NSMutableString alloc] init];
-			SDLog(@"request post: %@", postParams);
+			//SDLog(@"request post: %@", postParams);
 			NSArray *parameters = [postParams componentsSeparatedByString:@"&"];
 			for (NSString *aParameter in parameters) {
 				NSArray *keyVal = [aParameter componentsSeparatedByString:@"="];
@@ -360,7 +316,50 @@
 			[request setHTTPBody:postData];
 		}
     }
+
+    return request;
+}
+
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
+{
+    return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
+}
+
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
+{
+    SDWebServiceDataCompletionBlock combinedBlock = ^id (int responseCode, NSData *response, NSError *error) {
+        NSString *responseString = [self responseFromData:response];
+        completionBlock(responseCode, responseString, &error);
+        return nil;
+    };
+    return [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
+}
+
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
+{
+    NSString *identifier = [NSString stringWithNewUUID];
+
+	// construct the URL based on the specification.
+	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
+	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
+	NSDictionary *requestDetails = [requestList objectForKey:requestName];
     
+    NSMutableURLRequest *request = [self buildRequestForURL:baseURL details:requestDetails replacements:replacements];
+    
+    // get cache details
+    NSNumber *cache = [requestDetails objectForKey:@"cache"];
+    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
+    
+    NSNumber *showNoConnectionAlertObj = [requestDetails objectForKey:@"showNoConnectionAlert"];
+    BOOL showNoConnectionAlert = showNoConnectionAlertObj != nil ? [showNoConnectionAlertObj boolValue] : YES;
+    if (![self isReachable:showNoConnectionAlert])
+    {
+        // we ain't got no connection Lt. Dan
+        NSError *error = [NSError errorWithDomain:SDWebServiceError code:SDWebServiceErrorNoConnection userInfo:nil];
+        uiUpdateBlock(nil, error);
+        return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil];
+    }
+        
     // setup caching
     if (cache && [cache boolValue])
         [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
@@ -375,36 +374,48 @@
     __block SDWebService *blockSelf = self;
 	    
 #ifdef DEBUG
-    __block NSDate *startDate = [NSDate date];
+    NSDate *startDate = [NSDate date];
 #endif
 
-	// Note we do a copy at the end of the following block definition/assignment. If we don't do the copy, the original block
-	// variable gets moved to the heap due to a compiler optimization (with __block) and we get a bad access crash on the first
-	// reference below this block definition. But we have to declare the block with __block to get the block self-reference within
-	// the block to work. So the solution is to pass a copy on the assignment line. See bbum's blog post, section 7 about
-	// recursive blocks: http://www.friday.com/bbum/2009/08/29/blocks-tips-tricks
-	__block SDURLConnectionResponseBlock urlCompletionBlock = [^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
+	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
 		@autoreleasepool {
-			NSString *responseString = [self responseFromData:responseData];
-
 #ifdef DEBUG
-			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], url);
+			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], response.URL);
 #endif
 			
-			if ([error code] == NSURLErrorTimedOut) [self serviceCallDidTimeoutForUrl:url];
-			if (([error code] == NSURLErrorTimedOut || ![blockSelf responseIsValid:responseString forRequest:requestName]) && shouldRetry)
-			{
-                // remove it from the cache if its there.
-                NSURLCache *cache = [NSURLCache sharedURLCache];
-                [cache removeCachedResponseForRequest:request];
-                [blockSelf performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:NO];
-                [blockSelf decrementRequests];
-                return;
-			}
-			
-			// remove from the singleRequests list
-			[singleRequests removeObjectForKey:requestName];
-			
+            // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
+            if ([error code] != NSURLErrorCancelled)
+            {
+                if ([error code] == NSURLErrorTimedOut)
+                    [self serviceCallDidTimeoutForUrl:response.URL];
+                
+                if ([error code] == NSURLErrorTimedOut && shouldRetry)
+                {
+                    // remove it from the cache if its there.
+                    NSURLCache *cache = [NSURLCache sharedURLCache];
+                    [cache removeCachedResponseForRequest:request];
+
+                    SDRequestResult *newObject = [blockSelf performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
+                    
+                    // do some sync/cleanup stuff here.
+                    SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
+                    
+                    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+                    [normalRequests setObject:newConnection forKey:identifier];
+                    [normalRequests removeObjectForKey:newObject.identifier];
+                    [dictionaryLock unlock];
+                    
+                    [blockSelf decrementRequests];
+                    return;
+                }
+            }
+            
+			// remove from the requests lists
+            [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+            [singleRequests removeObjectForKey:requestName];
+            [normalRequests removeObjectForKey:identifier];
+            [dictionaryLock unlock];
+            
 			// Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
 			// So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
 			int code = SDWTFResponseCode;
@@ -420,11 +431,25 @@
 				[blockSelf will302RedirectToUrl:httpResponse.URL];
 			}
 			
-			completionBlock(code, responseString, &error);
+			if (uiUpdateBlock == nil)
+            {
+                dataProcessingBlock(code, responseData, error);
+            }
+            else
+            {
+                [dataProcessingQueue addOperationWithBlock:^{
+                    id dataObject = nil;
+                    if (code != NSURLErrorCancelled)
+                        dataObject = dataProcessingBlock(code, responseData, error);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        uiUpdateBlock(dataObject, error);
+                    });
+                }];
+            }
 			
 			[blockSelf decrementRequests];
 		}
-	} copy];
+	};
 
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
 	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue]];
@@ -434,14 +459,12 @@
 		if (cachedString)
 		{
 			SDLog(@"***USING CACHED RESPONSE***");
-			[self incrementRequests];
-            __block SDURLConnectionResponseBlock cachedBlock = [urlCompletionBlock copy];
             
-            // Need ot pay special attention here when enabling threading again.
-            //dispatch_async(dispatch_get_main_queue(), ^{
-                cachedBlock(nil, response.response, response.responseData, nil);
-            //});
-			return SDWebServiceResultCached;            
+			[self incrementRequests];
+            
+            urlCompletionBlock(nil, response.response, response.responseData, nil);
+            
+			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil];
 		}
 	}
 
@@ -462,27 +485,59 @@
 			{
 				SDLog(@"Cancelling call.");
 				[existingConnection cancel];
+                [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
 				[singleRequests removeObjectForKey:requestName];
+                [dictionaryLock unlock];
 				[self decrementRequests];
 			}
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:[urlCompletionBlock copy]];
-	if (singleRequest)
-		[singleRequests setObject:connection forKey:requestName];
-	
-	return SDWebServiceResultSuccess;
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequestInBackground:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+    
+    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+    if (singleRequest)
+        [singleRequests setObject:connection forKey:requestName];
+    else
+        [normalRequests setObject:connection forKey:identifier];
+    [dictionaryLock unlock];
+    
+	return [SDRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier];
 }
 
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
+- (void)cancelRequestForIdentifier:(NSString *)identifier
 {
-    return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
+    SDURLConnection *connection = [normalRequests objectForKey:identifier];
+    [connection cancel];
 }
+
+#pragma mark - Subclass should override these
 
 - (void)serviceCallDidTimeoutForUrl:(NSURL*)url
 {
-	// currently handling in subclass
+	// override in subclass
+}
+
+- (void)showNetworkActivity
+{
+    // override in subclass.
+    //[UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+}
+
+- (void)hideNetworkActivity
+{
+    // override in subclass.
+    //[UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+}
+
+- (void)will302RedirectToUrl:(NSURL *)argUrl
+{
+	// Implement in service subclass for specific behavior
+}
+
+- (void)handleError:(NSError *)error forResult:(id)result
+{
+    // do nothing.  override in subclass.
 }
 
 @end

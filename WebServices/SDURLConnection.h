@@ -15,16 +15,10 @@ typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLR
 
 @interface SDURLConnection : NSURLConnection
 {
-    NSString *requestName;
-	NSString *idendifier;
-@public
-    NSPort *runPort;
     SDURLResponseCompletionDelegate *pseudoDelegate;
 }
 
-@property (nonatomic, retain) NSString *requestName;
-@property (nonatomic, readonly) NSString *identifier;
-
 + (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;
++ (SDURLConnection *)sendAsynchronousRequestInBackground:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;
 
 @end

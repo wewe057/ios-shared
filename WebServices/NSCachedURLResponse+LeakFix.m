@@ -1,9 +1,9 @@
 //
 //  NSCachedURLResponse+LeakFix.m
-//  walmart
+//  SetDirection
 //
 //  Created by Brandon Sneed on 4/29/12.
-//  Copyright (c) 2012 Walmart. All rights reserved.
+//  Copyright (c) 2012 SetDirection. All rights reserved.
 //
 
 #import "NSCachedURLResponse+LeakFix.h"

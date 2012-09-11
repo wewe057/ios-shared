@@ -21,12 +21,13 @@
 	NSHTTPURLResponse *httpResponse;
     BOOL shouldCache;
     BOOL isRunning;
+    BOOL stopRunloop;
 }
 
 @property (atomic, assign) BOOL isRunning;
 
-- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler
-                  shouldCache:(BOOL)cache;
+- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler shouldCache:(BOOL)cache;
+- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler shouldCache:(BOOL)cache shouldStopRunloop:(BOOL)stopRunloop;
 
 @end
 
@@ -40,6 +41,20 @@
 	{
         responseHandler = [newHandler copy];
         shouldCache = cache;
+		responseData = [NSMutableData dataWithCapacity:0];
+        self.isRunning = YES;
+    }
+	
+    return self;
+}
+
+- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler shouldCache:(BOOL)cache shouldStopRunloop:(BOOL)shouldStopRunloop
+{
+    if (self = [super init])
+	{
+        responseHandler = [newHandler copy];
+        shouldCache = cache;
+        stopRunloop = shouldStopRunloop;
 		responseData = [NSMutableData dataWithCapacity:0];
         self.isRunning = YES;
     }
@@ -66,6 +81,8 @@
     responseHandler(connection, nil, responseData, error);
     responseHandler = nil;
     self.isRunning = NO;
+    if (stopRunloop)
+        CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
 - (void)connection:(SDURLConnection *)connection didReceiveData:(NSData *)data
@@ -78,6 +95,8 @@
     responseHandler(connection, httpResponse, responseData, nil);
     responseHandler = nil;
     self.isRunning = NO;
+    if (stopRunloop)
+        CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
 - (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
@@ -92,27 +111,18 @@
 
 @implementation SDURLConnection
 
-@synthesize requestName;
-@dynamic identifier;
+static NSOperationQueue *networkOperationQueue = nil;
 
-- (void)dealloc
++ (void)initialize
 {
-    requestName = nil;
-	idendifier = nil;
-}
-
-- (NSString *)getIdentifier
-{
-	if (idendifier)
-		return idendifier;
-	
-	idendifier = [NSString stringWithNewUUID];
-	return idendifier;
+    networkOperationQueue = [[NSOperationQueue alloc] init];
+    networkOperationQueue.maxConcurrentOperationCount = 4;
 }
 
 - (void)cancel
 {
     self->pseudoDelegate.isRunning = NO;
+    [self->pseudoDelegate connection:self didFailWithError:[NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]];
     [super cancel];
 }
 
@@ -125,12 +135,29 @@
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     if (!connection)
         SDLog(@"Unable to create a connection!");
-    
-	// To keep the smooth scrolling on the iPhone app Shelf w/o affecting iPad
-    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)
-        [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-    
+
+    [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
     [connection start];
+    
+    return connection;
+}
+
++ (SDURLConnection *)sendAsynchronousRequestInBackground:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler
+{
+    if (!handler)
+        @throw @"sendAsynchronousRequest must be given a handler!";
+    
+    SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache shouldStopRunloop:YES];
+    SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
+    if (!connection)
+        SDLog(@"Unable to create a connection!");
+    
+    [networkOperationQueue addOperationWithBlock:^{
+        [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+        [connection start];
+        
+        [[NSRunLoop currentRunLoop] run];
+    }];
     
     return connection;
 }

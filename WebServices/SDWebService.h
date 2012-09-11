@@ -10,13 +10,16 @@
 #import "Reachability.h"
 
 typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
-typedef void (^SDWebServiceGroupCompletionBlock)(NSArray *responseCodes, NSArray *responses, NSError **error);
+typedef id (^SDWebServiceDataCompletionBlock)(int responseCode, NSData *response, NSError *error);
+typedef void (^SDWebServiceUICompletionBlock)(id dataObject, NSError *error);
+
+extern NSString *const SDWebServiceError;
 
 enum
 {
     SDWebServiceErrorNoConnection = 0xBEEF,
     SDWebServiceErrorBadParams = 0x0BADF00D,
-    // all other errors come from ASI-HTTP
+    // all other errors come from NSURLConnection and its subsystems.
 };
 
 typedef enum
@@ -31,23 +34,43 @@ enum
 	SDWTFResponseCode = -1
 };
 
+@interface SDRequestResult : NSObject
+@property (nonatomic, strong) NSString *identifier;
+@property (nonatomic, assign) SDWebServiceResult result;
+@end
+
 @interface SDWebService : NSObject
 {
+    NSMutableDictionary *normalRequests;
 	NSMutableDictionary *singleRequests;
+    NSLock *dictionaryLock;
+
 	NSDictionary *serviceSpecification;
     NSUInteger requestCount;
+    NSOperationQueue *dataProcessingQueue;
 }
+
+@property (nonatomic, assign) NSUInteger timeout;
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost;
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry;
-- (BOOL)responseIsValid:(NSString *)response forRequest:(NSString *)requestName;
 - (NSString *)baseURLInServiceSpecification;
 - (BOOL)isReachable:(BOOL)showError;
 - (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError;
 - (void)clearCache;
+
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock;
+- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry;
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
+- (void)cancelRequestForIdentifier:(NSString *)identifier;
+
+#pragma mark - Suggested overrides for subclasses
+
+- (void)handleError:(NSError *)error forResult:(id)result;
 - (void)will302RedirectToUrl:(NSURL *)argUrl;
 - (void)serviceCallDidTimeoutForUrl:(NSURL*)url;
+- (void)showNetworkActivity;
+- (void)hideNetworkActivity;
+
 
 @end
