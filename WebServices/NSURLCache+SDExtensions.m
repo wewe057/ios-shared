@@ -1,12 +1,12 @@
 //
-//  NSURLCacheWalmartExtensions.m
-//  walmart
+//  NSURLCache+SDExtensions.m
+//  SetDirection
 //
 //  Created by Steven Riggins on 4/27/12.
-//  Copyright (c) 2012 Walmart. All rights reserved.
+//  Copyright (c) 2012 SetDirection. All rights reserved.
 //
 
-#import "NSURLCacheWalmartExtensions.h"
+#import "NSURLCache+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
 
 static float const kSDURLCacheDefault = 3600; // Default cache expiration delay if none defined (1 hour)
@@ -21,7 +21,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
     return dateFormatter;
 }
 
-@implementation NSURLCache(NSURLCacheWalmartExtensions)
+@implementation NSURLCache(SDExtensions)
 
 /*
  * Parse HTTP Date: http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1
