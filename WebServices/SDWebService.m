@@ -433,7 +433,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			
 			if (uiUpdateBlock == nil)
             {
-                dataProcessingBlock(code, responseData, error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    dataProcessingBlock(code, responseData, error);
+                });
             }
             else
             {
