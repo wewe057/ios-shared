@@ -51,8 +51,6 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 
 - (void)startUpdatingLocation __deprecated;
 - (void)stopUpdatingHeading __deprecated;
-- (void)startUpdatingHeading __deprecated;
-- (void)stopUpdatingHeading __deprecated;
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager __deprecated;
 - (void)setDelegate:(id<CLLocationManagerDelegate>)delegate __deprecated;
 
