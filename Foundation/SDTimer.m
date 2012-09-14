@@ -31,7 +31,7 @@
                 [blockSelf invalidate];
         });
         dispatch_source_set_cancel_handler(timer, ^{
-            dispatch_release(timer);
+            //timer = nil; ???
         });
         dispatch_resume(timer);
     }
