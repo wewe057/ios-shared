@@ -178,6 +178,13 @@
     return queryComponents;
 }
 
++ (NSString *)stringWithJSONObject:(id)obj
+{
+    NSError *jsonError = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:&jsonError];
+    NSString *theJSONString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return theJSONString;
+}
 
 @end
 
