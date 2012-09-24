@@ -28,6 +28,7 @@
 - (NSString *)escapedString;
 - (NSString *)removeExcessWhitespace;
 - (NSString *)removeLeadingWhitespace;
+- (NSString *)removeLeadingZeroes;
 - (NSString *)removeTrailingWhitespace;
 - (NSDictionary *)parseURLQueryParams;
 
