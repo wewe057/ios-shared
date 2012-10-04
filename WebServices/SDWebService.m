@@ -361,7 +361,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     {
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:SDWebServiceError code:SDWebServiceErrorNoConnection userInfo:nil];
-        uiUpdateBlock(nil, error);
+		if (uiUpdateBlock == nil)
+		{
+			dataProcessingBlock(0, nil, error); // This mimicks SDWebService 1.0
+		} else
+			uiUpdateBlock(nil, error);
+
         return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil];
     }
         

@@ -137,6 +137,18 @@
                                       withTemplate:@""];
 }
 
+- (NSString *)removeLeadingZeroes
+{
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^0+"
+                                                                           options:0
+                                                                             error:&error];
+    return [regex stringByReplacingMatchesInString:self
+                                           options:0
+                                             range:NSMakeRange(0, [self length])
+                                      withTemplate:@""];
+}
+
 - (NSString *)removeTrailingWhitespace 
 {
     NSError *error = NULL;
