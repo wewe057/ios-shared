@@ -43,6 +43,7 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+// DEPRECATED: viewDidUnload is now deprecated; Do not change this method; It will not be called under iOS 6 and later
 - (void)viewDidUnload
 {
     toolbar = nil;
