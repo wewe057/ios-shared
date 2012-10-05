@@ -9,14 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @class SDURLConnection;
-@class SDURLResponseCompletionDelegate;
+@class SDURLConnectionAsyncDelegate;
 
 typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error);
 
 @interface SDURLConnection : NSURLConnection
-{
-    SDURLResponseCompletionDelegate *pseudoDelegate;
-}
 
 + (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;
 + (SDURLConnection *)sendAsynchronousRequestInBackground:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;

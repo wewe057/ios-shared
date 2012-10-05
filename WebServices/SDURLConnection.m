@@ -12,7 +12,11 @@
 
 #import <libkern/OSAtomic.h>
 
-@interface SDURLResponseCompletionDelegate : NSObject
+#pragma mark - SDConnectionManager
+
+#pragma mark - SDURLResponseCompletionDelegate
+
+@interface SDURLConnectionAsyncDelegate : NSObject
 {
 @public
     SDURLConnectionResponseBlock responseHandler;
@@ -31,7 +35,7 @@
 
 @end
 
-@implementation SDURLResponseCompletionDelegate
+@implementation SDURLConnectionAsyncDelegate
 
 @synthesize isRunning;
 
@@ -73,7 +77,7 @@
 - (void)connection:(SDURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
 	httpResponse = (NSHTTPURLResponse *)response;
-	[responseData setLength:0];	
+	[responseData setLength:0];
 }
 
 - (void)connection:(SDURLConnection *)connection didFailWithError:(NSError *)error
@@ -107,9 +111,13 @@
 
 @end
 
-#pragma mark -
+#pragma mark - SDURLConnection
 
 @implementation SDURLConnection
+{
+    __weak NSBlockOperation *asyncOperation;
+    __weak SDURLConnectionAsyncDelegate *asyncDelegate;
+}
 
 static NSOperationQueue *networkOperationQueue = nil;
 
@@ -121,9 +129,16 @@ static NSOperationQueue *networkOperationQueue = nil;
 
 - (void)cancel
 {
-    self->pseudoDelegate.isRunning = NO;
-    [self->pseudoDelegate connection:self didFailWithError:[NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]];
-    [super cancel];
+    @synchronized(self)
+    {
+        [super cancel];
+        [self->asyncOperation cancel];
+        if (self->asyncDelegate.isRunning)
+        {
+            self->asyncDelegate.isRunning = NO;
+            [self->asyncDelegate connection:self didFailWithError:[NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]];
+        }
+    }
 }
 
 + (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler
@@ -131,7 +146,7 @@ static NSOperationQueue *networkOperationQueue = nil;
     if (!handler)
         @throw @"sendAsynchronousRequest must be given a handler!";
     
-    SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
+    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     if (!connection)
         SDLog(@"Unable to create a connection!");
@@ -147,17 +162,24 @@ static NSOperationQueue *networkOperationQueue = nil;
     if (!handler)
         @throw @"sendAsynchronousRequest must be given a handler!";
     
-    SDURLResponseCompletionDelegate *delegate = [[SDURLResponseCompletionDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache shouldStopRunloop:YES];
+    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache shouldStopRunloop:YES];
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     if (!connection)
+    {
         SDLog(@"Unable to create a connection!");
+        return nil;
+    }
     
-    [networkOperationQueue addOperationWithBlock:^{
+    connection->asyncDelegate = delegate;
+    connection->asyncOperation = [NSBlockOperation blockOperationWithBlock:^{
         [connection scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
         [connection start];
         
-        [[NSRunLoop currentRunLoop] run];
+        while (!connection->asyncOperation.isCancelled && connection->asyncDelegate.isRunning)
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantFuture]];
     }];
+    
+    [networkOperationQueue addOperation:connection->asyncOperation];
     
     return connection;
 }
