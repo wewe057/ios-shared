@@ -137,6 +137,18 @@
                                       withTemplate:@""];
 }
 
+- (NSString *)removeLeadingZeroes
+{
+    NSError *error = NULL;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^0+"
+                                                                           options:0
+                                                                             error:&error];
+    return [regex stringByReplacingMatchesInString:self
+                                           options:0
+                                             range:NSMakeRange(0, [self length])
+                                      withTemplate:@""];
+}
+
 - (NSString *)removeTrailingWhitespace 
 {
     NSError *error = NULL;
@@ -178,6 +190,13 @@
     return queryComponents;
 }
 
++ (NSString *)stringWithJSONObject:(id)obj
+{
+    NSError *jsonError = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:&jsonError];
+    NSString *theJSONString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return theJSONString;
+}
 
 @end
 

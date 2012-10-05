@@ -57,12 +57,7 @@
 
 -(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
 {
-    CGRect insetBounds = CGRectMake(self.bounds.origin.x + self.touchInset.left,
-                                    self.bounds.origin.y + self.touchInset.top,
-                                    self.bounds.size.width  - (self.touchInset.left + self.touchInset.right),
-                                    self.bounds.size.height - (self.touchInset.top  + self.touchInset.bottom));
-    
-    return CGRectContainsPoint(insetBounds, point);
+    return CGRectContainsPoint(UIEdgeInsetsInsetRect(self.bounds, self.touchInset), point);
 }
 
 /*

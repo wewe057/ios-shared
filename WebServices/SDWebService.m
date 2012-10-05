@@ -335,6 +335,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
 }
 
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
+{
+    return [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
+}
+
 - (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
 {
     NSString *identifier = [NSString stringWithNewUUID];
@@ -356,7 +361,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     {
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:SDWebServiceError code:SDWebServiceErrorNoConnection userInfo:nil];
-        uiUpdateBlock(nil, error);
+		if (uiUpdateBlock == nil)
+		{
+			dataProcessingBlock(0, nil, error); // This mimicks SDWebService 1.0
+		} else
+			uiUpdateBlock(nil, error);
+
         return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil];
     }
         

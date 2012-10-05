@@ -14,4 +14,7 @@
 - (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request;	// Makes sure the response is not expired, otherwise nil
 - (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl;
 
+// Ignore the expiration date. Just compare the ttl against the date in the header. Use with care.
+- (NSCachedURLResponse*)suppopsedlyInvalidCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl;
+
 @end

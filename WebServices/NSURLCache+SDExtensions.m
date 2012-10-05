@@ -226,6 +226,26 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
 	return NO;
 }	
 
+- (NSCachedURLResponse*)suppopsedlyInvalidCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl
+{
+    NSURLCache *urlCache = [NSURLCache sharedURLCache];
+    NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
+    if (response && response.response && response.responseData)
+    {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
+        if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
+        {
+            NSDate *fetchDate = [NSURLCache fetchDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
+            NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:fetchDate];
+            if (timePassed < ttl)
+            {
+                return response;
+            }
+        }
+    }
+	return nil; // Cached response not found
+}
+
 // Makes sure the response is not expired, otherwise nil
 - (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request
 {

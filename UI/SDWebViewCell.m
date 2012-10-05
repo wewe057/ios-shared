@@ -7,6 +7,7 @@
 //
 
 #import "SDWebViewCell.h"
+#import "UIView+SDExtensions.h"
 
 #define VERTICAL_OFFSET_FOR_CELL_VIEWS 10.0f
 
