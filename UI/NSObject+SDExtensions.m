@@ -84,4 +84,37 @@
 	va_end(args);
 }
 
+- (void)performBlockInBackground:(NSObjectPerformBlock)performBlock completion:(NSObjectPerformBlock)completionBlock
+{
+    if (performBlock)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            performBlock();
+            if (completionBlock)
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionBlock();
+                });
+        });
+}
+
+- (void)__performBlockSelector:(NSObjectPerformBlock)block
+{
+    if (block)
+        block();
+}
+
+- (void)performBlock:(NSObjectPerformBlock)performBlock afterDelay:(NSTimeInterval)delay
+{
+    /*dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if (performBlock)
+            performBlock();
+    });*/
+    
+    // ^^^ produces significant delay in just telling the block to execute.  when on the main queue, its less
+    // performant to do this.
+    
+    if (performBlock)
+        [self performSelector:@selector(__performBlockSelector:) withObject:[performBlock copy] afterDelay:delay];
+}
+
 @end
