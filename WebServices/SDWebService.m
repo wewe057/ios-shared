@@ -53,7 +53,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
     
     dataProcessingQueue = [[NSOperationQueue alloc] init];
-    dataProcessingQueue.maxConcurrentOperationCount = 4;
+    // let the system determine how many threads are best, dynamically.
+    dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+    dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
     
 	return self;
 }
@@ -453,9 +455,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                     id dataObject = nil;
                     if (code != NSURLErrorCancelled)
                         dataObject = dataProcessingBlock(code, responseData, error);
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         uiUpdateBlock(dataObject, error);
-                    });
+                    }];
                 }];
             }
 			
@@ -505,7 +507,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequestInBackground:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
     
     [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
     if (singleRequest)
