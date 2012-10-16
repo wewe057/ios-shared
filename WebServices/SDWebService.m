@@ -547,9 +547,30 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// Implement in service subclass for specific behavior
 }
 
-- (void)handleError:(NSError *)error forResult:(id)result
+- (BOOL)handledError:(NSError *)error dataObject:(id)dataObject
 {
-    // do nothing.  override in subclass.
+    // do nothing.  override in subclass like so...
+    
+    /*
+    SDWebServiceUICompletionBlock uiBlock = ^(id dataObject, NSError *error)
+    {
+        if ([self handledError:error dataObject:dataObject])
+        {
+            // do your *ERROR UI*
+        }
+        else
+        {
+            // do your *SUCCESS UI*
+     
+            // You may still need to do some error checking here.  
+            // Think of handledError: as kind of a global error handling for your app.
+            // If this service call has possible error conditions that no other
+            // service call would have, you'll want to look for those here as well.
+        }
+    }
+     */
+    
+    return FALSE;
 }
 
 @end
