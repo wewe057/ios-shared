@@ -412,11 +412,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                     // do some sync/cleanup stuff here.
                     SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
                     
-                    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-                    [normalRequests setObject:newConnection forKey:identifier];
-                    [normalRequests removeObjectForKey:newObject.identifier];
-                    [dictionaryLock unlock];
-                    
+					// If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
+					if (newConnection)
+					{
+						[dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+						[normalRequests setObject:newConnection forKey:identifier];
+						[normalRequests removeObjectForKey:newObject.identifier];
+						[dictionaryLock unlock];
+					}
+                
                     [blockSelf decrementRequests];
                     return;
                 }
