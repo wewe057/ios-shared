@@ -67,7 +67,7 @@ enum
 
 #pragma mark - Suggested overrides for subclasses
 
-- (void)handleError:(NSError *)error forResult:(id)result;
+- (BOOL)handledError:(NSError *)error dataObject:(id)dataObject;
 - (void)will302RedirectToUrl:(NSURL *)argUrl;
 - (void)serviceCallDidTimeoutForUrl:(NSURL*)url;
 - (void)showNetworkActivity;
