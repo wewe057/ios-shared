@@ -9,6 +9,8 @@
 
 // makes loading nibs much easier.
 
+typedef void (^NSObjectPerformBlock)();
+
 @interface NSObject (SDExtensions)
 
 + (NSString *)className;
@@ -21,5 +23,8 @@
 + (id)loadFromNibNamed:(NSString *)nibName withOwner:(id)owner;
 
 - (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...;
+
+- (void)performBlockInBackground:(NSObjectPerformBlock)performBlock completion:(NSObjectPerformBlock)completionBlock;
+- (void)performBlock:(NSObjectPerformBlock)performBlock afterDelay:(NSTimeInterval)delay;
 
 @end

@@ -16,6 +16,5 @@ typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLR
 @interface SDURLConnection : NSURLConnection
 
 + (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;
-+ (SDURLConnection *)sendAsynchronousRequestInBackground:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;
 
 @end

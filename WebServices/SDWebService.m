@@ -53,7 +53,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
     
     dataProcessingQueue = [[NSOperationQueue alloc] init];
-    dataProcessingQueue.maxConcurrentOperationCount = 4;
+    // let the system determine how many threads are best, dynamically.
+    dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+    dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
     
 	return self;
 }
@@ -410,11 +412,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                     // do some sync/cleanup stuff here.
                     SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
                     
-                    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-                    [normalRequests setObject:newConnection forKey:identifier];
-                    [normalRequests removeObjectForKey:newObject.identifier];
-                    [dictionaryLock unlock];
-                    
+					// If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
+					if (newConnection)
+					{
+						[dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+						[normalRequests setObject:newConnection forKey:identifier];
+						[normalRequests removeObjectForKey:newObject.identifier];
+						[dictionaryLock unlock];
+					}
+                
                     [blockSelf decrementRequests];
                     return;
                 }
@@ -453,9 +459,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                     id dataObject = nil;
                     if (code != NSURLErrorCancelled)
                         dataObject = dataProcessingBlock(code, responseData, error);
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                         uiUpdateBlock(dataObject, error);
-                    });
+                    }];
                 }];
             }
 			
@@ -505,7 +511,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequestInBackground:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
     
     [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
     if (singleRequest)
@@ -547,9 +553,30 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// Implement in service subclass for specific behavior
 }
 
-- (void)handleError:(NSError *)error forResult:(id)result
+- (BOOL)handledError:(NSError *)error dataObject:(id)dataObject
 {
-    // do nothing.  override in subclass.
+    // do nothing.  override in subclass like so...
+    
+    /*
+    SDWebServiceUICompletionBlock uiBlock = ^(id dataObject, NSError *error)
+    {
+        if ([self handledError:error dataObject:dataObject])
+        {
+            // do your *ERROR UI*
+        }
+        else
+        {
+            // do your *SUCCESS UI*
+     
+            // You may still need to do some error checking here.  
+            // Think of handledError: as kind of a global error handling for your app.
+            // If this service call has possible error conditions that no other
+            // service call would have, you'll want to look for those here as well.
+        }
+    }
+     */
+    
+    return FALSE;
 }
 
 @end
