@@ -23,6 +23,8 @@
     {
         [self addSubview:itemView];
     }
+
+    self.contentSize = CGSizeMake(self.bounds.size.width * stackItemViews.count, self.bounds.size.height);
     
     [self setNeedsLayout];
 }
@@ -42,8 +44,6 @@
 -(void)layoutSubviews
 {
     CGPoint center = CGPointMake(self.bounds.size.width * 0.5, self.bounds.size.height * 0.5);
-    
-    self.contentSize = CGSizeMake(self.bounds.size.width * self.stackItemViews.count, self.bounds.size.height);
     
     for(NSUInteger i = 0; i < self.stackItemViews.count; i++)
     {
