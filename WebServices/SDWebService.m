@@ -399,32 +399,34 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             if ([error code] != NSURLErrorCancelled)
             {
                 if ([error code] == NSURLErrorTimedOut)
+                {
                     [self serviceCallDidTimeoutForUrl:response.URL];
                 
-                if ([error code] == NSURLErrorTimedOut && shouldRetry)
-                {
-                    // remove it from the cache if its there.
-                    NSURLCache *cache = [NSURLCache sharedURLCache];
-                    [cache removeCachedResponseForRequest:request];
+                    if (shouldRetry)
+                    {
+                        // remove it from the cache if its there.
+                        NSURLCache *cache = [NSURLCache sharedURLCache];
+                        [cache removeCachedResponseForRequest:request];
 
-                    SDRequestResult *newObject = [blockSelf performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
-                    
-                    // do some sync/cleanup stuff here.
-                    SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
-                    
-					// If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
-					[dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-					if (newConnection)
-					{
-						[normalRequests setObject:newConnection forKey:identifier];
-						[normalRequests removeObjectForKey:newObject.identifier];
-					} else {
-						[normalRequests removeObjectForKey:identifier];
-					}
-					[dictionaryLock unlock];
-              
-                    [blockSelf decrementRequests];
-                    return;
+                        SDRequestResult *newObject = [blockSelf performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
+                        
+                        // do some sync/cleanup stuff here.
+                        SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
+                        
+                        // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
+                        [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+                        if (newConnection)
+                        {
+                            [normalRequests setObject:newConnection forKey:identifier];
+                            [normalRequests removeObjectForKey:newObject.identifier];
+                        }
+                        else
+                            [normalRequests removeObjectForKey:identifier];
+                        [dictionaryLock unlock];
+                  
+                        [blockSelf decrementRequests];
+                        return;
+                    }
                 }
             }
             
