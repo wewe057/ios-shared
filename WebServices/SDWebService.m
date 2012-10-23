@@ -392,7 +392,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
 		@autoreleasepool {
 #ifdef DEBUG
-			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], response.URL);
+			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], request.URL);
 #endif
 			
             // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
