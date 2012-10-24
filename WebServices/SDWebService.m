@@ -37,6 +37,14 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 @implementation SDWebService
 
++ (id)sharedInstance
+{
+	static dispatch_once_t oncePred;
+	static id sharedInstance = nil;
+	dispatch_once(&oncePred, ^{ sharedInstance = [[[self class] alloc] init]; });
+	return sharedInstance;
+}
+
 - (id)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
@@ -73,14 +81,14 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (id)copy
 {
-    NSLog(@"someone is copying us");
-    return self;
+    [[NSException exceptionWithName:@"SDException" reason:@"Do NOT copy the web service singleton" userInfo:nil] raise];
+    return nil;
 }
 
 + (id)copyWithZone:(NSZone *)zone
 {
-    NSLog(@"wtf would this happen");
-    return self;
+    [[NSException exceptionWithName:@"SDException" reason:@"Do NOT copy the web service singleton" userInfo:nil] raise];
+    return nil;
 }
 
 - (void)dealloc

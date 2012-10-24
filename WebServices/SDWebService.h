@@ -52,6 +52,8 @@ enum
 
 @property (nonatomic, assign) NSUInteger timeout;
 
++ (id)sharedInstance;
+
 - (id)initWithSpecification:(NSString *)specificationName;
 - (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost;
 - (NSString *)baseURLInServiceSpecification;
