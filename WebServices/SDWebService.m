@@ -383,8 +383,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
     
-    __block SDWebService *blockSelf = self;
-	    
 #ifdef DEBUG
     NSDate *startDate = [NSDate date];
 #endif
@@ -408,7 +406,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                         NSURLCache *cache = [NSURLCache sharedURLCache];
                         [cache removeCachedResponseForRequest:request];
 
-                        SDRequestResult *newObject = [blockSelf performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
+                        SDRequestResult *newObject = [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
                         
                         // do some sync/cleanup stuff here.
                         SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
@@ -424,7 +422,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                             [normalRequests removeObjectForKey:identifier];
                         [dictionaryLock unlock];
                   
-                        [blockSelf decrementRequests];
+                        [self decrementRequests];
                         return;
                     }
                 }
@@ -448,7 +446,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			// handle redirects in a crappy way.. need to rework this to be done inside of SDURLConnection.
 			if (code == 302)
 			{
-				[blockSelf will302RedirectToUrl:httpResponse.URL];
+				[self will302RedirectToUrl:httpResponse.URL];
 			}
 			
 			if (uiUpdateBlock == nil)
@@ -469,7 +467,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                 }];
             }
 			
-			[blockSelf decrementRequests];
+			[self decrementRequests];
 		}
 	};
 

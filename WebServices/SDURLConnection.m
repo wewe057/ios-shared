@@ -134,7 +134,7 @@ static NSOperationQueue *networkOperationQueue = nil;
     if (!handler)
         @throw @"sendAsynchronousRequest must be given a handler!";
     
-    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
+    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:handler shouldCache:cache];
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     
     if (!connection)
