@@ -290,7 +290,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #ifdef HUGE_SERVICES_TIMEOUT
 	[request setTimeoutInterval:120];
 #else
-	[request setTimeoutInterval:5];//_timeout];
+	[request setTimeoutInterval:_timeout];
 #endif
     
     if (postMethod)
