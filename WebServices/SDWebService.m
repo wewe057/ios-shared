@@ -71,6 +71,18 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	return self;
 }
 
+- (id)copy
+{
+    NSLog(@"someone is copying us");
+    return self;
+}
+
++ (id)copyWithZone:(NSZone *)zone
+{
+    NSLog(@"wtf would this happen");
+    return self;
+}
+
 - (void)dealloc
 {
     dataProcessingQueue = nil;
@@ -278,7 +290,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #ifdef HUGE_SERVICES_TIMEOUT
 	[request setTimeoutInterval:120];
 #else
-	[request setTimeoutInterval:_timeout];
+	[request setTimeoutInterval:5];//_timeout];
 #endif
     
     if (postMethod)
@@ -386,89 +398,87 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #ifdef DEBUG
     NSDate *startDate = [NSDate date];
 #endif
-
+    
 	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
-		@autoreleasepool {
 #ifdef DEBUG
-			SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], request.URL);
+        SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], request.URL);
 #endif
-			
-            // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
-            if ([error code] != NSURLErrorCancelled)
+        // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
+        if ([error code] != NSURLErrorCancelled)
+        {
+            if ([error code] == NSURLErrorTimedOut)
             {
-                if ([error code] == NSURLErrorTimedOut)
+                [self serviceCallDidTimeoutForUrl:response.URL];
+            
+                if (shouldRetry)
                 {
-                    [self serviceCallDidTimeoutForUrl:response.URL];
-                
-                    if (shouldRetry)
-                    {
-                        // remove it from the cache if its there.
-                        NSURLCache *cache = [NSURLCache sharedURLCache];
-                        [cache removeCachedResponseForRequest:request];
+                    // remove it from the cache if its there.
+                    NSURLCache *cache = [NSURLCache sharedURLCache];
+                    [cache removeCachedResponseForRequest:request];
 
-                        SDRequestResult *newObject = [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
-                        
-                        // do some sync/cleanup stuff here.
-                        SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
-                        
-                        // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
-                        [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-                        if (newConnection)
-                        {
-                            [normalRequests setObject:newConnection forKey:identifier];
-                            [normalRequests removeObjectForKey:newObject.identifier];
-                        }
-                        else
-                            [normalRequests removeObjectForKey:identifier];
-                        [dictionaryLock unlock];
-                  
-                        [self decrementRequests];
-                        return;
+                    SDRequestResult *newObject = [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
+                    
+                    // do some sync/cleanup stuff here.
+                    SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
+                    
+                    // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
+                    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+                    if (newConnection)
+                    {
+                        [normalRequests setObject:newConnection forKey:identifier];
+                        [normalRequests removeObjectForKey:newObject.identifier];
                     }
+                    else
+                        [normalRequests removeObjectForKey:identifier];
+                    [dictionaryLock unlock];
+              
+                    [self decrementRequests];
+                    return;
                 }
             }
-            
-			// remove from the requests lists
-            [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-            [singleRequests removeObjectForKey:requestName];
-            [normalRequests removeObjectForKey:identifier];
-            [dictionaryLock unlock];
-            
-			// Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
-			// So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
-			int code = SDWTFResponseCode;
-			NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-			if ([response isKindOfClass:[NSHTTPURLResponse class]])
-			{
-				code = [httpResponse statusCode];
-			}
-			
-			// handle redirects in a crappy way.. need to rework this to be done inside of SDURLConnection.
-			if (code == 302)
-			{
-				[self will302RedirectToUrl:httpResponse.URL];
-			}
-			
-			if (uiUpdateBlock == nil)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    dataProcessingBlock(code, responseData, error);
-                });
-            }
-            else
-            {
-                [dataProcessingQueue addOperationWithBlock:^{
-                    id dataObject = nil;
-                    if (code != NSURLErrorCancelled)
-                        dataObject = dataProcessingBlock(code, responseData, error);
-                    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                        uiUpdateBlock(dataObject, error);
-                    }];
+        }
+        
+        // remove from the requests lists
+        [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+        [singleRequests removeObjectForKey:requestName];
+        [normalRequests removeObjectForKey:identifier];
+        [dictionaryLock unlock];
+        
+        // Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
+        // So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
+        int code = SDWTFResponseCode;
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        if ([response isKindOfClass:[NSHTTPURLResponse class]])
+        {
+            code = [httpResponse statusCode];
+        }
+        
+        // handle redirects in a crappy way.. need to rework this to be done inside of SDURLConnection.
+        if (code == 302)
+        {
+            [self will302RedirectToUrl:httpResponse.URL];
+        }
+        
+        if (uiUpdateBlock == nil)
+        {
+            NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
+            [mainQueue addOperationWithBlock:^{
+                dataProcessingBlock(code, responseData, error);
+            }];
+        }
+        else
+        {
+            [dataProcessingQueue addOperationWithBlock:^{
+                id dataObject = nil;
+                if (code != NSURLErrorCancelled)
+                    dataObject = dataProcessingBlock(code, responseData, error);
+                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                    uiUpdateBlock(dataObject, error);
                 }];
-            }
-			
-			[self decrementRequests];
-		}
+            }];
+        }
+        
+        [self decrementRequests];
 	};
 
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
