@@ -118,6 +118,16 @@ static NSOperationQueue *networkOperationQueue = nil;
     networkOperationQueue.name = @"com.setdirection.sdurlconnectionqueue";
 }
 
++ (NSInteger)maxConcurrentAsyncConnections
+{
+    return networkOperationQueue.maxConcurrentOperationCount;
+}
+
++ (void)setMaxConcurrentAsyncConnections:(NSInteger)maxCount
+{
+    networkOperationQueue.maxConcurrentOperationCount = maxCount;
+}
+
 - (id)initWithRequest:(NSURLRequest *)request delegate:(id)delegate startImmediately:(BOOL)startImmediately
 {
     self = [super initWithRequest:request delegate:delegate startImmediately:startImmediately];

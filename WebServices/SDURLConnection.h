@@ -15,6 +15,9 @@ typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLR
 
 @interface SDURLConnection : NSURLConnection
 
++ (NSInteger)maxConcurrentAsyncConnections;
++ (void)setMaxConcurrentAsyncConnections:(NSInteger)maxCount;
+
 + (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;
 
 @end
