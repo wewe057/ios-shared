@@ -108,16 +108,16 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
     }
     
     // Define "now" based on the request
-    NSString *date = [headers objectForKey:@"Date"];
-    NSDate *now;
-    if (date)
+    NSString *dateString = [headers objectForKey:@"Date"];
+    NSDate *date = nil;
+    if (dateString)
     {
-        now = [NSURLCache dateFromHttpDateString:date];
+        date = [NSURLCache dateFromHttpDateString:dateString];
     }
     else
     {
         // If no Date: header, define now from local clock
-        now = [NSDate date];
+        date = [NSDate date];
     }
     
     // Look at info from the Cache-Control: max-age=n header
@@ -141,7 +141,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
             {
                 if (maxAge > 0)
                 {
-                    return [[NSDate alloc] initWithTimeInterval:maxAge sinceDate:now];
+                    return [[NSDate alloc] initWithTimeInterval:maxAge sinceDate:date];
                 }
                 else
                 {
@@ -159,7 +159,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
         NSDate *expirationDate = [NSURLCache dateFromHttpDateString:expires];
         if (expirationDate)
         {
-            expirationInterval = [expirationDate timeIntervalSinceDate:now];
+            expirationInterval = [expirationDate timeIntervalSinceDate:date];
         }
         if (expirationInterval > 0)
         {
@@ -188,7 +188,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
         if (lastModifiedDate)
         {
             // Define the age of the document by comparing the Date header with the Last-Modified header
-            age = [now timeIntervalSinceDate:lastModifiedDate];
+            age = [date timeIntervalSinceDate:lastModifiedDate];
         }
         if (age > 0)
         {
@@ -201,7 +201,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
     }
     
     // If nothing permitted to define the cache expiration delay nor to restrict its cacheability, use a default cache expiration delay
-    return [[NSDate alloc] initWithTimeInterval:kSDURLCacheDefault sinceDate:now];
+    return [[NSDate alloc] initWithTimeInterval:kSDURLCacheDefault sinceDate:date];
     
 }
 
@@ -257,6 +257,9 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
         if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
         {
             NSDate *expirationDate = [NSURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
+            if (!expirationDate)
+                NSLog(@"ooh its old");
+            
             if ([expirationDate timeIntervalSinceNow] > 0)
             {
                 return response;
@@ -276,6 +279,8 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
         if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
         {
             NSDate *expirationDate = [NSURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
+            if (!expirationDate)
+                NSLog(@"oooh its old");
             NSDate *fetchDate = [NSURLCache fetchDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
             NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:fetchDate];
             if ([expirationDate timeIntervalSinceNow] > 0 && timePassed < ttl)
