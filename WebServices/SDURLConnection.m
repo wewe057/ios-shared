@@ -28,6 +28,7 @@
 @property (atomic, assign) BOOL isRunning;
 
 - (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler shouldCache:(BOOL)cache;
+- (void)forceError:(SDURLConnection *)connection;
 
 @end
 
@@ -54,6 +55,12 @@
     responseData = nil;
 }
 
+- (void)forceError:(SDURLConnection *)connection
+{
+    if (responseHandler)
+        responseHandler(connection, nil, nil, [NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]);
+}
+
 #pragma mark NSURLConnection delegate
 
 - (void)connection:(SDURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
@@ -64,19 +71,22 @@
 
 - (void)connection:(SDURLConnection *)connection didFailWithError:(NSError *)error
 {
-    responseHandler(connection, nil, responseData, error);
+    if (isRunning)
+        responseHandler(connection, nil, responseData, error);
     responseHandler = nil;
     self.isRunning = NO;
 }
 
 - (void)connection:(SDURLConnection *)connection didReceiveData:(NSData *)data
 {
-	[responseData appendData:data];
+    if (isRunning)
+        [responseData appendData:data];
 }
 
 - (void)connectionDidFinishLoading:(SDURLConnection *)connection
 {
-    responseHandler(connection, httpResponse, responseData, nil);
+    if (isRunning)
+        responseHandler(connection, httpResponse, responseData, nil);
     responseHandler = nil;
     self.isRunning = NO;
 }
@@ -93,7 +103,7 @@
 
 @interface SDURLConnection()
 
-@property (nonatomic, weak) SDURLConnectionAsyncDelegate *asyncDelegate;
+@property (nonatomic, strong) SDURLConnectionAsyncDelegate *asyncDelegate;
 
 @end
 
@@ -120,11 +130,11 @@ static NSOperationQueue *networkOperationQueue = nil;
 {
     @synchronized(self)
     {
-        [super cancel];
         if (self.asyncDelegate.isRunning)
         {
             self.asyncDelegate.isRunning = NO;
-            [self.asyncDelegate connection:self didFailWithError:[NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]];
+            [super cancel];
+            [self.asyncDelegate forceError:self];
         }
     }
 }
@@ -134,7 +144,7 @@ static NSOperationQueue *networkOperationQueue = nil;
     if (!handler)
         @throw @"sendAsynchronousRequest must be given a handler!";
     
-    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:[handler copy] shouldCache:cache];
+    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:handler shouldCache:cache];
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     
     if (!connection)
