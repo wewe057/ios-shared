@@ -155,7 +155,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         recentSearchTableView.dataSource = self;
         
         UIView *superview = self.searchContentsController.view;
-        recentSearchTableView.frame = CGRectMake(0, 44, 320, 200);
+        
+        recentSearchTableView.frame = CGRectMake(0, 44, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height - 280);
         recentSearchTableView.alpha = 0;
         [superview addSubview:recentSearchTableView];
         
