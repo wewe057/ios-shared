@@ -117,10 +117,10 @@
 - (void)dismiss
 {
     CGRect toolbarFrame = toolbar.frame;
-    toolbarFrame.origin.y = 480;
+    toolbarFrame.origin.y = [[UIScreen mainScreen] bounds].size.height;
     
     CGRect pickerFrame = pickerView.frame;
-    pickerFrame.origin.y = 480 + toolbarFrame.size.height;
+    pickerFrame.origin.y = [[UIScreen mainScreen] bounds].size.height + toolbarFrame.size.height;
 
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionBeginFromCurrentState animations:^(void) {
         backgroundView.alpha = 0.0;
