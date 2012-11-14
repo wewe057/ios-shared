@@ -288,6 +288,18 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// build the url and put it here...
     NSString* escapedUrlString = [NSString stringWithFormat:@"%@%@", baseURL, route];
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
+	
+    NSString *altScheme = [requestDetails objectForKey:@"baseScheme"];
+	if (altScheme && (![[url scheme] isEqualToString:altScheme]))
+	{
+		NSRange schemeEnd = [escapedUrlString rangeOfString:@"://"];
+		if (schemeEnd.location!=NSNotFound)
+		{
+			escapedUrlString = [NSString stringWithFormat:@"%@%@", altScheme, [escapedUrlString substringFromIndex:schemeEnd.location]];
+			url = [NSURL URLWithString:escapedUrlString];
+		}
+	}
+	
 	SDLog(@"outgoing request = %@", url);
 	
 	request = [NSMutableURLRequest requestWithURL:url];
