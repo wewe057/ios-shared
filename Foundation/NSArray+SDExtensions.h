@@ -9,17 +9,38 @@
 #import <Foundation/Foundation.h>
 
 
-@interface NSMutableArray (NSMutableArray_SDExtensions)
+@interface NSMutableArray (SDExtensions)
 
+/** Randomizes the indexes of the objects in the receiver. */
 - (void)shuffle;
 
 @end
 
-@interface NSArray (NSArray_SDExtensions)
+@interface NSArray (SDExtensions)
 
+/**
+ Returns the next to last object in the receiver.
+ @return The next to last object. `nil` if `count` is less than `2`.
+ */
 - (id)nextToLastObject;
+
+/**
+ Invoke a selector with the given arguments on all objects in the array.
+ @param aSelector The selector to invoke.
+ @param arg1,... The list of arguments to pass to the selector.
+ */
 - (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...;
-- (NSArray*) shuffledArray;
+
+/**
+ Returns an array with the same objects as the receiver but with their indexes randomized.
+ @return The shuffled array.
+ */
+- (NSArray *) shuffledArray;
+
+/**
+ Returns an array with the same objects as the receiver but with their indexes reversed.
+ @return The reversed array.
+ */
 - (NSArray *)reversedArray;
 
 @end

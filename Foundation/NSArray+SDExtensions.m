@@ -8,7 +8,7 @@
 
 #import "NSArray+SDExtensions.h"
 
-@implementation NSMutableArray (NSMutableArray_SDExtensions)
+@implementation NSMutableArray (SDExtensions)
 
 - (void)shuffle
 {
@@ -20,7 +20,7 @@
 @end
 
 
-@implementation NSArray (NSArray_SDExtensions)
+@implementation NSArray (SDExtensions)
 
 - (id)nextToLastObject
 {

@@ -8,7 +8,7 @@
 
 #import "NSDictionary+SDExtensions.h"
 
-@implementation NSDictionary (NSDictionary_SDExtensions)
+@implementation NSDictionary (SDExtensions)
 
 - (NSString *)stringForKey:(NSString *)key
 {
@@ -116,10 +116,10 @@
     return nil;
 }
 
-- (NSInteger)intForKeyPath:(NSString *)key { return [self integerForKey:key]; }
-- (NSInteger)integerForKeyPath:(NSString *)key
+- (NSInteger)intForKeyPath:(NSString *)keyPath { return [self integerForKeyPath:keyPath]; }
+- (NSInteger)integerForKeyPath:(NSString *)keyPath
 {
-    id obj = [self valueForKeyPath:key];
+    id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSString class]])
         return [obj integerValue];
     else
@@ -128,10 +128,10 @@
     return 0;
 }
 
-- (NSUInteger)unsignedIntForKeyPath:(NSString *)key { return [self unsignedIntegerForKey:key]; }
-- (NSUInteger)unsignedIntegerForKeyPath:(NSString *)key
+- (NSUInteger)unsignedIntForKeyPath:(NSString *)keyPath { return [self unsignedIntegerForKey:keyPath]; }
+- (NSUInteger)unsignedIntegerForKeyPath:(NSString *)keyPath
 {
-    id obj = [self valueForKeyPath:key];
+    id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSString class]])
     {
         NSNumber *number = [NSNumber numberWithInteger:[obj integerValue]];
@@ -143,9 +143,9 @@
     return 0;
 }
 
-- (float)floatForKeyPath:(NSString *)key
+- (float)floatForKeyPath:(NSString *)keyPath
 {
-    id obj = [self valueForKeyPath:key];
+    id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSString class]])
         return [obj floatValue];
     else
@@ -154,9 +154,9 @@
     return 0;
 }
 
-- (double)doubleForKeyPath:(NSString *)key
+- (double)doubleForKeyPath:(NSString *)keyPath
 {
-    id obj = [self valueForKeyPath:key];
+    id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSString class]])
         return [obj doubleValue];
     else
@@ -165,9 +165,9 @@
     return 0;
 }
 
-- (long long)longLongForKeyPath:(NSString *)key
+- (long long)longLongForKeyPath:(NSString *)keyPath
 {
-    id obj = [self valueForKeyPath:key];
+    id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSString class]])
         return [obj longLongValue];
     else
@@ -176,9 +176,9 @@
     return 0;
 }
 
-- (BOOL)boolForKeyPath:(NSString *)key
+- (BOOL)boolForKeyPath:(NSString *)keyPath
 {
-    id obj = [self valueForKeyPath:key];
+    id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSString class]])
         return [obj boolValue];
     else
@@ -187,8 +187,8 @@
     return 0;
 }
 
-- (NSArray*)arrayForKeyPath:(NSString *)key {
-    id obj = [self valueForKeyPath:key];
+- (NSArray*)arrayForKeyPath:(NSString *)keyPath {
+    id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSArray class]])
         return obj;
     return nil;
