@@ -162,7 +162,7 @@
 }
 
 
-+ (id)stringWithNewUUID
++ (NSString *)stringWithNewUUID
 {
 	NSString*	uuidString = nil;
 	

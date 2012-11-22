@@ -11,25 +11,61 @@
 
 @interface NSString(SDExtensions)
 
-+ (id)stringWithNewUUID;
+/**
+ A convenience method to create a UUID of type NSString using CFUUID* functions.
+ */
++ (NSString *)stringWithNewUUID;
+
+/**
+ A convenience method to create a JSON string from a given object.
+ */
 + (NSString *)stringWithJSONObject:(id)obj;
 
-// a method to replace HTML in multi-line strings with an adequate plain-text alternative, using Unicode characters
-// where appropriate to replace, e.g., <li> elements.
+/**
+ A method to replace HTML in multi-line strings with an adequate plain-text alternative, using Unicode characters where appropriate to replace.
+ @param keepBullets If `YES` then convert HTML list items tags into `•`, rather than discarding them.
+ */
 - (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets;
 
+/**
+ A method to replace HTML in multi-line strings with an adequate plain-text alternative, using Unicode characters where appropriate to replace.
+ */
 - (NSString *)replaceHTMLWithUnformattedText;
 
-// a method to replace HTML in single-line strings designed for compact representation (e.g., items in a list). this
-// is similar in behavior to replaceHTMLWithUnformattedText except it makes no attempt to format text for attractive
-// multi-line display.
+/**
+ A method to replace HTML in single-line strings designed for compact representation (e.g., items in a list)
+ This is similar in behavior to replaceHTMLWithUnformattedText except it makes no attempt to format text for attractive multi-line display.
+ */
 - (NSString *)stripHTMLFromListItems;
 
+/**
+ Replace the characters in the set `￼=,!$&'()*+;@?\n\"<>#\t :/` with percent escapes for the string in the receiver.
+ */
 - (NSString *)escapedString;
+
+/**
+ Replaces all ocurrences of multiple white space characters in the receiver with a single space character.
+ */
 - (NSString *)removeExcessWhitespace;
+
+/**
+ Replaces all leading white space characters in the receiver with a single space character.
+ */
 - (NSString *)removeLeadingWhitespace;
+
+/**
+ Removes all leading zeroes in the receiver.
+ */
 - (NSString *)removeLeadingZeroes;
+
+/**
+ Replaces all trailing white space characters in the receiver with a single space character.
+ */
 - (NSString *)removeTrailingWhitespace;
+
+/**
+ Returns a dictionary created from all key-value pairs in the receiver assuming it is formatted as URL query parameters.
+ */
 - (NSDictionary *)parseURLQueryParams;
 
 
