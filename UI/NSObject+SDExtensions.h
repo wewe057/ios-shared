@@ -13,18 +13,61 @@ typedef void (^NSObjectPerformBlock)();
 
 @interface NSObject (SDExtensions)
 
+/**
+ A convenient wrapper for `NSStringFromClass`. Returns the name of the class.
+ */
 + (NSString *)className;
+
+/**
+ A convenient wrapper for `NSStringFromClass`. Returns the name of the class of the receiver.
+ */
 - (NSString *)className;
 
+/**
+ A convenient wrapper for `NSStringFromClass`. Returns the name of the class of the receiver.
+ */
 + (NSString *)nibName;
+
+/**
+ Creates and returns an object by calling loadFromNibWithOwner: with owner `self`.
+ */
 + (id)loadFromNib;
+
+/**
+ Creates and returns an object by calling loadFromNibNamed:withOwner: with the given nibName and owner `self`.
+ */
 + (id)loadFromNibNamed:(NSString *)nibName;
+
+/**
+ Creates and returns an object by calling loadFromNibNamed:withOwner: with the name `[self nibName]` and owner `self`.
+ */
 + (id)loadFromNibWithOwner:(id)owner;
+
+/**
+ Creates and returns an object of type `self` by loads a nib with the name `nibName` and looking for and returning the first object of type `self`.
+ */
 + (id)loadFromNibNamed:(NSString *)nibName withOwner:(id)owner;
 
+/**
+ Invoke arbitrary selectors on the receiver with arbitrary arguments and with a place to store the result of the invocation.
+ @param aSelector The selector to invoke. It must exist on the receiver.
+ @param result A pointer to the location where the result of the invocation can be stored. Optional.
+ @param arg1,... The ordered list of arguments to pass to the selector being invoked.
+ */
 - (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...;
 
+/**
+ Execute a block in the background.
+ @param performBlock The block to execute in the background.
+ @param completionBlock The block to execute on the main thread after the performBlock completes.
+ */
 - (void)performBlockInBackground:(NSObjectPerformBlock)performBlock completion:(NSObjectPerformBlock)completionBlock;
+
+/**
+ Execute a block after a delay.
+ @param performBlock The block to execute in the background.
+ @param delay The time in seconds after which to execute the block.
+ */
 - (void)performBlock:(NSObjectPerformBlock)performBlock afterDelay:(NSTimeInterval)delay;
 
 @end
