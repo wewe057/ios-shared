@@ -116,7 +116,7 @@
     return nil;
 }
 
-- (NSInteger)intForKeyPath:(NSString *)key { return [self integerForKey:key]; }
+- (NSInteger)intForKeyPath:(NSString *)key { return [self integerForKeyPath:key]; }
 - (NSInteger)integerForKeyPath:(NSString *)key
 {
     id obj = [self valueForKeyPath:key];
@@ -128,7 +128,7 @@
     return 0;
 }
 
-- (NSUInteger)unsignedIntForKeyPath:(NSString *)key { return [self unsignedIntegerForKey:key]; }
+- (NSUInteger)unsignedIntForKeyPath:(NSString *)key { return [self unsignedIntegerForKeyPath:key]; }
 - (NSUInteger)unsignedIntegerForKeyPath:(NSString *)key
 {
     id obj = [self valueForKeyPath:key];
