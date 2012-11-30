@@ -10,6 +10,9 @@
 
 @interface UIImage (SDExtensions)
 
+/**
+ Returns a UIImage rendering of the passed in view.
+ */
 + (UIImage *)imageFromView:(UIView *)view;
 
 @end

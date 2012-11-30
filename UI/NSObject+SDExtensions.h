@@ -7,7 +7,9 @@
 
 #import <Foundation/Foundation.h>
 
-// makes loading nibs much easier.
+/**
+ A number of extensions to the base NSObject class. Most of these came into existence to make the loading of nibs much easier.
+ */
 
 typedef void (^NSObjectPerformBlock)();
 
