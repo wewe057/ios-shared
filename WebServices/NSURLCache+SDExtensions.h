@@ -10,11 +10,27 @@
 
 @interface NSURLCache (SDExtensions)
 
-- (BOOL)isCachedAndValid:(NSURLRequest*)request;	// YES if url is in the cache and valid (ie non-expired)
-- (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request;	// Makes sure the response is not expired, otherwise nil
+/**
+ Returns `YES` if the url is in the cache and valid (ie non-expired). `NO` otherwise.
+ */
+- (BOOL)isCachedAndValid:(NSURLRequest*)request;
+
+/**
+ Returns response if it is not expired. `nil` otherwise.
+ */
+- (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request;
+
+/**
+ Returns response if it is not expired and younger than `ttl`. `nil` otherwise.
+ */
 - (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl;
 
-// Ignore the expiration date. Just compare the ttl against the date in the header. Use with care.
+// 
+
+/**
+ Returns the response but ignores the expiration date. Just compares the ttl against the date in the header.
+ @warning **EXPERIMENTAL.** Use with care.
+ */
 - (NSCachedURLResponse*)suppopsedlyInvalidCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl;
 
 @end

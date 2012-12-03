@@ -11,17 +11,34 @@
 
 @interface UIView (SDExtensions)
 
-@property (nonatomic, assign) CGPoint integralCenter; // Ensures frame is positioned on pixels
-@property (nonatomic, assign) CGRect integralFrame; // Ensures frame is positioned on pixels
+/**
+ Set this to ensure that the center is positioned on full pixels. Read to see the closest integral center to the receiver's center.
+ */
+@property (nonatomic, assign) CGPoint integralCenter;
 
-// Layout
+/**
+ Set this to ensures that the frame is positioned on full pixels. Read to see the closest integral frame to the receiver's frame.
+ */
+@property (nonatomic, assign) CGRect integralFrame;
+
+/**
+ Adjusts the receiver's frame to move it below `argOffset` pixels below the view passed in as `argView`. Other aspects of the frame are not changed.
+ */
 - (void)positionBelowView:(UIView *)argView offset:(CGFloat)argOffset;
 
-// Frame adjustment
+/**
+ Convenience method to set the receiver's `frame.origin.y`.
+ */
 -(void)setFrameOriginY:(CGFloat)newY;
+
+/**
+ Convenience method to set the receiver's `frame.origin.x`.
+ */
 -(void)setFrameOriginX:(CGFloat)newX;
 
-// Finding subviews
+/**
+ Returns the first subview that is of the type of `aViewClass`. Returns `nil` if there's none found.
+ */
 -(id)firstSubviewOfClass:(Class)aViewClass;
 
 
