@@ -55,7 +55,7 @@ enum
 + (id)sharedInstance;
 
 - (id)initWithSpecification:(NSString *)specificationName;
-- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost;
+- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath;
 - (NSString *)baseSchemeInServiceSpecification;
 - (NSString *)baseHostInServiceSpecification;
 - (NSString *)basePathInServiceSpecification;

@@ -68,12 +68,13 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	return self;
 }
 
-- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost
+- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath
 {
 	self = [self initWithSpecification:specificationName];
     
     NSMutableDictionary *altServiceSpecification = [serviceSpecification mutableCopy];
     [altServiceSpecification setObject:defaultHost forKey:@"baseHost"];
+    [altServiceSpecification setObject:defaultPath forKey:@"basePath"];
     serviceSpecification = altServiceSpecification;
 	
 	return self;
@@ -99,19 +100,25 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     normalRequests = nil;
 }
 
-- (NSString *)stringByReplacingPrefKey:(NSString *)string
+- (NSString *)stringByReplacingPrefKeys:(NSString *)string
 {
 	// this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
-    if ([string rangeOfString:@"{"].location != NSNotFound)
-    {
-        NSString *prefKey = nil;
-        int startPos = [string rangeOfString:@"{"].location + 1;
-        int endPos = [string rangeOfString:@"}"].location;
-        NSRange range = NSMakeRange(startPos, endPos - startPos);
-        prefKey = [string substringWithRange:range];
-        NSString *prefValue = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
-        string = [string stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:prefValue];
-    }
+	BOOL doneReplacing = NO;
+	
+	while (!doneReplacing)
+	{
+		if ([string rangeOfString:@"{"].location != NSNotFound)
+		{
+			NSString *prefKey = nil;
+			int startPos = [string rangeOfString:@"{"].location + 1;
+			int endPos = [string rangeOfString:@"}"].location;
+			NSRange range = NSMakeRange(startPos, endPos - startPos);
+			prefKey = [string substringWithRange:range];
+			NSString *prefValue = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
+			string = [string stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:prefValue];
+		} else
+			doneReplacing = YES;
+	}
 	return string;
 }
 
@@ -153,7 +160,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSString *baseURL = [NSString stringWithFormat:@"%@%@%@?",baseScheme,baseHost,basePath];
 	
 	// Support QA servers
-	baseURL = [self stringByReplacingPrefKey:baseURL];
+	baseURL = [self stringByReplacingPrefKeys:baseURL];
 	
 	return baseURL;
 }
@@ -345,7 +352,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	}
 
 	// Look for the kWalmartServerPref key and replace it if found
-	baseURL = [self stringByReplacingPrefKey:baseURL];
+	baseURL = [self stringByReplacingPrefKeys:baseURL];
 	
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     if (!routeReplacements)
