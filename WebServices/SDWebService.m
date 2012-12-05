@@ -252,28 +252,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return responseString;
 }
 
-- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
+- (NSString *)buildURLForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
-    NSMutableURLRequest *request = nil;
-	NSString *baseURL = nil;
-	
-    NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
-	NSString *method = [requestDetails objectForKey:@"method"];
-	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
-	    
-    // Allowing for the dynamic specification of baseURL at runtime
-    // (initially to accomodate the suggestions search)
-    NSString *altBaseURL = [replacements objectForKey:@"baseURL"];
-    if (altBaseURL) {
-        baseURL = altBaseURL;
-    }
-    else {
-        // if this method has its own baseURL use it instead.
-        altBaseURL = [requestDetails objectForKey:@"baseURL"];
-        if (altBaseURL) {
-            baseURL = altBaseURL;
-        }
-    }
+	NSString *baseURL;
 	
 	// **************************************************************
 	// Scheme
@@ -321,18 +302,46 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             basePath = altBasePath;
         }
     }
-		
+	
+	if (!baseScheme)
+		[NSException raise:@"SDException" format:@"Unable to create request.  Missing scheme."];
+	
+	
+	if (!baseHost)
+		[NSException raise:@"SDException" format:@"Unable to create request.  Missing host."];
+	
+	baseURL = [NSString stringWithFormat:@"%@%@%@?",baseScheme,baseHost,basePath];
+
+	return baseURL;
+}
+
+- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
+{
+    NSMutableURLRequest *request = nil;
+	NSString *baseURL = nil;
+	
+    NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
+	NSString *method = [requestDetails objectForKey:@"method"];
+	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
+	    
+    // Allowing for the dynamic specification of baseURL at runtime
+    // (initially to accomodate the suggestions search)
+    NSString *altBaseURL = [replacements objectForKey:@"baseURL"];
+    if (altBaseURL) {
+        baseURL = altBaseURL;
+    }
+    else {
+        // if this method has its own baseURL use it instead.
+        altBaseURL = [requestDetails objectForKey:@"baseURL"];
+        if (altBaseURL) {
+            baseURL = altBaseURL;
+        }
+    }
+	
 	// If there was no altBaseURL, then we need to build the baseURL
 	if (!altBaseURL)
 	{
-		if (!baseScheme)
-			[NSException raise:@"SDException" format:@"Unable to create request.  Missing scheme."];
-
-
-		if (!baseHost)
-			[NSException raise:@"SDException" format:@"Unable to create request.  Missing host."];
-		
-		baseURL = [NSString stringWithFormat:@"%@%@%@?",baseScheme,baseHost,basePath];
+		baseURL = [self buildURLForScheme:baseScheme host:baseHost path:basePath details:requestDetails replacements:replacements];
 	}
 
 	// Look for the kWalmartServerPref key and replace it if found
