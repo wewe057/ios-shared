@@ -272,7 +272,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         baseScheme = altBaseScheme;
     }
     else {
-        // if this method has its own baseURL use it instead.
+        // if this method has its own baseScheme use it instead.
         altBaseScheme = [requestDetails objectForKey:@"baseScheme"];
         if (altBaseScheme) {
             baseScheme = altBaseScheme;
@@ -291,7 +291,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         baseHost = altBaseHost;
     }
     else {
-        // if this method has its own baseURL use it instead.
+        // if this method has its own baseHost use it instead.
         altBaseHost = [requestDetails objectForKey:@"baseHost"];
         if (altBaseHost) {
             baseHost = altBaseHost;
@@ -305,7 +305,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         basePath = altBasePath;
     }
     else {
-        // if this method has its own baseURL use it instead.
+        // if this method has its own basePath use it instead.
         altBasePath = [requestDetails objectForKey:@"basePath"];
         if (altBasePath) {
             basePath = altBasePath;
