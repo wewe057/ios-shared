@@ -100,6 +100,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     normalRequests = nil;
 }
 
+// Iterate through the string and look for {KEY}, replacing with the string value of that key from NSUserDefaults
 - (NSString *)stringByReplacingPrefKeys:(NSString *)string
 {
 	// this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
@@ -145,6 +146,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 }
 
 // Backwards compatible method
+// DEPRECATED
 - (NSString *)baseURLInServiceSpecification
 {
 	NSString *baseScheme = [self baseSchemeInServiceSpecification];
@@ -259,7 +261,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return responseString;
 }
 
-- (NSString *)buildURLForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
+- (NSString *)buildBaseURLForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
 	NSString *baseURL;
 	
@@ -348,10 +350,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// If there was no altBaseURL, then we need to build the baseURL
 	if (!altBaseURL)
 	{
-		baseURL = [self buildURLForScheme:baseScheme host:baseHost path:basePath details:requestDetails replacements:replacements];
+		baseURL = [self buildBaseURLForScheme:baseScheme host:baseHost path:basePath details:requestDetails replacements:replacements];
 	}
 
-	// Look for the kWalmartServerPref key and replace it if found
+	// Look for {KEY} key ands replace them
 	baseURL = [self stringByReplacingPrefKeys:baseURL];
 	
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
