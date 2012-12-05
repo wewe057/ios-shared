@@ -73,7 +73,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	self = [self initWithSpecification:specificationName];
     
     NSMutableDictionary *altServiceSpecification = [serviceSpecification mutableCopy];
-    [altServiceSpecification setObject:defaultHost forKey:@"baseURL"];
+    [altServiceSpecification setObject:defaultHost forKey:@"baseHost"];
     serviceSpecification = altServiceSpecification;
 	
 	return self;
@@ -99,22 +99,62 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     normalRequests = nil;
 }
 
-- (NSString *)baseURLInServiceSpecification
+- (NSString *)stringByReplacingPrefKey:(NSString *)string
 {
-	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
-	
-    // this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
-    if ([baseURL rangeOfString:@"{"].location != NSNotFound)
+	// this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
+    if ([string rangeOfString:@"{"].location != NSNotFound)
     {
         NSString *prefKey = nil;
-        int startPos = [baseURL rangeOfString:@"{"].location + 1;
-        int endPos = [baseURL rangeOfString:@"}"].location;
+        int startPos = [string rangeOfString:@"{"].location + 1;
+        int endPos = [string rangeOfString:@"}"].location;
         NSRange range = NSMakeRange(startPos, endPos - startPos);
-        prefKey = [baseURL substringWithRange:range];
-        NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
-        baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
+        prefKey = [string substringWithRange:range];
+        NSString *prefValue = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
+        string = [string stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:prefValue];
     }
-    
+	return string;
+}
+
+- (NSString *)baseSchemeInServiceSpecification
+{
+	NSString *baseScheme = [serviceSpecification objectForKey:@"baseScheme"];	
+	return baseScheme;
+}
+
+- (NSString *)baseHostInServiceSpecification
+{
+	NSString *baseHost = [serviceSpecification objectForKey:@"baseHost"];
+	return baseHost;
+}
+
+- (NSString *)basePathInServiceSpecification
+{
+	NSString *basePath = [serviceSpecification objectForKey:@"basePath"];
+	
+	if (!basePath)
+		basePath = @"/";
+	
+	return basePath;
+}
+
+// Backwards compatible method
+- (NSString *)baseURLInServiceSpecification
+{
+	NSString *baseScheme = [self baseSchemeInServiceSpecification];
+	NSString *baseHost = [self baseHostInServiceSpecification];
+	NSString *basePath = [self basePathInServiceSpecification];
+
+	// Support http or http://
+	if (baseScheme && ([baseScheme rangeOfString:@"://"].location == NSNotFound))
+	{
+		baseScheme = [baseScheme stringByAppendingString:@"://"];
+	}
+	
+	NSString *baseURL = [NSString stringWithFormat:@"%@%@%@?",baseScheme,baseHost,basePath];
+	
+	// Support QA servers
+	baseURL = [self stringByReplacingPrefKey:baseURL];
+	
 	return baseURL;
 }
 
@@ -212,14 +252,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return responseString;
 }
 
-- (NSMutableURLRequest *)buildRequestForURL:(NSString *)baseURL details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
+- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
     NSMutableURLRequest *request = nil;
-    
+	NSString *baseURL = nil;
+	
     NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
 	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
-    
+	    
     // Allowing for the dynamic specification of baseURL at runtime
     // (initially to accomodate the suggestions search)
     NSString *altBaseURL = [replacements objectForKey:@"baseURL"];
@@ -233,19 +274,70 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             baseURL = altBaseURL;
         }
     }
-    
-    // this allows for having a settings bundle for one to specify an alternate server for debug/qa/etc.
-    if ([baseURL rangeOfString:@"{"].location != NSNotFound)
-    {
-        NSString *prefKey = nil;
-        int startPos = [baseURL rangeOfString:@"{"].location + 1;
-        int endPos = [baseURL rangeOfString:@"}"].location;
-        NSRange range = NSMakeRange(startPos, endPos - startPos);
-        prefKey = [baseURL substringWithRange:range];
-        NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
-        baseURL = [baseURL stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:server];
+	
+	// **************************************************************
+	// Scheme
+    NSString *altBaseScheme = [replacements objectForKey:@"baseScheme"];
+    if (altBaseScheme) {
+        baseScheme = altBaseScheme;
     }
-    
+    else {
+        // if this method has its own baseURL use it instead.
+        altBaseScheme = [requestDetails objectForKey:@"baseScheme"];
+        if (altBaseScheme) {
+            baseScheme = altBaseScheme;
+        }
+    }
+	
+	if (baseScheme && ([baseScheme rangeOfString:@"://"].location == NSNotFound))
+	{
+		baseScheme = [baseScheme stringByAppendingString:@"://"];
+	}
+	
+	// **************************************************************
+	// Host
+	NSString *altBaseHost = [replacements objectForKey:@"baseHost"];
+    if (altBaseHost) {
+        baseHost = altBaseHost;
+    }
+    else {
+        // if this method has its own baseURL use it instead.
+        altBaseHost = [requestDetails objectForKey:@"baseHost"];
+        if (altBaseHost) {
+            baseHost = altBaseHost;
+        }
+    }
+	
+	// **************************************************************
+	// Path
+	NSString *altBasePath = [replacements objectForKey:@"basePath"];
+    if (altBasePath) {
+        basePath = altBasePath;
+    }
+    else {
+        // if this method has its own baseURL use it instead.
+        altBasePath = [requestDetails objectForKey:@"basePath"];
+        if (altBasePath) {
+            basePath = altBasePath;
+        }
+    }
+		
+	// If there was no altBaseURL, then we need to build the baseURL
+	if (!altBaseURL)
+	{
+		if (!baseScheme)
+			[NSException raise:@"SDException" format:@"Unable to create request.  Missing scheme."];
+
+
+		if (!baseHost)
+			[NSException raise:@"SDException" format:@"Unable to create request.  Missing host."];
+		
+		baseURL = [NSString stringWithFormat:@"%@%@%@?",baseScheme,baseHost,basePath];
+	}
+
+	// Look for the kWalmartServerPref key and replace it if found
+	baseURL = [self stringByReplacingPrefKey:baseURL];
+	
     NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     if (!routeReplacements)
         routeReplacements = [NSDictionary dictionary];
@@ -284,21 +376,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			}
         }
     }
-    
+		    
 	// build the url and put it here...
     NSString* escapedUrlString = [NSString stringWithFormat:@"%@%@", baseURL, route];
 	NSURL *url = [NSURL URLWithString:escapedUrlString];
-	
-    NSString *altScheme = [requestDetails objectForKey:@"baseScheme"];
-	if (altScheme && (![[url scheme] isEqualToString:altScheme]))
-	{
-		NSRange schemeEnd = [escapedUrlString rangeOfString:@"://"];
-		if (schemeEnd.location!=NSNotFound)
-		{
-			escapedUrlString = [NSString stringWithFormat:@"%@%@", altScheme, [escapedUrlString substringFromIndex:schemeEnd.location]];
-			url = [NSURL URLWithString:escapedUrlString];
-		}
-	}
 	
 	SDLog(@"outgoing request = %@", url);
 	
@@ -379,11 +460,13 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     NSString *identifier = [NSString stringWithNewUUID];
 
 	// construct the URL based on the specification.
-	NSString *baseURL = [serviceSpecification objectForKey:@"baseURL"];
+	NSString *baseScheme = [self baseSchemeInServiceSpecification];
+	NSString *baseHost = [self baseHostInServiceSpecification];
+	NSString *basePath = [self basePathInServiceSpecification];
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
     
-    NSMutableURLRequest *request = [self buildRequestForURL:baseURL details:requestDetails replacements:replacements];
+    NSMutableURLRequest *request = [self buildRequestForScheme:baseScheme host:baseHost path:basePath details:requestDetails replacements:replacements];
     
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];

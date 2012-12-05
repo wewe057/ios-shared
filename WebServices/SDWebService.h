@@ -56,6 +56,9 @@ enum
 
 - (id)initWithSpecification:(NSString *)specificationName;
 - (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost;
+- (NSString *)baseSchemeInServiceSpecification;
+- (NSString *)baseHostInServiceSpecification;
+- (NSString *)basePathInServiceSpecification;
 - (NSString *)baseURLInServiceSpecification;
 - (BOOL)isReachable:(BOOL)showError;
 - (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError;
