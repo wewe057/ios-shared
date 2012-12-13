@@ -98,10 +98,23 @@ enum
 
 /**
  Initializes the instance with a plist specification included in the bundle and named using the string in `specificationName` and of type .plist.
+ Overrides the `baseHost` and `basePath` with the parameters `defaultHost` and `defaultPath`.
  */
 - (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath;
+
+/**
+ Returns the base scheme in the service specification.
+ */
 - (NSString *)baseSchemeInServiceSpecification;
+
+/**
+ Returns the base host in the service specification.
+ */
 - (NSString *)baseHostInServiceSpecification;
+
+/**
+ Returns the base path in the service specification.
+ */
 - (NSString *)basePathInServiceSpecification;
 
 /**
