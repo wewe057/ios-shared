@@ -319,7 +319,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	if (!baseHost)
 		[NSException raise:@"SDException" format:@"Unable to create request.  Missing host."];
 	
-	baseURL = [NSString stringWithFormat:@"%@%@%@?",baseScheme,baseHost,basePath];
+	baseURL = [NSString stringWithFormat:@"%@%@%@",baseScheme,baseHost,basePath];
 
 	return baseURL;
 }
