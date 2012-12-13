@@ -45,7 +45,7 @@ enum
  This class supports only HTTP GET and POST methods.
  The web service endpoint and the type of requests and query formats are defined in a plist file which should be specified as documented below.
  A sample plist is available as a private gist at: https://gist.github.com/619b18f55c3ff61a908e
- 
+
  ### SDWebService Property List Format Specification ###
  * `baseURL` (string): This required key describes the base URL endpoint which forms the prefix to all requests.
  * `requests` (dictionary): A dictionary comprising of a key for each type of method in the web service.
@@ -63,7 +63,7 @@ enum
          Each of those can be replaced by the replacements defined in the routeReplacement sibling dictionary defined below.
          They can also be replaced by a routeReplacement dictionary passed into the request creation code via the performRequestWithMethod: calls.
          All replacement markers must be substituted with appropriate values using one or both or the above mechanisms when a request is being created.
- 
+
  ### Blocks in use are defined as: ###
     typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
     typedef id (^SDWebServiceDataCompletionBlock)(int responseCode, NSData *response, NSError *error);
@@ -98,9 +98,11 @@ enum
 
 /**
  Initializes the instance with a plist specification included in the bundle and named using the string in `specificationName` and of type .plist.
- And replaces the baseURL specified in the plist with that in `defaultHost`.
  */
-- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost;
+- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath;
+- (NSString *)baseSchemeInServiceSpecification;
+- (NSString *)baseHostInServiceSpecification;
+- (NSString *)basePathInServiceSpecification;
 
 /**
  Returns the baseURL in the service specification.
