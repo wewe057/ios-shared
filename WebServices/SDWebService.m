@@ -159,7 +159,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		baseScheme = [baseScheme stringByAppendingString:@"://"];
 	}
 	
-	NSString *baseURL = [NSString stringWithFormat:@"%@%@%@?",baseScheme,baseHost,basePath];
+	NSString *baseURL = [NSString stringWithFormat:@"%@%@%@",baseScheme,baseHost,basePath];
 	
 	// Support QA servers
 	baseURL = [self stringByReplacingPrefKeys:baseURL];
