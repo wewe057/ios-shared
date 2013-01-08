@@ -88,8 +88,7 @@
 		}
 		
 		NSError *error = nil;
-        NSError *jsonError = nil;
-        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&jsonError];
+        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
 		if (error)
 		{
 			if (delegate && [delegate respondsToSelector:@selector(geocoder:didFailWithError:)])
