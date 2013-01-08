@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ A simple block based timer.
+ */
+
 @class SDTimer;
 
 typedef void (^SDTimerBlock)(SDTimer *aTimer);
@@ -17,9 +21,25 @@ typedef void (^SDTimerBlock)(SDTimer *aTimer);
     dispatch_source_t timer;
 }
 
+/**
+ Initialize and start a timer immediately based on the parameters.
+ @param interval The interval after which the timer fires, in seconds.
+ @param repeats Indicates if the timer should fire indefinitely until invalidated or only once.
+ @param timerBlock The block to execute when the timer fires.
+ */
 - (id)initWithInterval:(NSTimeInterval)interval repeats:(BOOL)repeats timerBlock:(SDTimerBlock)timerBlock;
+
+/**
+ Invalidate the receiver timer.
+ */
 - (void)invalidate;
 
+/**
+ Returns a `SDTimer` object that is created and started based on the parameters.
+ @param interval The interval after which the timer fires, in seconds.
+ @param repeats Indicates if the timer should fire indefinitely until invalidated or only once.
+ @param timerBlock The block to execute when the timer fires.
+ */
 + (SDTimer *)timerWithInterval:(NSTimeInterval)interval repeats:(BOOL)repeats timerBlock:(SDTimerBlock)timerBlock;
 
 @end

@@ -10,6 +10,9 @@
 
 @interface UIScreen (SDExtensions)
 
+/**
+ Returns `YES` if the screen has a retina display. `NO` otherwise.
+ */
 + (BOOL)hasRetinaDisplay;
 
 @end

@@ -8,7 +8,7 @@
 
 #import "UIActivityIndicatorView+SDExtensions.h"
 
-@implementation UIActivityIndicatorView (UIActivityIndicatorView_SDExtensions)
+@implementation UIActivityIndicatorView (SDExtensions)
 
 - (void)show
 {

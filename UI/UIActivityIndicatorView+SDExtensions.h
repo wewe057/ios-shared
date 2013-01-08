@@ -8,9 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIActivityIndicatorView (UIActivityIndicatorView_SDExtensions)
+@interface UIActivityIndicatorView (SDExtensions)
 
+/**
+ Display an animating activity indicator view that fades into view. The fade-in animation lasts `0.1` seconds.
+ */
 - (void)show;
+
+/**
+ Hide an animating activity indicator view that fades out of view. The fade-out animation lasts `0.1` seconds.
+ */
 - (void)hide;
 
 @end

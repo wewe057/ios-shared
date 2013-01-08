@@ -11,8 +11,6 @@
 
 @implementation NSUserDefaults(SDExtensions)
 
-// you normally won't need this, but its handy when looking up coordinates since 
-// they aren't of an object type.
 - (BOOL)keyExists:(NSString *)key;
 {
 	NSObject *object = [self objectForKey:key];

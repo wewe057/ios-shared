@@ -8,6 +8,13 @@
 
 #import "SDPickerModalViewController.h"
 
+@interface SDPickerModalViewController ()
+
+@property (nonatomic, strong, readonly) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong, readonly) IBOutlet UIBarButtonItem *doneButton;
+@property (nonatomic, strong, readonly) IBOutlet UIBarButtonItem *cancelButton;
+
+@end
 
 @implementation SDPickerModalViewController
 

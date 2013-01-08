@@ -11,6 +11,9 @@
 
 @interface UIColor (SDExtensions)
 
+/**
+ A convenience method to create and return a UIColor object using the standard RGB values that range from `0.0` to `255.0` each.
+ */
 + (UIColor *)colorWith8BitRed:(NSUInteger)red green:(NSUInteger)green blue:(NSUInteger)blue alpha:(CGFloat)alpha;
 
 @end
