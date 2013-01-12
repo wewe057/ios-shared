@@ -13,7 +13,8 @@
 - (NSArray *)popViewControllerByLevels:(NSUInteger)numLevels animated:(BOOL)animated
 {
     NSArray *viewControllersOnStack = self.viewControllers;
-    NSUInteger currentLevel = MAX((viewControllersOnStack.count - 1), 0);
+    NSUInteger theCount = viewControllersOnStack.count;
+    NSUInteger currentLevel = (theCount > 0) ? (theCount - 1) : 0;
     
     if (numLevels == currentLevel) {
         return [self popToRootViewControllerAnimated:animated];
