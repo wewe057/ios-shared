@@ -37,6 +37,7 @@ enum
 @interface SDRequestResult : NSObject
 @property (nonatomic, strong) NSString *identifier;
 @property (nonatomic, assign) SDWebServiceResult result;
+@property (nonatomic, strong) NSURLRequest *request;
 @end
 
 /**

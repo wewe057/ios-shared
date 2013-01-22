@@ -26,11 +26,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #endif
 
 @implementation SDRequestResult
-+ (SDRequestResult *)objectForResult:(SDWebServiceResult)result identifier:(NSString *)identifier
++ (SDRequestResult *)objectForResult:(SDWebServiceResult)result identifier:(NSString *)identifier request:(NSURLRequest *)request
 {
     SDRequestResult *object = [[SDRequestResult alloc] init];
     object.result = result;
     object.identifier = identifier;
+    object.request = request;
     return object;
 }
 @end
@@ -502,7 +503,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		} else
 			uiUpdateBlock(nil, error);
 
-        return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil];
+        return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
     }
         
     // setup caching
@@ -615,7 +616,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             
             urlCompletionBlock(nil, response.response, response.responseData, nil);
             
-			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil];
+			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
 		}
 	}
 
@@ -653,7 +654,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         [normalRequests setObject:connection forKey:identifier];
     [dictionaryLock unlock];
     
-	return [SDRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier];
+	return [SDRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier request:request];
 }
 
 - (void)cancelRequestForIdentifier:(NSString *)identifier
