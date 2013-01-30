@@ -11,7 +11,7 @@
 @implementation NSURL (SDExtensions)
 
 // from http://stackoverflow.com/questions/6309698/objective-c-how-to-add-query-parameter-to-nsurl
-- (NSURL *)oaURLByAppendingQueryString:(NSString *)queryString {
+- (NSURL *)URLByAppendingQueryString:(NSString *)queryString {
     if (![queryString length]) {
         return self;
     }
