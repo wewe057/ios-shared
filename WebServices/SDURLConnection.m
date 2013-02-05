@@ -114,7 +114,7 @@ static NSOperationQueue *networkOperationQueue = nil;
 + (void)initialize
 {
     networkOperationQueue = [[NSOperationQueue alloc] init];
-    networkOperationQueue.maxConcurrentOperationCount = 4;
+    networkOperationQueue.maxConcurrentOperationCount = 40;
     networkOperationQueue.name = @"com.setdirection.sdurlconnectionqueue";
 }
 
