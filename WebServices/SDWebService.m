@@ -371,7 +371,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	
     // setup post data if we need to.
     NSString *postParams = nil;
-	NSString *postJSON = nil;
+	id postJSON = nil;
     if (postMethod)
     {
         NSString *postFormat = [requestDetails objectForKey:@"postFormat"];
@@ -379,7 +379,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         {
 			if ([postFormat isEqualToString:@"JSON"])
 			{
-				// post data is raw JSON
+				// post data is raw JSON but can be NSString or NSData depending on implementation of calling method
 				postJSON = [replacements objectForKey:@"JSON"];
 			}
 			else
@@ -415,7 +415,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     
     if (postMethod)
     {
-		NSString *post = nil;
+		id post = nil;
 		if (postParams)
 		{
 			NSMutableString *mutablePost = [[NSMutableString alloc] init];
@@ -441,11 +441,19 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		else if (postJSON)
 		{
 			post = postJSON;
-			[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+			[request setValue:@"application/json;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
+			[request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 		}
 		if (post)
 		{
-			NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
+            NSData *postData = nil;
+            if ([post isKindOfClass:[NSData class]]) {
+                // It's a kind of NSData
+                postData = post;
+            } else {
+                // It's a kind of NSString
+                postData = [post dataUsingEncoding:NSUTF8StringEncoding];
+            }
 			[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
 			[request setHTTPBody:postData];
 		}
