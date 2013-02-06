@@ -14,6 +14,10 @@
 
 #pragma mark - SDURLResponseCompletionDelegate
 
+#ifndef SDURLCONNECTION_MAX_CONCURRENT_CONNECTIONS
+#define SDURLCONNECTION_MAX_CONCURRENT_CONNECTIONS 4
+#endif
+
 @interface SDURLConnectionAsyncDelegate : NSObject
 {
 @public
@@ -114,7 +118,7 @@ static NSOperationQueue *networkOperationQueue = nil;
 + (void)initialize
 {
     networkOperationQueue = [[NSOperationQueue alloc] init];
-    networkOperationQueue.maxConcurrentOperationCount = 40;
+    networkOperationQueue.maxConcurrentOperationCount = SDURLCONNECTION_MAX_CONCURRENT_CONNECTIONS;
     networkOperationQueue.name = @"com.setdirection.sdurlconnectionqueue";
 }
 
