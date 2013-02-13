@@ -372,6 +372,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     // setup post data if we need to.
     NSString *postParams = nil;
 	NSString *postJSON = nil;
+	NSString *postSOAP = nil;
     if (postMethod)
     {
         NSString *postFormat = [requestDetails objectForKey:@"postFormat"];
@@ -381,6 +382,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			{
 				// post data is raw JSON
 				postJSON = [replacements objectForKey:@"JSON"];
+			}
+			else if ([postFormat isEqualToString:@"SOAP"])
+			{
+				// post data is raw XML
+				postSOAP = [replacements objectForKey:@"SOAP"];
 			}
 			else
 			{
@@ -443,6 +449,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			post = postJSON;
 			[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 		}
+		else if (postSOAP)
+		{
+			post = postSOAP;
+			[request setValue:@"application/soap+xml" forHTTPHeaderField:@"Content-Type"];
+		}
+		
 		if (post)
 		{
 			NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
