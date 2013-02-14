@@ -264,6 +264,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (NSString *)buildBaseURLForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
+	// Dev note, need to support replacements in custom headers
+	
 	NSString *baseURL;
 	
 	// **************************************************************
