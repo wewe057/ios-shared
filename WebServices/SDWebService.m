@@ -419,13 +419,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #endif
     
     // find any applicable cookies and queue them up.
-    NSString *cookieNamesString = [requestDetails objectForKey:@"cookieNames"];
-    NSArray *cookieNames = [cookieNamesString componentsSeparatedByString:@","];
+    NSArray *cookieNames = [requestDetails arrayForKey:@"cookieNames"];
     NSMutableArray *cookieArray = [[NSMutableArray alloc] initWithCapacity:cookieNames.count];
     for (NSString *cookieName in cookieNames)
     {
-        NSString *filteredName = [cookieName stringByReplacingOccurrencesOfString:@" " withString:@""];
-        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@", filteredName];
+        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@", cookieName];
         NSArray *foundCookies = [[_cookieStorage cookies] filteredArrayUsingPredicate:namePredicate];
         [cookieArray addObjectsFromArray:foundCookies];
     }
