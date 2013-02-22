@@ -37,6 +37,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 @end
 
 @implementation SDWebService
+{
+    NSHTTPCookieStorage *_cookieStorage;
+}
 
 + (id)sharedInstance
 {
@@ -65,6 +68,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     // let the system determine how many threads are best, dynamically.
     dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
     dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
+    
+    _cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     
 	return self;
 }
@@ -368,7 +373,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	{
 		[NSException raise:@"SDException" format:@"Unable to create request.  The URL still contains replacement markers: %@", route];
 	}
-	
+    
     // setup post data if we need to.
     NSString *postParams = nil;
 	id postJSON = nil;
@@ -412,6 +417,27 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #else
 	[request setTimeoutInterval:_timeout];
 #endif
+    
+    // find any applicable cookies and queue them up.
+    NSString *cookieNamesString = [requestDetails objectForKey:@"cookieNames"];
+    NSArray *cookieNames = [cookieNamesString componentsSeparatedByString:@","];
+    NSMutableArray *cookieArray = [[NSMutableArray alloc] initWithCapacity:cookieNames.count];
+    for (NSString *cookieName in cookieNames)
+    {
+        NSString *filteredName = [cookieName stringByReplacingOccurrencesOfString:@" " withString:@""];
+        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@", filteredName];
+        NSArray *foundCookies = [[_cookieStorage cookies] filteredArrayUsingPredicate:namePredicate];
+        [cookieArray addObjectsFromArray:foundCookies];
+    }
+    
+    // add those cookies to the request headers.
+    if (cookieArray.count > 0)
+    {
+        NSDictionary *cookieHeaders = [NSHTTPCookie requestHeaderFieldsWithCookies:cookieArray];
+        [request setAllHTTPHeaderFields:cookieHeaders];
+    }
+	
+    // setup post method information.
     
     if (postMethod)
     {
