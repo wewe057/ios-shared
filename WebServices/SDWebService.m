@@ -426,7 +426,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@ && domain == %@", cookieName, url.host];
         NSArray *foundCookies = [[_cookieStorage cookies] filteredArrayUsingPredicate:namePredicate];
         
-        [cookieArray addObjectsFromArray:foundCookies];
+        if (foundCookies && foundCookies.count > 0)
+            [cookieArray addObjectsFromArray:foundCookies];
     }
     
     // add those cookies to the request headers.
