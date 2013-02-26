@@ -425,7 +425,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     {
         NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@", cookieName];
         NSArray *foundCookies = [[_cookieStorage cookies] filteredArrayUsingPredicate:namePredicate];
-        [cookieArray addObjectsFromArray:foundCookies];
+        
+        NSHTTPCookie *cookie = [foundCookies valueForKey:@"@max.expiresDate"];
+        [cookieArray addObject:cookie];
     }
     
     // add those cookies to the request headers.
