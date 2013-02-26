@@ -423,11 +423,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     NSMutableArray *cookieArray = [[NSMutableArray alloc] initWithCapacity:cookieNames.count];
     for (NSString *cookieName in cookieNames)
     {
-        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@", cookieName];
+        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@ && domain == %@", cookieName, url.host];
         NSArray *foundCookies = [[_cookieStorage cookies] filteredArrayUsingPredicate:namePredicate];
         
-        NSHTTPCookie *cookie = [foundCookies valueForKey:@"@max.expiresDate"];
-        [cookieArray addObject:cookie];
+        [cookieArray addObjectsFromArray:foundCookies];
     }
     
     // add those cookies to the request headers.
