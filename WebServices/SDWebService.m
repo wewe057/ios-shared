@@ -385,12 +385,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			if ([postFormat isEqualToString:@"JSON"])
 			{
 				// post data is raw JSON but can be NSString or NSData depending on implementation of calling method
-				postObject = [replacements stringForKey:@"JSON"];
+				postObject = [replacements objectForKey:@"JSON"];
 			}
             else
             if ([postFormat isEqualToString:@"SOAP"])
             {
-                postObject = [replacements stringForKey:@"SOAP"];
+                postObject = [replacements objectForKey:@"SOAP"];
             }
 			else
 			{
