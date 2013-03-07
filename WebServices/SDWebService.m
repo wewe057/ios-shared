@@ -37,6 +37,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 @end
 
 @implementation SDWebService
+{
+    NSHTTPCookieStorage *_cookieStorage;
+}
 
 + (id)sharedInstance
 {
@@ -65,6 +68,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     // let the system determine how many threads are best, dynamically.
     dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
     dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
+    
+    _cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
     
 	return self;
 }
@@ -170,7 +175,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError
 {
-    return [[Reachability reachabilityWithHostName:hostName] isReachable];
+    return [[Reachability reachabilityWithHostname:hostName] isReachable];
 }
 
 - (BOOL)isReachable:(BOOL)showError
@@ -325,7 +330,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	return baseURL;
 }
 
-- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
+- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme headers:(NSDictionary *)headers host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
     NSMutableURLRequest *request = nil;
 	NSString *baseURL = nil;
@@ -368,20 +373,25 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	{
 		[NSException raise:@"SDException" format:@"Unable to create request.  The URL still contains replacement markers: %@", route];
 	}
-	
+    
     // setup post data if we need to.
+    NSString *postFormat = [requestDetails stringForKey:@"postFormat"];
     NSString *postParams = nil;
-	NSString *postJSON = nil;
+	id postObject = nil;
     if (postMethod)
     {
-        NSString *postFormat = [requestDetails objectForKey:@"postFormat"];
         if (postFormat)
         {
 			if ([postFormat isEqualToString:@"JSON"])
 			{
-				// post data is raw JSON
-				postJSON = [replacements objectForKey:@"JSON"];
+				// post data is raw JSON but can be NSString or NSData depending on implementation of calling method
+				postObject = [replacements objectForKey:@"JSON"];
 			}
+            else
+            if ([postFormat isEqualToString:@"SOAP"])
+            {
+                postObject = [replacements objectForKey:@"SOAP"];
+            }
 			else
 			{
 				// post data is in 'foo1={bar1}&foo2={bar2}...' form
@@ -413,9 +423,30 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	[request setTimeoutInterval:_timeout];
 #endif
     
+    // find any applicable cookies and queue them up.
+    NSArray *cookieNames = [requestDetails arrayForKey:@"cookieNames"];
+    NSMutableArray *cookieArray = [[NSMutableArray alloc] initWithCapacity:cookieNames.count];
+    for (NSString *cookieName in cookieNames)
+    {
+        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name == %@ && domain == %@", cookieName, url.host];
+        NSArray *foundCookies = [[_cookieStorage cookies] filteredArrayUsingPredicate:namePredicate];
+        
+        if (foundCookies && foundCookies.count > 0)
+            [cookieArray addObjectsFromArray:foundCookies];
+    }
+    
+    // add those cookies to the request headers.
+    if (cookieArray.count > 0)
+    {
+        NSDictionary *cookieHeaders = [NSHTTPCookie requestHeaderFieldsWithCookies:cookieArray];
+        [request setAllHTTPHeaderFields:cookieHeaders];
+    }
+	
+    // setup post method information.
+    // 
     if (postMethod)
     {
-		NSString *post = nil;
+		id post = nil;
 		if (postParams)
 		{
 			NSMutableString *mutablePost = [[NSMutableString alloc] init];
@@ -438,18 +469,36 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			post = mutablePost;
 			[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
 		}
-		else if (postJSON)
+		else
+        if ([postFormat isEqualToString:@"JSON"])
 		{
-			post = postJSON;
-			[request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+			post = postObject;
+			[request setValue:@"application/json;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
+			[request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 		}
+        else
+        if ([postFormat isEqualToString:@"SOAP"])
+        {
+            post = postObject;
+            [request setValue:@"application/soap+xml" forHTTPHeaderField:@"Content-Type"];
+        }
 		if (post)
 		{
-			NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding];
+            NSData *postData = nil;
+            if ([post isKindOfClass:[NSData class]])
+                // It's a kind of NSData
+                postData = post;
+            else
+                // It's a kind of NSString
+                postData = [post dataUsingEncoding:NSUTF8StringEncoding];
+
 			[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
 			[request setHTTPBody:postData];
 		}
     }
+    
+    if (headers)
+        [request setAllHTTPHeaderFields:headers];
 
     return request;
 }
@@ -466,15 +515,25 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         completionBlock(responseCode, responseString, &error);
         return nil;
     };
-    return [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
+    return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
 }
 
 - (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
 {
-    return [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
+    return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
+}
+
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
+{
+    return [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
 }
 
 - (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
+{
+    return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:shouldRetry];
+}
+
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
 {
     NSString *identifier = [NSString stringWithNewUUID];
 
@@ -485,7 +544,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
     
-    NSMutableURLRequest *request = [self buildRequestForScheme:baseScheme host:baseHost path:basePath details:requestDetails replacements:replacements];
+    NSMutableURLRequest *request = [self buildRequestForScheme:baseScheme headers:headers host:baseHost path:basePath details:requestDetails replacements:replacements];
     
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];
@@ -538,7 +597,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                     NSURLCache *cache = [NSURLCache sharedURLCache];
                     [cache removeCachedResponseForRequest:request];
 
-                    SDRequestResult *newObject = [self performRequestWithMethod:requestName routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
+                    SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
                     
                     // do some sync/cleanup stuff here.
                     SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];

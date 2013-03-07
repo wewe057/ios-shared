@@ -173,6 +173,25 @@ enum
                                 uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock;
 
 /**
+ Calls performRequestWithMethod:headers:routeReplacements:dataProcessingBlock:uiUpdateBlock:shouldRetry: with `shouldRetry` set to `YES`.
+ */
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName
+                                      headers:(NSDictionary *)headers
+                            routeReplacements:(NSDictionary *)replacements
+                          dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock
+                                uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock;
+
+/**
+ Calls performRequestWithMethod:headers:routeReplacements:dataProcessingBlock:uiUpdateBlock:shouldRetry: with `headers` set to `nil`.
+ */
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName
+                            routeReplacements:(NSDictionary *)replacements
+                          dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock
+                                uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
+                                  shouldRetry:(BOOL)shouldRetry;
+
+
+/**
  Creates and initiates a request to the web service.
  @return An SDRequestResult object to indicate the success of the method (not the call) and to provide a unique identifier for cancelRequestForIdentifier:.
  @param requestName The name of the request as specified in the plist.
@@ -182,6 +201,7 @@ enum
  @param shouldRetry Set to `YES` to retry the request once after a time out.
  */
 - (SDRequestResult *)performRequestWithMethod:(NSString *)requestName
+                                      headers:(NSDictionary *)headers
                             routeReplacements:(NSDictionary *)replacements
                           dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock
                                 uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
