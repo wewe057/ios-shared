@@ -88,8 +88,11 @@
     
     UIWindow *window = controller.view.window;
     
+	CGFloat stateBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+	
     CGRect mainFrame = self.view.frame;
-    mainFrame.origin.y = 20;
+	mainFrame.size.height = window.bounds.size.height - stateBarHeight;
+    mainFrame.origin.y = stateBarHeight;
     self.view.frame = mainFrame;
     
     CGRect toolbarFrame = toolbar.frame;
