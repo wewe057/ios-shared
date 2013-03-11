@@ -639,6 +639,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         {
             [self will302RedirectToUrl:httpResponse.URL];
         }
+		
+		NSNumber *responseHeadersAsData = [requestDetails objectForKey:@"responseHeadersAsData"];
+		if (responseHeadersAsData && [responseHeadersAsData boolValue])
+		{
+			if (!responseData || ([responseData length]==0))
+			{
+				responseData = [httpResponse.allHeaderFields JSONData];
+			}
+		}
         
         if (uiUpdateBlock == nil)
         {
