@@ -49,9 +49,9 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 - (void)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 
-- (void)startUpdatingLocation __deprecated;
-- (void)stopUpdatingHeading __deprecated;
-- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager __deprecated;
-- (void)setDelegate:(id<CLLocationManagerDelegate>)delegate __deprecated;
+- (void)startUpdatingLocation __deprecated__("Use the withDelegate versions of this method");
+- (void)stopUpdatingHeading __deprecated__("Use the withDelegate versions of this method");
+- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager __deprecated__("Use the withDelegate versions of this method");
+- (void)setDelegate:(id<CLLocationManagerDelegate>)delegate __deprecated__("Use the withDelegate versions of this method");
 
 @end
