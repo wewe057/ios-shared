@@ -22,17 +22,17 @@ enum
     // all other errors come from NSURLConnection and its subsystems.
 };
 
+enum
+{
+	SDWTFResponseCode = -1
+};
+
 typedef enum
 {
     SDWebServiceResultFailed = NO,
     SDWebServiceResultSuccess = YES,
     SDWebServiceResultCached = 2
 } SDWebServiceResult;
-
-enum
-{
-	SDWTFResponseCode = -1
-};
 
 @interface SDRequestResult : NSObject
 @property (nonatomic, strong) NSString *identifier;
@@ -148,7 +148,7 @@ enum
  */
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName
                              routeReplacements:(NSDictionary *)replacements
-                                    completion:(SDWebServiceCompletionBlock)completionBlock;
+                                    completion:(SDWebServiceCompletionBlock)completionBlock __deprecated__("Use the data/ui block versions of this method instead.");
 
 /**
  Creates and initiates a request to the web service.
@@ -162,7 +162,7 @@ enum
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName
                              routeReplacements:(NSDictionary *)replacements
                                     completion:(SDWebServiceCompletionBlock)completionBlock
-                                   shouldRetry:(BOOL)shouldRetry;
+                                   shouldRetry:(BOOL)shouldRetry __deprecated__("Use the data/ui block versions of this method instead.");
 
 /**
  Calls performRequestWithMethod:routeReplacements:dataProcessingBlock:uiUpdateBlock:shouldRetry: with `shouldRetry` set to `YES`.
