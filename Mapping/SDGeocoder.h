@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-// this is coming from ASI-HTTP
 #import "Reachability.h"
 
 enum
@@ -19,7 +18,7 @@ enum
 @class SDGeocoder;
 
 // delegate protocol
-
+__deprecated__("Use CLGeocoder instead.")
 @protocol SDGeocoderDelegate
 
 - (void)geocoder:(SDGeocoder *)geocoder didFailWithError:(NSError *)error;
@@ -30,7 +29,7 @@ enum
 
 // main interface
 
-
+__deprecated__("Use CLGeocoder instead.")
 @interface SDGeocoder : NSObject
 {
 	NSURLConnection *connection;
