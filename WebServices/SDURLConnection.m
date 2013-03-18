@@ -15,7 +15,7 @@
 #pragma mark - SDURLResponseCompletionDelegate
 
 #ifndef SDURLCONNECTION_MAX_CONCURRENT_CONNECTIONS
-#define SDURLCONNECTION_MAX_CONCURRENT_CONNECTIONS 4
+#define SDURLCONNECTION_MAX_CONCURRENT_CONNECTIONS 20
 #endif
 
 @interface SDURLConnectionAsyncDelegate : NSObject

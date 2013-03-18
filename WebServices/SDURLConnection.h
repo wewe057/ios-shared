@@ -29,7 +29,7 @@ typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLR
 + (NSInteger)maxConcurrentAsyncConnections;
 
 /**
- Set the maximum number of concurrent connections allowed to `maxCount`. The default is `4`.
+ Set the maximum number of concurrent connections allowed to `maxCount`. The default is `20`.
  */
 + (void)setMaxConcurrentAsyncConnections:(NSInteger)maxCount;
 
