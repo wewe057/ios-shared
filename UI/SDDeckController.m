@@ -70,7 +70,7 @@ static char wmdeck_kvoContext;
     CGPoint _locationBeforePan;
 }
 
-@property (nonatomic, readwrite) WMDeckState state;
+@property (nonatomic, readwrite) SDDeckState state;
 @property (nonatomic, weak) UIViewController *visibleDeck;
 @property (nonatomic, strong) UIView *tapView;
 
@@ -135,7 +135,7 @@ static char wmdeck_kvoContext;
 
 - (void)_baseInit
 {
-    self.style = WMDeckSingleActive;
+    self.style = SDDeckSingleActive;
     self.leftGapPercentage = 0.8f;
     self.rightGapPercentage = 0.8f;
     self.minimumMovePercentage = 0.15f;
@@ -175,7 +175,7 @@ static char wmdeck_kvoContext;
     [self.view addSubview:self.leftDeckContainer];
     [self.view addSubview:self.rightDeckContainer];
     
-    self.state = WMDeckCenterVisible;
+    self.state = SDDeckCenterVisible;
     
     [self _swapCenter:nil with:_centerDeck];
     [self.view bringSubviewToFront:self.centerDeckContainer];
@@ -242,32 +242,32 @@ static char wmdeck_kvoContext;
     if (self.centerDeckHidden)
     {
         CGRect frame = self.centerDeckContainer.frame;
-        frame.origin.x = self.state == WMDeckLeftVisible ? self.centerDeckContainer.frame.size.width : -self.centerDeckContainer.frame.size.width;
+        frame.origin.x = self.state == SDDeckLeftVisible ? self.centerDeckContainer.frame.size.width : -self.centerDeckContainer.frame.size.width;
         self.centerDeckContainer.frame = frame;
     }
 }
 
 #pragma mark - State
 
-- (void)setState:(WMDeckState)state
+- (void)setState:(SDDeckState)state
 {
     if (state != _state)
     {
         _state = state;
         switch (_state)
         {
-            case WMDeckCenterVisible: {
+            case SDDeckCenterVisible: {
                 self.visibleDeck = self.centerDeck;
                 self.leftDeckContainer.userInteractionEnabled = NO;
                 self.rightDeckContainer.userInteractionEnabled = NO;
                 break;
             }
-            case WMDeckLeftVisible: {
+            case SDDeckLeftVisible: {
                 self.visibleDeck = self.leftDeck;
                 self.leftDeckContainer.userInteractionEnabled = YES;
                 break;
             }
-            case WMDeckRightVisible: {
+            case SDDeckRightVisible: {
                 self.visibleDeck = self.rightDeck;
                 self.rightDeckContainer.userInteractionEnabled = YES;
                 break;
@@ -278,7 +278,7 @@ static char wmdeck_kvoContext;
 
 #pragma mark - Style
 
-- (void)setStyle:(WMDeckStyle)style
+- (void)setStyle:(SDDeckStyle)style
 {
     if (style != _style)
     {
@@ -329,7 +329,7 @@ static char wmdeck_kvoContext;
     CGRect leftFrame = self.view.bounds;
     CGRect rightFrame = self.view.bounds;
     
-    if (self.style == WMDeckMultipleActive)
+    if (self.style == SDDeckMultipleActive)
     {
         // left Deck container
         leftFrame.size.width = self.leftVisibleWidth;
@@ -379,19 +379,19 @@ static char wmdeck_kvoContext;
         _centerDeck = centerDeck;
         [_centerDeck addObserver:self forKeyPath:@"viewControllers" options:0 context:&wmdeck_kvoContext];
         [_centerDeck addObserver:self forKeyPath:@"view" options:NSKeyValueObservingOptionInitial context:&wmdeck_kvoContext];
-        if (self.state == WMDeckCenterVisible)
+        if (self.state == SDDeckCenterVisible)
             self.visibleDeck = _centerDeck;
     }
-    if (self.isViewLoaded && self.state == WMDeckCenterVisible)
+    if (self.isViewLoaded && self.state == SDDeckCenterVisible)
         [self _swapCenter:previous with:_centerDeck];
     else if (self.isViewLoaded)
     {
         // update the state immediately to prevent user interaction on the side Decks while animating
-        WMDeckState previousState = self.state;
-        self.state = WMDeckCenterVisible;
+        SDDeckState previousState = self.state;
+        self.state = SDDeckCenterVisible;
         [UIView animateWithDuration:0.2f animations:^{
             // first move the centerDeck offscreen
-            CGFloat x = (previousState == WMDeckLeftVisible) ? self.view.bounds.size.width : -self.view.bounds.size.width;
+            CGFloat x = (previousState == SDDeckLeftVisible) ? self.view.bounds.size.width : -self.view.bounds.size.width;
             _centerDeckRestingFrame.origin.x = x;
             self.centerDeckContainer.frame = _centerDeckRestingFrame;
         } completion:^(__unused BOOL finished) {
@@ -433,7 +433,7 @@ static char wmdeck_kvoContext;
             [_leftDeck didMoveToParentViewController:self];
             [self _placeButtonForLeftDeck];
         }
-        if (self.state == WMDeckLeftVisible)
+        if (self.state == SDDeckLeftVisible)
             self.visibleDeck = _leftDeck;
     }
 }
@@ -451,7 +451,7 @@ static char wmdeck_kvoContext;
             [self addChildViewController:_rightDeck];
             [_rightDeck didMoveToParentViewController:self];
         }
-        if (self.state == WMDeckRightVisible)
+        if (self.state == SDDeckRightVisible)
             self.visibleDeck = _rightDeck;
     }
 }
@@ -536,7 +536,7 @@ static char wmdeck_kvoContext;
         self.centerDeckContainer.frame = frame;
         
         // if center Deck has focus, make sure correct side Deck is revealed
-        if (self.state == WMDeckCenterVisible)
+        if (self.state == SDDeckCenterVisible)
         {
             if (frame.origin.x > 0.0f)
                 [self _loadLeftDeck];
@@ -561,18 +561,18 @@ static char wmdeck_kvoContext;
 {
     switch (self.state)
     {
-        case WMDeckCenterVisible: {
+        case SDDeckCenterVisible: {
             if (deltaX > 0.0f)
                 [self _showLeftDeck:YES bounce:self.bounceOnSideDeckOpen];
             else
                 [self _showRightDeck:YES bounce:self.bounceOnSideDeckOpen completion:nil];
             break;
         }
-        case WMDeckLeftVisible: {
+        case SDDeckLeftVisible: {
             [self _showCenterDeck:YES bounce:self.bounceOnSideDeckClose];
             break;
         }
-        case WMDeckRightVisible: {
+        case SDDeckRightVisible: {
             [self _showCenterDeck:YES bounce:self.bounceOnSideDeckClose];
             break;
         }
@@ -583,15 +583,15 @@ static char wmdeck_kvoContext;
 {
     switch (self.state)
     {
-        case WMDeckCenterVisible: {
+        case SDDeckCenterVisible: {
             [self _showCenterDeck:YES bounce:NO];
             break;
         }
-        case WMDeckLeftVisible: {
+        case SDDeckLeftVisible: {
             [self _showLeftDeck:YES bounce:NO];
             break;
         }
-        case WMDeckRightVisible: {
+        case SDDeckRightVisible: {
             [self _showRightDeck:YES bounce:NO completion:nil];
         }
     }
@@ -635,19 +635,19 @@ static char wmdeck_kvoContext;
 {
     CGFloat position = _centerDeckRestingFrame.origin.x + movement;
     
-    if (self.state == WMDeckCenterVisible)
+    if (self.state == SDDeckCenterVisible)
     {
         if ((position > 0.0f && !self.leftDeck) || (position < 0.0f && !self.rightDeck))
             return 0.0f;
     }
-    else if (self.state == WMDeckRightVisible && !self.allowRightOverpan)
+    else if (self.state == SDDeckRightVisible && !self.allowRightOverpan)
     {
         if ((position + _centerDeckRestingFrame.size.width) < (self.rightDeckContainer.frame.size.width - self.rightVisibleWidth))
             return 0.0f;
         else if (position > self.rightDeckContainer.frame.origin.x)
             return self.rightDeckContainer.frame.origin.x - _centerDeckRestingFrame.origin.x;
     }
-    else if (self.state == WMDeckLeftVisible  && !self.allowLeftOverpan)
+    else if (self.state == SDDeckLeftVisible  && !self.allowLeftOverpan)
     {
         if (position > self.leftVisibleWidth)
             return 0.0f;
@@ -663,13 +663,13 @@ static char wmdeck_kvoContext;
     
     switch (self.state)
     {
-        case WMDeckLeftVisible: {
+        case SDDeckLeftVisible: {
             return movement <= -minimum;
         }
-        case WMDeckCenterVisible: {
+        case SDDeckCenterVisible: {
             return fabsf(movement) >= minimum;
         }
-        case WMDeckRightVisible: {
+        case SDDeckRightVisible: {
             return movement >= minimum;
         }
     }
@@ -768,13 +768,13 @@ static char wmdeck_kvoContext;
     [UIView animateWithDuration:duration delay:0.0f options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionLayoutSubviews animations:^{
         self.centerDeckContainer.frame = _centerDeckRestingFrame;
         [self styleContainer:self.centerDeckContainer animate:YES duration:duration];
-        if (self.style == WMDeckMultipleActive)
+        if (self.style == SDDeckMultipleActive)
             [self _layoutSideContainers:NO duration:0.0f];
     } completion:^(BOOL finished) {
         if (shouldBounce)
         {
             // make sure correct Deck is displayed under the bounce
-            if (self.state == WMDeckCenterVisible)
+            if (self.state == SDDeckCenterVisible)
             {
                 if (bounceDistance > 0.0f)
                     [self _loadLeftDeck];
@@ -805,21 +805,21 @@ static char wmdeck_kvoContext;
     
     switch (self.state)
     {
-        case WMDeckCenterVisible: {
+        case SDDeckCenterVisible: {
             frame.origin.x = 0.0f;
-            if (self.style == WMDeckMultipleActive)
+            if (self.style == SDDeckMultipleActive)
                 frame.size.width = self.view.bounds.size.width;
             break;
         }
-        case WMDeckLeftVisible: {
+        case SDDeckLeftVisible: {
             frame.origin.x = self.leftVisibleWidth;
-            if (self.style == WMDeckMultipleActive)
+            if (self.style == SDDeckMultipleActive)
                 frame.size.width = self.view.bounds.size.width - self.leftVisibleWidth;
             break;
         }
-        case WMDeckRightVisible: {
+        case SDDeckRightVisible: {
             frame.origin.x = -self.rightVisibleWidth;
-            if (self.style == WMDeckMultipleActive)
+            if (self.style == SDDeckMultipleActive)
             {
                 frame.origin.x = 0.0f;
                 frame.size.width = self.view.bounds.size.width - self.rightVisibleWidth;
@@ -851,7 +851,7 @@ static char wmdeck_kvoContext;
 
 - (void)_showLeftDeck:(BOOL)animated bounce:(BOOL)shouldBounce
 {
-    self.state = WMDeckLeftVisible;
+    self.state = SDDeckLeftVisible;
     [self _loadLeftDeck];
     
     [self _adjustCenterFrame];
@@ -862,18 +862,18 @@ static char wmdeck_kvoContext;
     {
         self.centerDeckContainer.frame = _centerDeckRestingFrame;
         [self styleContainer:self.centerDeckContainer animate:NO duration:0.0f];
-        if (self.style == WMDeckMultipleActive)
+        if (self.style == SDDeckMultipleActive)
             [self _layoutSideContainers:NO duration:0.0f];
     }
     
-    if (self.style == WMDeckSingleActive)
+    if (self.style == SDDeckSingleActive)
         self.tapView = [[UIView alloc] init];
     [self _toggleScrollsToTopForCenter:NO left:YES right:NO];
 }
 
 - (void)_showRightDeck:(BOOL)animated bounce:(BOOL)shouldBounce completion:(void (^)(BOOL finished))completion
 {
-    self.state = WMDeckRightVisible;
+    self.state = SDDeckRightVisible;
     [self _loadRightDeck];
     
     [self _adjustCenterFrame];
@@ -884,18 +884,18 @@ static char wmdeck_kvoContext;
     {
         self.centerDeckContainer.frame = _centerDeckRestingFrame;
         [self styleContainer:self.centerDeckContainer animate:NO duration:0.0f];
-        if (self.style == WMDeckMultipleActive)
+        if (self.style == SDDeckMultipleActive)
             [self _layoutSideContainers:NO duration:0.0f];
     }
     
-    if (self.style == WMDeckSingleActive)
+    if (self.style == SDDeckSingleActive)
         self.tapView = [[UIView alloc] init];
     [self _toggleScrollsToTopForCenter:NO left:NO right:YES];
 }
 
 - (void)_showCenterDeck:(BOOL)animated bounce:(BOOL)shouldBounce
 {
-    self.state = WMDeckCenterVisible;
+    self.state = SDDeckCenterVisible;
     
     [self _adjustCenterFrame];
     
@@ -911,7 +911,7 @@ static char wmdeck_kvoContext;
     {
         self.centerDeckContainer.frame = _centerDeckRestingFrame;
         [self styleContainer:self.centerDeckContainer animate:NO duration:0.0f];
-        if (self.style == WMDeckMultipleActive)
+        if (self.style == SDDeckMultipleActive)
             [self _layoutSideContainers:NO duration:0.0f];
         self.leftDeckContainer.hidden = YES;
         self.rightDeckContainer.hidden = YES;
@@ -1024,17 +1024,17 @@ static char wmdeck_kvoContext;
 
 - (void)toggleLeftDeck:(__unused id)sender
 {
-    if (self.state == WMDeckLeftVisible)
+    if (self.state == SDDeckLeftVisible)
         [self _showCenterDeck:YES bounce:NO];
-    else if (self.state == WMDeckCenterVisible)
+    else if (self.state == SDDeckCenterVisible)
         [self _showLeftDeck:YES bounce:NO];
 }
 
 - (void)toggleRightDeck:(__unused id)sender
 {
-    if (self.state == WMDeckRightVisible)
+    if (self.state == SDDeckRightVisible)
         [self _showCenterDeck:YES bounce:NO];
-    else if (self.state == WMDeckCenterVisible)
+    else if (self.state == SDDeckCenterVisible)
         [self _showRightDeck:YES bounce:NO completion:nil];
 }
 
@@ -1045,7 +1045,7 @@ static char wmdeck_kvoContext;
 
 - (void)setCenterDeckHidden:(BOOL)centerDeckHidden animated:(BOOL)animated duration:(NSTimeInterval)duration
 {
-    if (centerDeckHidden != _centerDeckHidden && self.state != WMDeckCenterVisible)
+    if (centerDeckHidden != _centerDeckHidden && self.state != SDDeckCenterVisible)
     {
         _centerDeckHidden = centerDeckHidden;
         duration = animated ? duration : 0.0f;
@@ -1053,7 +1053,7 @@ static char wmdeck_kvoContext;
         {
             [UIView animateWithDuration:duration animations:^{
                 CGRect frame = self.centerDeckContainer.frame;
-                frame.origin.x = self.state == WMDeckLeftVisible ? self.centerDeckContainer.frame.size.width : -self.centerDeckContainer.frame.size.width;
+                frame.origin.x = self.state == SDDeckLeftVisible ? self.centerDeckContainer.frame.size.width : -self.centerDeckContainer.frame.size.width;
                 self.centerDeckContainer.frame = frame;
                 if (self.shouldResizeLeftDeck || self.shouldResizeRightDeck)
                     [self _layoutSideDecks];
@@ -1067,7 +1067,7 @@ static char wmdeck_kvoContext;
         {
             [self _unhideCenterDeck];
             [UIView animateWithDuration:duration animations:^{
-                if (self.state == WMDeckLeftVisible)
+                if (self.state == SDDeckLeftVisible)
                     [self showLeftDeck:NO];
                 else
                     [self showRightDeck:NO];
