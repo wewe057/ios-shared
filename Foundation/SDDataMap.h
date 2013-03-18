@@ -7,18 +7,49 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+ SDDataMap provides a mechanism by which to assign keypaths from one object to another.
+ A plist can be specified by name to provide definitions, optionally a dictionary can be used.
+ A sample plist is available as a private gist at: https://gist.github.com/bsneed/f32db309d2ed70902702
+ 
+ ### SDDataMap Property List Format Specification ###
+ 
+ * Keys in the plist/dictionary are processed as being from the source or object to be mapped.
+ * Types are always of String.
+ * Values are the destination keyPaths on the object being mapped-to.
+ 
+ ### Examples of possible values: ###
+ 
+ * `browseIdentifier`: ie: myObject.browseIdentifier
+ * `textLabel.text, name`: This would assign the value to myObject.textLabel.text as well as myObject.name
+ * `@selector(testSelector:)`: This would call the selector specified.  This is useful is additional processing
+     needs to take place before the assignment.  This could also be accomplished in the above examples by making
+     a setter for a given property.
+
+ */
+
 @interface SDDataMap : NSObject
 
+/**
+ Loads `mapName`.plist as a dictionary to use as a map specification.
+ */
 + (SDDataMap *)mapForName:(NSString *)mapName;
+/**
+ Loads a dictionary for use as a map specification.
+ */
 + (SDDataMap *)mapForDictionary:(NSDictionary *)dictionary;
-
+/**
+ Maps object1's keypaths to object2 based on the specification that SDDataMap was instantiated with.
+ */
 - (void)mapObject:(id)object1 toObject:(id)object2 strict:(BOOL)strict;
 - (void)mapObject:(id)object1 toObject:(id)object2;
 - (void)mapJSON:(id)object1 toObject:(id)object2;
 
 @end
 
-// Helper extensions to allow for more base types to be supported by KVO in a map.
+/**
+ Helper extensions to allow for more base types to be supported by KVO in a map.
+ */
 
 @interface NSString(SDDataMap)
 

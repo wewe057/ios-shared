@@ -407,7 +407,7 @@ static const char *getPropertyType(objc_property_t property)
         {
             // look for @ to denote a selector to be called.
             if ([self hasSelectorMarker:path])
-                [self performSelectorOnTarget:object2 forKeyPath:path withValue:value strict:YES];
+                [self performSelectorOnTarget:object2 forKeyPath:path withValue:value strict:strict];
             else
                 [self setValue:value forKeyPath:path withTarget:object2];
         }
@@ -421,7 +421,7 @@ static const char *getPropertyType(objc_property_t property)
 
 - (void)mapJSON:(id)object1 toObject:(id)object2
 {
-    [self mapObject:object1 toObject:object2 strict:NO];
+    [self mapObject:object1 toObject:object2 strict:YES];
 }
 
 @end
