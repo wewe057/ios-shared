@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>--company-id</key>
+	<string>com.setdirection</string>
+	<key>--ignore</key>
+	<array>
+		<string>.m</string>
+		<string>externals/MFSideMenu</string>
+		<string>example</string>
+	</array>
+	<key>--index-desc</key>
+	<string>README.md</string>
+	<key>--keep-undocumented-members</key>
+	<true/>
+	<key>--keep-undocumented-objects</key>
+	<true/>
+	<key>--print-information-block-titles</key>
+	<true/>
+	<key>--project-company</key>
+	<string>SetDirection</string>
+	<key>--project-name</key>
+	<string>iOS Shared</string>
+	<key>--repeat-first-par</key>
+	<false/>
+	<key>--search-undocumented-doc</key>
+	<true/>
+</dict>
+</plist>

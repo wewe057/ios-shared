@@ -6,6 +6,6 @@ build
 *.log
 *.xcworkspace
 xcuserdata
-
+docset-installed.txt
 .DS_Store
 Temp/
