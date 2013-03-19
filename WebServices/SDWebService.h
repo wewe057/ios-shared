@@ -66,8 +66,16 @@ typedef enum
          All replacement markers must be substituted with appropriate values using one or both or the above mechanisms when a request is being created.
 
  ### Blocks in use are defined as: ###
+    // Defined for old-style block callbacks.  Data and UI processing occur in this block and it is run on the main thread.
     typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
-    typedef id (^SDWebServiceDataCompletionBlock)(int responseCode, NSData *response, NSError *error);
+
+    // Handles data processing for a given connection.  `response` will be an NSHTTPURLResponse 99% of the time.  
+    // The return/result is the dataObject that will eventually be passed to SDWebServiceUICompletionBlock.
+    // This block is run on a separate GCD thread.
+    typedef id (^SDWebServiceDataCompletionBlock)(NSURLResponse *response, NSInteger statusCode, NSData *responseData, NSError *error);
+ 
+    // The dataObject parameter is the result of SDWebServiceDataCompletionBlock.  UI updates of the contained data should
+    // happen here.  This block is always run on the main thread.
     typedef void (^SDWebServiceUICompletionBlock)(id dataObject, NSError *error);
  */
 
