@@ -510,10 +510,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
-    SDWebServiceDataCompletionBlock combinedBlock = ^id (int responseCode, NSData *response, NSError *error) {
-        NSString *responseString = [self responseFromData:response];
-        completionBlock(responseCode, responseString, &error);
-        return nil;
+	SDWebServiceDataCompletionBlock combinedBlock = ^id (NSURLResponse *response, NSInteger statusCode, NSData *responseData, NSError *error) {
+        NSString *responseString = [self responseFromData:responseData];
+        completionBlock(statusCode, responseString, &error);
+		return nil;
     };
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
 }
@@ -557,9 +557,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:SDWebServiceError code:SDWebServiceErrorNoConnection userInfo:nil];
 		if (uiUpdateBlock == nil)
-		{
-			dataProcessingBlock(0, nil, error); // This mimicks SDWebService 1.0
-		} else
+			dataProcessingBlock(nil, 0, nil, error); // This mimicks SDWebService 1.0
+		 else
 			uiUpdateBlock(nil, error);
 
         return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
@@ -639,21 +638,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         {
             [self will302RedirectToUrl:httpResponse.URL];
         }
-		
-		NSNumber *responseHeadersAsData = [requestDetails objectForKey:@"responseHeadersAsData"];
-		if (responseHeadersAsData && [responseHeadersAsData boolValue])
-		{
-			if (!responseData || ([responseData length]==0))
-			{
-				responseData = [httpResponse.allHeaderFields JSONData];
-			}
-		}
         
         if (uiUpdateBlock == nil)
         {
             NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
             [mainQueue addOperationWithBlock:^{
-                dataProcessingBlock(code, responseData, error);
+                dataProcessingBlock(response, code, responseData, error);
             }];
         }
         else
@@ -661,7 +651,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             [dataProcessingQueue addOperationWithBlock:^{
                 id dataObject = nil;
                 if (code != NSURLErrorCancelled)
-                    dataObject = dataProcessingBlock(code, responseData, error);
+                    dataObject = dataProcessingBlock(response, code, responseData, error);
                 [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                     uiUpdateBlock(dataObject, error);
                 }];
