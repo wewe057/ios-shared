@@ -153,7 +153,7 @@ typedef enum
 /**
  Returns a data processing block for converting JSON data into a dictionary.
  */
-- (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock;
++ (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock;
 
 /**
  Calls performRequestWithMethod:routeReplacements:completion:shouldRetry: with `shouldRetry` set to `YES`.

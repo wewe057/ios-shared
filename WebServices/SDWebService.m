@@ -130,7 +130,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 #pragma mark - Default processing blocks
 
-- (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock
++ (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock
 {
     // refactor SDWebService so error's are passed around properly. -- BKS
     
