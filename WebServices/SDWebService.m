@@ -10,6 +10,7 @@
 #import "NSURLCache+SDExtensions.h"
 #import "NSDictionary+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
+#import "NSData+SDExtensions.h"
 
 NSString *const SDWebServiceError = @"SDWebServiceError";
 
@@ -135,10 +136,48 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     // refactor SDWebService so error's are passed around properly. -- BKS
     
     SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        NSError *jsonError = nil;
         id dataObject = nil;
         if (responseData && responseData.length > 0)
-            dataObject = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:&jsonError];
+            dataObject = [responseData JSONObject];
+        return dataObject;
+    };
+    return result;
+}
+
++ (SDWebServiceDataCompletionBlock)defaultMutableJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+    
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONObjectMutable:YES error:nil];
+        return dataObject;
+    };
+    return result;
+}
+
++ (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+    
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONArray];
+        return dataObject;
+    };
+    return result;
+}
+
++ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+    
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONDictionary];
         return dataObject;
     };
     return result;

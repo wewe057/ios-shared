@@ -151,9 +151,24 @@ typedef enum
 - (void)clearCache;
 
 /**
- Returns a data processing block for converting JSON data into a dictionary.
+ Returns a data processing block for converting JSON data into a dictionary or array.
  */
 + (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into a mutable dictionary or array.
+ */
++ (SDWebServiceDataCompletionBlock)defaultMutableJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into an array.
+ */
++ (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into a dictionary.
+ */
++ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock;
 
 /**
  Calls performRequestWithMethod:routeReplacements:completion:shouldRetry: with `shouldRetry` set to `YES`.
