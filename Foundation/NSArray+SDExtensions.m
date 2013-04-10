@@ -76,4 +76,30 @@
 	return [[self reverseObjectEnumerator] allObjects];
 }
 
+- (NSData *)JSONRepresentation
+{
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:0 error:&error];
+    
+    if (!jsonData)
+        SDLog(@"JSON error: %@", error);
+    
+    return jsonData;
+}
+
+- (NSString *)JSONStringRepresentation
+{
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:0 error:&error];
+    
+    NSString *jsonString = nil;
+    if (!jsonData)
+        SDLog(@"JSON error: %@", error);
+    else
+        jsonString = [[NSString alloc] initWithBytes:[jsonData bytes] length:[jsonData length] encoding:NSUTF8StringEncoding];
+    
+    return jsonString;
+}
+
+
 @end
