@@ -88,6 +88,8 @@
 		CA014DC016F39F2600253769 /* SDContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014DBE16F39F2600253769 /* SDContainerViewController.m */; };
 		CA014DC316F3A09300253769 /* SDDataMap.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014DC116F3A09300253769 /* SDDataMap.h */; };
 		CA014DC416F3A09300253769 /* SDDataMap.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014DC216F3A09300253769 /* SDDataMap.m */; };
+		CA331B75171F1E3800CFD209 /* UIDevice+machine.h in Headers */ = {isa = PBXBuildFile; fileRef = CA331B73171F1E3800CFD209 /* UIDevice+machine.h */; };
+		CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331B74171F1E3800CFD209 /* UIDevice+machine.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
@@ -182,6 +184,8 @@
 		CA014DBE16F39F2600253769 /* SDContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDContainerViewController.m; sourceTree = "<group>"; };
 		CA014DC116F3A09300253769 /* SDDataMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDataMap.h; sourceTree = "<group>"; };
 		CA014DC216F3A09300253769 /* SDDataMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDataMap.m; sourceTree = "<group>"; };
+		CA331B73171F1E3800CFD209 /* UIDevice+machine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+machine.h"; sourceTree = "<group>"; };
+		CA331B74171F1E3800CFD209 /* UIDevice+machine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+machine.m"; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
@@ -259,6 +263,8 @@
 			children = (
 				CA014DC116F3A09300253769 /* SDDataMap.h */,
 				CA014DC216F3A09300253769 /* SDDataMap.m */,
+				CA331B73171F1E3800CFD209 /* UIDevice+machine.h */,
+				CA331B74171F1E3800CFD209 /* UIDevice+machine.m */,
 				CA014D2316F3940500253769 /* NSArray+SDExtensions.h */,
 				CA014D2416F3940500253769 /* NSArray+SDExtensions.m */,
 				CA014D2516F3940500253769 /* NSDate+SDExtensions.h */,
@@ -427,6 +433,7 @@
 				CA014DC316F3A09300253769 /* SDDataMap.h in Headers */,
 				CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */,
 				CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */,
+				CA331B75171F1E3800CFD209 /* UIDevice+machine.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,6 +530,7 @@
 				CA014DC416F3A09300253769 /* SDDataMap.m in Sources */,
 				CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */,
 				CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */,
+				CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

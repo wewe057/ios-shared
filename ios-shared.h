@@ -24,6 +24,7 @@
 #import "UIColor+SDExtensions.h"
 #import "UIScreen+SDExtensions.h"
 #import "UIView+SDExtensions.h"
+#import "UIDevice+machine.h"
 
 #import "SDURLConnection.h"
 #import "SDWebService.h"
