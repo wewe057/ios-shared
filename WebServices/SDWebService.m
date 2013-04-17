@@ -10,6 +10,7 @@
 #import "NSURLCache+SDExtensions.h"
 #import "NSDictionary+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
+#import "NSData+SDExtensions.h"
 
 NSString *const SDWebServiceError = @"SDWebServiceError";
 
@@ -41,6 +42,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
     NSHTTPCookieStorage *_cookieStorage;
 }
+
+#pragma mark - Singleton bits
 
 + (id)sharedInstance
 {
@@ -106,6 +109,110 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     singleRequests = nil;
     normalRequests = nil;
 }
+
+#pragma mark - Reachability
+
+- (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError
+{
+    return [[Reachability reachabilityWithHostname:hostName] isReachable];
+}
+
+- (BOOL)isReachable:(BOOL)showError
+{
+    return [[Reachability reachabilityForInternetConnection] isReachable];
+}
+
+#pragma mark - Cache
+
+- (void)clearCache
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+
+#pragma mark - Default processing blocks
+
++ (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONObject];
+        return dataObject;
+    };
+    return result;
+}
+
++ (SDWebServiceDataCompletionBlock)defaultMutableJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONObjectMutable:YES error:nil];
+        return dataObject;
+    };
+    return result;
+}
+
++ (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONArray];
+        return dataObject;
+    };
+    return result;
+}
+
++ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONDictionary];
+        return dataObject;
+    };
+    return result;
+}
+
+#pragma mark - Network activity
+
+- (void)showNetworkActivityIfNeeded
+{
+    if (requestCount > 0)
+        [self showNetworkActivity];
+}
+
+- (void)hideNetworkActivityIfNeeded
+{
+    if (requestCount <= 0)
+    {
+        requestCount = 0;
+        [self performSelector:@selector(hideNetworkActivity) withObject:nil afterDelay:0.5];
+    }
+}
+
+- (void)incrementRequests
+{
+    requestCount++;
+    [self showNetworkActivityIfNeeded];
+}
+
+- (void)decrementRequests
+{
+	requestCount--;
+	[self hideNetworkActivityIfNeeded];
+}
+
+#pragma mark - URL building utilities
 
 // Iterate through the string and look for {KEY}, replacing with the string value of that key from NSUserDefaults
 - (NSString *)stringByReplacingPrefKeys:(NSString *)string
@@ -174,21 +281,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	return baseURL;
 }
 
-- (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError
-{
-    return [[Reachability reachabilityWithHostname:hostName] isReachable];
-}
-
-- (BOOL)isReachable:(BOOL)showError
-{
-    return [[Reachability reachabilityForInternetConnection] isReachable];
-}
-
-- (void)clearCache
-{
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
-}
-
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
 {
     // combine the contents of routeReplacements and the passed in replacements to form
@@ -231,33 +323,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     actualReplacements = nil;
 
     return result;
-}
-
-- (void)showNetworkActivityIfNeeded
-{
-    if (requestCount > 0)
-        [self showNetworkActivity];
-}
-
-- (void)hideNetworkActivityIfNeeded
-{
-    if (requestCount <= 0)
-    {
-        requestCount = 0;
-        [self performSelector:@selector(hideNetworkActivity) withObject:nil afterDelay:0.5];
-    }
-}
-
-- (void)incrementRequests
-{
-    requestCount++;
-    [self showNetworkActivityIfNeeded];
-}
-
-- (void)decrementRequests
-{
-	requestCount--;
-	[self hideNetworkActivityIfNeeded];
 }
 
 - (NSString *)responseFromData:(NSData *)data
@@ -504,6 +569,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return request;
 }
 
+#pragma mark - Service execution
+
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
 {
     return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
@@ -663,17 +730,17 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	};
 
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
-	NSCachedURLResponse *response = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue]];
-	if (cache && response && response.response)
+	NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue]];
+	if (cache && cachedResponse && cachedResponse.response)
 	{
-		NSString *cachedString = [self responseFromData:response.responseData];
+		NSString *cachedString = [self responseFromData:cachedResponse.responseData];
 		if (cachedString)
 		{
 			SDLog(@"***USING CACHED RESPONSE***");
 
 			[self incrementRequests];
 
-            urlCompletionBlock(nil, response.response, response.responseData, nil);
+            urlCompletionBlock(nil, cachedResponse.response, cachedResponse.responseData, nil);
 
 			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
 		}

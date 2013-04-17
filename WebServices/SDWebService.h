@@ -65,7 +65,7 @@ typedef enum
          They can also be replaced by a routeReplacement dictionary passed into the request creation code via the performRequestWithMethod: calls.
          All replacement markers must be substituted with appropriate values using one or both or the above mechanisms when a request is being created.
 
- ### Blocks in use are defined as: ###
+ ### Blocks in use are defined as:
     // Defined for old-style block callbacks.  Data and UI processing occur in this block and it is run on the main thread.
     typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
 
@@ -149,6 +149,26 @@ typedef enum
  Removes all cached responses.
  */
 - (void)clearCache;
+
+/**
+ Returns a data processing block for converting JSON data into a dictionary or array.
+ */
++ (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into a mutable dictionary or array.
+ */
++ (SDWebServiceDataCompletionBlock)defaultMutableJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into an array.
+ */
++ (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into a dictionary.
+ */
++ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock;
 
 /**
  Calls performRequestWithMethod:routeReplacements:completion:shouldRetry: with `shouldRetry` set to `YES`.

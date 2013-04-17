@@ -11,7 +11,7 @@
 
 @implementation UISearchBar (SDExtensions)
 
-+ (UIImage *)backgroundImage
++ (UIImage *)backgroundImage __deprecated__("Use UIAppearance instead.")
 {
 	static UIImage *image = nil;
 	if (image == nil)
@@ -20,8 +20,7 @@
 	return image;
 }
 
-//- (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)contenxt
-- (void)drawRect:(CGRect)rect
+- (void)drawRect:(CGRect)rect __deprecated__("Use UIAppearance instead.")
 {
 	UIImage *image = [UISearchBar backgroundImage];  
 	

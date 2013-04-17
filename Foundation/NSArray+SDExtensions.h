@@ -43,4 +43,14 @@
  */
 - (NSArray *)reversedArray;
 
+/**
+ Returns an NSData * containing the JSON representation of this object.
+ */
+- (NSData *)JSONRepresentation;
+
+/**
+ Returns an NSString * containing the JSON representation of this object.
+ */
+- (NSString *)JSONStringRepresentation;
+
 @end

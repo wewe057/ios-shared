@@ -34,6 +34,7 @@
 - (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...
 {
     va_list args;
+    va_start(args, arg1);
     
     NSArray *items = [self copy];
     for (id object in items)
@@ -44,7 +45,6 @@
             NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
             [invocation setTarget:object];
             [invocation setSelector:aSelector];
-            va_start(args, arg1);
             if (arg1)
                 [invocation setArgument:&arg1 atIndex:2];
             void *theArg = nil;
@@ -75,5 +75,25 @@
 {
 	return [[self reverseObjectEnumerator] allObjects];
 }
+
+- (NSString *)JSONStringRepresentation
+{
+    NSError *error = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:self options:0 error:&error];
+    if (error)
+        SDLog(@"error converting event into JSON: %@", error);
+    NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return result;
+}
+
+- (NSData *)JSONRepresentation
+{
+    NSError *error = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:self options:0 error:&error];
+    if (error)
+        SDLog(@"error converting event into JSON: %@", error);
+    return data;
+}
+
 
 @end
