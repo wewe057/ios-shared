@@ -90,6 +90,8 @@
 		CA014DC416F3A09300253769 /* SDDataMap.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014DC216F3A09300253769 /* SDDataMap.m */; };
 		CA331B75171F1E3800CFD209 /* UIDevice+machine.h in Headers */ = {isa = PBXBuildFile; fileRef = CA331B73171F1E3800CFD209 /* UIDevice+machine.h */; };
 		CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331B74171F1E3800CFD209 /* UIDevice+machine.m */; };
+		CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */; };
+		CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
@@ -186,6 +188,8 @@
 		CA014DC216F3A09300253769 /* SDDataMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDataMap.m; sourceTree = "<group>"; };
 		CA331B73171F1E3800CFD209 /* UIDevice+machine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+machine.h"; sourceTree = "<group>"; };
 		CA331B74171F1E3800CFD209 /* UIDevice+machine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+machine.m"; sourceTree = "<group>"; };
+		CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+SDExtensions.h"; sourceTree = "<group>"; };
+		CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+SDExtensions.m"; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
@@ -381,6 +385,8 @@
 				CA014D7016F3940500253769 /* SDURLConnection.m */,
 				CA014D7116F3940500253769 /* SDWebService.h */,
 				CA014D7216F3940500253769 /* SDWebService.m */,
+				CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */,
+				CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */,
 			);
 			path = WebServices;
 			sourceTree = SOURCE_ROOT;
@@ -434,6 +440,7 @@
 				CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */,
 				CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */,
 				CA331B75171F1E3800CFD209 /* UIDevice+machine.h in Headers */,
+				CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -531,6 +538,7 @@
 				CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */,
 				CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */,
 				CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */,
+				CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
