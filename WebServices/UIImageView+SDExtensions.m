@@ -90,6 +90,11 @@
     [[SDImageCache sharedInstance] removeImageURLFromCache:url];
 }
 
++ (void)setImageMemoryCacheSize:(NSUInteger)memoryCacheSize
+{
+    [[SDImageCache sharedInstance] setMemoryCacheSize:memoryCacheSize];
+}
+
 @end
 
 @implementation SDImageCache
