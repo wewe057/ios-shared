@@ -38,8 +38,7 @@ typedef void (^UIImageViewURLCompletionBlock)(UIImage *image, NSError *error);
  * The downloand is asynchronous and cached.
  *
  * @param url The url for the image.
- * @param success A block to be executed when the image request succeed This block has no return value and takes the retrieved image as argument.
- * @param failure A block object to be executed when the image request failed. This block has no return value and takes the error object describing the network or parsing error that occurred (may be nil).
+ * @param A block to be executed when the image request finishes.
  */
 - (void)setImageWithURL:(NSURL *)url completionBlock:(UIImageViewURLCompletionBlock)completionBlock;
 
@@ -50,8 +49,7 @@ typedef void (^UIImageViewURLCompletionBlock)(UIImage *image, NSError *error);
  *
  * @param url The url for the image.
  * @param placeholder The image to be set initially, until the image request finishes.
- * @param success A block to be executed when the image request succeed This block has no return value and takes the retrieved image as argument.
- * @param failure A block object to be executed when the image request failed. This block has no return value and takes the error object describing the network or parsing error that occurred (may be nil).
+ * @param A block to be executed when the image request finishes.
  */
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completionBlock:(UIImageViewURLCompletionBlock)completionBlock;
 
