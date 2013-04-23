@@ -64,7 +64,7 @@ typedef void (^UIImageViewURLCompletionBlock)(UIImage *image, NSError *error);
 + (void)removeImageURLFromCache:(NSURL *)url;
 
 /**
- * Sets the in-memory cache size for this extension.  On-disk cache is handled by NSURLCache.
+ * Sets the in-memory cache size for this extension.  The default size is 4mb.  On-disk cache is handled by NSURLCache.
  */
 + (void)setImageMemoryCacheSize:(NSUInteger)memoryCacheSize;
 
