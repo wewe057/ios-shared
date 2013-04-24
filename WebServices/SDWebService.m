@@ -730,7 +730,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	};
 
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
-	NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue]];
+	NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue] removeIfInvalid:YES];
 	if (cache && cachedResponse && cachedResponse.response)
 	{
 		NSString *cachedString = [self responseFromData:cachedResponse.responseData];

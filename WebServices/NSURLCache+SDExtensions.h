@@ -23,7 +23,7 @@
 /**
  Returns response if it is not expired and younger than `ttl`. `nil` otherwise.
  */
-- (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl;
+- (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl removeIfInvalid:(BOOL)remove;
 
 // 
 

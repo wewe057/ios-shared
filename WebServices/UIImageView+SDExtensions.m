@@ -7,6 +7,8 @@
 //
 
 #import "UIImageView+SDExtensions.h"
+#import "NSURLCache+SDExtensions.h"
+#import "NSCachedURLResponse+LeakFix.h"
 #import "SDURLConnection.h"
 #import <objc/runtime.h>
 
@@ -233,6 +235,20 @@
     }
     
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    
+    NSURLCache *urlCache = [NSURLCache sharedURLCache];
+    NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:60 removeIfInvalid:YES];
+    if (cachedResponse)
+    {
+        UIImage *diskCachedImage = [UIImage imageWithData:cachedResponse.responseData];
+        if (diskCachedImage)
+        {
+            SDLog(@"image found in disk cache: %@", url);
+            completionBlock(diskCachedImage, nil);
+            return;
+        }
+    }
+    
     SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
         UIImage *image = nil;
         if (responseData && responseData.length > 0)

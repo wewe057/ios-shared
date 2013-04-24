@@ -249,27 +249,10 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
 // Makes sure the response is not expired, otherwise nil
 - (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request
 {
-    NSURLCache *urlCache = [NSURLCache sharedURLCache];
-    NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
-    if (response && response.response && response.responseData)
-    {
-        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)[response response];
-        if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
-        {
-            NSDate *expirationDate = [NSURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
-            if (!expirationDate)
-                NSLog(@"ooh its old");
-            
-            if ([expirationDate timeIntervalSinceNow] > 0)
-            {
-                return response;
-            }
-        }
-    }
-	return nil; // Valid cached response not found
+    return [self validCachedResponseForRequest:request forTime:0 removeIfInvalid:NO];
 }
 
-- (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl
+- (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl removeIfInvalid:(BOOL)remove
 {
     NSURLCache *urlCache = [NSURLCache sharedURLCache];
     NSCachedURLResponse *response = [urlCache cachedResponseForRequest:request];
@@ -280,15 +263,27 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
         {
             NSDate *expirationDate = [NSURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
             if (!expirationDate)
-                NSLog(@"oooh its old");
+                SDLog(@"oooh its old");
             NSDate *fetchDate = [NSURLCache fetchDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
-            NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:fetchDate];
-            if ([expirationDate timeIntervalSinceNow] > 0 && timePassed < ttl)
+            
+            if (ttl > 0)
             {
-                return response;
+                NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:fetchDate];
+                if ([expirationDate timeIntervalSinceNow] > 0 && timePassed < ttl)
+                    return response;
+            }
+            else
+            {
+                if ([expirationDate timeIntervalSinceNow] > 0)
+                    return response;
             }
         }
     }
+    
+    // if we get here, it didn't pass our validation checks.  forcibly remove it.
+    if (remove)
+        [urlCache removeCachedResponseForRequest:request];
+    
 	return nil; // Valid cached response not found
 }
 
