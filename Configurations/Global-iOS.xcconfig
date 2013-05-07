@@ -1,11 +1,11 @@
-// Xcode settings for all WalMart Mac targets
+// Xcode settings for all SetDirection iOS targets
 
-// Latest Mac OS X SDK and lowest supported Mac OS
+// Latest iOS SDK and lowest supported iOS
 
 SDKROOT = iphoneos
 IPHONEOS_DEPLOYMENT_TARGET = 5.0
 
-// WalMart iOS builds are Simulator and ARMV7.
+// iOS builds are Simulator and ARMV7.
 
 ARCHS = armv7 armv7s
 
