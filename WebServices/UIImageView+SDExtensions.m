@@ -249,7 +249,7 @@
         }
     }
     
-    SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
+    SDURLConnection *aConnection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
         UIImage *image = nil;
         if (responseData && responseData.length > 0)
             image = [UIImage imageWithData:responseData];
@@ -267,8 +267,8 @@
         }];
     }];
     
-    if (connection)
-        [_activeConnections setObject:connection forKey:[url absoluteString]];
+    if (aConnection)
+        [_activeConnections setObject:aConnection forKey:[url absoluteString]];
 }
 
 - (void)cancelFetchForURL:(NSURL *)url
