@@ -7,6 +7,7 @@
 //
 
 #import "UIImage+SDExtensions.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation UIImage (SDExtensions)
 

@@ -3,21 +3,23 @@
 //  SetDirection
 //
 //  Created by Brandon Sneed on 4/29/12.
-//  Copyright (c) 2012 SetDirection. All rights reserved.
+//  Copyright (c) 2012-2013 SetDirection. All rights reserved.
 //
 
 #import "NSCachedURLResponse+LeakFix.h"
 
 @implementation NSCachedURLResponse (LeakFix)
 
+#ifndef __clang_analyzer__
+
 - (NSData *)responseData
 {
     NSData *result = nil;
 
     __unsafe_unretained NSData *first = self.data;
-    NSUInteger firstCount = CFGetRetainCount((__bridge CFTypeRef)first);
+    NSInteger firstCount = CFGetRetainCount((__bridge CFTypeRef)first);
     __unsafe_unretained NSData *second = self.data;
-    NSUInteger secondCount = CFGetRetainCount((__bridge CFTypeRef)second);
+    NSInteger secondCount = CFGetRetainCount((__bridge CFTypeRef)second);
     result = first;
 
     if (first == second)
@@ -33,5 +35,7 @@
     }    
     return result;
 }
+
+#endif
 
 @end

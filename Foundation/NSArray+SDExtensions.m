@@ -12,7 +12,7 @@
 
 - (void)shuffle
 {
-	for (NSInteger i = [self count] - 1; i > 0; --i) {
+	for (NSUInteger i = [self count] - 1; i > 0; --i) {
 		[self exchangeObjectAtIndex: arc4random() % (i+1) withObjectAtIndex: i];
 	}
 }
@@ -24,7 +24,7 @@
 
 - (id)nextToLastObject
 {
-    int count = [self count];
+    NSUInteger count = [self count];
     if (count < 2)
         return nil;
     id result = [self objectAtIndex:count-2];

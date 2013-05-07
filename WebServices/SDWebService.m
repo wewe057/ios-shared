@@ -225,8 +225,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		if ([string rangeOfString:@"{"].location != NSNotFound)
 		{
 			NSString *prefKey = nil;
-			int startPos = [string rangeOfString:@"{"].location + 1;
-			int endPos = [string rangeOfString:@"}"].location;
+			NSUInteger startPos = [string rangeOfString:@"{"].location + 1;
+			NSUInteger endPos = [string rangeOfString:@"}"].location;
 			NSRange range = NSMakeRange(startPos, endPos - startPos);
 			prefKey = [string substringWithRange:range];
 			NSString *prefValue = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
