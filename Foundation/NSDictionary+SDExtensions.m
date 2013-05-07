@@ -232,6 +232,18 @@
     return data;
 }
 
+- (id)valueForKeyPath:(NSString*)keyPath defaultValue:(id)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath];
+	
+	// NSNull is a stand-in for an empty node, use the default value if no object or empty node
+	if (value == nil || value == [NSNull null])
+		value = defaultValue;
+	
+	return value;
+}
+
+
 - (NSString*)stringForKeyPath:(NSString*)keyPath defaultValue:(NSString*)defaultValue
 {
 	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
@@ -294,7 +306,6 @@
 }
 
 
-
 - (NSDictionary*)conformedDictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
 {
 	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
@@ -306,5 +317,19 @@
 	return value;
 }
 
+- (NSString*)queryString
+{
+	NSMutableArray*	keyValuePairs = [NSMutableArray array];
+	
+	// Create an URL query string (properly URL-encoded) from the dictionary's keys and values
+	for (NSString* key in self)
+	{
+		NSString*	value = [self objectForKey:key];
+		
+		[keyValuePairs addObject:[NSString stringWithFormat:@"%@=%@", [key escapedString], [value escapedString]]];
+	}
+	
+	return [keyValuePairs componentsJoinedByString:@"&"];
+}
 
 @end

@@ -172,5 +172,9 @@
  */
 - (NSDictionary*)conformedDictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue;
 
+/**
+ Returns the dictionary as an URL-encoded HTTP query string
+ */
+- (NSString*)queryString;
 
 @end
