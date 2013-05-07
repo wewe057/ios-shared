@@ -17,9 +17,9 @@
     NSData *result = nil;
 
     __unsafe_unretained NSData *first = self.data;
-    NSUInteger firstCount = CFGetRetainCount((__bridge CFTypeRef)first);
+    NSInteger firstCount = CFGetRetainCount((__bridge CFTypeRef)first);
     __unsafe_unretained NSData *second = self.data;
-    NSUInteger secondCount = CFGetRetainCount((__bridge CFTypeRef)second);
+    NSInteger secondCount = CFGetRetainCount((__bridge CFTypeRef)second);
     result = first;
 
     if (first == second)

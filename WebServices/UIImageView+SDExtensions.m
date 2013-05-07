@@ -214,7 +214,7 @@
     CGColorSpaceRelease(colorSpace);
     if (!context) return nil;
     
-    CGRect rect = (CGRect){CGPointZero, CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)};
+    CGRect rect = (CGRect){CGPointZero, {CGImageGetWidth(imageRef), CGImageGetHeight(imageRef)}};
     CGContextDrawImage(context, rect, imageRef);
     CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
     CGContextRelease(context);
@@ -294,7 +294,7 @@
     {
         [_memoryCache setObject:image forKey:[url absoluteString]];
         _imageCounter++;
-        objc_setAssociatedObject(image, @"decodedIndex", [NSNumber numberWithInteger:_imageCounter], OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(image, @"decodedIndex", [NSNumber numberWithUnsignedInteger:_imageCounter], OBJC_ASSOCIATION_RETAIN);
     }
     
     [self cleanCacheAsNeeded];

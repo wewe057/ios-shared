@@ -276,7 +276,7 @@ static const char *getPropertyType(objc_property_t property)
         
         // you'll get a perfectly valid warning here, however we're a little more in the know
         // about what we're doing than clang/arc is.
-#pragma clang diagnostic warning push
+#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         
         if (tempValue && !strict)
@@ -389,7 +389,7 @@ static const char *getPropertyType(objc_property_t property)
         {
             [target performSelector:selector withObject:value];            
         }
-#pragma clang diagnostic warning pop
+#pragma clang diagnostic pop
     }
 }
 
@@ -524,7 +524,7 @@ static const char *getPropertyType(objc_property_t property)
 
 - (NSUInteger)unsignedIntegerValue
 {
-    NSUInteger result = [[self numberValue] integerValue];
+    NSUInteger result = [[self numberValue] unsignedIntegerValue];
     return result;
 }
 

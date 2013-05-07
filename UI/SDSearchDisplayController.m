@@ -93,7 +93,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 		
 		if([theArray count])
 		{
-			int itemIndex = [theArray indexOfObject: string];
+			NSUInteger itemIndex = [theArray indexOfObject: string];
 			if(itemIndex != NSNotFound)
 			{
 				@try {
@@ -195,7 +195,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 		}
 }
 
--(int)recentSearchesSectionNumber
+- (NSUInteger)recentSearchesSectionNumber
 {
 	//Subclasses can (and should) override if needed to customize
 	return 0;
@@ -240,7 +240,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     else
     {
         if (indexPath.row < [filteredHistory count]) {
-            id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
+            id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:(NSUInteger)indexPath.row];
             if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
 				self.searchBar.text = [item name];
 			else if ([item isKindOfClass:[NSString class]])
@@ -269,7 +269,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     {
         if (searchHistory)
 		{
-			int searchHistoryCount = [searchHistory count];
+			NSInteger searchHistoryCount = (NSInteger)[searchHistory count];
 			if(showsClearRecentSearchResultsRow && (searchHistoryCount > 0))
 			{
 				return searchHistoryCount + 1;
@@ -282,7 +282,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     }
     else
     {
-        return [filteredHistory count];        
+        return (NSInteger)[filteredHistory count];
     }
     return 0;
 }
@@ -313,7 +313,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:searchCell];
         
         if (indexPath.row < [filteredHistory count]) {
-			id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:indexPath.row];
+			id<SDSearchDisplayResultsProtocol> item = [filteredHistory objectAtIndex:(NSUInteger)indexPath.row];
 			if ([item conformsToProtocol:@protocol(SDSearchDisplayResultsProtocol)])
 				cell.textLabel.text = [item displayName];
 			else if ([item isKindOfClass:[NSString class]])
