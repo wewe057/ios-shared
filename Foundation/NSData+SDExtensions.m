@@ -69,7 +69,7 @@
 {
     id arrayObject = [self JSONObject];
     if ([arrayObject isKindOfClass:[NSDictionary class]])
-    return arrayObject;
+        return arrayObject;
 
     return nil;
 }
