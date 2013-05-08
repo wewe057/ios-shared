@@ -92,21 +92,24 @@
     return 0;
 }
 
-- (NSArray *)arrayForKey:(NSString *)key {
+- (NSArray *)arrayForKey:(NSString *)key
+{
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSArray class]])
         return obj;
     return nil;
 }
 
-- (NSDictionary *)dictionaryForKey:(NSString *)key {
+- (NSDictionary *)dictionaryForKey:(NSString *)key
+{
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSDictionary class]])
         return obj;
     return nil;
 }
 
-- (BOOL)keyExists:(NSString *)key {
+- (BOOL)keyExists:(NSString *)key
+{
 	return [self objectForKey:key] != nil;
 }
 
@@ -118,8 +121,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return obj;
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj stringValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj stringValue];
     return nil;
 }
 
@@ -130,8 +133,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj integerValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj integerValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj integerValue];
     return 0;
 }
 
@@ -145,8 +148,8 @@
         return [number unsignedIntegerValue];
     }
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj unsignedIntegerValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj unsignedIntegerValue];
     return 0;
 }
 
@@ -156,8 +159,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj floatValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj floatValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj floatValue];
     return 0;
 }
 
@@ -167,8 +170,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj doubleValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj doubleValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj doubleValue];
     return 0;
 }
 
@@ -178,8 +181,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj longLongValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj longLongValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj longLongValue];
     return 0;
 }
 
@@ -189,19 +192,21 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj boolValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj boolValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj boolValue];
     return 0;
 }
 
-- (NSArray *)arrayForKeyPath:(NSString *)keyPath {
+- (NSArray *)arrayForKeyPath:(NSString *)keyPath
+{
     id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSArray class]])
         return obj;
     return nil;
 }
 
-- (NSArray *)dictionaryForKeyPath:(NSString *)keyPath {
+- (NSArray *)dictionaryForKeyPath:(NSString *)keyPath
+{
     id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSDictionary class]])
         return obj;
