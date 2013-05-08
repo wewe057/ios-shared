@@ -56,14 +56,31 @@
     return nil;
 }
 
+- (NSMutableArray *)JSONMutableArray
+{
+    id arrayObject = [self JSONObjectMutable:YES error:nil];
+    if ([arrayObject isKindOfClass:[NSMutableArray class]])
+        return arrayObject;
+
+    return nil;
+}
+
 - (NSDictionary *)JSONDictionary
 {
     id arrayObject = [self JSONObject];
     if ([arrayObject isKindOfClass:[NSDictionary class]])
-        return arrayObject;
-    
-    return nil;    
+    return arrayObject;
+
+    return nil;
 }
 
+- (NSMutableDictionary *)JSONMutableDictionary
+{
+    id arrayObject = [self JSONObjectMutable:YES error:nil];
+    if ([arrayObject isKindOfClass:[NSMutableDictionary class]])
+        return arrayObject;
+
+    return nil;
+}
 
 @end
