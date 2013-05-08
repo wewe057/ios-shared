@@ -92,9 +92,16 @@
     return 0;
 }
 
-- (NSArray*)arrayForKey:(NSString *)key {
+- (NSArray *)arrayForKey:(NSString *)key {
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSArray class]])
+        return obj;
+    return nil;
+}
+
+- (NSDictionary *)dictionaryForKey:(NSString *)key {
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSDictionary class]])
         return obj;
     return nil;
 }
@@ -187,9 +194,16 @@
     return 0;
 }
 
-- (NSArray*)arrayForKeyPath:(NSString *)keyPath {
+- (NSArray *)arrayForKeyPath:(NSString *)keyPath {
     id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSArray class]])
+        return obj;
+    return nil;
+}
+
+- (NSArray *)dictionaryForKeyPath:(NSString *)keyPath {
+    id obj = [self valueForKeyPath:keyPath];
+    if ([obj isKindOfClass:[NSDictionary class]])
         return obj;
     return nil;
 }

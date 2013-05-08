@@ -61,9 +61,14 @@
 - (BOOL)boolForKey:(NSString *)key;
 
 /**
- Returns the object for `key` if it is a kind of NSArray. Returns `nil` otherwise.
+ Returns the object for `key` as NSArray. Returns `nil` otherwise.
  */
-- (NSArray*)arrayForKey:(NSString *)key;
+- (NSArray *)arrayForKey:(NSString *)key;
+
+/**
+ Returns the object for `key` as NSDictionary.  Returns `nil` otherwise.
+ */
+- (NSDictionary *)dictionaryForKey:(NSString *)key;
 
 /**
  Returns `YES` if an object exists for `key`. Returns `NO` otherwise.
@@ -119,8 +124,12 @@
 /**
  Returns the object for `keyPath` if it is a kind of NSArray. Returns `nil` otherwise.
  */
-- (NSArray*)arrayForKeyPath:(NSString *)keyPath;
+- (NSArray *)arrayForKeyPath:(NSString *)keyPath;
 
+/**
+ Returns the object for `keyPath` if it is a kind of NSDictionary. Returns `nil` otherwise.
+ */
+- (NSDictionary *)dictionaryForKeyPath:(NSString *)keyPath;
 
 /**
  Returns an NSData * containing the JSON representation of this object.
