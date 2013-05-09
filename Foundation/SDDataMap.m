@@ -20,7 +20,7 @@ static NSNumberFormatter *__internalformatter = nil;
 + (SDDataMap *)mapForName:(NSString *)mapName
 {
 	SDDataMap *result = nil;
-    NSString *path = [[NSBundle mainBundle] pathForResource:mapName ofType:@"plist"];
+    NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:mapName ofType:@"plist"];
     if (path)
     {
 	    NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfFile:path];
