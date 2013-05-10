@@ -39,6 +39,8 @@
 
 - (void)setImageWithURL:(NSURL *)url
 {
+    if ( url == nil ) return;
+    
     [self setImageWithURL:url placeholderImage:nil];
 }
 
