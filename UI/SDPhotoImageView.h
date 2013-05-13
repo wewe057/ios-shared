@@ -18,7 +18,11 @@
 - (void)photoImageView:(SDPhotoImageView *)photoImageView wasTappedAtPoint:(CGPoint)point;
 @end
 
-
+/**
+ SDPhotoImageView is a view that provides panning/zooming of a given image.  Image URLs can be
+ supplied to it via its imageView property.  See UIImageView+SDExtensions.h for more information
+ on supplying URLs.
+ */
 @interface SDPhotoImageView : UIView<UIScrollViewDelegate>
 
 /**

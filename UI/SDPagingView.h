@@ -10,6 +10,13 @@
 
 @class SDPagingView;
 
+/**
+ SDPagingView is a paging UIScrollView that supports view/cell reuse.  Combined with SDPhotoImageView it
+ provides the basis for a Photos-like image viewer.  The implementor is responsible for implementing a 
+ data source and supplying the content as well as any navigation management such as showing/hiding navbars
+ or the status bar, etc.
+ */
+
 @protocol SDPagingViewDataSource <NSObject>
 @required
 /**
