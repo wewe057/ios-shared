@@ -191,9 +191,16 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	}
 	
 	SDLog(@"SDLocationManager: location obtained.");
-    [delegates callSelector:_cmd argumentAddresses:(__bridge void *)(self), newLocation, oldLocation];
-	//if (delegate && [delegate respondsToSelector:_cmd])
-	//	[delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
+    //[delegates callSelector:_cmd argumentAddresses:(__bridge void *)(self), newLocation, oldLocation];
+    // the above callSelector was crashing, so this loop is a work-around until Brandon finds a solution
+    NSArray *delegatesCopy = [delegates copy];
+    for (id<SDLocationManagerDelegate> aDelegate in delegatesCopy)
+    {
+        if ([aDelegate respondsToSelector:_cmd])
+        {
+            [aDelegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
+        }
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
