@@ -661,8 +661,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                 if (shouldRetry)
                 {
                     // remove it from the cache if its there.
-                    NSURLCache *cache = [NSURLCache sharedURLCache];
-                    [cache removeCachedResponseForRequest:request];
+                    NSURLCache *urlCache = [NSURLCache sharedURLCache];
+                    [urlCache removeCachedResponseForRequest:request];
 
                     SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
                     
