@@ -246,7 +246,7 @@ typedef enum
                                   shouldRetry:(BOOL)shouldRetry;
 
 /**
- Cancles the request that matches the `identifier`.
+ Cancels the request that matches the `identifier`.
  */
 - (void)cancelRequestForIdentifier:(NSString *)identifier;
 
