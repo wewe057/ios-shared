@@ -63,7 +63,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     
     self.timeout = 60; // 1-minute default.
 	
-    NSString *specFile = [[NSBundle mainBundle] pathForResource:specificationName ofType:@"plist"];
+    NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
 	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
 	if (!serviceSpecification)
 		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
