@@ -43,7 +43,7 @@
 
 + (id)loadFromNibNamed:(NSString *)nibName withOwner:(id)owner
 {
-    NSArray *objects = [[NSBundle mainBundle] loadNibNamed:nibName owner:owner options:nil];
+    NSArray *objects = [[NSBundle bundleForClass:[self class]] loadNibNamed:nibName owner:owner options:nil];
 	for (id object in objects)
     {
 		if ([object isKindOfClass:self])

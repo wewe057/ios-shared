@@ -166,9 +166,19 @@ typedef enum
 + (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock;
 
 /**
+ Returns a data processing block for converting JSON data into a mutable array.
+ */
++ (SDWebServiceDataCompletionBlock)defaultMutableArrayJSONProcessingBlock;
+
+/**
  Returns a data processing block for converting JSON data into a dictionary.
  */
 + (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into a mutable dictionary.
+ */
++ (SDWebServiceDataCompletionBlock)defaultMutableDictionaryJSONProcessingBlock;
 
 /**
  Calls performRequestWithMethod:routeReplacements:completion:shouldRetry: with `shouldRetry` set to `YES`.
