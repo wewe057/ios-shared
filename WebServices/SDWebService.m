@@ -170,17 +170,45 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return result;
 }
 
-+ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock
++ (SDWebServiceDataCompletionBlock)defaultMutableArrayJSONProcessingBlock
 {
     // refactor SDWebService so error's are passed around properly. -- BKS
-    
+
     SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
         id dataObject = nil;
         if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONDictionary];
+            dataObject = [responseData JSONMutableArray];
         return dataObject;
     };
     return result;
+
+}
+
++ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+        dataObject = [responseData JSONDictionary];
+        return dataObject;
+    };
+    return result;
+}
+
++ (SDWebServiceDataCompletionBlock)defaultMutableDictionaryJSONProcessingBlock
+{
+    // refactor SDWebService so error's are passed around properly. -- BKS
+
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+        id dataObject = nil;
+        if (responseData && responseData.length > 0)
+            dataObject = [responseData JSONMutableDictionary];
+        return dataObject;
+    };
+    return result;
+
 }
 
 #pragma mark - Network activity
