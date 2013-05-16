@@ -78,6 +78,8 @@
 
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
+    NSAssert(_viewControllers.count > 0, @"SDContainerViewController must have view controllers set.");
+    
     NSUInteger index = [_viewControllers indexOfObject:selectedViewController];
     if (index == NSNotFound)
         return;
