@@ -14,6 +14,8 @@
 
 - (id)JSONObject;
 - (NSArray *)JSONArray;
+- (NSMutableArray *)JSONMutableArray;
 - (NSDictionary *)JSONDictionary;
+- (NSMutableDictionary *)JSONMutableDictionary;
 
 @end

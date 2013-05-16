@@ -192,8 +192,6 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	
 	SDLog(@"SDLocationManager: location obtained.");
     [delegates callSelector:_cmd argumentAddresses:(__bridge void *)(self), newLocation, oldLocation];
-	//if (delegate && [delegate respondsToSelector:_cmd])
-	//	[delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
