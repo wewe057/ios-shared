@@ -82,7 +82,7 @@
 	{
 		if (response.statusCode != 200)
 		{
-			if (delegate && [delegate respondsToSelector:@selector(gecoder:didFailWithError:)])
+			if (delegate && [delegate respondsToSelector:@selector(geocoder:didFailWithError:)])
 				[delegate geocoder:self didFailWithError:[NSError errorWithDomain:@"SDGeocoderError" code:response.statusCode userInfo:nil]];
 			return;
 		}
@@ -130,7 +130,7 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-	if (delegate && [delegate respondsToSelector:@selector(gecoder:didFailWithError:)])
+	if (delegate && [delegate respondsToSelector:@selector(geocoder:didFailWithError:)])
 		[delegate geocoder:self didFailWithError:error];
 	[self closeConnection];
 }
