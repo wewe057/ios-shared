@@ -114,12 +114,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError
 {
-    return [[Reachability reachabilityWithHostname:hostName] isReachable];
+    return [[SDReachability reachabilityWithHostname:hostName] isReachable];
 }
 
 - (BOOL)isReachable:(BOOL)showError
 {
-    return [[Reachability reachabilityForInternetConnection] isReachable];
+    return [[SDReachability reachabilityForInternetConnection] isReachable];
 }
 
 #pragma mark - Cache

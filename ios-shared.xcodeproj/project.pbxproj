@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0093810A1461B6860044E007 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009381091461B6860044E007 /* Foundation.framework */; };
-		009381101461B6860044E007 /* ios_shared.m in Sources */ = {isa = PBXBuildFile; fileRef = 0093810F1461B6860044E007 /* ios_shared.m */; };
 		009381941461B6EB0044E007 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009381931461B6EB0044E007 /* UIKit.framework */; };
 		009382C61461B9520044E007 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 009382C51461B9520044E007 /* QuartzCore.framework */; };
 		CA014D7316F3940500253769 /* NSArray+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D2316F3940500253769 /* NSArray+SDExtensions.h */; };
@@ -102,8 +101,6 @@
 		009381061461B6860044E007 /* libios-shared.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-shared.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		009381091461B6860044E007 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0093810D1461B6860044E007 /* ios-shared-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ios-shared-Prefix.pch"; sourceTree = "<group>"; };
-		0093810E1461B6860044E007 /* ios_shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ios_shared.h; sourceTree = "<group>"; };
-		0093810F1461B6860044E007 /* ios_shared.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ios_shared.m; sourceTree = "<group>"; };
 		009381931461B6EB0044E007 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		009382C51461B9520044E007 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CA014D2316F3940500253769 /* NSArray+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+SDExtensions.h"; sourceTree = "<group>"; };
@@ -247,8 +244,6 @@
 				CA014D3C16F3940500253769 /* Security */,
 				CA014D3F16F3940500253769 /* UI */,
 				CA014D6616F3940500253769 /* WebServices */,
-				0093810E1461B6860044E007 /* ios_shared.h */,
-				0093810F1461B6860044E007 /* ios_shared.m */,
 				0093810C1461B6860044E007 /* Supporting Files */,
 			);
 			path = "ios-shared";
@@ -496,7 +491,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				009381101461B6860044E007 /* ios_shared.m in Sources */,
 				CA014D7416F3940500253769 /* NSArray+SDExtensions.m in Sources */,
 				CA014D7616F3940500253769 /* NSDate+SDExtensions.m in Sources */,
 				CA014D7816F3940500253769 /* NSDictionary+SDExtensions.m in Sources */,

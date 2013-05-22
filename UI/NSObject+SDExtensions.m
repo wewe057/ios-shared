@@ -100,7 +100,7 @@
             NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
             [invocation setTarget: object];
             [invocation setSelector: aSelector];
-            unsigned int argumentIndex = 0;
+            argumentIndex = 0;
             void *theArg = extractedArguments[argumentIndex++];
             if( theArg )
                 [invocation setArgument:&theArg atIndex:2];

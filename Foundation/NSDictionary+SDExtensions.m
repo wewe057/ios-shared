@@ -7,6 +7,7 @@
 //
 
 #import "NSDictionary+SDExtensions.h"
+#import "NSString+SDExtensions.h"
 
 @implementation NSDictionary (SDExtensions)
 
@@ -232,6 +233,104 @@
     return data;
 }
 
+- (id)valueForKeyPath:(NSString*)keyPath defaultValue:(id)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath];
+	
+	// NSNull is a stand-in for an empty node, use the default value if no object or empty node
+	if (value == nil || value == [NSNull null])
+		value = defaultValue;
+	
+	return value;
+}
 
+
+- (NSString*)stringForKeyPath:(NSString*)keyPath defaultValue:(NSString*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// The value is expected to be a string, otherwise default
+	if (![value isKindOfClass:[NSString class]])
+		value = defaultValue;
+	
+	return value;
+}
+
+
+
+- (NSNumber*)numberForKeyPath:(NSString*)keyPath defaultValue:(NSNumber*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// The value is expected to be a number, otherwise default
+	if (![value isKindOfClass:[NSNumber class]])
+		value = defaultValue;
+	
+	return value;
+}
+
+
+
+- (NSArray*)arrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// The value is expected to be an array, otherwise default
+	if (![value isKindOfClass:[NSArray class]])
+		value = defaultValue;
+	
+	return value;
+}
+
+
+
+- (NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// The value is expected to be a dictionary, otherwise default
+	if (![value isKindOfClass:[NSDictionary class]])
+		value = defaultValue;
+	
+	return value;
+}
+
+- (NSArray*)conformedArrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// Conform the value to an array if it is not an array
+	if (![value isKindOfClass:[NSArray class]])
+		value = value ? [NSArray arrayWithObject:value] : defaultValue;
+	
+	return value;
+}
+
+
+- (NSDictionary*)conformedDictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// Conform the value to a dictionary if it is not a dictionary
+	if (![value isKindOfClass:[NSDictionary class]])
+		value = value ? [NSDictionary dictionaryWithObject:value forKey:@"default"] : defaultValue;
+	
+	return value;
+}
+
+- (NSString*)queryString
+{
+	NSMutableArray*	keyValuePairs = [NSMutableArray array];
+	
+	// Create an URL query string (properly URL-encoded) from the dictionary's keys and values
+	for (NSString* key in self)
+	{
+		NSString*	value = [self objectForKey:key];
+		
+		[keyValuePairs addObject:[NSString stringWithFormat:@"%@=%@", [key escapedString], [value escapedString]]];
+	}
+	
+	return [keyValuePairs componentsJoinedByString:@"&"];
+}
 
 @end

@@ -141,5 +141,40 @@
  */
 - (NSString *)JSONStringRepresentation;
 
+/**
+ Returns a `NSString` representation of the object for `keyPath`. Returns `defaultValue` if no representation is available using standard underlying data type conversion methods. If no default value is provided then `nil` is returned.
+ */
+- (NSString*)stringForKeyPath:(NSString*)keyPath defaultValue:(NSString*)defaultValue;
+
+/**
+ Returns a `NSNumber` representation of the object for `keyPath`. Returns `defaultValue` if no representation is available using standard underlying data type conversion methods. If no default value is provided then `nil` is returned.
+ */
+- (NSNumber*)numberForKeyPath:(NSString*)keyPath defaultValue:(NSNumber*)defaultValue;
+
+/**
+ Returns a `NSArray` representation of the object for `keyPath`. Returns `defaultValue` if no representation is available using standard underlying data type conversion methods. If no default value is provided then `nil` is returned.
+ */
+- (NSArray*)arrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue;
+
+/**
+ Returns a `NSDictionary` representation of the object for `keyPath`. Returns `defaultValue` if no representation is available using standard underlying data type conversion methods. If no default value is provided then `nil` is returned.
+ */
+- (NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue;
+
+
+/**
+ Returns a `NSArray` of the object at the `keypath`.  If the object is a NSArray then it is returned as is.  If it is not a NSArray then the object is wrapped in an array.  If the `keypath` doesn't exist then the default value is returned.
+ */
+- (NSArray*)conformedArrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue;
+
+/**
+ Returns a `NSDictionary` of the object at the `keypath`.  If the object is a NSDictionary then it is returned as is.  If it is not a NSDictionary then the object is wrapped in an dictionary with the key 'default'.  If the `keypath` doesn't exist then the default value is returned.
+ */
+- (NSDictionary*)conformedDictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue;
+
+/**
+ Returns the dictionary as an URL-encoded HTTP query string
+ */
+- (NSString*)queryString;
 
 @end
