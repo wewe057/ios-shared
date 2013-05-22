@@ -47,7 +47,7 @@
 
 - (void)start
 {
-    if ([[Reachability reachabilityForInternetConnection] isReachable])
+    if ([[SDReachability reachabilityForInternetConnection] isReachable])
     {
         NSString *requestString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=json&oe=utf8&sensor=false&key=%@", query, apiKeyString];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:requestString] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:60];
