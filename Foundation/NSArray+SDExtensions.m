@@ -51,12 +51,15 @@
 
     // Extract all the arguments, then close the vaargs to guard from recursion issues.
 
+    char *currentArgument = (char *)arg1;
     unsigned int argumentIndex = 0;
-    for (char *currentArgument = (char *)arg1; currentArgument != NULL; currentArgument = va_arg(args, void *))
+    extractedArguments[argumentIndex++] = currentArgument;
+
+    for (currentArgument = arg1; currentArgument != NULL; currentArgument = va_arg(args, void *))
     {
         if (argumentIndex == kMaximumCallSelectorArguments)
             break;
-        extractedArguments[argumentIndex++] = currentArgument;
+        extractedArguments[argumentIndex++] = va_arg(args, void *);
     }
 
     va_end( args );

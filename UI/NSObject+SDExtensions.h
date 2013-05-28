@@ -56,7 +56,7 @@ typedef void (^NSObjectPerformBlock)();
  @param result A pointer to the location where the result of the invocation can be stored. Optional.
  @param arg1,... The ordered list of arguments to pass to the selector being invoked.
  */
-- (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ... NS_REQUIRES_NIL_TERMINATION;
+- (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...;
 
 /**
  Execute a block in the background.
