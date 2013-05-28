@@ -53,10 +53,10 @@ typedef void (^NSObjectPerformBlock)();
 /**
  Invoke arbitrary selectors on the receiver with arbitrary arguments and with a place to store the result of the invocation.
  @param aSelector The selector to invoke. It must exist on the receiver.
- @param result A pointer to the location where the result of the invocation can be stored. Optional.
+ @param returnAddress A pointer to the location where the result of the invocation can be stored. Optional.
  @param arg1,... The ordered list of arguments to pass to the selector being invoked.
  */
-- (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...;
+- (void)performSelector:(SEL)aSelector returnAddress:(void *)returnAddress argumentAddresses:(void *)arg1, ...;
 
 /**
  Execute a block in the background.

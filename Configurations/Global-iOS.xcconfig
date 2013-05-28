@@ -83,6 +83,7 @@ CLANG_ANALYZER_SECURITY_INSECUREAPI_MKSTEMP = YES
 CLANG_ANALYZER_SECURITY_INSECUREAPI_RAND = YES
 CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = YES
 CLANG_ANALYZER_SECURITY_INSECUREAPI_VFORK = YES
+CLANG_WARN_OBJC_REPEATED_USE_OF_WEAK = YES
 
 // Don't strip binaries that are copied as part of the packaging process.
 // They're generally signed during build, so we shouldn't modify them afterwards.
