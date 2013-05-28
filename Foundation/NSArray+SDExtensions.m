@@ -83,7 +83,7 @@
             [invocation setSelector:aSelector];
             
             void *theArg = nil;
-            for (NSUInteger i = 0; i < numberOfArguments; i++)
+            for (NSInteger i = 0; i < numberOfArguments; i++)
             {
                 theArg = arguments[i];
                 [invocation setArgument:theArg atIndex:i + 2];

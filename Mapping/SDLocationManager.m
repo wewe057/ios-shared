@@ -71,7 +71,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if (self.location)
 	{
         CLLocation *location = self.location;
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(__bridge void *)(self), location, location];
+        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
 		//if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)])
 		//	[delegate locationManager:self didUpdateToLocation:self.location fromLocation:self.location];
 	}
@@ -79,7 +79,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	{
 		// otherwise, lets simulate a failure...
         NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(__bridge void *)(self), error];
+        [delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
 		//if (delegate && [delegate respondsToSelector:@selector(locationManager:didFailWithError:)])
 		//	[delegate locationManager:self didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil]];
 	}
@@ -173,7 +173,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ([newLocation.timestamp timeIntervalSinceDate:timestamp] < 0)
 	{
 		SDLog(@"SDLocationManager: this location was cached.");
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(__bridge void *)(self), newLocation, oldLocation];
+        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
         //if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
         //    [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
 		return; // this one is cached, lets wait for a good one.
@@ -184,14 +184,14 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	{
 		SDLog(@"SDLocationManager: this location didn't meet the accuracy requirements (%f).", newLocation.horizontalAccuracy);
 		//return; // the accuracy isn't good enough, wait some more...
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(__bridge void *)(self), newLocation, oldLocation];
+        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
         //if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
         //    [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
         return;
 	}
 	
 	SDLog(@"SDLocationManager: location obtained.");
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(__bridge void *)(self), newLocation, oldLocation];
+    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newLocation, &oldLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
@@ -199,7 +199,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ([newHeading.timestamp timeIntervalSinceDate:timestamp] < 0)
 		return; // this one is cached, lets wait for a good one.
 	
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(__bridge void *)(self), newHeading];
+    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newHeading];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self didUpdateHeading:newHeading];
 }
@@ -209,7 +209,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	// we're masking out didFail unless they've said NO to the "allow" dialog.
 	if ([error.domain isEqualToString:kCLErrorDomain] && error.code == kCLErrorDenied)
 	{
-        [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(__bridge void *)(self), error];
+        [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
 		//if (delegate && [delegate respondsToSelector:_cmd])
 		//	[delegate locationManager:self didFailWithError:error];
 	}	
@@ -217,21 +217,21 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(__bridge void *)(self), region];
+    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self didEnterRegion:region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(__bridge void *)(self), region];
+    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self didExitRegion:region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
 {
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(__bridge void *)(self), region, error];
+    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region, &error];
 	//if (delegate && [delegate respondsToSelector:_cmd])
 	//	[delegate locationManager:self monitoringDidFailForRegion:region withError:error];
 }
