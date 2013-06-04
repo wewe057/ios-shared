@@ -29,13 +29,13 @@
  @param aSelector The selector to invoke.
  @param arg1,... The list of arguments to pass to the selector.
  */
-- (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ... NS_REQUIRES_NIL_TERMINATION;
+- (void)makeObjectsPerformSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...;
 
 /**
  Returns an array with the same objects as the receiver but with their indexes randomized.
  @return The shuffled array.
  */
-- (NSArray *) shuffledArray;
+- (NSArray *)shuffledArray;
 
 /**
  Returns an array with the same objects as the receiver but with their indexes reversed.
