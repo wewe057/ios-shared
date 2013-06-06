@@ -22,15 +22,11 @@
 		CA014D7C16F3940500253769 /* NSUserDefaults+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D2C16F3940500253769 /* NSUserDefaults+SDExtensions.m */; };
 		CA014D7D16F3940500253769 /* SDTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D2D16F3940500253769 /* SDTimer.h */; };
 		CA014D7E16F3940500253769 /* SDTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D2E16F3940500253769 /* SDTimer.m */; };
-		CA014D7F16F3940500253769 /* SDCheckpointLog.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D3016F3940500253769 /* SDCheckpointLog.h */; };
-		CA014D8016F3940500253769 /* SDCheckpointLog.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D3116F3940500253769 /* SDCheckpointLog.m */; };
 		CA014D8116F3940500253769 /* SDLog.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D3216F3940500253769 /* SDLog.h */; };
 		CA014D8216F3940500253769 /* CLLocation+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D3416F3940500253769 /* CLLocation+SDExtensions.h */; };
 		CA014D8316F3940500253769 /* CLLocation+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D3516F3940500253769 /* CLLocation+SDExtensions.m */; };
 		CA014D8416F3940500253769 /* MKMapView+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D3616F3940500253769 /* MKMapView+SDExtensions.h */; };
 		CA014D8516F3940500253769 /* MKMapView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D3716F3940500253769 /* MKMapView+SDExtensions.m */; };
-		CA014D8616F3940500253769 /* SDGeocoder.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D3816F3940500253769 /* SDGeocoder.h */; };
-		CA014D8716F3940500253769 /* SDGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D3916F3940500253769 /* SDGeocoder.m */; };
 		CA014D8816F3940500253769 /* SDLocationManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D3A16F3940500253769 /* SDLocationManager.h */; };
 		CA014D8916F3940500253769 /* SDLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D3B16F3940500253769 /* SDLocationManager.m */; };
 		CA014D8A16F3940500253769 /* SDKeychain.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D3D16F3940500253769 /* SDKeychain.h */; };
@@ -91,10 +87,14 @@
 		CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331B74171F1E3800CFD209 /* UIDevice+machine.m */; };
 		CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */; };
 		CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */; };
+		CA5BC6861756A689006E8673 /* SDBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = CA5BC6841756A689006E8673 /* SDBase64.h */; };
+		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
 		CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */; };
+		CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */; };
+		CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -115,15 +115,11 @@
 		CA014D2C16F3940500253769 /* NSUserDefaults+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D2D16F3940500253769 /* SDTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTimer.h; sourceTree = "<group>"; };
 		CA014D2E16F3940500253769 /* SDTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTimer.m; sourceTree = "<group>"; };
-		CA014D3016F3940500253769 /* SDCheckpointLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDCheckpointLog.h; sourceTree = "<group>"; };
-		CA014D3116F3940500253769 /* SDCheckpointLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDCheckpointLog.m; sourceTree = "<group>"; };
 		CA014D3216F3940500253769 /* SDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLog.h; sourceTree = "<group>"; };
 		CA014D3416F3940500253769 /* CLLocation+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CLLocation+SDExtensions.h"; sourceTree = "<group>"; };
 		CA014D3516F3940500253769 /* CLLocation+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CLLocation+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D3616F3940500253769 /* MKMapView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+SDExtensions.h"; sourceTree = "<group>"; };
 		CA014D3716F3940500253769 /* MKMapView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+SDExtensions.m"; sourceTree = "<group>"; };
-		CA014D3816F3940500253769 /* SDGeocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDGeocoder.h; sourceTree = "<group>"; };
-		CA014D3916F3940500253769 /* SDGeocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDGeocoder.m; sourceTree = "<group>"; };
 		CA014D3A16F3940500253769 /* SDLocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLocationManager.h; sourceTree = "<group>"; };
 		CA014D3B16F3940500253769 /* SDLocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLocationManager.m; sourceTree = "<group>"; };
 		CA014D3D16F3940500253769 /* SDKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDKeychain.h; sourceTree = "<group>"; };
@@ -183,14 +179,22 @@
 		CA014DBE16F39F2600253769 /* SDContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDContainerViewController.m; sourceTree = "<group>"; };
 		CA014DC116F3A09300253769 /* SDDataMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDataMap.h; sourceTree = "<group>"; };
 		CA014DC216F3A09300253769 /* SDDataMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDataMap.m; sourceTree = "<group>"; };
+		CA28BD25175551FA007310AB /* Global-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Global-iOS.xcconfig"; path = "Configurations/Global-iOS.xcconfig"; sourceTree = "<group>"; };
+		CA28BD26175551FA007310AB /* Project-iOS-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Project-iOS-Debug.xcconfig"; path = "Configurations/Project-iOS-Debug.xcconfig"; sourceTree = "<group>"; };
+		CA28BD27175551FA007310AB /* Project-iOS-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Project-iOS-Release.xcconfig"; path = "Configurations/Project-iOS-Release.xcconfig"; sourceTree = "<group>"; };
 		CA331B73171F1E3800CFD209 /* UIDevice+machine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIDevice+machine.h"; sourceTree = "<group>"; };
 		CA331B74171F1E3800CFD209 /* UIDevice+machine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIDevice+machine.m"; sourceTree = "<group>"; };
 		CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+SDExtensions.h"; sourceTree = "<group>"; };
 		CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+SDExtensions.m"; sourceTree = "<group>"; };
+		CA54F189175554C5005B9672 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		CA5BC6841756A689006E8673 /* SDBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDBase64.h; sourceTree = "<group>"; };
+		CA5BC6851756A689006E8673 /* SDBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64.m; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
 		CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SDExtensions.m"; sourceTree = "<group>"; };
+		CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SDExtensions.h"; sourceTree = "<group>"; };
+		CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SDExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				0093810B1461B6860044E007 /* ios-shared */,
+				CA28BD281755531B007310AB /* Configurations */,
 				009381081461B6860044E007 /* Frameworks */,
 				009381071461B6860044E007 /* Products */,
 			);
@@ -230,6 +235,7 @@
 				009382C51461B9520044E007 /* QuartzCore.framework */,
 				009381931461B6EB0044E007 /* UIKit.framework */,
 				009381091461B6860044E007 /* Foundation.framework */,
+				CA54F189175554C5005B9672 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -278,6 +284,8 @@
 				CA014D2E16F3940500253769 /* SDTimer.m */,
 				CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */,
 				CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */,
+				CA5BC6841756A689006E8673 /* SDBase64.h */,
+				CA5BC6851756A689006E8673 /* SDBase64.m */,
 			);
 			path = Foundation;
 			sourceTree = SOURCE_ROOT;
@@ -285,8 +293,6 @@
 		CA014D2F16F3940500253769 /* Logging */ = {
 			isa = PBXGroup;
 			children = (
-				CA014D3016F3940500253769 /* SDCheckpointLog.h */,
-				CA014D3116F3940500253769 /* SDCheckpointLog.m */,
 				CA014D3216F3940500253769 /* SDLog.h */,
 			);
 			path = Logging;
@@ -299,8 +305,6 @@
 				CA014D3516F3940500253769 /* CLLocation+SDExtensions.m */,
 				CA014D3616F3940500253769 /* MKMapView+SDExtensions.h */,
 				CA014D3716F3940500253769 /* MKMapView+SDExtensions.m */,
-				CA014D3816F3940500253769 /* SDGeocoder.h */,
-				CA014D3916F3940500253769 /* SDGeocoder.m */,
 				CA014D3A16F3940500253769 /* SDLocationManager.h */,
 				CA014D3B16F3940500253769 /* SDLocationManager.m */,
 			);
@@ -361,6 +365,8 @@
 				CA014D6316F3940500253769 /* UISearchBar+SDExtensions.m */,
 				CA014D6416F3940500253769 /* UIView+SDExtensions.h */,
 				CA014D6516F3940500253769 /* UIView+SDExtensions.m */,
+				CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */,
+				CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */,
 			);
 			path = UI;
 			sourceTree = SOURCE_ROOT;
@@ -386,6 +392,16 @@
 			path = WebServices;
 			sourceTree = SOURCE_ROOT;
 		};
+		CA28BD281755531B007310AB /* Configurations */ = {
+			isa = PBXGroup;
+			children = (
+				CA28BD25175551FA007310AB /* Global-iOS.xcconfig */,
+				CA28BD26175551FA007310AB /* Project-iOS-Debug.xcconfig */,
+				CA28BD27175551FA007310AB /* Project-iOS-Release.xcconfig */,
+			);
+			name = Configurations;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -399,11 +415,9 @@
 				CA014D7916F3940500253769 /* NSString+SDExtensions.h in Headers */,
 				CA014D7B16F3940500253769 /* NSUserDefaults+SDExtensions.h in Headers */,
 				CA014D7D16F3940500253769 /* SDTimer.h in Headers */,
-				CA014D7F16F3940500253769 /* SDCheckpointLog.h in Headers */,
 				CA014D8116F3940500253769 /* SDLog.h in Headers */,
 				CA014D8216F3940500253769 /* CLLocation+SDExtensions.h in Headers */,
 				CA014D8416F3940500253769 /* MKMapView+SDExtensions.h in Headers */,
-				CA014D8616F3940500253769 /* SDGeocoder.h in Headers */,
 				CA014D8816F3940500253769 /* SDLocationManager.h in Headers */,
 				CA014D8A16F3940500253769 /* SDKeychain.h in Headers */,
 				CA014D8C16F3940500253769 /* NSObject+SDExtensions.h in Headers */,
@@ -436,6 +450,8 @@
 				CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */,
 				CA331B75171F1E3800CFD209 /* UIDevice+machine.h in Headers */,
 				CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */,
+				CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */,
+				CA5BC6861756A689006E8673 /* SDBase64.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,10 +513,8 @@
 				CA014D7A16F3940500253769 /* NSString+SDExtensions.m in Sources */,
 				CA014D7C16F3940500253769 /* NSUserDefaults+SDExtensions.m in Sources */,
 				CA014D7E16F3940500253769 /* SDTimer.m in Sources */,
-				CA014D8016F3940500253769 /* SDCheckpointLog.m in Sources */,
 				CA014D8316F3940500253769 /* CLLocation+SDExtensions.m in Sources */,
 				CA014D8516F3940500253769 /* MKMapView+SDExtensions.m in Sources */,
-				CA014D8716F3940500253769 /* SDGeocoder.m in Sources */,
 				CA014D8916F3940500253769 /* SDLocationManager.m in Sources */,
 				CA014D8B16F3940500253769 /* SDKeychain.m in Sources */,
 				CA014D8D16F3940500253769 /* NSObject+SDExtensions.m in Sources */,
@@ -533,6 +547,8 @@
 				CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */,
 				CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */,
 				CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */,
+				CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */,
+				CA5BC6871756A689006E8673 /* SDBase64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,7 +574,6 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -579,7 +594,6 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -591,6 +605,7 @@
 		};
 		009381141461B6860044E007 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA28BD26175551FA007310AB /* Project-iOS-Debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/ios_shared.dst;
@@ -605,6 +620,7 @@
 		};
 		009381151461B6860044E007 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA28BD27175551FA007310AB /* Project-iOS-Release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/ios_shared.dst;
