@@ -30,4 +30,11 @@
  */
 @property (nonatomic, strong) IBOutlet UIView *containerView; // defaults to self.view
 
+/**
+ Returns the current visible view controller regardless of which view controller is selected.
+ This method will dig into containers and navigation controllers by one level to find which
+ view controller is on top.
+ */
+@property (nonatomic, readonly) UIViewController *currentVisibleViewController;
+
 @end

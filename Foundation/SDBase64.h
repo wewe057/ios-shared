@@ -8,50 +8,52 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSString(SDBase64)
-
-/**
- Encodes a string to a base64 NSData.  Requires libresolv to be linked.
- */
-- (NSData *)base64EncodedData;
-
-/**
- Decodes a base64 string to NSData.  Requires libresolv to be linked.
- */
-- (NSData *)base64DecodedData;
-
-/**
- Decodes a base64 string to a new string.  Requires libresolv to be linked.
- */
-- (NSString *)base64DecodedString;
-
-/**
- Encodes a string to base64.  Requires libresolv to be linked.
- */
-- (NSString *)base64EncodedString;
-
-@end
-
 @interface NSData(SDBase64)
 
 /**
  Encodes an NSData object to a base64 NSData.  Requires libresolv to be linked.
  */
-- (NSData *)base64EncodedData;
+- (NSData *)encodeToBase64Data;
 
 /**
  Decodes a base64 NSData to NSData.  Requires libresolv to be linked.
  */
-- (NSData *)base64DecodedData;
-
-/**
- Decodes a base64 NSData to a new string.  Requires libresolv to be linked.
- */
-- (NSString *)base64DecodedString;
+- (NSData *)decodeBase64ToData;
 
 /**
  Encodes an NSData to base64 string.  Requires libresolv to be linked.
  */
-- (NSString *)base64EncodedString;
+- (NSString *)encodeToBase64String;
+
+/**
+ Decodes a base64 NSData to a new string.  Requires libresolv to be linked.
+ */
+- (NSString *)decodeBase64ToString;
 
 @end
+
+
+@interface NSString(SDBase64)
+
+/**
+ Encodes a string to a base64 NSData.  Requires libresolv to be linked.
+ */
+- (NSData *)encodeToBase64Data;
+
+/**
+ Decodes a base64 string to NSData.  Requires libresolv to be linked.
+ */
+- (NSData *)decodeBase64ToData;
+
+/**
+ Encodes a string to base64.  Requires libresolv to be linked.
+ */
+- (NSString *)encodeToBase64String;
+
+/**
+ Decodes a base64 string to a new string.  Requires libresolv to be linked.
+ */
+- (NSString *)decodeBase64ToString;
+
+@end
+
