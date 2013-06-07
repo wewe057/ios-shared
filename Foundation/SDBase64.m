@@ -37,13 +37,19 @@
     NSUInteger decodedBufferLength = (self.length * 3 / 4) + 1;
     uint8_t *decodedBuffer = malloc(decodedBufferLength);
     memset(decodedBuffer, 0, decodedBufferLength);
-    
-    int decodedLength = b64_pton(self.bytes, decodedBuffer, decodedBufferLength);
+
+    NSUInteger bytesLength = self.length;
+    uint8_t *dataBytes = malloc(bytesLength + 1);   // add one byte for null termination
+    memcpy(dataBytes, self.bytes, bytesLength);
+    dataBytes[bytesLength] = 0;                     // Must be null terminated
+
+    int decodedLength = b64_pton((char const *)dataBytes, decodedBuffer, decodedBufferLength);
     
     if (decodedLength >= 0)
         result = [NSData dataWithBytes:decodedBuffer length:(NSUInteger)decodedLength];
     
     free(decodedBuffer);
+    free(dataBytes);
     return result;
 }
 
