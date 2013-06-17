@@ -11,7 +11,7 @@
 
 @implementation NSData(SDBase64)
 
-- (NSData *)base64EncodedData
+- (NSData *)encodeToBase64Data
 {
     NSData *result = nil;
     
@@ -30,7 +30,7 @@
     return result;
 }
 
-- (NSData *)base64DecodedData
+- (NSData *)decodeBase64ToData
 {
     NSData *result = nil;
     
@@ -47,20 +47,20 @@
     return result;
 }
 
-- (NSString *)base64DecodedString
+- (NSString *)encodeToBase64String
 {
     NSString *result = nil;
-    NSData *data = [self base64DecodedData];
+    NSData *data = [self encodeToBase64Data];
     if (data && data.length > 0)
         result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
     return result;
 }
 
-- (NSString *)base64EncodedString
+- (NSString *)decodeBase64ToString
 {
     NSString *result = nil;
-    NSData *data = [self base64EncodedData];
+    NSData *data = [self decodeBase64ToData];
     if (data && data.length > 0)
         result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
@@ -72,28 +72,28 @@
 
 @implementation NSString(SDBase64)
 
-- (NSData *)base64EncodedData
+- (NSData *)encodeToBase64Data
 {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-    return [data base64EncodedData];
+    return [data encodeToBase64Data];
 }
 
-- (NSData *)base64DecodedData
+- (NSData *)decodeBase64ToData
 {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-    return [data base64DecodedData];
+    return [data decodeBase64ToData];
 }
 
-- (NSString *)base64DecodedString
+- (NSString *)encodeToBase64String
 {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-    return [data base64DecodedString];
+    return [data encodeToBase64String];
 }
 
-- (NSString *)base64EncodedString
+- (NSString *)decodeBase64ToString
 {
     NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
-    return [data base64EncodedString];
+    return [data decodeBase64ToString];
 }
 
 @end
