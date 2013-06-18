@@ -48,7 +48,7 @@ static const char *getPropertyType(objc_property_t property)
 {
     const char *attributes = property_getAttributes(property);
     char buffer[1 + strlen(attributes)];
-    strcpy(buffer, attributes);
+    strlcpy(buffer, attributes, sizeof(buffer));
     char *state = buffer, *attribute;
     
     while ((attribute = strsep(&state, ",")) != NULL)
