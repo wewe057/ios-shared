@@ -23,6 +23,6 @@
 
 + (uint32_t)bcdSystemVersion;
 
-NSInteger DeviceSystemMajorVersion();
+NSInteger DeviceSystemMajorVersion(void);
 
 @end
