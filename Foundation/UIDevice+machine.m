@@ -84,7 +84,7 @@
     return version;
 }
 
-NSInteger DeviceSystemMajorVersion() {
++ (NSInteger)deviceSystemMajorVersion {
     static NSInteger _deviceSystemMajorVersion = -1;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

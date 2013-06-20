@@ -21,7 +21,7 @@
 {
     NSData *result = nil;
 
-    if (DeviceSystemMajorVersion() < 7)
+    if ([UIDevice deviceSystemMajorVersion] < 7)
     {
         __unsafe_unretained NSData *first = self.data;
         NSInteger firstCount = CFGetRetainCount((__bridge CFTypeRef)first);
