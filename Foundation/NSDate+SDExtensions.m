@@ -13,30 +13,30 @@
 
 + (NSDate *)dateFromISO8601String:(NSString *)argDateString
 {
-    static NSDateFormatter *formatter;
+    static NSDateFormatter *sFormatter = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     });
     
-	return [formatter dateFromString:argDateString];
+	return [sFormatter dateFromString:argDateString];
 }
 
 + (NSDate *)dateFromRFC822String:(NSString *)argDateString
 {
-	static NSDateFormatter *formatter;
+	static NSDateFormatter *sFormatter = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZ"];
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZ"];
     });
     
-    return [formatter dateFromString:argDateString];
+    return [sFormatter dateFromString:argDateString];
 }
 
 /**
@@ -44,15 +44,16 @@
  */
 + (NSDate *)dateFromMonthDayYearString:(NSString *)argDateString
 {
-    static NSDateFormatter *formatter;
+    static NSDateFormatter *sFormatter = nil;
     static dispatch_once_t onceToken;
+    
     dispatch_once(&onceToken, ^{
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        [formatter setDateFormat:@"M/d/y"];
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"M/d/y"];
     });
     
-    return [formatter dateFromString:argDateString];
+    return [sFormatter dateFromString:argDateString];
 }
 
 // ---------------------------------------------------------------- //
