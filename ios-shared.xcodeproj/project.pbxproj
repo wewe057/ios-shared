@@ -87,6 +87,8 @@
 		CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331B74171F1E3800CFD209 /* UIDevice+machine.m */; };
 		CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */; };
 		CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */; };
+		CA5BC6861756A689006E8673 /* SDBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = CA5BC6841756A689006E8673 /* SDBase64.h */; };
+		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
@@ -185,6 +187,8 @@
 		CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+SDExtensions.h"; sourceTree = "<group>"; };
 		CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+SDExtensions.m"; sourceTree = "<group>"; };
 		CA54F189175554C5005B9672 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		CA5BC6841756A689006E8673 /* SDBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDBase64.h; sourceTree = "<group>"; };
+		CA5BC6851756A689006E8673 /* SDBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64.m; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
@@ -280,6 +284,8 @@
 				CA014D2E16F3940500253769 /* SDTimer.m */,
 				CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */,
 				CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */,
+				CA5BC6841756A689006E8673 /* SDBase64.h */,
+				CA5BC6851756A689006E8673 /* SDBase64.m */,
 			);
 			path = Foundation;
 			sourceTree = SOURCE_ROOT;
@@ -445,6 +451,7 @@
 				CA331B75171F1E3800CFD209 /* UIDevice+machine.h in Headers */,
 				CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */,
 				CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */,
+				CA5BC6861756A689006E8673 /* SDBase64.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,6 +548,7 @@
 				CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */,
 				CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */,
 				CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */,
+				CA5BC6871756A689006E8673 /* SDBase64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -603,6 +611,7 @@
 				DSTROOT = /tmp/ios_shared.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ios-shared/ios-shared-Prefix.pch";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				RUN_CLANG_STATIC_ANALYZER = YES;
