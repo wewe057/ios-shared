@@ -70,13 +70,14 @@
     
     objc_setAssociatedObject(self, @"imageUrl", url, OBJC_ASSOCIATION_RETAIN);
 
-    __weak UIImageView *blockSelf = self;
+    @weakify(self);
 
     [[SDImageCache sharedInstance] fetchImageAtURL:url completionBlock:^(UIImage *image, NSError *error) {
-        NSURL *originalURL = objc_getAssociatedObject(blockSelf, @"imageUrl");
+        @strongify(self);
+        NSURL *originalURL = objc_getAssociatedObject(self, @"imageUrl");
         if ([[url absoluteString] isEqualToString:[originalURL absoluteString]])
         {
-            blockSelf.image = image;
+            self.image = image;
             completionBlock(image, error);
         }
     }];

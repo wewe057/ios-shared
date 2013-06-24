@@ -16,7 +16,7 @@
     _Pragma("clang diagnostic push") \
     _Pragma("clang diagnostic ignored \"-Wshadow\"") \
     try {} @finally {} \
-    __strong __typeof(v) v = v \
+    __strong __typeof(v) v = v ## _weak_ \
     _Pragma("clang diagnostic pop")
 
 #define weakify(v) \
