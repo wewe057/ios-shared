@@ -68,5 +68,9 @@
  */
 - (NSDictionary *)parseURLQueryParams;
 
+/**
+ Returns true if the receiver matches an email address as defined by the regex at http://www.cocoawithlove.com/2009/06/verifying-that-string-is-email-address.html
+ */
+- (BOOL)isValidateEmailFormat;
 
 @end
