@@ -60,13 +60,13 @@
     self.spaceBetweenPages = 20;
 }
 
-- (void)setDataSource:(id<SDPagingViewDataSource>)dataSource
+- (void)setDataSource:(__strong id<SDPagingViewDataSource>)dataSource
 {
     if (!dataSource)
         _dataSource = nil;
     
     // nice, saves us from doing respondsToSelector all over the place.
-    if (_dataSource != dataSource && [dataSource conformsToProtocol:@protocol(SDPagingViewDataSource)])
+    if (self.dataSource != dataSource && [dataSource conformsToProtocol:@protocol(SDPagingViewDataSource)])
     {
         _dataSource = dataSource;
     }
@@ -113,22 +113,23 @@
 
 - (void)reloadData
 {
-    if (!self.dataSource)
+    __strong id<SDPagingViewDataSource> dataSource = self.dataSource;
+    if (!dataSource)
         return;
     
     _currentPage = INT_MAX;
     
-    _totalCount = [self.dataSource numberOfViewsInPagingView:self];
+    _totalCount = [dataSource numberOfViewsInPagingView:self];
     _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width * _totalCount, _scrollView.frame.size.height);
     
-    _leftView = [self.dataSource viewForPagingView:self];
-    _centerView = [self.dataSource viewForPagingView:self];
-    _rightView = [self.dataSource viewForPagingView:self];
+    _leftView = [dataSource viewForPagingView:self];
+    _centerView = [dataSource viewForPagingView:self];
+    _rightView = [dataSource viewForPagingView:self];
     
     [_scrollView addSubview:_leftView];
     [_scrollView addSubview:_centerView];
     [_scrollView addSubview:_rightView];
-    
+
     [self layoutSubviews];
 }
 
@@ -136,6 +137,8 @@
 
 - (void)layoutViewsForPage:(NSInteger)page
 {
+    __strong id<SDPagingViewDataSource> dataSource = self.dataSource;
+
     UIView *oldCenter = _centerView;
     UIView *oldRight = _rightView;
     UIView *oldLeft = _leftView;
@@ -166,17 +169,17 @@
     CGFloat fullSpace = _spaceBetweenPages;
     
     // the visible view
-    [self.dataSource pagingView:self updateView:_centerView atIndex:_currentPage];
+    [dataSource pagingView:self updateView:_centerView atIndex:_currentPage];
     _centerView.frame = CGRectIntegral(CGRectMake(_scrollView.contentOffset.x + halfSpace, 0, _scrollView.frame.size.width - fullSpace, _scrollView.frame.size.height));
     
     // its the one in the center.  notify the delegate.
-    if (centerChanged && [self.dataSource respondsToSelector:@selector(pagingView:viewBecameCenter:atIndex:)])
-        [self.dataSource pagingView:self viewBecameCenter:_centerView atIndex:_currentPage];
+    if (centerChanged && [dataSource respondsToSelector:@selector(pagingView:viewBecameCenter:atIndex:)])
+        [dataSource pagingView:self viewBecameCenter:_centerView atIndex:_currentPage];
     
     // the view to the right
     if (page + 1 < _totalCount)
     {
-        [self.dataSource pagingView:self updateView:_rightView atIndex:_currentPage + 1];
+        [dataSource pagingView:self updateView:_rightView atIndex:_currentPage + 1];
         _rightView.frame = CGRectIntegral(CGRectMake((_scrollView.contentOffset.x + _scrollView.frame.size.width) + halfSpace, 0, _scrollView.frame.size.width - fullSpace, _scrollView.frame.size.height));
     }
     else
@@ -187,7 +190,7 @@
     // the view to the left
     if (page - 1 >= 0)
     {
-        [self.dataSource pagingView:self updateView:_leftView atIndex:_currentPage - 1];
+        [dataSource pagingView:self updateView:_leftView atIndex:_currentPage - 1];
         _leftView.frame = CGRectIntegral(CGRectMake((_scrollView.contentOffset.x - _scrollView.frame.size.width) + halfSpace, 0, _scrollView.frame.size.width - fullSpace, _scrollView.frame.size.height));
     }
     else

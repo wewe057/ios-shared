@@ -23,6 +23,4 @@
 
 + (uint32_t)bcdSystemVersion;
 
-+ (NSInteger)deviceSystemMajorVersion;
-
 @end
