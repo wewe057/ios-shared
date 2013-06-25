@@ -129,7 +129,7 @@
     [_scrollView addSubview:_leftView];
     [_scrollView addSubview:_centerView];
     [_scrollView addSubview:_rightView];
-    
+
     [self layoutSubviews];
 }
 
