@@ -91,6 +91,8 @@
 		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
+		CAA7AEAC1778F7CD0033BC49 /* SDPagingView.h in Headers */ = {isa = PBXBuildFile; fileRef = CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */; };
+		CAA7AEAD1778F7CD0033BC49 /* SDPagingView.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
 		CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */; };
 		CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */; };
@@ -191,6 +193,8 @@
 		CA5BC6851756A689006E8673 /* SDBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64.m; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
+		CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPagingView.h; sourceTree = "<group>"; };
+		CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPagingView.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
 		CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SDExtensions.m"; sourceTree = "<group>"; };
 		CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SDExtensions.h"; sourceTree = "<group>"; };
@@ -323,6 +327,8 @@
 		CA014D3F16F3940500253769 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */,
+				CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */,
 				CA88884C16F787BB0007C614 /* SDDeckController.h */,
 				CA88884D16F787BB0007C614 /* SDDeckController.m */,
 				CA014DBD16F39F2600253769 /* SDContainerViewController.h */,
@@ -413,6 +419,7 @@
 				CA014D7516F3940500253769 /* NSDate+SDExtensions.h in Headers */,
 				CA014D7716F3940500253769 /* NSDictionary+SDExtensions.h in Headers */,
 				CA014D7916F3940500253769 /* NSString+SDExtensions.h in Headers */,
+				CAA7AEAC1778F7CD0033BC49 /* SDPagingView.h in Headers */,
 				CA014D7B16F3940500253769 /* NSUserDefaults+SDExtensions.h in Headers */,
 				CA014D7D16F3940500253769 /* SDTimer.h in Headers */,
 				CA014D8116F3940500253769 /* SDLog.h in Headers */,
@@ -526,6 +533,7 @@
 				CA014D9916F3940500253769 /* SDSearchBar.m in Sources */,
 				CA014D9B16F3940500253769 /* SDSearchDisplayController.m in Sources */,
 				CA014D9D16F3940500253769 /* SDStackView.m in Sources */,
+				CAA7AEAD1778F7CD0033BC49 /* SDPagingView.m in Sources */,
 				CA014D9F16F3940500253769 /* SDWebViewCell.m in Sources */,
 				CA014DA116F3940500253769 /* UIActivityIndicatorView+SDExtensions.m in Sources */,
 				CA014DA316F3940500253769 /* UIAlertView+SDExtensions.m in Sources */,
