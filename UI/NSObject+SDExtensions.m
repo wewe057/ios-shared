@@ -56,64 +56,57 @@
 	return nil;
 }
 
-// This is tightly tied to the implementation found in NSObject+SDExtensions.m
+// This is tightly tied to the implementation found in NSArray+SDExtensions.m
 // These is a reason that the implementation is duplicated and not called into NSObject's version.
 // Please keep them duplicated otherwise the recursion bug that is being solved will happen again.
 
-- (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...
+- (void)performSelector:(SEL)aSelector returnAddress:(void *)returnAddress argumentAddresses:(void *)arg1, ...
 {
-    #define kMaximumCallSelectorArguments 20
-
-    // First, pull out all of the vararg params, store them on the stack. We only
-    // need them extracted once for the entire array. We might be called recursively.
-
+#define kMaximumCallSelectorArguments 20
+    
+    // if it doesn't respond to the selector we're about to send it, GTFO.
+    if (![self respondsToSelector:aSelector])
+        return;
+    
+    NSMethodSignature *methodSig = [[self class] instanceMethodSignatureForSelector:aSelector];
+    NSUInteger numberOfArguments = [methodSig numberOfArguments] - 2;
+    
+    // it has more than 20 args???  Go smack the developer making methods w/ that many params.
+    if (numberOfArguments >= kMaximumCallSelectorArguments)
+        [NSException raise:@"SDException" format:@"performSelector:returnAddress:argumentAddresses: cannot take more than %i arguments.", kMaximumCallSelectorArguments];
+    
+    // get our args in order and make sure we don't send bullshit parameters, so clear it out.
+    void *arguments[kMaximumCallSelectorArguments];
+    memset(arguments, 0, sizeof(void *) * kMaximumCallSelectorArguments);
+    
+    // get our args out of the va_list, get ourselves a parameter count y0!
     va_list args;
     va_start(args, arg1);
-
-    // Clear room for extraction of arguments.
-
-    char *extractedArguments[kMaximumCallSelectorArguments] = { 0 };       // TODO: Determine maximum useful # of arguments.
-
-    // Extract all the arguments, then close the vaargs to guard from recursion issues.
-
-    char *currentArgument = (char *)arg1;
-    unsigned int argumentIndex = 0;
-    extractedArguments[argumentIndex++] = currentArgument;
-
-    for (currentArgument = arg1; currentArgument != NULL; currentArgument = va_arg(args, void *))
+    
+    arguments[0] = arg1;
+    for (NSUInteger i = 1; i < numberOfArguments; i++)
+        arguments[i] = va_arg(args, void *);
+    
+    va_end(args);
+    
+    // call that mofo.
+    NSObject *object = self;
+    if([object respondsToSelector:aSelector])
     {
-        if (argumentIndex == kMaximumCallSelectorArguments)
-            break;
-        extractedArguments[argumentIndex++] = va_arg(args, void *);
-    }
-
-    va_end( args );
-
-    // Now use the extracted vararg params on the list of items.
-
-    NSArray* items = [self copy];
-    for (id object in items)
-    {
-        if ([object respondsToSelector: aSelector])
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
+        [invocation setTarget:object];
+        [invocation setSelector:aSelector];
+        
+        void *theArg = nil;
+        for (NSInteger i = 0; i < numberOfArguments; i++)
         {
-            NSMethodSignature *methodSig = [[object class] instanceMethodSignatureForSelector:aSelector];
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
-            [invocation setTarget: object];
-            [invocation setSelector: aSelector];
-            argumentIndex = 0;
-            void *theArg = extractedArguments[argumentIndex++];
-            if( theArg )
-                [invocation setArgument:&theArg atIndex:2];
-            for( int i = 3; i < [methodSig numberOfArguments]; ++i )
-            {
-                theArg = extractedArguments[argumentIndex++];
-                if (theArg)
-                    [invocation setArgument:&theArg atIndex:i];
-            }
-            [invocation invoke];
-            if (result)
-                [invocation getReturnValue:result];
+            theArg = arguments[i];
+            [invocation setArgument:theArg atIndex:i + 2];
         }
+        
+        [invocation invoke];
+        
+        [invocation getReturnValue:returnAddress];
     }
 }
 
