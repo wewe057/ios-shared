@@ -206,7 +206,7 @@
 		CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SDExtensions.m"; sourceTree = "<group>"; };
 		CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SDExtensions.h"; sourceTree = "<group>"; };
 		CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SDExtensions.m"; sourceTree = "<group>"; };
-		E2578560177A200100BC69BB /* ios-shared-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2578560177A200100BC69BB /* ios-shared-tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared-tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2578561177A200100BC69BB /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		E2578567177A200100BC69BB /* ios-shared-Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-shared-Tests-Info.plist"; sourceTree = "<group>"; };
 		E2578569177A200100BC69BB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -256,7 +256,7 @@
 			isa = PBXGroup;
 			children = (
 				009381061461B6860044E007 /* libios-shared.a */,
-				E2578560177A200100BC69BB /* ios-shared-Tests.octest */,
+				E2578560177A200100BC69BB /* ios-shared-tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -549,7 +549,7 @@
 			);
 			name = "ios-shared-tests";
 			productName = "ios-shared-Tests";
-			productReference = E2578560177A200100BC69BB /* ios-shared-Tests.octest */;
+			productReference = E2578560177A200100BC69BB /* ios-shared-tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -775,7 +775,7 @@
 				GCC_PREFIX_HEADER = "ios-shared-Tests/ios-shared-Tests-Prefix.pch";
 				INFOPLIST_FILE = "ios-shared-Tests/ios-shared-Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -829,6 +829,7 @@
 				E2578570177A200100BC69BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
