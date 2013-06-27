@@ -1,79 +1,70 @@
 //
-//  SDWebService.m
+//  SDMockService.m
 //
-//  Created by brandon on 2/14/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  
+//
+//  Created by Steven Woolgar on 06/27/2013.
+//  Copyright 2011-2013 Set Direction. All rights reserved.
 //
 
-#import "SDWebService.h"
-#import "NSString+SDExtensions.h"
-#import "NSURLCache+SDExtensions.h"
-#import "NSDictionary+SDExtensions.h"
-#import "NSCachedURLResponse+LeakFix.h"
-#import "NSData+SDExtensions.h"
-
-NSString *const SDWebServiceError = @"SDWebServiceError";
+#import "SDMockService.h"
 
 #ifdef DEBUG
-@interface NSURLRequest(SDExtensionsDebug)
-+ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
-@end
 
-@implementation NSURLRequest(SDExtensionsDebug)
-+ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host
-{
-	return YES;
-}
-@end
-#endif
+#import "SDWebService.h"
 
-@implementation SDRequestResult
-+ (SDRequestResult *)objectForResult:(SDWebServiceResult)result identifier:(NSString *)identifier request:(NSURLRequest *)request
+@implementation SDMockRequestResult
+
++ (SDMockRequestResult *)objectForResult:(SDWebServiceResult)result
+                              identifier:(NSString *)identifier
+                                 request:(NSURLRequest *)request
 {
-    SDRequestResult *object = [[SDRequestResult alloc] init];
+    SDMockRequestResult *object = [[SDMockRequestResult alloc] init];
     object.result = result;
     object.identifier = identifier;
     object.request = request;
     return object;
 }
+
 @end
 
-@implementation SDWebService
-{
-    NSHTTPCookieStorage *_cookieStorage;
-}
+@interface SDMockService()
+
+@property (nonatomic, strong) NSMutableDictionary *normalRequests;
+@property (nonatomic, assign) NSUInteger requestCount;
+@property (nonatomic, strong) NSDictionary *serviceSpecification;
+@property (nonatomic, strong) NSHTTPCookieStorage *cookieStorage;
+
+@end
+
+@implementation SDMockService
 
 #pragma mark - Singleton bits
 
 + (instancetype)sharedInstance
 {
 	static dispatch_once_t oncePred;
-	static id sharedInstance = nil;
-	dispatch_once(&oncePred, ^{ sharedInstance = [[[self class] alloc] init]; });
-	return sharedInstance;
+	static id sSharedInstance = nil;
+	dispatch_once( &oncePred, ^
+    {
+        sSharedInstance = [[[self class] alloc] init];
+    } );
+	return sSharedInstance;
 }
 
 - (instancetype)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
 
-    singleRequests = [[NSMutableDictionary alloc] init];
-    normalRequests = [[NSMutableDictionary alloc] init];
-    dictionaryLock = [[NSLock alloc] init];
-
-    self.timeout = 60; // 1-minute default.
-	
-    NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
-	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
-	if (!serviceSpecification)
-		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
-
-    dataProcessingQueue = [[NSOperationQueue alloc] init];
-    // let the system determine how many threads are best, dynamically.
-    dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
-    dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
-
-    _cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    if (self != nil)
+    {
+        NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
+        _serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
+        if (!_serviceSpecification)
+        {
+            [NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
+        }
+    }
 
 	return self;
 }
@@ -82,10 +73,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
 	self = [self initWithSpecification:specificationName];
 
-    NSMutableDictionary *altServiceSpecification = [serviceSpecification mutableCopy];
-    [altServiceSpecification setObject:defaultHost forKey:@"baseHost"];
-    [altServiceSpecification setObject:defaultPath forKey:@"basePath"];
-    serviceSpecification = altServiceSpecification;
+    if (self != nil)
+    {
+    }
 
 	return self;
 }
@@ -102,40 +92,35 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return nil;
 }
 
-- (void)dealloc
-{
-    dataProcessingQueue = nil;
-	serviceSpecification = nil;
-    singleRequests = nil;
-    normalRequests = nil;
-}
-
 #pragma mark - Reachability
 
 - (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError
 {
-    return [[SDReachability reachabilityWithHostname:hostName] isReachable];
+//    return [[SDReachability reachabilityWithHostname:hostName] isReachable];
+    return YES;
 }
 
 - (BOOL)isReachable:(BOOL)showError
 {
-    return [[SDReachability reachabilityForInternetConnection] isReachable];
+//    return [[SDReachability reachabilityForInternetConnection] isReachable];
+    return YES;
 }
 
 #pragma mark - Cache
 
 - (void)clearCache
 {
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+//    [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 #pragma mark - Default processing blocks
 
 + (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock
 {
-    // refactor SDWebService so error's are passed around properly. -- BKS
+    // refactor SDMockService so error's are passed around properly. -- BKS
 
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
+    {
         id dataObject = nil;
         if (responseData && responseData.length > 0)
             dataObject = [responseData JSONObject];
@@ -146,9 +131,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 + (SDWebServiceDataCompletionBlock)defaultMutableJSONProcessingBlock
 {
-    // refactor SDWebService so error's are passed around properly. -- BKS
+    // Refactor SDMockService so error's are passed around properly. -- BKS
 
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
+    {
         id dataObject = nil;
         if (responseData && responseData.length > 0)
             dataObject = [responseData JSONObjectMutable:YES error:nil];
@@ -159,9 +145,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 + (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock
 {
-    // refactor SDWebService so error's are passed around properly. -- BKS
+    // refactor SDMockService so error's are passed around properly. -- BKS
 
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
+    {
         id dataObject = nil;
         if (responseData && responseData.length > 0)
             dataObject = [responseData JSONArray];
@@ -174,7 +161,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
     // refactor SDWebService so error's are passed around properly. -- BKS
 
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
+    {
         id dataObject = nil;
         if (responseData && responseData.length > 0)
             dataObject = [responseData JSONMutableArray];
@@ -188,10 +176,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
     // refactor SDWebService so error's are passed around properly. -- BKS
 
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
+    {
         id dataObject = nil;
         if (responseData && responseData.length > 0)
-        dataObject = [responseData JSONDictionary];
+            dataObject = [responseData JSONDictionary];
         return dataObject;
     };
     return result;
@@ -201,7 +190,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
     // refactor SDWebService so error's are passed around properly. -- BKS
 
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
+    {
         id dataObject = nil;
         if (responseData && responseData.length > 0)
             dataObject = [responseData JSONMutableDictionary];
@@ -215,28 +205,28 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)showNetworkActivityIfNeeded
 {
-    if (requestCount > 0)
+    if (_requestCount > 0)
         [self showNetworkActivity];
 }
 
 - (void)hideNetworkActivityIfNeeded
 {
-    if (requestCount <= 0)
+    if (_requestCount <= 0)
     {
-        requestCount = 0;
+        _requestCount = 0;
         [self performSelector:@selector(hideNetworkActivity) withObject:nil afterDelay:0.5];
     }
 }
 
 - (void)incrementRequests
 {
-    requestCount++;
+    _requestCount++;
     [self showNetworkActivityIfNeeded];
 }
 
 - (void)decrementRequests
 {
-	requestCount--;
+	_requestCount--;
 	[self hideNetworkActivityIfNeeded];
 }
 
@@ -259,27 +249,30 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			prefKey = [string substringWithRange:range];
 			NSString *prefValue = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
 			string = [string stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:prefValue];
-		} else
+		}
+        else
+        {
 			doneReplacing = YES;
+        }
 	}
 	return string;
 }
 
 - (NSString *)baseSchemeInServiceSpecification
 {
-	NSString *baseScheme = [serviceSpecification objectForKey:@"baseScheme"];
+	NSString *baseScheme = self.serviceSpecification[@"baseScheme"];
 	return baseScheme;
 }
 
 - (NSString *)baseHostInServiceSpecification
 {
-	NSString *baseHost = [serviceSpecification objectForKey:@"baseHost"];
+	NSString *baseHost = self.serviceSpecification[@"baseHost"];
 	return baseHost;
 }
 
 - (NSString *)basePathInServiceSpecification
 {
-	NSString *basePath = [serviceSpecification objectForKey:@"basePath"];
+	NSString *basePath = self.serviceSpecification[@"basePath"];
 
 	if (!basePath)
 		basePath = @"/";
@@ -287,32 +280,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	return basePath;
 }
 
-// Backwards compatible method
-// DEPRECATED
-- (NSString *)baseURLInServiceSpecification
-{
-	NSString *baseScheme = [self baseSchemeInServiceSpecification];
-	NSString *baseHost = [self baseHostInServiceSpecification];
-	NSString *basePath = [self basePathInServiceSpecification];
-
-	// Support http or http://
-	if (baseScheme && ([baseScheme rangeOfString:@"://"].location == NSNotFound))
-	{
-		baseScheme = [baseScheme stringByAppendingString:@"://"];
-	}
-
-	NSString *baseURL = [NSString stringWithFormat:@"%@%@%@",baseScheme,baseHost,basePath];
-
-	// Support QA servers
-	baseURL = [self stringByReplacingPrefKeys:baseURL];
-
-	return baseURL;
-}
-
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
 {
     // combine the contents of routeReplacements and the passed in replacements to form
 	// a complete name and value list.
+
 	NSArray *keyList = [userReplacements allKeys];
 	NSMutableDictionary *actualReplacements = [replacements mutableCopy];
     if (!actualReplacements)
@@ -321,23 +293,30 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	{
 		// this takes all the data provided in replacements and overwrites any default
 		// values specified in the plist.
-		NSObject *value = [userReplacements objectForKey:key];
-		[actualReplacements setObject:value forKey:key];
+
+		NSObject *value = userReplacements[key];
+		actualReplacements[key] = value;
 	}
 
 	// now lets take that final list and apply it to the route format.
+
 	keyList = [actualReplacements allKeys];
 	NSString *result = routeFormat;
 	for (NSString *key in keyList)
 	{
-		id object = [actualReplacements objectForKey:key];
+		id object = actualReplacements[key];
 		NSString *value = nil;
+
 		// if its a string, assign it.
+
 		if ([object isKindOfClass:[NSString class]])
-			value = object;
+        {
+            value = object;
+        }
 		else
 		{
 			// if its not, run some tests to see what we can do...
+
 			if ([object isKindOfClass:[NSNumber class]])
 				value = [object stringValue];
 			else
@@ -367,14 +346,17 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 	// **************************************************************
 	// Scheme
-    NSString *altBaseScheme = [replacements objectForKey:@"baseScheme"];
-    if (altBaseScheme) {
+    NSString *altBaseScheme = replacements[@"baseScheme"];
+    if (altBaseScheme)
+    {
         baseScheme = altBaseScheme;
     }
-    else {
+    else
+    {
         // if this method has its own baseScheme use it instead.
-        altBaseScheme = [requestDetails objectForKey:@"baseScheme"];
-        if (altBaseScheme) {
+        altBaseScheme = requestDetails[@"baseScheme"];
+        if (altBaseScheme)
+        {
             baseScheme = altBaseScheme;
         }
     }
@@ -386,35 +368,40 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 	// **************************************************************
 	// Host
-	NSString *altBaseHost = [replacements objectForKey:@"baseHost"];
-    if (altBaseHost) {
+	NSString *altBaseHost = replacements[@"baseHost"];
+    if (altBaseHost)
+    {
         baseHost = altBaseHost;
     }
-    else {
+    else
+    {
         // if this method has its own baseHost use it instead.
-        altBaseHost = [requestDetails objectForKey:@"baseHost"];
-        if (altBaseHost) {
+        altBaseHost = requestDetails[@"baseHost"];
+        if (altBaseHost)
+        {
             baseHost = altBaseHost;
         }
     }
 
 	// **************************************************************
 	// Path
-	NSString *altBasePath = [replacements objectForKey:@"basePath"];
-    if (altBasePath) {
+	NSString *altBasePath = replacements[@"basePath"];
+    if (altBasePath)
+    {
         basePath = altBasePath;
     }
-    else {
+    else
+    {
         // if this method has its own basePath use it instead.
-        altBasePath = [requestDetails objectForKey:@"basePath"];
-        if (altBasePath) {
+        altBasePath = requestDetails[@"basePath"];
+        if (altBasePath)
+        {
             basePath = altBasePath;
         }
     }
 
 	if (!baseScheme)
 		[NSException raise:@"SDException" format:@"Unable to create request.  Missing scheme."];
-
 
 	if (!baseHost)
 		[NSException raise:@"SDException" format:@"Unable to create request.  Missing host."];
@@ -424,24 +411,29 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	return baseURL;
 }
 
-- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme headers:(NSDictionary *)headers host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
+- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme
+                                       headers:(NSDictionary *)headers
+                                          host:(NSString *)baseHost
+                                          path:(NSString *)basePath
+                                       details:(NSDictionary *)requestDetails
+                                  replacements:(NSDictionary *)replacements
 {
     NSMutableURLRequest *request = nil;
 	NSString *baseURL = nil;
 
-    NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
-	NSString *method = [requestDetails objectForKey:@"method"];
+    NSString *routeFormat = requestDetails[@"routeFormat"];
+	NSString *method = requestDetails[@"method"];
 	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
 
     // Allowing for the dynamic specification of baseURL at runtime
     // (initially to accomodate the suggestions search)
-    NSString *altBaseURL = [replacements objectForKey:@"baseURL"];
+    NSString *altBaseURL = replacements[@"baseURL"];
     if (altBaseURL) {
         baseURL = altBaseURL;
     }
     else {
         // if this method has its own baseURL use it instead.
-        altBaseURL = [requestDetails objectForKey:@"baseURL"];
+        altBaseURL = requestDetails[@"baseURL"];
         if (altBaseURL) {
             baseURL = altBaseURL;
         }
@@ -456,7 +448,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// Look for {KEY} key ands replace them
 	baseURL = [self stringByReplacingPrefKeys:baseURL];
 
-    NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
+    NSDictionary *routeReplacements = requestDetails[@"routeReplacement"];
     if (!routeReplacements)
         routeReplacements = [NSDictionary dictionary];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
@@ -479,12 +471,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			if ([postFormat isEqualToString:@"JSON"])
 			{
 				// post data is raw JSON but can be NSString or NSData depending on implementation of calling method
-				postObject = [replacements objectForKey:@"JSON"];
+				postObject = replacements[@"JSON"];
 			}
             else
             if ([postFormat isEqualToString:@"SOAP"])
             {
-                postObject = [replacements objectForKey:@"SOAP"];
+                postObject = replacements[@"SOAP"];
             }
 			else
 			{
@@ -606,7 +598,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
-    SDWebServiceDataCompletionBlock combinedBlock = ^id (NSURLResponse *response, NSInteger statusCode, NSData *responseData, NSError *error) {
+    SDWebServiceDataCompletionBlock combinedBlock = ^id (NSURLResponse *response, NSInteger statusCode, NSData *responseData, NSError *error)
+    {
         NSString *responseString = [self responseFromData:responseData];
         completionBlock(statusCode, responseString, &error);
         return nil;
@@ -614,22 +607,22 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
 }
 
-- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
+- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
 {
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
 }
 
-- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
+- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
 {
     return [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
 }
 
-- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
+- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
 {
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:shouldRetry];
 }
 
-- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
+- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
 {
     NSString *identifier = [NSString stringWithNewUUID];
 
@@ -637,16 +630,16 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSString *baseScheme = [self baseSchemeInServiceSpecification];
 	NSString *baseHost = [self baseHostInServiceSpecification];
 	NSString *basePath = [self basePathInServiceSpecification];
-	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
-	NSDictionary *requestDetails = [requestList objectForKey:requestName];
+	NSDictionary *requestList = self.serviceSpecification[@"requests"];
+	NSDictionary *requestDetails = requestList[requestName];
 
     NSMutableURLRequest *request = [self buildRequestForScheme:baseScheme headers:headers host:baseHost path:basePath details:requestDetails replacements:replacements];
 
     // get cache details
-    NSNumber *cache = [requestDetails objectForKey:@"cache"];
-    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
+    NSNumber *cache = requestDetails[@"cache"];
+//    NSNumber *cacheTTL = requestDetails[@"cacheTTL"];
 
-    NSNumber *showNoConnectionAlertObj = [requestDetails objectForKey:@"showNoConnectionAlert"];
+    NSNumber *showNoConnectionAlertObj = requestDetails[@"showNoConnectionAlert"];
     BOOL showNoConnectionAlert = showNoConnectionAlertObj != nil ? [showNoConnectionAlertObj boolValue] : YES;
     if (![self isReachable:showNoConnectionAlert])
     {
@@ -657,7 +650,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         else
 			uiUpdateBlock(nil, error);
 
-        return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
+        return [SDMockRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
     }
 
     // setup caching
@@ -671,15 +664,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
 
-#ifdef DEBUG
-    NSDate *startDate = [NSDate date];
-#endif
-
-	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
-#ifdef DEBUG
-        SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], request.URL);
-#endif
+#if 0
+	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error)
+    {
         // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
+
         if ([error code] != NSURLErrorCancelled)
         {
             if ([error code] == NSURLErrorTimedOut)
@@ -692,10 +681,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                     NSURLCache *urlCache = [NSURLCache sharedURLCache];
                     [urlCache removeCachedResponseForRequest:request];
 
-                    SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
+                    SDMockRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 
                     // do some sync/cleanup stuff here.
-                    SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
+                    SDURLConnection *newConnection = normalRequests[newObject.identifier];
 
                     // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
                     [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
@@ -705,7 +694,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                         [normalRequests removeObjectForKey:newObject.identifier];
                     }
                     else
+                    {
                         [normalRequests removeObjectForKey:identifier];
+                    }
                     [dictionaryLock unlock];
 
                     [self decrementRequests];
@@ -738,13 +729,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         if (uiUpdateBlock == nil)
         {
             NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
-            [mainQueue addOperationWithBlock:^{
+            [mainQueue addOperationWithBlock:^
+            {
                 dataProcessingBlock(response, code, responseData, error);
             }];
         }
         else
         {
-            [dataProcessingQueue addOperationWithBlock:^{
+            [dataProcessingQueue addOperationWithBlock:^
+            {
                 id dataObject = nil;
                 if (code != NSURLErrorCancelled)
                     dataObject = dataProcessingBlock(response, code, responseData, error);
@@ -770,15 +763,16 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
             urlCompletionBlock(nil, cachedResponse.response, cachedResponse.responseData, nil);
 
-			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
+			return [SDMockRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
 		}
 	}
 
 	[self incrementRequests];
 
 	// see if this is a singleton request.
+
     BOOL singleRequest = NO;
-	NSNumber *singleRequestNumber = [requestDetails objectForKey:@"singleRequest"];
+	NSNumber *singleRequestNumber = requestDetails[@"singleRequest"];
     if (singleRequestNumber)
     {
         singleRequest = [singleRequestNumber boolValue];
@@ -786,7 +780,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         // if it is, lets cancel any with matching names.
         if (singleRequest)
         {
-			SDURLConnection *existingConnection = [singleRequests objectForKey:requestName];
+			SDURLConnection *existingConnection = singleRequests[requestName];
 			if (existingConnection)
 			{
 				SDLog(@"Cancelling call.");
@@ -808,12 +802,13 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         [normalRequests setObject:connection forKey:identifier];
     [dictionaryLock unlock];
 
-	return [SDRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier request:request];
+#endif
+	return [SDMockRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier request:request];
 }
 
 - (void)cancelRequestForIdentifier:(NSString *)identifier
 {
-    SDURLConnection *connection = [normalRequests objectForKey:identifier];
+    SDURLConnection *connection = self.normalRequests[identifier];
     [connection cancel];
 }
 
@@ -868,3 +863,5 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 }
 
 @end
+
+#endif

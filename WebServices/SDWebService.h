@@ -98,18 +98,18 @@ typedef enum
 /**
  Returns the singleton for the web service class.
  */
-+ (id)sharedInstance;
++ (instancetype)sharedInstance;
 
 /**
  Initializes the instance with a plist specification included in the bundle and named using the string in `specificationName` and of type .plist.
  */
-- (id)initWithSpecification:(NSString *)specificationName;
+- (instancetype)initWithSpecification:(NSString *)specificationName;
 
 /**
  Initializes the instance with a plist specification included in the bundle and named using the string in `specificationName` and of type .plist.
  Overrides the `baseHost` and `basePath` with the parameters `defaultHost` and `defaultPath`.
  */
-- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath;
+- (instancetype)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath;
 
 /**
  Returns the base scheme in the service specification.
