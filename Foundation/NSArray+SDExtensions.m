@@ -125,5 +125,21 @@
     return data;
 }
 
+- (NSArray *)arrayByMappingBlock:(id (^)(id))block
+{
+    NSArray *mappedArray = @[];
+    if (block) {
+        NSMutableArray* anArray = [NSMutableArray arrayWithCapacity:self.count];
+        
+        for (id object in self) {
+            id mappedObject = block(object);
+            if (mappedObject) {
+                [anArray addObject:mappedObject];
+            }
+        }
+        mappedArray = [anArray copy];
+    }
+    return mappedArray;
+}
 
 @end
