@@ -661,7 +661,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     }
 
     // setup caching
-    if (cache && [cache boolValue])
+    if ([cache boolValue])
         [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
 	else
 		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
@@ -759,7 +759,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
 	NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue] removeIfInvalid:YES];
-	if (cache && cachedResponse && cachedResponse.response)
+	if ([cache boolValue] && cachedResponse && cachedResponse.response)
 	{
 		NSString *cachedString = [self responseFromData:cachedResponse.responseData];
 		if (cachedString)
