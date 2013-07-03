@@ -62,7 +62,11 @@
 {
     static NSUInteger version = 0;
 
+#ifndef DEBUG
     if (version == 0)
+#else
+    version = 0;
+#endif
     {
         NSString *versionString = [[UIDevice currentDevice] systemVersion];
         NSArray *components = [versionString componentsSeparatedByString:@"."];
@@ -73,11 +77,11 @@
         }
         if (components.count > 1)
         {
-            version |= 0x000000FF & (uint)[[components objectAtIndex: 1] integerValue] << 8;
+            version |= (0x000000FF & (uint)[[components objectAtIndex: 1] integerValue]) << 8;
         }
         if (components.count)
         {
-            version |= 0x000000FF & (uint)[[components objectAtIndex: 0] integerValue] << 16;
+            version |= (0x000000FF & (uint)[[components objectAtIndex: 0] integerValue]) << 16;
         }
     }
 
