@@ -11,6 +11,13 @@
 
 @implementation NSDictionary (SDExtensions)
 
+- (NSDictionary *)dictionaryByAddingEntriesFromDictionary:(NSDictionary *)dictionary {
+	NSMutableDictionary *result = [self mutableCopy];
+	[result addEntriesFromDictionary:dictionary];
+	return result;
+}
+
+
 - (NSString *)stringForKey:(NSString *)key
 {
     id obj = [self objectForKey:key];
