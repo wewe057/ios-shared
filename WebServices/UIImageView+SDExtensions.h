@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-typedef void (^UIImageViewURLCompletionBlock)(UIImage *image, NSError *error);
+#import "SDImageCache.h"
 
 
 @interface UIImageView (SDExtensions)
