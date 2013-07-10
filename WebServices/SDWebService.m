@@ -319,22 +319,22 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		id object = [dictionary objectForKey:key];
 		NSString *value = nil;
 
-		// if its a string, assign it.
-		if ([object isKindOfClass:[NSString class]])
-			value = object;
-        else
         if ([object isKindOfClass:[NSDictionary class]])
             value = [self parameterizeDictionary:object];
+		else
+        if ([object isKindOfClass:[NSString class]])
+            value = [object escapedString];
         else
         {
             // if its not, run some tests to see what we can do...
             if ([object isKindOfClass:[NSNumber class]])
-                value = [object stringValue];
+                value = [[object stringValue] escapedString];
             else
             if ([object respondsToSelector:@selector(stringValue)])
-                value = [object stringValue];
+                value = [[object stringValue] escapedString];
         }
-        [result appendFormat:@"&%@=%@", key, [value escapedString]];
+		if (value)
+            [result appendFormat:@"&%@=%@", key, value];
     }
 
     return result;
@@ -363,23 +363,23 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	{
 		id object = [actualReplacements objectForKey:key];
 		NSString *value = nil;
-		// if its a string, assign it.
-		if ([object isKindOfClass:[NSString class]])
-			value = object;
-        else
+
         if ([object isKindOfClass:[NSDictionary class]])
             value = [self parameterizeDictionary:object];
 		else
+		if ([object isKindOfClass:[NSString class]])
+			value = [object escapedString];
+        else
 		{
 			// if its not, run some tests to see what we can do...
 			if ([object isKindOfClass:[NSNumber class]])
-				value = [object stringValue];
+				value = [[object stringValue] escapedString];
 			else
             if ([object respondsToSelector:@selector(stringValue)])
-                value = [object stringValue];
+                value = [[object stringValue] escapedString];
 		}
 		if (value)
-			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
+			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:value];
 	}
 
     actualReplacements = nil;
