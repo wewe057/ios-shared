@@ -95,6 +95,7 @@
 		CAA7AEAD1778F7CD0033BC49 /* SDPagingView.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
 		CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */; };
+		CAB97F04178DE01D001A8ABA /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB97F03178DDF88001A8ABA /* SDImageCache.m */; };
 		CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */; };
 		CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */; };
 /* End PBXBuildFile section */
@@ -197,6 +198,8 @@
 		CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPagingView.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
 		CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SDExtensions.m"; sourceTree = "<group>"; };
+		CAB97F02178DDF88001A8ABA /* SDImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
+		CAB97F03178DDF88001A8ABA /* SDImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
 		CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SDExtensions.h"; sourceTree = "<group>"; };
 		CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SDExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -394,6 +397,8 @@
 				CA014D7216F3940500253769 /* SDWebService.m */,
 				CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */,
 				CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */,
+				CAB97F02178DDF88001A8ABA /* SDImageCache.h */,
+				CAB97F03178DDF88001A8ABA /* SDImageCache.m */,
 			);
 			path = WebServices;
 			sourceTree = SOURCE_ROOT;
@@ -521,6 +526,7 @@
 				CA014D7C16F3940500253769 /* NSUserDefaults+SDExtensions.m in Sources */,
 				CA014D7E16F3940500253769 /* SDTimer.m in Sources */,
 				CA014D8316F3940500253769 /* CLLocation+SDExtensions.m in Sources */,
+				CAB97F04178DE01D001A8ABA /* SDImageCache.m in Sources */,
 				CA014D8516F3940500253769 /* MKMapView+SDExtensions.m in Sources */,
 				CA014D8916F3940500253769 /* SDLocationManager.m in Sources */,
 				CA014D8B16F3940500253769 /* SDKeychain.m in Sources */,
