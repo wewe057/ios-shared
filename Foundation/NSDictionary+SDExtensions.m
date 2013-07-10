@@ -334,42 +334,4 @@
 }
 
 
-- (NSArray*)conformedArrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue
-{
-	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
-	
-	// Conform the value to an array if it is not an array
-	if (![value isKindOfClass:[NSArray class]])
-		value = value ? [NSArray arrayWithObject:value] : defaultValue;
-	
-	return value;
-}
-
-
-- (NSDictionary*)conformedDictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
-{
-	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
-	
-	// Conform the value to a dictionary if it is not a dictionary
-	if (![value isKindOfClass:[NSDictionary class]])
-		value = value ? [NSDictionary dictionaryWithObject:value forKey:@"default"] : defaultValue;
-	
-	return value;
-}
-
-- (NSString*)queryString
-{
-	NSMutableArray*	keyValuePairs = [NSMutableArray array];
-	
-	// Create an URL query string (properly URL-encoded) from the dictionary's keys and values
-	for (NSString* key in self)
-	{
-		NSString*	value = [self objectForKey:key];
-		
-		[keyValuePairs addObject:[NSString stringWithFormat:@"%@=%@", [key escapedString], [value escapedString]]];
-	}
-	
-	return [keyValuePairs componentsJoinedByString:@"&"];
-}
-
 @end
