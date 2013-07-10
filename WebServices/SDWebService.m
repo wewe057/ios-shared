@@ -309,6 +309,37 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	return baseURL;
 }
 
+- (NSString *)parameterizeDictionary:(NSDictionary *)dictionary
+{
+    NSArray *keys = [dictionary allKeys];
+    NSMutableString *result = [[NSMutableString alloc] init];
+
+    for (NSString *key in keys)
+    {
+		id object = [dictionary objectForKey:key];
+		NSString *value = nil;
+
+		// if its a string, assign it.
+		if ([object isKindOfClass:[NSString class]])
+			value = object;
+        else
+        if ([object isKindOfClass:[NSDictionary class]])
+            value = [self parameterizeDictionary:object];
+        else
+        {
+            // if its not, run some tests to see what we can do...
+            if ([object isKindOfClass:[NSNumber class]])
+                value = [object stringValue];
+            else
+            if ([object respondsToSelector:@selector(stringValue)])
+                value = [object stringValue];
+        }
+        [result appendFormat:@"&%@=%@", key, [value escapedString]];
+    }
+
+    return result;
+}
+
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
 {
     // combine the contents of routeReplacements and the passed in replacements to form
@@ -335,14 +366,17 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		// if its a string, assign it.
 		if ([object isKindOfClass:[NSString class]])
 			value = object;
+        else
+        if ([object isKindOfClass:[NSDictionary class]])
+            value = [self parameterizeDictionary:object];
 		else
 		{
 			// if its not, run some tests to see what we can do...
 			if ([object isKindOfClass:[NSNumber class]])
 				value = [object stringValue];
 			else
-                if ([object respondsToSelector:@selector(stringValue)])
-                    value = [object stringValue];
+            if ([object respondsToSelector:@selector(stringValue)])
+                value = [object stringValue];
 		}
 		if (value)
 			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
