@@ -13,18 +13,47 @@
 
 + (NSDate *)dateFromISO8601String:(NSString *)argDateString
 {
-	NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	[formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-	return [formatter dateFromString:argDateString];
+    static NSDateFormatter *sFormatter = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+    });
+    
+	return [sFormatter dateFromString:argDateString];
 }
 
 + (NSDate *)dateFromRFC822String:(NSString *)argDateString
 {
-	NSDateFormatter* formatter = [[NSDateFormatter alloc] init];
-    [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-	[formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZ"];
-	return [formatter dateFromString:argDateString];
+	static NSDateFormatter *sFormatter = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZ"];
+    });
+    
+    return [sFormatter dateFromString:argDateString];
+}
+
+/**
+ Takes a string of format M/d/y and returns an NSDate.
+ */
++ (NSDate *)dateFromMonthDayYearString:(NSString *)argDateString
+{
+    static NSDateFormatter *sFormatter = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"M/d/y"];
+    });
+    
+    return [sFormatter dateFromString:argDateString];
 }
 
 // ---------------------------------------------------------------- //

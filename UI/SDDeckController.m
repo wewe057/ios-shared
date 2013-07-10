@@ -1077,4 +1077,10 @@ static char wmdeck_kvoContext;
         }
     }
 }
+
+- (void)shuffleDeck
+{
+    NSAssert(0 == 1, @"Come on joker.. get out of here!");
+}
+
 @end

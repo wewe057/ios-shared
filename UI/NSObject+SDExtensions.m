@@ -43,7 +43,7 @@
 
 + (id)loadFromNibNamed:(NSString *)nibName withOwner:(id)owner
 {
-    NSArray *objects = [[NSBundle mainBundle] loadNibNamed:nibName owner:owner options:nil];
+    NSArray *objects = [[NSBundle bundleForClass:[self class]] loadNibNamed:nibName owner:owner options:nil];
 	for (id object in objects)
     {
 		if ([object isKindOfClass:self])
@@ -56,32 +56,58 @@
 	return nil;
 }
 
-- (void)callSelector:(SEL)aSelector returnAddress:(void *)result argumentAddresses:(void *)arg1, ...
+// This is tightly tied to the implementation found in NSArray+SDExtensions.m
+// These is a reason that the implementation is duplicated and not called into NSObject's version.
+// Please keep them duplicated otherwise the recursion bug that is being solved will happen again.
+
+- (void)performSelector:(SEL)aSelector returnAddress:(void *)returnAddress argumentAddresses:(void *)arg1, ...
 {
-	va_list args;
-	va_start(args, arg1);
+#define kMaximumCallSelectorArguments 20
     
-	if([self respondsToSelector:aSelector])
-	{
-		NSMethodSignature *methodSig = [[self class] instanceMethodSignatureForSelector:aSelector];
-		NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
-		[invocation setTarget:self];
-		[invocation setSelector:aSelector];
-		if (arg1)
-			[invocation setArgument:&arg1 atIndex:2];
-		void *theArg = nil;
-		for (int i = 3; i < [methodSig numberOfArguments]; i++)
-		{
-			theArg = va_arg(args, void *);
-			if (theArg)
-				[invocation setArgument:&theArg atIndex:i];
-		}
-		[invocation invoke];	
-		if (result)
-			[invocation getReturnValue:result];
-	}
+    // if it doesn't respond to the selector we're about to send it, GTFO.
+    if (![self respondsToSelector:aSelector])
+        return;
     
-	va_end(args);
+    NSMethodSignature *methodSig = [[self class] instanceMethodSignatureForSelector:aSelector];
+    NSUInteger numberOfArguments = [methodSig numberOfArguments] - 2;
+    
+    // it has more than 20 args???  Go smack the developer making methods w/ that many params.
+    if (numberOfArguments >= kMaximumCallSelectorArguments)
+        [NSException raise:@"SDException" format:@"performSelector:returnAddress:argumentAddresses: cannot take more than %i arguments.", kMaximumCallSelectorArguments];
+    
+    // get our args in order and make sure we don't send bullshit parameters, so clear it out.
+    void *arguments[kMaximumCallSelectorArguments];
+    memset(arguments, 0, sizeof(void *) * kMaximumCallSelectorArguments);
+    
+    // get our args out of the va_list, get ourselves a parameter count y0!
+    va_list args;
+    va_start(args, arg1);
+    
+    arguments[0] = arg1;
+    for (NSUInteger i = 1; i < numberOfArguments; i++)
+        arguments[i] = va_arg(args, void *);
+    
+    va_end(args);
+    
+    // call that mofo.
+    NSObject *object = self;
+    if([object respondsToSelector:aSelector])
+    {
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
+        [invocation setTarget:object];
+        [invocation setSelector:aSelector];
+        
+        void *theArg = nil;
+        for (NSInteger i = 0; i < numberOfArguments; i++)
+        {
+            theArg = arguments[i];
+            [invocation setArgument:theArg atIndex:i + 2];
+        }
+        
+        [invocation invoke];
+        
+        [invocation getReturnValue:returnAddress];
+    }
 }
 
 - (void)performBlockInBackground:(NSObjectPerformBlock)performBlock completion:(NSObjectPerformBlock)completionBlock

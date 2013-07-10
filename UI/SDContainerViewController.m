@@ -52,6 +52,16 @@
 
 #pragma mark properties
 
+- (void)setContainerView:(UIView *)containerView
+{
+    if (self.view == _containerView)
+        self.view = containerView;
+    else
+        [self.view addSubview:containerView];
+    
+    _containerView = containerView;
+}
+
 - (void)setViewControllers:(NSArray *)viewControllers
 {
     if (_viewControllers == viewControllers)
@@ -78,6 +88,8 @@
 
 - (void)setSelectedViewController:(UIViewController *)selectedViewController
 {
+    NSAssert(_viewControllers.count > 0, @"SDContainerViewController must have view controllers set.");
+    
     NSUInteger index = [_viewControllers indexOfObject:selectedViewController];
     if (index == NSNotFound)
         return;
@@ -95,6 +107,37 @@
     _selectedViewController.view.frame = self.containerView.bounds;
     [self.containerView addSubview:_selectedViewController.view];
     [_selectedViewController didMoveToParentViewController:self];
+}
+
+- (UIViewController *)currentVisibleViewController
+{
+    UIViewController *result = self.selectedViewController;
+    
+    if ([result isKindOfClass:[UINavigationController class]])
+    {
+        UINavigationController *navController = (UINavigationController *)result;
+        result = navController.visibleViewController;
+    }
+    else
+    if ([result isKindOfClass:[UITabBarController class]])
+    {
+        UITabBarController *tabController = (UITabBarController *)result;
+        result = tabController.selectedViewController;
+        
+        if ([result isKindOfClass:[UINavigationController class]])
+        {
+            UINavigationController *navController = (UINavigationController *)result;
+            result = navController.visibleViewController;
+        }
+    }
+    else
+    if ([result isKindOfClass:[SDContainerViewController class]])
+    {
+        SDContainerViewController *containerController = (SDContainerViewController *)result;
+        result = containerController.currentVisibleViewController;
+    }
+    
+    return result;
 }
 
 @end

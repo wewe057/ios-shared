@@ -16,16 +16,16 @@ typedef NSObject<MKAnnotation> SDAnnotation;
 
 - (void)setRegionThatFits:(MKCoordinateRegion)region animated:(BOOL)animated;
 
-- (SDAnnotation *) getClosestAnnotationToLocation:(CLLocation *)location andSelect:(BOOL)inSelect;
-- (SDAnnotation *) getNextClosestAnnotation:(SDAnnotation *)referenceAnnotation andSelect:(BOOL)inSelect;
+- (SDAnnotation *)getClosestAnnotationToLocation:(CLLocation *)location andSelect:(BOOL)inSelect;
+- (SDAnnotation *)getNextClosestAnnotation:(SDAnnotation *)referenceAnnotation andSelect:(BOOL)inSelect;
 
 - (NSArray *) annotationsByDistanceToLocation:(CLLocation *)location;
 
-- (CLLocationCoordinate2D) centerCoordinateForAnnotations:(NSArray *)annotationArray;
+- (CLLocationCoordinate2D)centerCoordinateForAnnotations:(NSArray *)annotationArray;
 - (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location;
 - (void) recenterAroundLocation:(CLLocation *)location showAnnotations:(NSArray *)annotationArray;
 
-- (NSSet *) visibleAnnotations;
+- (NSSet *)visibleAnnotations;
 - (NSArray *)userAnnotations;
 
 @end

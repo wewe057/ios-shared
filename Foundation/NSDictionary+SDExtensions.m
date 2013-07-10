@@ -93,14 +93,24 @@
     return 0;
 }
 
-- (NSArray*)arrayForKey:(NSString *)key {
+- (NSArray *)arrayForKey:(NSString *)key
+{
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSArray class]])
         return obj;
     return nil;
 }
 
-- (BOOL)keyExists:(NSString *)key {
+- (NSDictionary *)dictionaryForKey:(NSString *)key
+{
+    id obj = [self objectForKey:key];
+    if ([obj isKindOfClass:[NSDictionary class]])
+        return obj;
+    return nil;
+}
+
+- (BOOL)keyExists:(NSString *)key
+{
 	return [self objectForKey:key] != nil;
 }
 
@@ -112,8 +122,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return obj;
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj stringValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj stringValue];
     return nil;
 }
 
@@ -124,8 +134,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj integerValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj integerValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj integerValue];
     return 0;
 }
 
@@ -139,8 +149,8 @@
         return [number unsignedIntegerValue];
     }
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj unsignedIntegerValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj unsignedIntegerValue];
     return 0;
 }
 
@@ -150,8 +160,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj floatValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj floatValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj floatValue];
     return 0;
 }
 
@@ -161,8 +171,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj doubleValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj doubleValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj doubleValue];
     return 0;
 }
 
@@ -172,8 +182,8 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj longLongValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj longLongValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj longLongValue];
     return 0;
 }
 
@@ -183,14 +193,23 @@
     if ([obj isKindOfClass:[NSString class]])
         return [obj boolValue];
     else
-        if ([obj isKindOfClass:[NSNumber class]])
-            return [obj boolValue];
+    if ([obj isKindOfClass:[NSNumber class]])
+        return [obj boolValue];
     return 0;
 }
 
-- (NSArray*)arrayForKeyPath:(NSString *)keyPath {
+- (NSArray *)arrayForKeyPath:(NSString *)keyPath
+{
     id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSArray class]])
+        return obj;
+    return nil;
+}
+
+- (NSArray *)dictionaryForKeyPath:(NSString *)keyPath
+{
+    id obj = [self valueForKeyPath:keyPath];
+    if ([obj isKindOfClass:[NSDictionary class]])
         return obj;
     return nil;
 }
@@ -264,7 +283,6 @@
 }
 
 
-
 - (NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
 {
 	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
@@ -275,6 +293,46 @@
 	
 	return value;
 }
+
+
+- (NSArray*)conformedArrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// Conform the value to an array if it is not an array
+	if (![value isKindOfClass:[NSArray class]])
+		value = value ? [NSArray arrayWithObject:value] : defaultValue;
+	
+	return value;
+}
+
+
+- (NSDictionary*)conformedDictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
+{
+	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
+	
+	// Conform the value to a dictionary if it is not a dictionary
+	if (![value isKindOfClass:[NSDictionary class]])
+		value = value ? [NSDictionary dictionaryWithObject:value forKey:@"default"] : defaultValue;
+	
+	return value;
+}
+
+- (NSString*)queryString
+{
+	NSMutableArray*	keyValuePairs = [NSMutableArray array];
+	
+	// Create an URL query string (properly URL-encoded) from the dictionary's keys and values
+	for (NSString* key in self)
+	{
+		NSString*	value = [self objectForKey:key];
+		
+		[keyValuePairs addObject:[NSString stringWithFormat:@"%@=%@", [key escapedString], [value escapedString]]];
+	}
+	
+	return [keyValuePairs componentsJoinedByString:@"&"];
+}
+
 
 - (NSArray*)conformedArrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue
 {

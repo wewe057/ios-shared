@@ -31,41 +31,71 @@
     return result;
 }
 
-- (void)callSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...
+// This is tightly tied to the implementation found in NSObject+SDExtensions.m
+// These is a reason that the implementation is duplicated and not called into NSObject's version.
+// Please keep them duplicated otherwise the recursion bug that is being solved will happen again.
+
+- (void)makeObjectsPerformSelector:(SEL)aSelector argumentAddresses:(void *)arg1, ...
 {
+#define kMaximumCallSelectorArguments 20
+    
+    // if there's nothing in here, GTFO.
+    if (self.count == 0)
+        return;
+    
+    // get a sample of our target objects
+    id sampleTarget = [self objectAtIndex:0];
+    
+    // if it doesn't respond to the selector we're about to send it, GTFO.
+    if (![sampleTarget respondsToSelector:aSelector])
+        return;
+    
+    NSMethodSignature *methodSig = [[sampleTarget class] instanceMethodSignatureForSelector:aSelector];
+    NSUInteger numberOfArguments = [methodSig numberOfArguments] - 2;
+    
+    // it has more than 20 args???  Go smack the developer making methods w/ that many params.
+    if (numberOfArguments >= kMaximumCallSelectorArguments)
+        [NSException raise:@"SDException" format:@"makeObjectsPerformSelector:argumentAddresses: cannot take more than %i arguments.", kMaximumCallSelectorArguments];
+    
+    // get our args in order and make sure we don't send bullshit parameters, so clear it out.
+    void *arguments[kMaximumCallSelectorArguments];
+    memset(arguments, 0, sizeof(void *) * kMaximumCallSelectorArguments);
+    
+    // get our args out of the va_list, get ourselves a parameter count y0!
     va_list args;
     va_start(args, arg1);
     
-    NSArray *items = [self copy];
-    for (id object in items)
-    {
-        if ([object respondsToSelector:aSelector])
+    arguments[0] = arg1;
+    for (NSUInteger i = 1; i < numberOfArguments; i++)
+        arguments[i] = va_arg(args, void *);
+    
+    va_end(args);
+    
+    // make a copy of ourselves in case the array changes while we're iterating.
+    NSArray *copyOfSelf = [self copy];
+    
+    // call those mofos.
+    for (NSObject *object in copyOfSelf)
+        if([object respondsToSelector:aSelector])
         {
-            NSMethodSignature *methodSig = [[object class] instanceMethodSignatureForSelector:aSelector];
             NSInvocation *invocation = [NSInvocation invocationWithMethodSignature: methodSig];
             [invocation setTarget:object];
             [invocation setSelector:aSelector];
-            if (arg1)
-                [invocation setArgument:&arg1 atIndex:2];
+            
             void *theArg = nil;
-            for (int i = 3; i < [methodSig numberOfArguments]; i++)
+            for (NSInteger i = 0; i < numberOfArguments; i++)
             {
-                theArg = va_arg(args, void *);
-                if (theArg)
-                    [invocation setArgument:&theArg atIndex:i];
+                theArg = arguments[i];
+                [invocation setArgument:theArg atIndex:i + 2];
             }
-            [invocation invoke];	
-            // don't process the results.
-            //if (result)
-            //    [invocation getReturnValue:result];
+            
+            [invocation invoke];
         }
-    }
-    va_end(args);
 }
 
-- (NSArray*)shuffledArray
+- (NSArray *)shuffledArray
 {
-	NSMutableArray* shuffledArray = [NSMutableArray arrayWithArray: self];
+	NSMutableArray *shuffledArray = [NSMutableArray arrayWithArray: self];
 	[shuffledArray shuffle];
 	return shuffledArray;
 }
@@ -95,5 +125,21 @@
     return data;
 }
 
+- (NSArray *)arrayByMappingBlock:(id (^)(id))block
+{
+    NSArray *mappedArray = @[];
+    if (block) {
+        NSMutableArray* anArray = [NSMutableArray arrayWithCapacity:self.count];
+        
+        for (id object in self) {
+            id mappedObject = block(object);
+            if (mappedObject) {
+                [anArray addObject:mappedObject];
+            }
+        }
+        mappedArray = [anArray copy];
+    }
+    return mappedArray;
+}
 
 @end
