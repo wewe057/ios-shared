@@ -63,6 +63,8 @@
 {
     if (responseHandler)
         responseHandler(connection, nil, nil, [NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]);
+    responseHandler = nil;
+    self.isRunning = NO;
 }
 
 #pragma mark NSURLConnection delegate
