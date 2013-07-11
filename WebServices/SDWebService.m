@@ -314,6 +314,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     NSArray *keys = [dictionary allKeys];
     NSMutableString *result = [[NSMutableString alloc] init];
 
+    if (!dictionary || keys.count == 0)
+        return @"";
+
     for (NSString *key in keys)
     {
 		id object = [dictionary objectForKey:key];
