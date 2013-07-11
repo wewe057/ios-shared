@@ -61,7 +61,7 @@
 
 - (void)forceError:(SDURLConnection *)connection
 {
-    if (responseHandler)
+    if (isRunning && responseHandler)
         responseHandler(connection, nil, nil, [NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]);
     responseHandler = nil;
     self.isRunning = NO;
@@ -77,7 +77,7 @@
 
 - (void)connection:(SDURLConnection *)connection didFailWithError:(NSError *)error
 {
-    if (isRunning)
+    if (isRunning && responseHandler)
         responseHandler(connection, nil, responseData, error);
     responseHandler = nil;
     self.isRunning = NO;
@@ -91,7 +91,7 @@
 
 - (void)connectionDidFinishLoading:(SDURLConnection *)connection
 {
-    if (isRunning)
+    if (isRunning && responseHandler)
         responseHandler(connection, httpResponse, responseData, nil);
     responseHandler = nil;
     self.isRunning = NO;
