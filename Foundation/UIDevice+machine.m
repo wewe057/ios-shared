@@ -51,5 +51,41 @@
 	return YES;
 }
 
+// Returns the OS version as BCD stored in a 4 byte unsigned integer.
+// Here is an example of it's use:
+//
+//   if ([UIDevice bcdSystemVersion] >= 0x040301)
+//
+// Which will check to see if the device is running an OS of 4.3.1 or higher.
+
++ (uint32_t)bcdSystemVersion
+{
+    static NSUInteger version = 0;
+
+#ifndef DEBUG
+    if (version == 0)
+#else
+    version = 0;
+#endif
+    {
+        NSString *versionString = [[UIDevice currentDevice] systemVersion];
+        NSArray *components = [versionString componentsSeparatedByString:@"."];
+
+        if (components.count > 2)
+        {
+            version |= 0x000000FF & (uint)[[components objectAtIndex: 2] integerValue];
+        }
+        if (components.count > 1)
+        {
+            version |= (0x000000FF & (uint)[[components objectAtIndex: 1] integerValue]) << 8;
+        }
+        if (components.count)
+        {
+            version |= (0x000000FF & (uint)[[components objectAtIndex: 0] integerValue]) << 16;
+        }
+    }
+
+    return version;
+}
 
 @end

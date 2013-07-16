@@ -22,6 +22,11 @@
 + (NSDate *)dateFromRFC822String:(NSString *)argDateString;
 
 /**
+ Creates an NSDate from a string of the format `month/day/year`.
+ */
++ (NSDate *)dateFromMonthDayYearString:(NSString *)argDateString;
+
+/**
  Returns `YES` if the date represented by the receiver occurred more than `numSeconds` seconds ago. Returns `NO` otherwise.
  */
 - (BOOL)happenedMoreThanNSecondsAgo:(int)numSeconds;

@@ -98,18 +98,18 @@ typedef enum
 /**
  Returns the singleton for the web service class.
  */
-+ (id)sharedInstance;
++ (instancetype)sharedInstance;
 
 /**
  Initializes the instance with a plist specification included in the bundle and named using the string in `specificationName` and of type .plist.
  */
-- (id)initWithSpecification:(NSString *)specificationName;
+- (instancetype)initWithSpecification:(NSString *)specificationName;
 
 /**
  Initializes the instance with a plist specification included in the bundle and named using the string in `specificationName` and of type .plist.
  Overrides the `baseHost` and `basePath` with the parameters `defaultHost` and `defaultPath`.
  */
-- (id)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath;
+- (instancetype)initWithSpecification:(NSString *)specificationName host:(NSString *)defaultHost path:(NSString *)defaultPath;
 
 /**
  Returns the base scheme in the service specification.
@@ -166,9 +166,19 @@ typedef enum
 + (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock;
 
 /**
+ Returns a data processing block for converting JSON data into a mutable array.
+ */
++ (SDWebServiceDataCompletionBlock)defaultMutableArrayJSONProcessingBlock;
+
+/**
  Returns a data processing block for converting JSON data into a dictionary.
  */
 + (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock;
+
+/**
+ Returns a data processing block for converting JSON data into a mutable dictionary.
+ */
++ (SDWebServiceDataCompletionBlock)defaultMutableDictionaryJSONProcessingBlock;
 
 /**
  Calls performRequestWithMethod:routeReplacements:completion:shouldRetry: with `shouldRetry` set to `YES`.
@@ -236,7 +246,7 @@ typedef enum
                                   shouldRetry:(BOOL)shouldRetry;
 
 /**
- Cancles the request that matches the `identifier`.
+ Cancels the request that matches the `identifier`.
  */
 - (void)cancelRequestForIdentifier:(NSString *)identifier;
 

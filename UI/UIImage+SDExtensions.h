@@ -14,5 +14,6 @@
  Returns a UIImage rendering of the passed in view.
  */
 + (UIImage *)imageFromView:(UIView *)view;
+- (UIImage *)nonJaggyImage;
 
 @end

@@ -8,7 +8,31 @@
 
 #ifdef __OBJC__
 
+
 #define __deprecated__(s) __attribute__((deprecated(s)))
+
+
+#define strongify(v) \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wshadow\"") \
+    try {} @finally {} \
+    __strong __typeof(v) v = v ## _weak_ \
+    _Pragma("clang diagnostic pop")
+
+#define weakify(v) \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wshadow\"") \
+    try {} @finally {} \
+    __weak __typeof(v) v ## _weak_ = v \
+    _Pragma("clang diagnostic pop")
+
+#define unsafeify(v) \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Wshadow\"") \
+    try {} @finally {} \
+    __unsafe_unretained __typeof(v) v \
+    _Pragma("clang diagnostic pop")
+
 
 #import "SDLog.h"
 #import "NSObject+SDExtensions.h"
