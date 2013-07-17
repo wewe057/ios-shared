@@ -80,7 +80,7 @@
 
 - (UIView *)snapshot
 {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
+//#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
     // if we're on ios7, use the system's snapshoView.
     if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(snapshotView)])
         return [self snapshotView];
