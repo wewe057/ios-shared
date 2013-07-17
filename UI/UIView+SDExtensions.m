@@ -9,6 +9,11 @@
 #import "UIView+SDExtensions.h"
 #import "UIDevice+machine.h"
 
+@interface UIView()
+- (UIView *) snapshotView;
+- (void) drawViewHierarchyInRect: (CGRect) rect;
+@end
+
 @implementation UIView (SDExtensions)
 
 - (void)positionBelowView:(UIView *)argView offset:(CGFloat)argOffset
@@ -75,9 +80,11 @@
 
 - (UIView *)snapshot
 {
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
     // if we're on ios7, use the system's snapshoView.
     if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(snapshotView)])
         return [self snapshotView];
+#endif
 
     // otherwise, we're doing backwards compatibility to 6.
     UIView *view = [[UIView alloc] initWithFrame:self.frame];
@@ -105,10 +112,12 @@
 
         // Render the layer hierarchy to the current context
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
         // if we're on iOS 7, use the fast, system version.
         if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(drawViewHierarchyInRect:)])
             [self drawViewHierarchyInRect:self.frame];
         else
+#endif
             [self.layer renderInContext:context];
 
         // Restore the context
