@@ -84,7 +84,7 @@
 
 #define unsafeify(...) \
     try {} @finally {} \
-    macro_dispatcher(strongify, __VA_ARGS__)(__VA_ARGS__)
+    macro_dispatcher(unsafeify, __VA_ARGS__)(__VA_ARGS__)
 
 /**
  @strongify(existingWeakVar)
