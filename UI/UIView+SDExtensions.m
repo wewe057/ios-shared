@@ -19,44 +19,31 @@
 							self.frame.size.height);
 }
 
--(void)setFrameOriginY:(CGFloat)newY
+- (void)setFrameOriginY:(CGFloat)newY
 {
 	CGRect f = self.frame;
 	f.origin.y = newY;
 	self.frame = f;
 }
 
--(void)setFrameOriginX:(CGFloat)newX
+- (void)setFrameOriginX:(CGFloat)newX
 {
 	CGRect f = self.frame;
 	f.origin.x = newX;
 	self.frame = f;
 }
 
--(void)setIntegralCenter:(CGPoint)integralCenter
+- (void)setIntegralCenter:(CGPoint)integralCenter
 {
-//	CGRect integralFrame = self.frame;
-//	integralFrame.origin.x = integralCenter.x - (integralFrame.size.width / 2);
-//	integralFrame.origin.y = integralCenter.y - (integralFrame.size.height / 2);
-//	integralFrame = CGRectIntegral(integralFrame);
-//	self.frame = integralFrame;
-	CGRect theFrame = self.frame;
-	CGFloat halfWidth = theFrame.size.width / 2.0f;
-	CGFloat halfHeight = theFrame.size.height / 2.0f;
-	CGPoint newCenter;
-	newCenter.x = roundf(integralCenter.x - halfWidth) + halfWidth;
-	newCenter.y = roundf(integralCenter.y - halfHeight) + halfHeight;
-	self.center = newCenter;
-//SDLog(@"passed in center: %@, new center: %@",NSStringFromCGPoint(integralCenter),NSStringFromCGPoint(self.center));
-//SDLog(@"new frame: %@",NSStringFromCGRect(self.frame));
+    self.center = integralCenter;
+    self.frame = CGRectIntegral(self.frame);
 }
 
--(CGPoint)integralCenter
+- (CGPoint)integralCenter
 {
-	CGRect integralFrame = self.frame;
-	integralFrame.origin = self.center;
-	integralFrame = CGRectIntegral(integralFrame);
-	return integralFrame.origin;
+	CGRect integralFrame = CGRectIntegral(self.frame);
+    CGPoint centerPoint = CGPointMake(integralFrame.size.width / 2, integralFrame.size.height / 2);
+	return centerPoint;
 }
 
 - (void)setIntegralFrame:(CGRect)viewFrame
@@ -69,7 +56,7 @@
 	return CGRectIntegral(self.frame);
 }
 
--(id)firstSubviewOfClass:(Class)aViewClass
+- (id)firstSubviewOfClass:(Class)aViewClass
 {
 	NSArray *subs = [self subviews];
 	id aView = nil;
