@@ -7,7 +7,7 @@
 //
 
 #import "UIView+SDExtensions.h"
-
+#import "UIDevice+machine.h"
 
 @implementation UIView (SDExtensions)
 
@@ -71,6 +71,55 @@
 	}
 	
 	return nil;
+}
+
+- (UIView *)snapshot
+{
+    // if we're on ios7, use the system's snapshoView.
+    if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(snapshotView)])
+        return [self snapshotView];
+
+    // otherwise, we're doing backwards compatibility to 6.
+    UIView *view = [[UIView alloc] initWithFrame:self.frame];
+    view.layer.contents = (id)[self screenshot].CGImage;
+    return view;
+}
+
+- (UIImage *)screenshot
+{
+    CGFloat currentScale = [UIScreen mainScreen].scale;
+    UIGraphicsBeginImageContextWithOptions(self.frame.size, NO, currentScale);
+
+    UIImage *result = nil;
+
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    if (context)
+    {
+        // renderInContext renders in the coordinate space of the layer.
+
+        // apply the layer's geometry to the graphics context
+        CGContextSaveGState(context);
+        CGContextTranslateCTM(context, self.center.x, self.center.y);
+        CGContextConcatCTM(context, self.transform);
+        CGContextTranslateCTM(context, -self.bounds.size.width * self.layer.anchorPoint.x, -self.bounds.size.height * self.layer.anchorPoint.y);
+
+        // Render the layer hierarchy to the current context
+
+        // if we're on iOS 7, use the fast, system version.
+        if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(drawViewHierarchyInRect:)])
+            [self drawViewHierarchyInRect:self.frame];
+        else
+            [self.layer renderInContext:context];
+
+        // Restore the context
+        CGContextRestoreGState(context);
+
+        result = UIGraphicsGetImageFromCurrentImageContext();
+    }
+    else
+        SDLog(@"Attempting to capture a screenshot of view without a graphics context!");
+
+    return result;
 }
 
 @end
