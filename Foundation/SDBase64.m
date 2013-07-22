@@ -2,6 +2,8 @@
 //  SDBase64.m
 //  ios-shared
 //
+//  This class extension requires linking with libresolv.dylib.
+//
 //  Created by Brandon Sneed on 5/29/13.
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //

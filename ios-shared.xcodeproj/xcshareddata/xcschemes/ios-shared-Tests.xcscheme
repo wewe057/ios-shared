@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0460"
+   LastUpgradeVersion = "0500"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -17,7 +17,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E257855F177A200100BC69BB"
-               BuildableName = "ios-shared-Tests.octest"
+               BuildableName = "ios-shared-tests.octest"
                BlueprintName = "ios-shared-tests"
                ReferencedContainer = "container:ios-shared.xcodeproj">
             </BuildableReference>

@@ -91,10 +91,12 @@
 		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
+		CA9CE457179079E200358D5D /* SDMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = CA9CE456179079E200358D5D /* SDMacros.h */; };
 		CAA7AEAC1778F7CD0033BC49 /* SDPagingView.h in Headers */ = {isa = PBXBuildFile; fileRef = CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */; };
 		CAA7AEAD1778F7CD0033BC49 /* SDPagingView.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
 		CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */; };
+		CAB97F04178DE01D001A8ABA /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB97F03178DDF88001A8ABA /* SDImageCache.m */; };
 		CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */; };
 		CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */; };
 		E2578562177A200100BC69BB /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2578561177A200100BC69BB /* SenTestingKit.framework */; };
@@ -104,6 +106,8 @@
 		E257856D177A200100BC69BB /* ios_shared_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E257856C177A200100BC69BB /* ios_shared_Tests.m */; };
 		E2578574177A20B100BC69BB /* UIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E2578573177A20B100BC69BB /* UIDeviceTests.m */; };
 		E2578575177A247400BC69BB /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331B74171F1E3800CFD209 /* UIDevice+machine.m */; };
+		E26A3E5C177CE8250065FDA8 /* SDMockService.h in Headers */ = {isa = PBXBuildFile; fileRef = E26A3E5A177CE8250065FDA8 /* SDMockService.h */; };
+		E26A3E5D177CE8250065FDA8 /* SDMockService.m in Sources */ = {isa = PBXBuildFile; fileRef = E26A3E5B177CE8250065FDA8 /* SDMockService.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -200,13 +204,16 @@
 		CA5BC6851756A689006E8673 /* SDBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64.m; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
+		CA9CE456179079E200358D5D /* SDMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMacros.h; sourceTree = "<group>"; };
 		CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPagingView.h; sourceTree = "<group>"; };
 		CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPagingView.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
 		CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SDExtensions.m"; sourceTree = "<group>"; };
+		CAB97F02178DDF88001A8ABA /* SDImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
+		CAB97F03178DDF88001A8ABA /* SDImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
 		CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SDExtensions.h"; sourceTree = "<group>"; };
 		CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SDExtensions.m"; sourceTree = "<group>"; };
-		E2578560177A200100BC69BB /* ios-shared-Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared-Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2578560177A200100BC69BB /* ios-shared-tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared-tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2578561177A200100BC69BB /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		E2578567177A200100BC69BB /* ios-shared-Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-shared-Tests-Info.plist"; sourceTree = "<group>"; };
 		E2578569177A200100BC69BB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -215,6 +222,8 @@
 		E257856E177A200100BC69BB /* ios-shared-Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ios-shared-Tests-Prefix.pch"; sourceTree = "<group>"; };
 		E2578572177A20B100BC69BB /* UIDeviceTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIDeviceTests.h; sourceTree = "<group>"; };
 		E2578573177A20B100BC69BB /* UIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIDeviceTests.m; sourceTree = "<group>"; };
+		E26A3E5A177CE8250065FDA8 /* SDMockService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMockService.h; sourceTree = "<group>"; };
+		E26A3E5B177CE8250065FDA8 /* SDMockService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDMockService.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,7 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				009381061461B6860044E007 /* libios-shared.a */,
-				E2578560177A200100BC69BB /* ios-shared-Tests.octest */,
+				E2578560177A200100BC69BB /* ios-shared-tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -277,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				CA014DBC16F39AC200253769 /* ios-shared.h */,
+				CA9CE455179079E200358D5D /* Macros */,
 				CA014D2216F3940500253769 /* Foundation */,
 				CA014D2F16F3940500253769 /* Logging */,
 				CA014D3316F3940500253769 /* Mapping */,
@@ -423,6 +433,10 @@
 				CA014D7216F3940500253769 /* SDWebService.m */,
 				CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */,
 				CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */,
+				CAB97F02178DDF88001A8ABA /* SDImageCache.h */,
+				CAB97F03178DDF88001A8ABA /* SDImageCache.m */,
+				E26A3E5A177CE8250065FDA8 /* SDMockService.h */,
+				E26A3E5B177CE8250065FDA8 /* SDMockService.m */,
 			);
 			path = WebServices;
 			sourceTree = SOURCE_ROOT;
@@ -436,6 +450,14 @@
 			);
 			name = Configurations;
 			sourceTree = "<group>";
+		};
+		CA9CE455179079E200358D5D /* Macros */ = {
+			isa = PBXGroup;
+			children = (
+				CA9CE456179079E200358D5D /* SDMacros.h */,
+			);
+			path = Macros;
+			sourceTree = SOURCE_ROOT;
 		};
 		E2578565177A200100BC69BB /* Tests */ = {
 			isa = PBXGroup;
@@ -467,6 +489,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA9CE457179079E200358D5D /* SDMacros.h in Headers */,
 				CA014D7316F3940500253769 /* NSArray+SDExtensions.h in Headers */,
 				CA014D7516F3940500253769 /* NSDate+SDExtensions.h in Headers */,
 				CA014D7716F3940500253769 /* NSDictionary+SDExtensions.h in Headers */,
@@ -511,6 +534,7 @@
 				CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */,
 				CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */,
 				CA5BC6861756A689006E8673 /* SDBase64.h in Headers */,
+				E26A3E5C177CE8250065FDA8 /* SDMockService.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,7 +573,7 @@
 			);
 			name = "ios-shared-tests";
 			productName = "ios-shared-Tests";
-			productReference = E2578560177A200100BC69BB /* ios-shared-Tests.octest */;
+			productReference = E2578560177A200100BC69BB /* ios-shared-tests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -558,7 +582,7 @@
 		009380FD1461B6850044E007 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = SetDirection;
 			};
 			buildConfigurationList = 009381001461B6850044E007 /* Build configuration list for PBXProject "ios-shared" */;
@@ -619,6 +643,7 @@
 				CA014D7C16F3940500253769 /* NSUserDefaults+SDExtensions.m in Sources */,
 				CA014D7E16F3940500253769 /* SDTimer.m in Sources */,
 				CA014D8316F3940500253769 /* CLLocation+SDExtensions.m in Sources */,
+				CAB97F04178DE01D001A8ABA /* SDImageCache.m in Sources */,
 				CA014D8516F3940500253769 /* MKMapView+SDExtensions.m in Sources */,
 				CA014D8916F3940500253769 /* SDLocationManager.m in Sources */,
 				CA014D8B16F3940500253769 /* SDKeychain.m in Sources */,
@@ -655,6 +680,7 @@
 				CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */,
 				CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */,
 				CA5BC6871756A689006E8673 /* SDBase64.m in Sources */,
+				E26A3E5D177CE8250065FDA8 /* SDMockService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,8 +712,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -702,9 +729,12 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -713,8 +743,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -722,7 +753,9 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
@@ -775,7 +808,7 @@
 				GCC_PREFIX_HEADER = "ios-shared-Tests/ios-shared-Tests-Prefix.pch";
 				INFOPLIST_FILE = "ios-shared-Tests/ios-shared-Tests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -829,6 +862,7 @@
 				E2578570177A200100BC69BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -281,7 +281,7 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
     }
     
     // if we get here, it didn't pass our validation checks.  forcibly remove it.
-    if (remove)
+    if (remove && response)
         [urlCache removeCachedResponseForRequest:request];
     
 	return nil; // Valid cached response not found

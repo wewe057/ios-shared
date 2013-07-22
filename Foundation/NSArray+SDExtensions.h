@@ -53,4 +53,9 @@
  */
 - (NSString *)JSONStringRepresentation;
 
+/**
+ Returns a new array created by calling the block on each object in the receiver
+ */
+- (NSArray *)arrayByMappingBlock:(id (^)(id))block;
+
 @end

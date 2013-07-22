@@ -36,9 +36,8 @@ typedef void (^SDURLConnectionResponseBlock)(SDURLConnection *connection, NSURLR
 /**
  Create a connection for the given request parameters.
  @param request The URL request.
- @param cache Indicates if the URL response should be cached.
  @param handler The block to execute when the response has been received completely.
  */
-+ (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler;
++ (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request withResponseHandler:(SDURLConnectionResponseBlock)handler;
 
 @end

@@ -30,17 +30,18 @@ static NSNumberFormatter *__internalformatter = nil;
     return result;
 }
 
-+ (SDDataMap *)mapForDictionary:(NSDictionary *)dictionary {
++ (SDDataMap *)mapForDictionary:(NSDictionary *)dictionary
+{
 	SDDataMap *result = nil;
 
 	result = [[SDDataMap alloc] init];
 	result->_mapPlist = dictionary; // Do we need to use [NSDictionary dictionaryWithDictionary:dictionary] here?
 	result->_typeCache = [[NSMutableDictionary alloc] init];
 	if (!__internalformatter)
-        {
-            __internalformatter = [[NSNumberFormatter alloc] init];
-            [__internalformatter setNumberStyle:NSNumberFormatterNoStyle];
-        }
+    {
+        __internalformatter = [[NSNumberFormatter alloc] init];
+        [__internalformatter setNumberStyle:NSNumberFormatterNoStyle];
+    }
 	return result;
 }
 
@@ -64,17 +65,17 @@ static const char *getPropertyType(objc_property_t property)
             return (const char *)[[NSData dataWithBytes:(attribute + 1) length:strlen(attribute) - 1] bytes];
         }
         else
-            if (attribute[0] == 'T' && attribute[1] == '@' && strlen(attribute) == 2)
-            {
-                // it's an ObjC id type:
-                return "id";
-            }
-            else
-                if (attribute[0] == 'T' && attribute[1] == '@')
-                {
-                    // it's another ObjC object type:
-                    return (const char *)[[NSData dataWithBytes:(attribute + 3) length:strlen(attribute) - 4] bytes];
-                }
+        if (attribute[0] == 'T' && attribute[1] == '@' && strlen(attribute) == 2)
+        {
+            // it's an ObjC id type:
+            return "id";
+        }
+        else
+        if (attribute[0] == 'T' && attribute[1] == '@')
+        {
+            // it's another ObjC object type:
+            return (const char *)[[NSData dataWithBytes:(attribute + 3) length:strlen(attribute) - 4] bytes];
+        }
     }
     
     return "";
