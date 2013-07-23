@@ -9,6 +9,7 @@
 #import "SDURLConnection.h"
 #import "NSString+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
+#import "NSURLCache+SDExtensions.h"
 
 #import <libkern/OSAtomic.h>
 
@@ -31,7 +32,7 @@
 
 @property (atomic, assign) BOOL isRunning;
 
-- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler shouldCache:(BOOL)cache;
+- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler;
 - (void)forceError:(SDURLConnection *)connection;
 
 @end
@@ -40,12 +41,11 @@
 
 @synthesize isRunning;
 
-- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler shouldCache:(BOOL)cache
+- (id)initWithResponseHandler:(SDURLConnectionResponseBlock)newHandler
 {
     if (self = [super init])
 	{
         responseHandler = [newHandler copy];
-        shouldCache = cache;
 		responseData = [NSMutableData dataWithCapacity:0];
         self.isRunning = YES;
     }
@@ -99,8 +99,17 @@
 
 - (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
 {
-    NSCachedURLResponse *realCache = [[NSCachedURLResponse alloc] initWithResponse:cachedResponse.response data:cachedResponse.responseData userInfo:nil storagePolicy:NSURLCacheStorageAllowed];
-    return shouldCache ? realCache : nil;
+    NSHTTPURLResponse *response = (NSHTTPURLResponse*)[cachedResponse response];
+
+    // If we don't have any cache control or expiration, we shouldn't store this.
+    if ([connection currentRequest].cachePolicy == NSURLRequestUseProtocolCachePolicy)
+    {
+        NSDictionary *headers = [response allHeaderFields];
+        if (![NSURLCache expirationDateFromHeaders:headers withStatusCode:response.statusCode])
+            return nil; // we were effectively told not to cache it, so we won't.
+    }
+
+    return cachedResponse;
 }
 
 @end
@@ -155,12 +164,12 @@ static NSOperationQueue *networkOperationQueue = nil;
     }
 }
 
-+ (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request shouldCache:(BOOL)cache withResponseHandler:(SDURLConnectionResponseBlock)handler
++ (SDURLConnection *)sendAsynchronousRequest:(NSURLRequest *)request withResponseHandler:(SDURLConnectionResponseBlock)handler
 {
     if (!handler)
         @throw @"sendAsynchronousRequest must be given a handler!";
     
-    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:handler shouldCache:cache];
+    SDURLConnectionAsyncDelegate *delegate = [[SDURLConnectionAsyncDelegate alloc] initWithResponseHandler:handler];
     SDURLConnection *connection = [[SDURLConnection alloc] initWithRequest:request delegate:delegate startImmediately:NO];
     
     if (!connection)

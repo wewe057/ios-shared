@@ -314,6 +314,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     NSArray *keys = [dictionary allKeys];
     NSMutableString *result = [[NSMutableString alloc] init];
 
+    if (!dictionary || keys.count == 0)
+        return @"";
+
     for (NSString *key in keys)
     {
 		id object = [dictionary objectForKey:key];
@@ -833,7 +836,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:urlCompletionBlock];
 
     [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
     if (singleRequest)

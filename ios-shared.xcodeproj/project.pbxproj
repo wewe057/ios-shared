@@ -91,6 +91,7 @@
 		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
+		CA9CE457179079E200358D5D /* SDMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = CA9CE456179079E200358D5D /* SDMacros.h */; };
 		CAA7AEAC1778F7CD0033BC49 /* SDPagingView.h in Headers */ = {isa = PBXBuildFile; fileRef = CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */; };
 		CAA7AEAD1778F7CD0033BC49 /* SDPagingView.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
@@ -203,6 +204,7 @@
 		CA5BC6851756A689006E8673 /* SDBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64.m; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
+		CA9CE456179079E200358D5D /* SDMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMacros.h; sourceTree = "<group>"; };
 		CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPagingView.h; sourceTree = "<group>"; };
 		CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPagingView.m; sourceTree = "<group>"; };
 		CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+SDExtensions.h"; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				CA014DBC16F39AC200253769 /* ios-shared.h */,
+				CA9CE455179079E200358D5D /* Macros */,
 				CA014D2216F3940500253769 /* Foundation */,
 				CA014D2F16F3940500253769 /* Logging */,
 				CA014D3316F3940500253769 /* Mapping */,
@@ -448,6 +451,14 @@
 			name = Configurations;
 			sourceTree = "<group>";
 		};
+		CA9CE455179079E200358D5D /* Macros */ = {
+			isa = PBXGroup;
+			children = (
+				CA9CE456179079E200358D5D /* SDMacros.h */,
+			);
+			path = Macros;
+			sourceTree = SOURCE_ROOT;
+		};
 		E2578565177A200100BC69BB /* Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -478,6 +489,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA9CE457179079E200358D5D /* SDMacros.h in Headers */,
 				CA014D7316F3940500253769 /* NSArray+SDExtensions.h in Headers */,
 				CA014D7516F3940500253769 /* NSDate+SDExtensions.h in Headers */,
 				CA014D7716F3940500253769 /* NSDictionary+SDExtensions.h in Headers */,
@@ -700,7 +712,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -723,6 +734,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -731,7 +743,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
