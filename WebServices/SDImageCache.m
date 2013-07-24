@@ -198,7 +198,8 @@
     NSURLCache *cache = [NSURLCache sharedURLCache];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [cache removeCachedResponseForRequest:request];
+    if (request)
+        [cache removeCachedResponseForRequest:request];
 }
 
 - (void)addImageToMemoryCache:(UIImage *)image withURL:(NSURL *)url
