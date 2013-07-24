@@ -162,7 +162,7 @@
         }
     }
 
-    SDURLConnection *urlConnection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
+    SDURLConnection *urlConnection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
         UIImage *image = nil;
         if (responseData && responseData.length > 0)
             image = [UIImage imageWithData:responseData];
@@ -198,7 +198,8 @@
     NSURLCache *cache = [NSURLCache sharedURLCache];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [cache removeCachedResponseForRequest:request];
+    if (request)
+        [cache removeCachedResponseForRequest:request];
 }
 
 - (void)addImageToMemoryCache:(UIImage *)image withURL:(NSURL *)url

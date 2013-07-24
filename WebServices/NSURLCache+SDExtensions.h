@@ -11,6 +11,12 @@
 @interface NSURLCache (SDExtensions)
 
 /**
+ Returns the expiration data from a given set of headers and status code.  If it's determined that this should not be cached
+ nil is returned.  If there's no way to determine if it should be cached or not, then a default of 1 hr is assumed.
+ */
++ (NSDate *)expirationDateFromHeaders:(NSDictionary *)headers withStatusCode:(NSInteger)status;
+
+/**
  Returns `YES` if the url is in the cache and valid (ie non-expired). `NO` otherwise.
  */
 - (BOOL)isCachedAndValid:(NSURLRequest*)request;
@@ -24,8 +30,6 @@
  Returns response if it is not expired and younger than `ttl`. `nil` otherwise.
  */
 - (NSCachedURLResponse*)validCachedResponseForRequest:(NSURLRequest *)request forTime:(NSTimeInterval)ttl removeIfInvalid:(BOOL)remove;
-
-// 
 
 /**
  Returns the response but ignores the expiration date. Just compares the ttl against the date in the header.
