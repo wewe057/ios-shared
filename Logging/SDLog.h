@@ -10,6 +10,7 @@
 // this turns off logging if DEBUG is not defined in the target
 // assuming one is using SDLog everywhere to log to console.
 
+#ifndef SDLog
 #if defined(TESTFLIGHT)
 #define SDLog(__FORMAT__, ...) NSLog((@"%s [Line %d] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #elif defined(DEBUG) && !defined(TESTFLIGHT)
@@ -18,6 +19,7 @@
 #else
 #define SDLog(x...)
 #define SDTrace(x...)
+#endif
 #endif
 
 #if defined(DEBUG)

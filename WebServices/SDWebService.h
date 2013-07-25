@@ -96,7 +96,7 @@ typedef enum
 @property (nonatomic, assign) NSUInteger timeout;
 
 /**
- Returns the singleton for the web service class.
+ Returns the singleton for the web service class.  This should be overridden if multiple subclasses are in use.
  */
 + (instancetype)sharedInstance;
 

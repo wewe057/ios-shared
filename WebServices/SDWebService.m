@@ -836,7 +836,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:urlCompletionBlock];
 
     [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
     if (singleRequest)
