@@ -17,10 +17,10 @@
 {
     BOOL returnValue = NO;
     
-    NSString* urlValidationExpression = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w-\\+ ./?%&amp;=]*)?";
+    NSString* urlValidationExpression = @"http(s)?://([\\w-]+\\.)+[\\w-(:)]+(/[\\w-\\+ ./?%&amp;=]*)?";
     NSPredicate* urlValidator = [NSPredicate predicateWithFormat: @"SELF MATCHES %@", urlValidationExpression];
     
-    if (self.URL.absoluteString.length > 0  && [urlValidator evaluateWithObject: self.URL])
+    if (self.URL.absoluteString.length > 0  && [urlValidator evaluateWithObject: self.URL.absoluteString])
     {
         returnValue = YES;
     }
