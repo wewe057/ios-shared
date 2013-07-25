@@ -9,6 +9,7 @@
 #import "SDImageCache.h"
 #import "NSURLCache+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
+#import "NSURLRequest+SDExtensions.h"
 
 #import <objc/runtime.h>
 
@@ -198,7 +199,7 @@
     NSURLCache *cache = [NSURLCache sharedURLCache];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    if (request)
+    if ([request isValid])
         [cache removeCachedResponseForRequest:request];
 }
 
