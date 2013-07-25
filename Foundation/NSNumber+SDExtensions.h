@@ -15,4 +15,9 @@
  */
 + (NSNumber *)numberFromDollarString:(NSString *)argDollarString;
 
+/**
+ Takes an NSNumber and returns a string of format $1,000,000.00.
+ */
++ (NSString *)dollarStringFromNumber:(NSNumber *)argNumber;
+
 @end

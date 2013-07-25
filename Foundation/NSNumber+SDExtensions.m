@@ -23,5 +23,23 @@
     return [sFormatter numberFromString:argDollarString];
 }
 
+/**
+ Note that this is currently set to locale en_US but should be set to the correct locale
+ once it needs to be localized to other regions and languages.
+ */
++ (NSString *)dollarStringFromNumber:(NSNumber *)argNumber
+{
+    static NSNumberFormatter *currencyFormatter = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        currencyFormatter = [[NSNumberFormatter alloc] init];
+        [currencyFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        [currencyFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+    });
+    
+    return [currencyFormatter stringFromNumber:argNumber];
+}
+
 
 @end
