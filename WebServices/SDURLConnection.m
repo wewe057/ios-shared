@@ -26,7 +26,6 @@
 @private
 	NSMutableData *responseData;
 	NSHTTPURLResponse *httpResponse;
-    BOOL shouldCache;
     BOOL isRunning;
 }
 
