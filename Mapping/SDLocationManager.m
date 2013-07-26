@@ -112,7 +112,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
     return NO;
 }
 
-- (void)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
     [delegates addObject:delegate];
     if (!isUpdatingLocation)
@@ -127,9 +127,12 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
         else
         {
             [self locationManager:self didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil]];
-            [self stopUpdatingHeadingWithDelegate:delegate];
+            [self stopUpdatingLocationWithDelegate:delegate];
+            return NO;
         }
     }
+
+    return YES;
 }
 
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate

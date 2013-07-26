@@ -46,7 +46,7 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 
 - (BOOL)isLocationAllowed;
 
-- (void)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
