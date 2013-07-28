@@ -71,8 +71,9 @@
 
 - (void)handleSingleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-    if ([self.delegate respondsToSelector:@selector(photoImageView:wasTappedAtPoint:)])
-        [self.delegate photoImageView:self wasTappedAtPoint:[gestureRecognizer locationInView:gestureRecognizer.view]];
+    id<SDPhotoImageViewDelegate> delegate = self.delegate;
+    if ([delegate respondsToSelector:@selector(photoImageView:wasTappedAtPoint:)])
+        [delegate photoImageView:self wasTappedAtPoint:[gestureRecognizer locationInView:gestureRecognizer.view]];
 }
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
