@@ -7,6 +7,7 @@
 //
 
 #import "SDImageCache.h"
+#import "SDURLConnection.h"
 #import "NSURLCache+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
 
@@ -70,6 +71,17 @@
 {
     [_memoryCache removeAllObjects];
     _imageCounter = 0;
+}
+
+- (void)flushDiskCache
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+
+- (void)flushCache
+{
+    [self flushMemoryCache];
+    [self flushDiskCache];
 }
 
 - (void)cleanCacheAsNeeded
@@ -166,6 +178,13 @@
         UIImage *image = nil;
         if (responseData && responseData.length > 0)
             image = [UIImage imageWithData:responseData];
+
+        if ([response isKindOfClass:[NSHTTPURLResponse class]])
+        {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            if (httpResponse.statusCode >= 400)
+                error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+        }
 
         [_decodeQueue addOperationWithBlock:^{
             UIImage *decodedImage = nil;

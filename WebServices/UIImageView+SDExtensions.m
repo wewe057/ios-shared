@@ -11,6 +11,8 @@
 
 #import <objc/runtime.h>
 
+NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
+
 @implementation UIImageView (SDExtensions)
 
 - (void)setImageWithURL:(NSURL *)url
@@ -37,7 +39,10 @@
 {
     NSURL *existingURL = objc_getAssociatedObject(self, @"imageUrl");
     if (existingURL && [[url absoluteString] isEqualToString:[existingURL absoluteString]])
+    {
+        completionBlock(nil, [NSError errorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorAlreadyBeingFetched]);
         return;
+    }
     else
     if (existingURL)
         [self cancelCurrentImageLoad];
@@ -46,15 +51,29 @@
     
     objc_setAssociatedObject(self, @"imageUrl", url, OBJC_ASSOCIATION_RETAIN);
 
+    // if the url is set to nil, assume it's intentional and don't send back an error.
+    if (!url)
+    {
+        completionBlock(nil, nil);
+        return;
+    }
+
     @weakify(self);
 
     [[SDImageCache sharedInstance] fetchImageAtURL:url completionBlock:^(UIImage *image, NSError *error) {
         @strongify(self);
         NSURL *originalURL = objc_getAssociatedObject(self, @"imageUrl");
+
+        // if the url's match on both sides, lets set it and/or wrap any error that comes back.
         if ([[url absoluteString] isEqualToString:[originalURL absoluteString]])
         {
             self.image = image;
-            completionBlock(image, error);
+            completionBlock(image, [NSError wrapErrorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorConnectionError underlyingError:error]);
+        }
+        else
+        {
+            // the url's don't match anymore, skip setting it, but inform the client.
+            completionBlock(nil, [NSError errorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorHasBeenReused underlyingError:error]);
         }
     }];
 }
