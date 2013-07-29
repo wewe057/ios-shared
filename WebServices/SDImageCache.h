@@ -23,6 +23,10 @@ typedef void (^UIImageViewURLCompletionBlock)(UIImage *image, NSError *error);
 
 + (SDImageCache *)sharedInstance;
 
+- (void)flushMemoryCache;
+- (void)flushDiskCache;
+- (void)flushCache;
+
 - (NSUInteger)actualMemoryCacheSize;
 
 - (BOOL)isImageURLInProgress:(NSURL *)url;
