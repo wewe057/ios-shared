@@ -108,6 +108,8 @@
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
 		CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */; };
 		CAB97F04178DE01D001A8ABA /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB97F03178DDF88001A8ABA /* SDImageCache.m */; };
+		CACA02B317A83EBC00A8D756 /* SDPhotoImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = CACA02B117A83EBC00A8D756 /* SDPhotoImageView.h */; };
+		CACA02B417A83EBC00A8D756 /* SDPhotoImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CACA02B217A83EBC00A8D756 /* SDPhotoImageView.m */; };
 		CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */; };
 		CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */; };
 		E2578562177A200100BC69BB /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2578561177A200100BC69BB /* SenTestingKit.framework */; };
@@ -226,6 +228,8 @@
 		CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SDExtensions.m"; sourceTree = "<group>"; };
 		CAB97F02178DDF88001A8ABA /* SDImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
 		CAB97F03178DDF88001A8ABA /* SDImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
+		CACA02B117A83EBC00A8D756 /* SDPhotoImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPhotoImageView.h; sourceTree = "<group>"; };
+		CACA02B217A83EBC00A8D756 /* SDPhotoImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPhotoImageView.m; sourceTree = "<group>"; };
 		CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SDExtensions.h"; sourceTree = "<group>"; };
 		CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SDExtensions.m"; sourceTree = "<group>"; };
 		E2578560177A200100BC69BB /* ios-shared-tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared-tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -386,6 +390,8 @@
 			children = (
 				CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */,
 				CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */,
+				CACA02B117A83EBC00A8D756 /* SDPhotoImageView.h */,
+				CACA02B217A83EBC00A8D756 /* SDPhotoImageView.m */,
 				CA88884C16F787BB0007C614 /* SDDeckController.h */,
 				CA88884D16F787BB0007C614 /* SDDeckController.m */,
 				CA014DBD16F39F2600253769 /* SDContainerViewController.h */,
@@ -516,6 +522,7 @@
 				CA014D7916F3940500253769 /* NSString+SDExtensions.h in Headers */,
 				CAA7AEAC1778F7CD0033BC49 /* SDPagingView.h in Headers */,
 				CA014D7B16F3940500253769 /* NSUserDefaults+SDExtensions.h in Headers */,
+				CACA02B317A83EBC00A8D756 /* SDPhotoImageView.h in Headers */,
 				CA014D7D16F3940500253769 /* SDTimer.h in Headers */,
 				CA014D8116F3940500253769 /* SDLog.h in Headers */,
 				CA014D8216F3940500253769 /* CLLocation+SDExtensions.h in Headers */,
@@ -658,6 +665,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA014D7416F3940500253769 /* NSArray+SDExtensions.m in Sources */,
+				CACA02B417A83EBC00A8D756 /* SDPhotoImageView.m in Sources */,
 				CA014D7616F3940500253769 /* NSDate+SDExtensions.m in Sources */,
 				CA014D7816F3940500253769 /* NSDictionary+SDExtensions.m in Sources */,
 				CA014D7A16F3940500253769 /* NSString+SDExtensions.m in Sources */,
