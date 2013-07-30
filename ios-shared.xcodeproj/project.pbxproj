@@ -63,8 +63,6 @@
 		CA014DA916F3940500253769 /* UINavigationController+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D5F16F3940500253769 /* UINavigationController+SDExtensions.m */; };
 		CA014DAA16F3940500253769 /* UIScreen+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6016F3940500253769 /* UIScreen+SDExtensions.h */; };
 		CA014DAB16F3940500253769 /* UIScreen+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6116F3940500253769 /* UIScreen+SDExtensions.m */; };
-		CA014DAC16F3940500253769 /* UISearchBar+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6216F3940500253769 /* UISearchBar+SDExtensions.h */; };
-		CA014DAD16F3940500253769 /* UISearchBar+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6316F3940500253769 /* UISearchBar+SDExtensions.m */; };
 		CA014DAE16F3940500253769 /* UIView+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6416F3940500253769 /* UIView+SDExtensions.h */; };
 		CA014DAF16F3940500253769 /* UIView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6516F3940500253769 /* UIView+SDExtensions.m */; };
 		CA014DB016F3940500253769 /* NSCachedURLResponse+LeakFix.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6716F3940500253769 /* NSCachedURLResponse+LeakFix.h */; };
@@ -184,8 +182,6 @@
 		CA014D5F16F3940500253769 /* UINavigationController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D6016F3940500253769 /* UIScreen+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScreen+SDExtensions.h"; sourceTree = "<group>"; };
 		CA014D6116F3940500253769 /* UIScreen+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+SDExtensions.m"; sourceTree = "<group>"; };
-		CA014D6216F3940500253769 /* UISearchBar+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UISearchBar+SDExtensions.h"; sourceTree = "<group>"; };
-		CA014D6316F3940500253769 /* UISearchBar+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UISearchBar+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D6416F3940500253769 /* UIView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SDExtensions.h"; sourceTree = "<group>"; };
 		CA014D6516F3940500253769 /* UIView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D6716F3940500253769 /* NSCachedURLResponse+LeakFix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCachedURLResponse+LeakFix.h"; sourceTree = "<group>"; };
@@ -430,8 +426,6 @@
 				CA014D5F16F3940500253769 /* UINavigationController+SDExtensions.m */,
 				CA014D6016F3940500253769 /* UIScreen+SDExtensions.h */,
 				CA014D6116F3940500253769 /* UIScreen+SDExtensions.m */,
-				CA014D6216F3940500253769 /* UISearchBar+SDExtensions.h */,
-				CA014D6316F3940500253769 /* UISearchBar+SDExtensions.m */,
 				CA014D6416F3940500253769 /* UIView+SDExtensions.h */,
 				CA014D6516F3940500253769 /* UIView+SDExtensions.m */,
 				CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */,
@@ -546,7 +540,6 @@
 				CA014DA616F3940500253769 /* UIImage+SDExtensions.h in Headers */,
 				CA014DA816F3940500253769 /* UINavigationController+SDExtensions.h in Headers */,
 				CA014DAA16F3940500253769 /* UIScreen+SDExtensions.h in Headers */,
-				CA014DAC16F3940500253769 /* UISearchBar+SDExtensions.h in Headers */,
 				CA014DAE16F3940500253769 /* UIView+SDExtensions.h in Headers */,
 				CA014DB016F3940500253769 /* NSCachedURLResponse+LeakFix.h in Headers */,
 				CA014DB216F3940500253769 /* NSURL+SDExtensions.h in Headers */,
@@ -694,7 +687,6 @@
 				CA014DA716F3940500253769 /* UIImage+SDExtensions.m in Sources */,
 				CA014DA916F3940500253769 /* UINavigationController+SDExtensions.m in Sources */,
 				CA014DAB16F3940500253769 /* UIScreen+SDExtensions.m in Sources */,
-				CA014DAD16F3940500253769 /* UISearchBar+SDExtensions.m in Sources */,
 				CA014DAF16F3940500253769 /* UIView+SDExtensions.m in Sources */,
 				CA014DB116F3940500253769 /* NSCachedURLResponse+LeakFix.m in Sources */,
 				CA014DB316F3940500253769 /* NSURL+SDExtensions.m in Sources */,
