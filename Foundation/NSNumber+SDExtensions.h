@@ -20,4 +20,8 @@
  */
 + (NSString *)dollarStringFromNumber:(NSNumber *)argNumber;
 
+/**
+ Takes an NSString that is known to be a number and returns an NSNumber
+ */
++ (NSNumber *)numberFromString:(NSString *)argString;
 @end

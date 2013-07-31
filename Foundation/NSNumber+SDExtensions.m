@@ -41,5 +41,17 @@
     return [currencyFormatter stringFromNumber:argNumber];
 }
 
++ (NSNumber *)numberFromString:(NSString *)argString
+{
+    static NSNumberFormatter *numberFormatter = nil;
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^{
+        numberFormatter = [[NSNumberFormatter alloc] init];
+        [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    });
+    
+    return [numberFormatter numberFromString:argString];
+}
 
 @end
