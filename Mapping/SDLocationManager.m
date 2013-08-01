@@ -146,6 +146,13 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
     }
 }
 
+- (void)stopUpdatingLocationForAllDelegates
+{
+    for (id delegate in delegates) {
+        [self stopUpdatingLocationWithDelegate:delegate];
+    }
+}
+
 - (void)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
 	[self internalStart];
@@ -242,6 +249,13 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 {
     [self unsupported];
     return FALSE;
+}
+
+-(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
+        [self stopUpdatingLocationForAllDelegates];
+    }
 }
 
 @end
