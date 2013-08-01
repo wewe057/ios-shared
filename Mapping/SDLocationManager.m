@@ -114,28 +114,22 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
-    SDLog(@"STEVEC: startUpdatingLocationWithDelegate");
     [delegates addObject:delegate];
     if (!isUpdatingLocation)
     {
-        SDLog(@"STEVEC: not updating location. setting isUpdatingLocation to YES");
         isUpdatingLocation = YES;
         [self internalStart];
 
         if ([self isLocationAllowed])
         {
-            SDLog(@"STEVEC: location is allowed");
             [super startUpdatingLocation];
         }
         else
         {
-            SDLog(@"STEVEC: location not allowed");
             [self locationManager:self didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil]];
             [self stopUpdatingLocationWithDelegate:delegate];
             return NO;
         }
-    } else {
-        SDLog(@"STEVEC: app thinks it is updating location");
     }
 
     return YES;
@@ -143,11 +137,9 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
-    SDLog(@"STEVEC: stopUpdatingLocationWithDelegate");
     [delegates removeObject:delegate];
     if ([delegates count] == 0 && isUpdatingLocation)
     {
-        SDLog(@"STEVEC: setting isUpdatingLocation to NO");
         isUpdatingLocation = NO;
         [self internalStop];
         [super stopUpdatingLocation];
@@ -261,7 +253,6 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    SDLog(@"STEVEC: locationManager:didChangeAuthorizationStatus:");
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
         [self stopUpdatingLocationForAllDelegates];
     }
