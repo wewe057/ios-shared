@@ -26,7 +26,6 @@
 @private
 	NSMutableData *responseData;
 	NSHTTPURLResponse *httpResponse;
-    BOOL shouldCache;
     BOOL isRunning;
 }
 
@@ -157,8 +156,8 @@ static NSOperationQueue *networkOperationQueue = nil;
     {
         if (self.asyncDelegate.isRunning)
         {
-            self.asyncDelegate.isRunning = NO;
             [super cancel];
+            // forceError sets running = NO.
             [self.asyncDelegate forceError:self];
         }
     }

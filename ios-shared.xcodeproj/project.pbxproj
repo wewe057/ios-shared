@@ -63,8 +63,6 @@
 		CA014DA916F3940500253769 /* UINavigationController+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D5F16F3940500253769 /* UINavigationController+SDExtensions.m */; };
 		CA014DAA16F3940500253769 /* UIScreen+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6016F3940500253769 /* UIScreen+SDExtensions.h */; };
 		CA014DAB16F3940500253769 /* UIScreen+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6116F3940500253769 /* UIScreen+SDExtensions.m */; };
-		CA014DAC16F3940500253769 /* UISearchBar+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6216F3940500253769 /* UISearchBar+SDExtensions.h */; };
-		CA014DAD16F3940500253769 /* UISearchBar+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6316F3940500253769 /* UISearchBar+SDExtensions.m */; };
 		CA014DAE16F3940500253769 /* UIView+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6416F3940500253769 /* UIView+SDExtensions.h */; };
 		CA014DAF16F3940500253769 /* UIView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6516F3940500253769 /* UIView+SDExtensions.m */; };
 		CA014DB016F3940500253769 /* NSCachedURLResponse+LeakFix.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014D6716F3940500253769 /* NSCachedURLResponse+LeakFix.h */; };
@@ -83,6 +81,9 @@
 		CA014DC016F39F2600253769 /* SDContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014DBE16F39F2600253769 /* SDContainerViewController.m */; };
 		CA014DC316F3A09300253769 /* SDDataMap.h in Headers */ = {isa = PBXBuildFile; fileRef = CA014DC116F3A09300253769 /* SDDataMap.h */; };
 		CA014DC416F3A09300253769 /* SDDataMap.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014DC216F3A09300253769 /* SDDataMap.m */; };
+		CA2233D917A18F8400B97789 /* NSError+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA2233D717A18F8400B97789 /* NSError+SDExtensions.h */; };
+		CA2233DA17A18F8400B97789 /* NSError+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA2233D817A18F8400B97789 /* NSError+SDExtensions.m */; };
+		CA2233DB17A18F8400B97789 /* NSError+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA2233D817A18F8400B97789 /* NSError+SDExtensions.m */; };
 		CA331B75171F1E3800CFD209 /* UIDevice+machine.h in Headers */ = {isa = PBXBuildFile; fileRef = CA331B73171F1E3800CFD209 /* UIDevice+machine.h */; };
 		CA331B76171F1E3800CFD209 /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331B74171F1E3800CFD209 /* UIDevice+machine.m */; };
 		CA331BF51725A78E00CFD209 /* UIImageView+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CA331BF31725A78E00CFD209 /* UIImageView+SDExtensions.h */; };
@@ -91,12 +92,22 @@
 		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
+		CA99F88417A0498400E81778 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99F88317A0498400E81778 /* UIImageViewTests.m */; };
+		CA99F88517A04AE300E81778 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */; };
+		CA99F88617A04AEB00E81778 /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D7016F3940500253769 /* SDURLConnection.m */; };
+		CA99F88717A04B0900E81778 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB97F03178DDF88001A8ABA /* SDImageCache.m */; };
+		CA99F88817A04B1B00E81778 /* NSURLCache+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6C16F3940500253769 /* NSURLCache+SDExtensions.m */; };
+		CA99F88917A04B1F00E81778 /* NSCachedURLResponse+LeakFix.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D6816F3940500253769 /* NSCachedURLResponse+LeakFix.m */; };
+		CA99F88A17A04B5900E81778 /* NSString+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA014D2A16F3940500253769 /* NSString+SDExtensions.m */; };
+		CA99F88B17A051EF00E81778 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA54F189175554C5005B9672 /* CoreGraphics.framework */; };
 		CA9CE457179079E200358D5D /* SDMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = CA9CE456179079E200358D5D /* SDMacros.h */; };
 		CAA7AEAC1778F7CD0033BC49 /* SDPagingView.h in Headers */ = {isa = PBXBuildFile; fileRef = CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */; };
 		CAA7AEAD1778F7CD0033BC49 /* SDPagingView.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */; };
 		CAAD943B171611E500E97FEC /* NSData+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAAD9439171611E500E97FEC /* NSData+SDExtensions.h */; };
 		CAAD943C171611E500E97FEC /* NSData+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */; };
 		CAB97F04178DE01D001A8ABA /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CAB97F03178DDF88001A8ABA /* SDImageCache.m */; };
+		CACA02B317A83EBC00A8D756 /* SDPhotoImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = CACA02B117A83EBC00A8D756 /* SDPhotoImageView.h */; };
+		CACA02B417A83EBC00A8D756 /* SDPhotoImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CACA02B217A83EBC00A8D756 /* SDPhotoImageView.m */; };
 		CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */; };
 		CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */; };
 		E2578562177A200100BC69BB /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2578561177A200100BC69BB /* SenTestingKit.framework */; };
@@ -171,8 +182,6 @@
 		CA014D5F16F3940500253769 /* UINavigationController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D6016F3940500253769 /* UIScreen+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScreen+SDExtensions.h"; sourceTree = "<group>"; };
 		CA014D6116F3940500253769 /* UIScreen+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+SDExtensions.m"; sourceTree = "<group>"; };
-		CA014D6216F3940500253769 /* UISearchBar+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UISearchBar+SDExtensions.h"; sourceTree = "<group>"; };
-		CA014D6316F3940500253769 /* UISearchBar+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UISearchBar+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D6416F3940500253769 /* UIView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+SDExtensions.h"; sourceTree = "<group>"; };
 		CA014D6516F3940500253769 /* UIView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+SDExtensions.m"; sourceTree = "<group>"; };
 		CA014D6716F3940500253769 /* NSCachedURLResponse+LeakFix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCachedURLResponse+LeakFix.h"; sourceTree = "<group>"; };
@@ -192,6 +201,8 @@
 		CA014DBE16F39F2600253769 /* SDContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDContainerViewController.m; sourceTree = "<group>"; };
 		CA014DC116F3A09300253769 /* SDDataMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDataMap.h; sourceTree = "<group>"; };
 		CA014DC216F3A09300253769 /* SDDataMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDataMap.m; sourceTree = "<group>"; };
+		CA2233D717A18F8400B97789 /* NSError+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+SDExtensions.h"; sourceTree = "<group>"; };
+		CA2233D817A18F8400B97789 /* NSError+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+SDExtensions.m"; sourceTree = "<group>"; };
 		CA28BD25175551FA007310AB /* Global-iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Global-iOS.xcconfig"; path = "Configurations/Global-iOS.xcconfig"; sourceTree = "<group>"; };
 		CA28BD26175551FA007310AB /* Project-iOS-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Project-iOS-Debug.xcconfig"; path = "Configurations/Project-iOS-Debug.xcconfig"; sourceTree = "<group>"; };
 		CA28BD27175551FA007310AB /* Project-iOS-Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Project-iOS-Release.xcconfig"; path = "Configurations/Project-iOS-Release.xcconfig"; sourceTree = "<group>"; };
@@ -204,6 +215,8 @@
 		CA5BC6851756A689006E8673 /* SDBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64.m; sourceTree = "<group>"; };
 		CA88884C16F787BB0007C614 /* SDDeckController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDDeckController.h; sourceTree = "<group>"; };
 		CA88884D16F787BB0007C614 /* SDDeckController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDDeckController.m; sourceTree = "<group>"; };
+		CA99F88217A0498400E81778 /* UIImageViewTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIImageViewTests.h; sourceTree = "<group>"; };
+		CA99F88317A0498400E81778 /* UIImageViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageViewTests.m; sourceTree = "<group>"; };
 		CA9CE456179079E200358D5D /* SDMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMacros.h; sourceTree = "<group>"; };
 		CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPagingView.h; sourceTree = "<group>"; };
 		CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPagingView.m; sourceTree = "<group>"; };
@@ -211,6 +224,8 @@
 		CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+SDExtensions.m"; sourceTree = "<group>"; };
 		CAB97F02178DDF88001A8ABA /* SDImageCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
 		CAB97F03178DDF88001A8ABA /* SDImageCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
+		CACA02B117A83EBC00A8D756 /* SDPhotoImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPhotoImageView.h; sourceTree = "<group>"; };
+		CACA02B217A83EBC00A8D756 /* SDPhotoImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPhotoImageView.m; sourceTree = "<group>"; };
 		CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+SDExtensions.h"; sourceTree = "<group>"; };
 		CAF9C61D174D633B00E0DA62 /* UIViewController+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+SDExtensions.m"; sourceTree = "<group>"; };
 		E2578560177A200100BC69BB /* ios-shared-tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared-tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,6 +256,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA99F88B17A051EF00E81778 /* CoreGraphics.framework in Frameworks */,
 				E2578562177A200100BC69BB /* SenTestingKit.framework in Frameworks */,
 				E2578563177A200100BC69BB /* UIKit.framework in Frameworks */,
 				E2578564177A200100BC69BB /* Foundation.framework in Frameworks */,
@@ -329,6 +345,8 @@
 				CAAD943A171611E500E97FEC /* NSData+SDExtensions.m */,
 				CA5BC6841756A689006E8673 /* SDBase64.h */,
 				CA5BC6851756A689006E8673 /* SDBase64.m */,
+				CA2233D717A18F8400B97789 /* NSError+SDExtensions.h */,
+				CA2233D817A18F8400B97789 /* NSError+SDExtensions.m */,
 			);
 			path = Foundation;
 			sourceTree = SOURCE_ROOT;
@@ -368,6 +386,8 @@
 			children = (
 				CAA7AEAA1778F7CD0033BC49 /* SDPagingView.h */,
 				CAA7AEAB1778F7CD0033BC49 /* SDPagingView.m */,
+				CACA02B117A83EBC00A8D756 /* SDPhotoImageView.h */,
+				CACA02B217A83EBC00A8D756 /* SDPhotoImageView.m */,
 				CA88884C16F787BB0007C614 /* SDDeckController.h */,
 				CA88884D16F787BB0007C614 /* SDDeckController.m */,
 				CA014DBD16F39F2600253769 /* SDContainerViewController.h */,
@@ -406,8 +426,6 @@
 				CA014D5F16F3940500253769 /* UINavigationController+SDExtensions.m */,
 				CA014D6016F3940500253769 /* UIScreen+SDExtensions.h */,
 				CA014D6116F3940500253769 /* UIScreen+SDExtensions.m */,
-				CA014D6216F3940500253769 /* UISearchBar+SDExtensions.h */,
-				CA014D6316F3940500253769 /* UISearchBar+SDExtensions.m */,
 				CA014D6416F3940500253769 /* UIView+SDExtensions.h */,
 				CA014D6516F3940500253769 /* UIView+SDExtensions.m */,
 				CAF9C61C174D633B00E0DA62 /* UIViewController+SDExtensions.h */,
@@ -466,6 +484,8 @@
 				E257856C177A200100BC69BB /* ios_shared_Tests.m */,
 				E2578572177A20B100BC69BB /* UIDeviceTests.h */,
 				E2578573177A20B100BC69BB /* UIDeviceTests.m */,
+				CA99F88217A0498400E81778 /* UIImageViewTests.h */,
+				CA99F88317A0498400E81778 /* UIImageViewTests.m */,
 				E2578566177A200100BC69BB /* Supporting Files */,
 			);
 			name = Tests;
@@ -496,9 +516,11 @@
 				CA014D7916F3940500253769 /* NSString+SDExtensions.h in Headers */,
 				CAA7AEAC1778F7CD0033BC49 /* SDPagingView.h in Headers */,
 				CA014D7B16F3940500253769 /* NSUserDefaults+SDExtensions.h in Headers */,
+				CACA02B317A83EBC00A8D756 /* SDPhotoImageView.h in Headers */,
 				CA014D7D16F3940500253769 /* SDTimer.h in Headers */,
 				CA014D8116F3940500253769 /* SDLog.h in Headers */,
 				CA014D8216F3940500253769 /* CLLocation+SDExtensions.h in Headers */,
+				CA2233D917A18F8400B97789 /* NSError+SDExtensions.h in Headers */,
 				CA014D8416F3940500253769 /* MKMapView+SDExtensions.h in Headers */,
 				CA014D8816F3940500253769 /* SDLocationManager.h in Headers */,
 				CA014D8A16F3940500253769 /* SDKeychain.h in Headers */,
@@ -518,7 +540,6 @@
 				CA014DA616F3940500253769 /* UIImage+SDExtensions.h in Headers */,
 				CA014DA816F3940500253769 /* UINavigationController+SDExtensions.h in Headers */,
 				CA014DAA16F3940500253769 /* UIScreen+SDExtensions.h in Headers */,
-				CA014DAC16F3940500253769 /* UISearchBar+SDExtensions.h in Headers */,
 				CA014DAE16F3940500253769 /* UIView+SDExtensions.h in Headers */,
 				CA014DB016F3940500253769 /* NSCachedURLResponse+LeakFix.h in Headers */,
 				CA014DB216F3940500253769 /* NSURL+SDExtensions.h in Headers */,
@@ -637,6 +658,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA014D7416F3940500253769 /* NSArray+SDExtensions.m in Sources */,
+				CACA02B417A83EBC00A8D756 /* SDPhotoImageView.m in Sources */,
 				CA014D7616F3940500253769 /* NSDate+SDExtensions.m in Sources */,
 				CA014D7816F3940500253769 /* NSDictionary+SDExtensions.m in Sources */,
 				CA014D7A16F3940500253769 /* NSString+SDExtensions.m in Sources */,
@@ -655,6 +677,7 @@
 				CA014D9716F3940500253769 /* SDPickerModalViewController.m in Sources */,
 				CA014D9916F3940500253769 /* SDSearchBar.m in Sources */,
 				CA014D9B16F3940500253769 /* SDSearchDisplayController.m in Sources */,
+				CA2233DA17A18F8400B97789 /* NSError+SDExtensions.m in Sources */,
 				CA014D9D16F3940500253769 /* SDStackView.m in Sources */,
 				CAA7AEAD1778F7CD0033BC49 /* SDPagingView.m in Sources */,
 				CA014D9F16F3940500253769 /* SDWebViewCell.m in Sources */,
@@ -664,7 +687,6 @@
 				CA014DA716F3940500253769 /* UIImage+SDExtensions.m in Sources */,
 				CA014DA916F3940500253769 /* UINavigationController+SDExtensions.m in Sources */,
 				CA014DAB16F3940500253769 /* UIScreen+SDExtensions.m in Sources */,
-				CA014DAD16F3940500253769 /* UISearchBar+SDExtensions.m in Sources */,
 				CA014DAF16F3940500253769 /* UIView+SDExtensions.m in Sources */,
 				CA014DB116F3940500253769 /* NSCachedURLResponse+LeakFix.m in Sources */,
 				CA014DB316F3940500253769 /* NSURL+SDExtensions.m in Sources */,
@@ -688,9 +710,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA99F88617A04AEB00E81778 /* SDURLConnection.m in Sources */,
+				CA99F88417A0498400E81778 /* UIImageViewTests.m in Sources */,
 				E257856D177A200100BC69BB /* ios_shared_Tests.m in Sources */,
+				CA99F88917A04B1F00E81778 /* NSCachedURLResponse+LeakFix.m in Sources */,
 				E2578574177A20B100BC69BB /* UIDeviceTests.m in Sources */,
+				CA99F88517A04AE300E81778 /* UIImageView+SDExtensions.m in Sources */,
+				CA99F88A17A04B5900E81778 /* NSString+SDExtensions.m in Sources */,
+				CA2233DB17A18F8400B97789 /* NSError+SDExtensions.m in Sources */,
 				E2578575177A247400BC69BB /* UIDevice+machine.m in Sources */,
+				CA99F88817A04B1B00E81778 /* NSURLCache+SDExtensions.m in Sources */,
+				CA99F88717A04B0900E81778 /* SDImageCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -727,13 +757,13 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -751,13 +781,13 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
