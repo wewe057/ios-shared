@@ -714,7 +714,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
 #ifdef DEBUG
-        SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], request.URL);
+        NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:startDate];
+        if (interval)           // This is a DEBUG mode workaround for SDLog() being defined but empty in Unit Test builds.
+            ;
+        SDLog(@"Service call took %lf seconds. URL was: %@", interval, request.URL);
 #endif
         // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
         if ([error code] != NSURLErrorCancelled)
