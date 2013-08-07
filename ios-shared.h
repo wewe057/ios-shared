@@ -11,6 +11,7 @@
 #import "SDMacros.h"
 
 #import "SDLog.h"
+#import "NSError+SDExtensions.h"
 #import "NSObject+SDExtensions.h"
 #import "NSString+SDExtensions.h"
 #import "NSDate+SDExtensions.h"

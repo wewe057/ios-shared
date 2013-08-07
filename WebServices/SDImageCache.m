@@ -7,6 +7,7 @@
 //
 
 #import "SDImageCache.h"
+#import "SDURLConnection.h"
 #import "NSURLCache+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
 #import "NSURLRequest+SDExtensions.h"
@@ -71,6 +72,17 @@
 {
     [_memoryCache removeAllObjects];
     _imageCounter = 0;
+}
+
+- (void)flushDiskCache
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+
+- (void)flushCache
+{
+    [self flushMemoryCache];
+    [self flushDiskCache];
 }
 
 - (void)cleanCacheAsNeeded
@@ -144,7 +156,8 @@
     if (cachedImage)
     {
         SDLog(@"image found in memory cache: %@", url);
-        completionBlock(cachedImage, nil);
+        if (completionBlock)
+            completionBlock(cachedImage, nil);
         return;
     }
 
@@ -158,7 +171,8 @@
         if (diskCachedImage)
         {
             SDLog(@"image found in disk cache: %@", url);
-            completionBlock(diskCachedImage, nil);
+            if (completionBlock)
+                completionBlock(diskCachedImage, nil);
             return;
         }
     }
@@ -168,13 +182,21 @@
         if (responseData && responseData.length > 0)
             image = [UIImage imageWithData:responseData];
 
+        if ([response isKindOfClass:[NSHTTPURLResponse class]])
+        {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            if (httpResponse.statusCode >= 400)
+                error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+        }
+
         [_decodeQueue addOperationWithBlock:^{
             UIImage *decodedImage = nil;
             if (image)
                 decodedImage = [SDImageCache decodedImageWithImage:image];
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 [self addImageToMemoryCache:decodedImage withURL:url];
-                completionBlock(decodedImage, error);
+                if (completionBlock)
+                    completionBlock(decodedImage, error);
                 if (decodedImage.size.width == 0 || decodedImage.size.height == 0)
                     [self removeImageURLFromCache:url];
             }];
