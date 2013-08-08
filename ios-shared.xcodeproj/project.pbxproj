@@ -90,6 +90,7 @@
 		CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */; };
 		CA5BC6861756A689006E8673 /* SDBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = CA5BC6841756A689006E8673 /* SDBase64.h */; };
 		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
+		CA74CEBA17B4470100EC527A /* NSURLRequest+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FBAC8B5717A194AB008C2776 /* NSURLRequest+SDExtensions.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
 		CA99F88417A0498400E81778 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99F88317A0498400E81778 /* UIImageViewTests.m */; };
@@ -719,6 +720,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA99F88617A04AEB00E81778 /* SDURLConnection.m in Sources */,
+				CA74CEBA17B4470100EC527A /* NSURLRequest+SDExtensions.m in Sources */,
 				CA99F88417A0498400E81778 /* UIImageViewTests.m in Sources */,
 				E257856D177A200100BC69BB /* ios_shared_Tests.m in Sources */,
 				CA99F88917A04B1F00E81778 /* NSCachedURLResponse+LeakFix.m in Sources */,
