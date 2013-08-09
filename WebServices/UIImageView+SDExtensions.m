@@ -15,6 +15,12 @@ NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
 
 @implementation UIImageView (SDExtensions)
 
+- (NSURL *)URL
+{
+    NSURL *existingURL = objc_getAssociatedObject(self, @"imageUrl");
+    return existingURL;
+}
+
 - (void)setImageWithURL:(NSURL *)url
 {
     if ( url == nil ) return;
@@ -24,10 +30,7 @@ NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
 
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder
 {
-    __weak UIImageView *blockSelf = self;
-    [self setImageWithURL:url placeholderImage:placeholder completionBlock: ^(UIImage *image, NSError *error) {
-        blockSelf.image = image;
-    }];
+    [self setImageWithURL:url placeholderImage:placeholder completionBlock:nil];
 }
 
 - (void)setImageWithURL:(NSURL *)url completionBlock:(UIImageViewURLCompletionBlock)completionBlock
@@ -40,7 +43,8 @@ NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
     NSURL *existingURL = objc_getAssociatedObject(self, @"imageUrl");
     if (existingURL && [[url absoluteString] isEqualToString:[existingURL absoluteString]])
     {
-        completionBlock(nil, [NSError errorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorAlreadyBeingFetched]);
+        if (completionBlock)
+            completionBlock(nil, [NSError errorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorAlreadyBeingFetched]);
         return;
     }
     else
@@ -54,7 +58,8 @@ NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
     // if the url is set to nil, assume it's intentional and don't send back an error.
     if (!url)
     {
-        completionBlock(nil, nil);
+        if (completionBlock)
+            completionBlock(nil, nil);
         return;
     }
 
@@ -68,12 +73,14 @@ NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
         if ([[url absoluteString] isEqualToString:[originalURL absoluteString]])
         {
             self.image = image;
-            completionBlock(image, [NSError wrapErrorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorConnectionError underlyingError:error]);
+            if (completionBlock)
+                completionBlock(image, [NSError wrapErrorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorConnectionError underlyingError:error]);
         }
         else
         {
             // the url's don't match anymore, skip setting it, but inform the client.
-            completionBlock(nil, [NSError errorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorHasBeenReused underlyingError:error]);
+            if (completionBlock)
+                completionBlock(nil, [NSError errorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorHasBeenReused underlyingError:error]);
         }
     }];
 }

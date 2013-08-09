@@ -155,7 +155,8 @@
     if (cachedImage)
     {
         SDLog(@"image found in memory cache: %@", url);
-        completionBlock(cachedImage, nil);
+        if (completionBlock)
+            completionBlock(cachedImage, nil);
         return;
     }
 
@@ -169,7 +170,8 @@
         if (diskCachedImage)
         {
             SDLog(@"image found in disk cache: %@", url);
-            completionBlock(diskCachedImage, nil);
+            if (completionBlock)
+                completionBlock(diskCachedImage, nil);
             return;
         }
     }
@@ -192,7 +194,8 @@
                 decodedImage = [SDImageCache decodedImageWithImage:image];
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 [self addImageToMemoryCache:decodedImage withURL:url];
-                completionBlock(decodedImage, error);
+                if (completionBlock)
+                    completionBlock(decodedImage, error);
                 if (decodedImage.size.width == 0 || decodedImage.size.height == 0)
                     [self removeImageURLFromCache:url];
             }];

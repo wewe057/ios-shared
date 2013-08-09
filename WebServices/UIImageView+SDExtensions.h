@@ -21,6 +21,11 @@ typedef enum {
 @interface UIImageView (SDExtensions)
 
 /**
+ * Returns the currently specified URL for the image view.
+ */
+@property (nonatomic, readonly) NSURL *URL;
+
+/**
  * Set the imageView `image` with an `url`.
  *
  * The downloand is asynchronous and cached.
