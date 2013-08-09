@@ -199,15 +199,6 @@ static char wmdeck_kvoContext;
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    self.tapView = nil;
-    self.centerDeckContainer = nil;
-    self.leftDeckContainer = nil;
-    self.rightDeckContainer = nil;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     __strong UIViewController *visibleDeck = self.visibleDeck;
