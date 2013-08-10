@@ -9,8 +9,6 @@
 #import "SDPhotoImageView.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define ZOOM_STEP 1.5
-
 @implementation SDPhotoImageView
 {
     UIScrollView *_scrollView;

@@ -21,6 +21,24 @@
  */
 @property (nonatomic, assign) CGRect integralFrame;
 
+/** Convenience method to get/set this view's frame's x coordinate */
+@property (nonatomic, assign) CGFloat x;
+
+/** Convenience method to get/set this view's frame's y coordinate */
+@property (nonatomic, assign) CGFloat y;
+
+/** Convenience method to get/set this view's frame's width */
+@property (nonatomic, assign) CGFloat width;
+
+/** Convenience method to get/set this view's frame's height */
+@property (nonatomic, assign) CGFloat height;
+
+/** Convenience method to get/set this view's frame's origin */
+@property (nonatomic, assign) CGPoint origin;
+
+/** Convenience method to get/set this view's frame's size */
+@property (nonatomic, assign) CGSize size;
+
 /**
  Adjusts the receiver's frame to move it below `argOffset` pixels below the view passed in as `argView`. Other aspects of the frame are not changed.
  */

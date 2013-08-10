@@ -679,7 +679,8 @@
                 {
                     // remove it from the cache if its there.
                     NSURLCache *urlCache = [NSURLCache sharedURLCache];
-                    [urlCache removeCachedResponseForRequest:request];
+                    if ([request isValid])
+                        [urlCache removeCachedResponseForRequest:request];
 
                     SDMockRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 

@@ -90,6 +90,7 @@
 		CA331BF61725A78E00CFD209 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331BF41725A78E00CFD209 /* UIImageView+SDExtensions.m */; };
 		CA5BC6861756A689006E8673 /* SDBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = CA5BC6841756A689006E8673 /* SDBase64.h */; };
 		CA5BC6871756A689006E8673 /* SDBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = CA5BC6851756A689006E8673 /* SDBase64.m */; };
+		CA74CEBA17B4470100EC527A /* NSURLRequest+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FBAC8B5717A194AB008C2776 /* NSURLRequest+SDExtensions.m */; };
 		CA88884E16F787BB0007C614 /* SDDeckController.h in Headers */ = {isa = PBXBuildFile; fileRef = CA88884C16F787BB0007C614 /* SDDeckController.h */; };
 		CA88884F16F787BB0007C614 /* SDDeckController.m in Sources */ = {isa = PBXBuildFile; fileRef = CA88884D16F787BB0007C614 /* SDDeckController.m */; };
 		CA99F88417A0498400E81778 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99F88317A0498400E81778 /* UIImageViewTests.m */; };
@@ -119,6 +120,8 @@
 		E2578575177A247400BC69BB /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA331B74171F1E3800CFD209 /* UIDevice+machine.m */; };
 		E26A3E5C177CE8250065FDA8 /* SDMockService.h in Headers */ = {isa = PBXBuildFile; fileRef = E26A3E5A177CE8250065FDA8 /* SDMockService.h */; };
 		E26A3E5D177CE8250065FDA8 /* SDMockService.m in Sources */ = {isa = PBXBuildFile; fileRef = E26A3E5B177CE8250065FDA8 /* SDMockService.m */; };
+		FBAC8B5817A194AB008C2776 /* NSURLRequest+SDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = FBAC8B5617A194AB008C2776 /* NSURLRequest+SDExtensions.h */; };
+		FBAC8B5917A194AB008C2776 /* NSURLRequest+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = FBAC8B5717A194AB008C2776 /* NSURLRequest+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -239,6 +242,8 @@
 		E2578573177A20B100BC69BB /* UIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIDeviceTests.m; sourceTree = "<group>"; };
 		E26A3E5A177CE8250065FDA8 /* SDMockService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMockService.h; sourceTree = "<group>"; };
 		E26A3E5B177CE8250065FDA8 /* SDMockService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDMockService.m; sourceTree = "<group>"; };
+		FBAC8B5617A194AB008C2776 /* NSURLRequest+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLRequest+SDExtensions.h"; sourceTree = "<group>"; };
+		FBAC8B5717A194AB008C2776 /* NSURLRequest+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLRequest+SDExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -443,6 +448,8 @@
 				CA014D6A16F3940500253769 /* NSURL+SDExtensions.m */,
 				CA014D6B16F3940500253769 /* NSURLCache+SDExtensions.h */,
 				CA014D6C16F3940500253769 /* NSURLCache+SDExtensions.m */,
+				FBAC8B5617A194AB008C2776 /* NSURLRequest+SDExtensions.h */,
+				FBAC8B5717A194AB008C2776 /* NSURLRequest+SDExtensions.m */,
 				CA014D6D16F3940500253769 /* Reachability.h */,
 				CA014D6E16F3940500253769 /* Reachability.m */,
 				CA014D6F16F3940500253769 /* SDURLConnection.h */,
@@ -556,6 +563,7 @@
 				CAF9C61E174D633B00E0DA62 /* UIViewController+SDExtensions.h in Headers */,
 				CA5BC6861756A689006E8673 /* SDBase64.h in Headers */,
 				E26A3E5C177CE8250065FDA8 /* SDMockService.h in Headers */,
+				FBAC8B5817A194AB008C2776 /* NSURLRequest+SDExtensions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -703,6 +711,7 @@
 				CAF9C61F174D633B00E0DA62 /* UIViewController+SDExtensions.m in Sources */,
 				CA5BC6871756A689006E8673 /* SDBase64.m in Sources */,
 				E26A3E5D177CE8250065FDA8 /* SDMockService.m in Sources */,
+				FBAC8B5917A194AB008C2776 /* NSURLRequest+SDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -711,6 +720,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA99F88617A04AEB00E81778 /* SDURLConnection.m in Sources */,
+				CA74CEBA17B4470100EC527A /* NSURLRequest+SDExtensions.m in Sources */,
 				CA99F88417A0498400E81778 /* UIImageViewTests.m in Sources */,
 				E257856D177A200100BC69BB /* ios_shared_Tests.m in Sources */,
 				CA99F88917A04B1F00E81778 /* NSCachedURLResponse+LeakFix.m in Sources */,

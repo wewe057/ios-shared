@@ -11,6 +11,13 @@
 
 @implementation NSDictionary (SDExtensions)
 
+- (NSDictionary *)dictionaryByAddingEntriesFromDictionary:(NSDictionary *)dictionary {
+	NSMutableDictionary *result = [self mutableCopy];
+	[result addEntriesFromDictionary:dictionary];
+	return result;
+}
+
+
 - (NSString *)stringForKey:(NSString *)key
 {
     id obj = [self objectForKey:key];
@@ -283,7 +290,6 @@
 }
 
 
-
 - (NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
 {
 	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
@@ -294,6 +300,7 @@
 	
 	return value;
 }
+
 
 - (NSArray*)conformedArrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue
 {
@@ -332,5 +339,6 @@
 	
 	return [keyValuePairs componentsJoinedByString:@"&"];
 }
+
 
 @end
