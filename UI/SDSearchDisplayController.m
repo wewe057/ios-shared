@@ -33,6 +33,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
+    
     [self setup];
 }
 
