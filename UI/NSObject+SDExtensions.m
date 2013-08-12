@@ -105,8 +105,9 @@
         }
         
         [invocation invoke];
-        
-        [invocation getReturnValue:returnAddress];
+
+        if (returnAddress)
+            [invocation getReturnValue:returnAddress];
     }
 }
 

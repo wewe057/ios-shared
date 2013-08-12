@@ -11,6 +11,7 @@
 #import "NSDictionary+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
 #import "NSData+SDExtensions.h"
+#import "NSURLRequest+SDExtensions.h"
 
 NSString *const SDWebServiceError = @"SDWebServiceError";
 
@@ -729,8 +730,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                 if (shouldRetry)
                 {
                     // remove it from the cache if its there.
-                    NSURLCache *urlCache = [NSURLCache sharedURLCache];
-                    [urlCache removeCachedResponseForRequest:request];
+                    NSURLCache *blockCache = [NSURLCache sharedURLCache];
+                    if ([request isValid])
+                        [blockCache removeCachedResponseForRequest:request];
 
                     SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 
