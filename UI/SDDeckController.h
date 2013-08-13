@@ -185,4 +185,7 @@ typedef enum _SDDeckState {
 /** Optionally specify a different container for the center deck. */
 @property (nonatomic, strong, readonly) UIView *centerDeckContainer;
 
+/** Create a singleton version of this object. */
++ (instancetype)sharedInstance;
+
 @end

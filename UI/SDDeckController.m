@@ -112,6 +112,14 @@ static char wmdeck_kvoContext;
 
 #pragma mark - NSObject
 
++ (instancetype)sharedInstance
+{
+	static dispatch_once_t oncePred;
+	static id sharedInstance = nil;
+	dispatch_once(&oncePred, ^{ sharedInstance = [[[self class] alloc] init]; });
+	return sharedInstance;
+}
+
 - (void)dealloc
 {
     [_centerDeck removeObserver:self forKeyPath:@"view"];
