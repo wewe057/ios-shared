@@ -88,4 +88,27 @@
     return version;
 }
 
++ (NSInteger)systemMajorVersion
+{
+    static NSUInteger version = 0;
+
+#ifndef DEBUG
+    if (version == 0)
+#else
+    version = 0;
+#endif
+    {
+        NSString *versionString = [[UIDevice currentDevice] systemVersion];
+        NSArray *components = [versionString componentsSeparatedByString:@"."];
+
+        if (components.count > 0)
+        {
+            NSString *stringVersion = [components objectAtIndex:0];
+            version = [stringVersion integerValue];
+        }
+    }
+
+    return version;
+}
+
 @end

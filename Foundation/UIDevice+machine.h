@@ -14,13 +14,22 @@
 + (BOOL)systemVersionGreaterThanOrEqualToVersion:(NSString *)minVersion;
 + (BOOL)systemVersionLessThanVersion:(NSString *)minVersion;
 
-// Returns the OS version as BCD stored in a 4 byte unsigned integer.
-// Here is an example of it's use:
-//
-//   if ([UIDevice bcdSystemVersion] >= 0x040301)
-//
-// Which will check to see if the device is running an OS of 4.3.1 or higher.
+/**
+ Returns the OS version as BCD stored in a 4 byte unsigned integer.
+ Here's an example of its use:
 
+    if ([UIDevice bcdSystemVersion] >= 0x040301)
+
+ Which will check to see if the device is running an OS of 4.3.1 or higher.
+ */
 + (uint32_t)bcdSystemVersion;
+
+/**
+ Returns the OS major version as an NSInteger.
+ Here's an example of its use:
+ 
+    if ([UIDevice systemMajorVersion] >= 4)
+*/
++ (NSInteger)systemMajorVersion;
 
 @end
