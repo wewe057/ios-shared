@@ -90,7 +90,7 @@
 
 + (NSInteger)systemMajorVersion
 {
-    static NSUInteger version = 0;
+    static NSInteger version = 0;
 
 #ifndef DEBUG
     if (version == 0)
