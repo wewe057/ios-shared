@@ -20,7 +20,7 @@
 - (void)setForegroundColor:(UIColor *)color range:(NSRange)range
 {
     NSDictionary *attributes = @{NSForegroundColorAttributeName: color};
-    [self setAttributes:attributes range:range];
+    [self addAttributes:attributes range:range];
 }
 
 - (void)setFont:(UIFont *)font
@@ -32,7 +32,7 @@
 - (void)setFont:(UIFont *)font range:(NSRange)range
 {
     NSDictionary *attributes = @{NSFontAttributeName: font};
-    [self setAttributes:attributes range:range];
+    [self addAttributes:attributes range:range];
 }
 
 @end
