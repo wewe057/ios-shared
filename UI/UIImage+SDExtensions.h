@@ -1,9 +1,9 @@
 //
 //  UIImage+SDExtensions.h
-//  walmart
+//  SetDirection
 //
 //  Created by Brandon Sneed on 10/5/11.
-//  Copyright (c) 2011 Walmart. All rights reserved.
+//  Copyright (c) 2011 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

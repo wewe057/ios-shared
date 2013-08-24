@@ -1,6 +1,6 @@
 //
 //  NSDate+SDExtensions.m
-//  walmart
+//  SetDirection
 //
 //  Created by Sam Grover on 3/8/11.
 //  Copyright 2011 Set Direction. All rights reserved.

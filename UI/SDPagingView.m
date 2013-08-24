@@ -3,7 +3,7 @@
 //  Photos
 //
 //  Created by Brandon Sneed on 5/10/13.
-//  Copyright (c) 2013 walmart. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import "SDPagingView.h"

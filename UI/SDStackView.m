@@ -3,7 +3,7 @@
 //  SDStackViewTest
 //
 //  Created by Joel Bernstein on 7/18/12.
-//  Copyright (c) 2012 Walmart. All rights reserved.
+//  Copyright (c) 2012 SetDirection. All rights reserved.
 //
 
 #import "SDStackView.h"

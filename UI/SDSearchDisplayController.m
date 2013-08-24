@@ -1,6 +1,6 @@
 //
 //  SDSearchDisplayController.m
-//  walmart
+//  SetDirection
 //
 //  Created by brandon on 3/9/11.
 //  Copyright 2011 Set Direction. All rights reserved.

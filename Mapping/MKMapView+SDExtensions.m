@@ -1,6 +1,6 @@
 //
 //  MKMapView+SDExtensions.m
-//  walmart
+//  SetDirection
 //
 //  Created by brandon on 2/16/11.
 //  Copyright 2011 Set Direction. All rights reserved.

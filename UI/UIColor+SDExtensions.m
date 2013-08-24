@@ -1,6 +1,6 @@
 //
 //  UIColor+SDExtensions.m
-//  walmart
+//  SetDirection
 //
 //  Created by Sam Grover on 3/19/11.
 //  Copyright 2011 Set Direction. All rights reserved.

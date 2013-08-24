@@ -1,9 +1,9 @@
 //
 //  NSMutableAttributedString+SDExtensions.h
-//  walmart
+//  SetDirection
 //
 //  Created by Steven W. Riggins on 8/13/13.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
