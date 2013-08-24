@@ -3,7 +3,7 @@
 //  SetDirection
 //
 //  Created by brandon on 4/29/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import "SDPickerModalViewController.h"

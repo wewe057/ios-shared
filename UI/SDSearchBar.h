@@ -3,7 +3,7 @@
 //  SetDirection
 //
 //  Created by brandon on 2/23/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

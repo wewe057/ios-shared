@@ -2,7 +2,7 @@
 //  SDWebService.m
 //
 //  Created by brandon on 2/14/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import "SDWebService.h"

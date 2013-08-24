@@ -2,7 +2,7 @@
 //  SDMockService.h
 //
 //  Created by Steven Woolgar on 06/27/2013.
-//  Copyright 2011-2013 Set Direction. All rights reserved.
+//  Copyright 2011-2013 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

@@ -3,7 +3,7 @@
 //  SetDirection
 //
 //  Created by Justin Zealand on 4/1/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

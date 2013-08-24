@@ -3,7 +3,7 @@
 //  SetDirection
 //
 //  Created by Justin Zealand on 4/1/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 //  Based upon http://iphonedevelopertips.com/device/determine-if-iphone-is-3g-or-3gs-determine-if-ipod-is-first-or-second-generation.html
 
