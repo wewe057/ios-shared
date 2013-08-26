@@ -9,8 +9,15 @@
 #import <Foundation/Foundation.h>
 
 typedef void (^SDABTestingBlock)();
-typedef void (^SDABTestingDataBlock)(NSDictionary *jsonData);
-typedef void (^SDABTestingAnalyticsBlock)(NSString *keyName, NSString *keyData);
+typedef void (^SDABTestingDataBlock)(NSDictionary *data);
+typedef void (^SDABTestingAnalyticsBlock)(NSString *keyName, NSString *action, NSString *keyData);
+
+extern const NSString *SDABTestingKeyDataA;
+extern const NSString *SDABTestingKeyDataB;
+
+extern const NSString *SDABTestingActionTest;
+extern const NSString *SDABTestingActionGoal;
+extern const NSString *SDABTestingActionFailure;
 
 @interface SDABTesting : NSObject
 
@@ -23,5 +30,6 @@ typedef void (^SDABTestingAnalyticsBlock)(NSString *keyName, NSString *keyData);
 + (void)testForKey:(NSString *)keyName dependencyKey:(NSString *)depencencyKeyName data:(NSDictionary *)data A:(SDABTestingDataBlock)aBlock B:(SDABTestingDataBlock)bBlock;
 
 + (void)goalReached:(NSString *)keyName;
++ (void)failureReached:(NSString *)keyName;
 
 @end

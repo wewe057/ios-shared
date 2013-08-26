@@ -75,6 +75,8 @@
 		CA9DC86117C945DC00F0CBE3 /* SDABTestingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA9DC85E17C945DC00F0CBE3 /* SDABTestingTests.m */; };
 		CA9DC86217C945DC00F0CBE3 /* UIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA9DC85F17C945DC00F0CBE3 /* UIDeviceTests.m */; };
 		CA9DC86317C945DC00F0CBE3 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA9DC86017C945DC00F0CBE3 /* UIImageViewTests.m */; };
+		CA9DC86417C94B2900F0CBE3 /* SDABTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80795D17C942AC009574BB /* SDABTesting.m */; };
+		CA9DC86517C9535800F0CBE3 /* NSUserDefaults+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80797117C942B6009574BB /* NSUserDefaults+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -630,12 +632,14 @@
 				CA9DC86317C945DC00F0CBE3 /* UIImageViewTests.m in Sources */,
 				CA9DC85B17C9445600F0CBE3 /* NSURLRequest+SDExtensions.m in Sources */,
 				CA9DC85D17C944EE00F0CBE3 /* NSError+SDExtensions.m in Sources */,
+				CA9DC86417C94B2900F0CBE3 /* SDABTesting.m in Sources */,
 				CA80794917C94199009574BB /* ios_sharedTests.m in Sources */,
 				CA9DC85917C9443C00F0CBE3 /* UIImageView+SDExtensions.m in Sources */,
 				CA9DC85A17C9444000F0CBE3 /* SDURLConnection.m in Sources */,
 				CA9DC86117C945DC00F0CBE3 /* SDABTestingTests.m in Sources */,
 				CA9DC85717C9440500F0CBE3 /* UIDevice+machine.m in Sources */,
 				CA9DC85C17C9449B00F0CBE3 /* SDImageCache.m in Sources */,
+				CA9DC86517C9535800F0CBE3 /* NSUserDefaults+SDExtensions.m in Sources */,
 				CA9DC86217C945DC00F0CBE3 /* UIDeviceTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -679,6 +683,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -696,6 +701,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Debug;
 		};

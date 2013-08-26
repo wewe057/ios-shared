@@ -7,6 +7,13 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "SDABTesting.h"
+
+@interface SDABTesting (Private)
++ (instancetype)sharedInstance;
+- (BOOL)boolForDefaultsKey:(NSString *)keyName;
+- (void)setBool:(BOOL)value forDefaultsKey:(NSString *)keyName;
+@end
 
 @interface SDABTestingTests : XCTestCase
 
@@ -18,6 +25,9 @@
 {
     [super setUp];
     // Put setup code here; it will be run once, before the first test case.
+
+    // remove the userdefaults key that we'll be storing under.
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"SDABTesting"];
 }
 
 - (void)tearDown
@@ -26,9 +36,15 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testStorage
 {
     //XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+
+    [[SDABTesting sharedInstance] setBool:TRUE forDefaultsKey:@"testKey"];
+
+    BOOL value = [[SDABTesting sharedInstance] boolForDefaultsKey:@"testKey"];
+
+    XCTAssertTrue(value, @"value is not true, your default did not get written!");
 }
 
 @end
