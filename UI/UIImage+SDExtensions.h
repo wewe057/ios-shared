@@ -16,4 +16,9 @@
 + (UIImage *)imageFromView:(UIView *)view;
 - (UIImage *)nonJaggyImage;
 
+/**
+ Returns a UIColor approximating the averaged color of an image.
+ */
+- (UIColor*) averageColor;
+
 @end
