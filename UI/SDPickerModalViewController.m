@@ -10,22 +10,20 @@
 
 @interface SDPickerModalViewController ()
 
-@property (nonatomic, strong, readonly) IBOutlet UIToolbar *toolbar;
-@property (nonatomic, strong, readonly) IBOutlet UIBarButtonItem *doneButton;
-@property (nonatomic, strong, readonly) IBOutlet UIBarButtonItem *cancelButton;
+@property (strong, nonatomic) IBOutlet UIView *pickerContainer;
 
 @end
 
 @implementation SDPickerModalViewController
 
-@synthesize toolbar;
 @synthesize pickerView;
-@synthesize doneButton;
-@synthesize cancelButton;
 
 - (id)init
 {
-    self = [super initWithNibName:nil bundle:nil];
+    if ([UIDevice bcdSystemVersion] >= 0x070000)
+        self = [super initWithNibName:@"SDPickerModalViewController-iOS7" bundle:nil];
+    else
+        self = [super initWithNibName:nil bundle:nil];
     if (self) {
         // Custom initialization
         [self view];
@@ -82,15 +80,10 @@
     mainFrame.origin.y = stateBarHeight;
     self.view.frame = mainFrame;
     
-    CGRect toolbarFrame = toolbar.frame;
-    CGRect toolbarStartFrame = toolbarFrame;
-    toolbarFrame.origin.y = mainFrame.size.height;
-    toolbar.frame = toolbarFrame;
-    
-    CGRect pickerFrame = pickerView.frame;
-    CGRect pickerStartFrame = pickerFrame;
-    pickerFrame.origin.y = mainFrame.size.height + toolbarFrame.size.height;
-    pickerView.frame = pickerFrame;
+    CGRect containerFrame = self.pickerContainer.frame;
+    CGRect containerStartFrame = containerFrame;
+    containerFrame.origin.y = mainFrame.size.height;
+    self.pickerContainer.frame = containerFrame;
         
     [window addSubview:self.view];
     
@@ -100,8 +93,7 @@
     [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
     
     backgroundView.alpha = 0.7;
-    toolbar.frame = toolbarStartFrame;
-    pickerView.frame = pickerStartFrame;
+    self.pickerContainer.frame = containerStartFrame;
     
     [UIView commitAnimations];
     
@@ -113,16 +105,12 @@
 
 - (void)dismiss
 {
-    CGRect toolbarFrame = toolbar.frame;
-    toolbarFrame.origin.y = [[UIScreen mainScreen] bounds].size.height;
-    
-    CGRect pickerFrame = pickerView.frame;
-    pickerFrame.origin.y = [[UIScreen mainScreen] bounds].size.height + toolbarFrame.size.height;
+    CGRect containerFrame = self.pickerContainer.frame;
+    containerFrame.origin.y = [[UIScreen mainScreen] bounds].size.height;
 
     [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionBeginFromCurrentState animations:^(void) {
         backgroundView.alpha = 0.0;
-        toolbar.frame = toolbarFrame;
-        pickerView.frame = pickerFrame;
+        self.pickerContainer.frame = containerFrame;
     } completion:^(BOOL finished) {
         [self.view removeFromSuperview];
     }];
