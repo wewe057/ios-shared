@@ -47,7 +47,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)unsupported
 {
-    //[[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];    
+    //[[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];
 }
 
 -(BOOL)hasReceivedLocationUpdate
@@ -65,23 +65,17 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 {
 	timeoutTimer = nil;
 	
-	//SDLog(@"SDLocationManager - Timeout triggered!");
-	
 	// if we have a location, pass it along...
 	if (self.location)
 	{
         CLLocation *location = self.location;
         [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
-		//if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)])
-		//	[delegate locationManager:self didUpdateToLocation:self.location fromLocation:self.location];
 	}
 	else
 	{
 		// otherwise, lets simulate a failure...
         NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
         [delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
-		//if (delegate && [delegate respondsToSelector:@selector(locationManager:didFailWithError:)])
-		//	[delegate locationManager:self didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil]];
 	}
 }
 
@@ -106,15 +100,39 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	[super setDelegate:nil];
 }
 
-- (void)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
+- (CLAuthorizationStatus)authorizationStatus
+{
+    return [CLLocationManager authorizationStatus];
+}
+
+- (BOOL)isLocationAllowed
+{
+    if (self.authorizationStatus == kCLAuthorizationStatusAuthorized || self.authorizationStatus == kCLAuthorizationStatusNotDetermined)
+        return YES;
+    return NO;
+}
+
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
     [delegates addObject:delegate];
     if (!isUpdatingLocation)
     {
         isUpdatingLocation = YES;
         [self internalStart];
-        [super startUpdatingLocation];
+
+        if ([self isLocationAllowed])
+        {
+            [super startUpdatingLocation];
+        }
+        else
+        {
+            [self locationManager:self didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil]];
+            [self stopUpdatingLocationWithDelegate:delegate];
+            return NO;
+        }
     }
+
+    return YES;
 }
 
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
@@ -125,6 +143,13 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
         isUpdatingLocation = NO;
         [self internalStop];
         [super stopUpdatingLocation];
+    }
+}
+
+- (void)stopUpdatingLocationForAllDelegates
+{
+    for (id delegate in delegates) {
+        [self stopUpdatingLocationWithDelegate:delegate];
     }
 }
 
@@ -174,8 +199,6 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	{
 		SDLog(@"SDLocationManager: this location was cached.");
         [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
-        //if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
-        //    [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
 		return; // this one is cached, lets wait for a good one.
 	}
 	
@@ -185,8 +208,6 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 		SDLog(@"SDLocationManager: this location didn't meet the accuracy requirements (%f).", newLocation.horizontalAccuracy);
 		//return; // the accuracy isn't good enough, wait some more...
         [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
-        //if (delegate && [delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)])
-        //    [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
         return;
 	}
 	
@@ -200,49 +221,41 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 		return; // this one is cached, lets wait for a good one.
 	
     [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newHeading];
-	//if (delegate && [delegate respondsToSelector:_cmd])
-	//	[delegate locationManager:self didUpdateHeading:newHeading];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
 	// we're masking out didFail unless they've said NO to the "allow" dialog.
 	if ([error.domain isEqualToString:kCLErrorDomain] && error.code == kCLErrorDenied)
-	{
         [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
-		//if (delegate && [delegate respondsToSelector:_cmd])
-		//	[delegate locationManager:self didFailWithError:error];
-	}	
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
     [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
-	//if (delegate && [delegate respondsToSelector:_cmd])
-	//	[delegate locationManager:self didEnterRegion:region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
     [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
-	//if (delegate && [delegate respondsToSelector:_cmd])
-	//	[delegate locationManager:self didExitRegion:region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
 {
     [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region, &error];
-	//if (delegate && [delegate respondsToSelector:_cmd])
-	//	[delegate locationManager:self monitoringDidFailForRegion:region withError:error];
 }
 
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
 {
     [self unsupported];
     return FALSE;
-	//if (delegate && [delegate respondsToSelector:_cmd])
-	//	return [delegate locationManagerShouldDisplayHeadingCalibration:self];
-	//return FALSE;
+}
+
+-(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
+{
+    if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
+        [self stopUpdatingLocationForAllDelegates];
+    }
 }
 
 @end
