@@ -58,12 +58,20 @@
     responseData = nil;
 }
 
+- (void)runResponseHandlerOnceWithConnection:(SDURLConnection *)argConnection response:(NSURLResponse *)argResponse responseData:(NSData *)argResponseData error:(NSError *)argError
+{
+    BOOL wasRunning = isRunning;
+    isRunning = NO;
+    if (wasRunning && responseHandler)
+    {
+        responseHandler(argConnection, argResponse, argResponseData, argError);
+    }
+    responseHandler = nil;
+}
+
 - (void)forceError:(SDURLConnection *)connection
 {
-    if (isRunning && responseHandler)
-        responseHandler(connection, nil, nil, [NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]);
-    responseHandler = nil;
-    self.isRunning = NO;
+    [self runResponseHandlerOnceWithConnection:connection response:nil responseData:nil error:[NSError errorWithDomain:@"SDURLConnectionDomain" code:NSURLErrorCancelled userInfo:nil]];
 }
 
 #pragma mark NSURLConnection delegate
@@ -76,11 +84,8 @@
 
 - (void)connection:(SDURLConnection *)connection didFailWithError:(NSError *)error
 {
-    if (isRunning && responseHandler)
-        responseHandler(connection, nil, responseData, error);
-    responseHandler = nil;
-    self.isRunning = NO;
-}
+    [self runResponseHandlerOnceWithConnection:connection response:nil responseData:responseData error:error];
+ }
 
 - (void)connection:(SDURLConnection *)connection didReceiveData:(NSData *)data
 {
@@ -90,10 +95,7 @@
 
 - (void)connectionDidFinishLoading:(SDURLConnection *)connection
 {
-    if (isRunning && responseHandler)
-        responseHandler(connection, httpResponse, responseData, nil);
-    responseHandler = nil;
-    self.isRunning = NO;
+    [self runResponseHandlerOnceWithConnection:connection response:httpResponse responseData:responseData error:nil];
 }
 
 - (NSCachedURLResponse *)connection:(SDURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse

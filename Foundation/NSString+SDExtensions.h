@@ -1,9 +1,9 @@
 //
 //  NSString+SDExtensions.h
-//  walmart
+//  SetDirection
 //
 //  Created by Ben Galbraith on 2/25/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

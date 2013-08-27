@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "009381051461B6860044E007"
+               BlueprintIdentifier = "CA80792817C94199009574BB"
                BuildableName = "libios-shared.a"
                BlueprintName = "ios-shared"
                ReferencedContainer = "container:ios-shared.xcodeproj">
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E257855F177A200100BC69BB"
-               BuildableName = "ios-shared-tests.octest"
-               BlueprintName = "ios-shared-tests"
+               BlueprintIdentifier = "CA80793817C94199009574BB"
+               BuildableName = "ios-sharedTests.xctest"
+               BlueprintName = "ios-sharedTests"
                ReferencedContainer = "container:ios-shared.xcodeproj">
             </BuildableReference>
          </TestableReference>

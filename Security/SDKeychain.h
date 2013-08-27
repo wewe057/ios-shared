@@ -2,7 +2,7 @@
 //  SDKeychain.h
 //
 //  Created by brandon on 3/27/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 //  Based on SFHFKeychainUtils by Buzz Andersen.
 

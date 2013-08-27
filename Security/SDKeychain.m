@@ -2,7 +2,7 @@
 //  SDKeychain.m
 //
 //  Created by brandon on 3/27/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 //  Created by Buzz Andersen on 10/20/08.
