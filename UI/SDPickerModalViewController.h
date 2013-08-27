@@ -16,10 +16,7 @@ typedef void (^SDPickerBlock)(void);
 
 @interface SDPickerModalViewController : UIViewController
 {
-	UIBarButtonItem *doneButton;
-    UIBarButtonItem *cancelButton;
     UIPickerView *pickerView;
-    UIToolbar *toolbar;
     UIView *backgroundView;
     
     SDPickerBlock doneBlock;
