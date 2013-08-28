@@ -51,7 +51,7 @@ static const char *getPropertyType(objc_property_t property)
     char buffer[1 + strlen(attributes)];
     strlcpy(buffer, attributes, sizeof(buffer));
     char *state = buffer, *attribute;
-    
+
     while ((attribute = strsep(&state, ",")) != NULL)
     {
         if (attribute[0] == 'T' && attribute[1] != '@')
@@ -62,7 +62,8 @@ static const char *getPropertyType(objc_property_t property)
              "objective-c" "Property Attribute Description Examples"
              apple docs list plenty of examples of what you get for int "i", long "l", unsigned "I", struct, etc.
              */
-            return (const char *)[[NSData dataWithBytes:(attribute + 1) length:strlen(attribute) - 1] bytes];
+            NSString *name = [[NSString alloc] initWithBytes:attribute + 1 length:strlen(attribute) - 1 encoding:NSASCIIStringEncoding];
+            return (const char *)[name cStringUsingEncoding:NSASCIIStringEncoding];
         }
         else
         if (attribute[0] == 'T' && attribute[1] == '@' && strlen(attribute) == 2)
@@ -74,10 +75,11 @@ static const char *getPropertyType(objc_property_t property)
         if (attribute[0] == 'T' && attribute[1] == '@')
         {
             // it's another ObjC object type:
-            return (const char *)[[NSData dataWithBytes:(attribute + 3) length:strlen(attribute) - 4] bytes];
+            NSString *name = [[NSString alloc] initWithBytes:attribute + 3 length:strlen(attribute) - 4 encoding:NSASCIIStringEncoding];
+            return (const char *)[name cStringUsingEncoding:NSASCIIStringEncoding];
         }
     }
-    
+
     return "";
 }
 
