@@ -698,10 +698,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
     }
 
-    // setup caching
-    if ([cache boolValue])
-        [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
-	else
+    // setup caching, default is to let the server decide.
+    [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+    // it has to be explicitly disabled to go through here...
+	if (cache && ![cache boolValue])
 		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
 
 	// setup the completion blocks.  we call the same block because failure means
