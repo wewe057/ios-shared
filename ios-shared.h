@@ -9,6 +9,7 @@
 #ifdef __OBJC__
 
 #import "SDMacros.h"
+#import "ObjectiveCGenerics.h"
 
 #import "SDLog.h"
 #import "NSError+SDExtensions.h"
