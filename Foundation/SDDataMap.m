@@ -156,16 +156,7 @@ static const char *getPropertyType(objc_property_t property)
         if ([type isEqualToString:@"NSString"])
             value = [value stringValue];
     }
-    
-    // uncomment to see conversion info in the logs.
-    if (result != value)
-    {
-        if (result == nil)
-            SDLog(@"value %@ (%@) converted to <nil>", value, NSStringFromClass([value class]));
-        else
-            SDLog(@"value %@ (%@) converted to %@ (%@)", value, NSStringFromClass([value class]), result, NSStringFromClass([result class]));
-    }
-    
+
     return result;
 }
 
@@ -194,8 +185,7 @@ static const char *getPropertyType(objc_property_t property)
     
     //NSLog(@"props = %@", props);
     NSString *propType = [props objectForKey:propName];
-    SDLog(@"%@ type is %@", propName, propType);
-    
+
     // Try to do type conversions where possible to match the receiver.
     // Only do this on object types.  KVO handles scalar types on its own.
 
@@ -273,8 +263,7 @@ static const char *getPropertyType(objc_property_t property)
     {
         NSMethodSignature *signature = [target methodSignatureForSelector:selector];
         const char *type = [signature getArgumentTypeAtIndex:2]; // 0 is self, 1 is SEL, 2 is the first parameter.
-        SDLog(@"Selector type is %s", type);
-        
+
         // attempt to convert value to an NSNumber to pass to the selector.
         NSNumber *tempValue = nil;
         if ([value isKindOfClass:[NSString class]])
