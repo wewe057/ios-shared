@@ -1,9 +1,9 @@
 //
 //  UIView+SDExtensions.h
-//  walmart
+//  SetDirection
 //
 //  Created by Sam Grover on 2/27/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -20,6 +20,24 @@
  Set this to ensures that the frame is positioned on full pixels. Read to see the closest integral frame to the receiver's frame.
  */
 @property (nonatomic, assign) CGRect integralFrame;
+
+/** Convenience method to get/set this view's frame's x coordinate */
+@property (nonatomic, assign) CGFloat x;
+
+/** Convenience method to get/set this view's frame's y coordinate */
+@property (nonatomic, assign) CGFloat y;
+
+/** Convenience method to get/set this view's frame's width */
+@property (nonatomic, assign) CGFloat width;
+
+/** Convenience method to get/set this view's frame's height */
+@property (nonatomic, assign) CGFloat height;
+
+/** Convenience method to get/set this view's frame's origin */
+@property (nonatomic, assign) CGPoint origin;
+
+/** Convenience method to get/set this view's frame's size */
+@property (nonatomic, assign) CGSize size;
 
 /**
  Adjusts the receiver's frame to move it below `argOffset` pixels below the view passed in as `argView`. Other aspects of the frame are not changed.

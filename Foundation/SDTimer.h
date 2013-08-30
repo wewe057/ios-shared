@@ -3,7 +3,7 @@
 //  TrackingApiClient
 //
 //  Created by Brandon Sneed on 4/10/12.
-//  Copyright (c) 2012 Walmart. All rights reserved.
+//  Copyright (c) 2012 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

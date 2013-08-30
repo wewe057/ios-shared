@@ -24,7 +24,7 @@ static NSNumberFormatter *__internalformatter = nil;
     if (path)
     {
 	    NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfFile:path];
-	    result= [self mapForDictionary:dictionary];
+	    result = [self mapForDictionary:dictionary];
     }
     
     return result;
@@ -45,13 +45,18 @@ static NSNumberFormatter *__internalformatter = nil;
 	return result;
 }
 
++ (SDDataMap *)map
+{
+    return [SDDataMap mapForDictionary:nil];
+}
+
 static const char *getPropertyType(objc_property_t property)
 {
     const char *attributes = property_getAttributes(property);
     char buffer[1 + strlen(attributes)];
     strlcpy(buffer, attributes, sizeof(buffer));
     char *state = buffer, *attribute;
-    
+
     while ((attribute = strsep(&state, ",")) != NULL)
     {
         if (attribute[0] == 'T' && attribute[1] != '@')
@@ -62,7 +67,8 @@ static const char *getPropertyType(objc_property_t property)
              "objective-c" "Property Attribute Description Examples"
              apple docs list plenty of examples of what you get for int "i", long "l", unsigned "I", struct, etc.
              */
-            return (const char *)[[NSData dataWithBytes:(attribute + 1) length:strlen(attribute) - 1] bytes];
+            NSString *name = [[NSString alloc] initWithBytes:attribute + 1 length:strlen(attribute) - 1 encoding:NSASCIIStringEncoding];
+            return (const char *)[name cStringUsingEncoding:NSASCIIStringEncoding];
         }
         else
         if (attribute[0] == 'T' && attribute[1] == '@' && strlen(attribute) == 2)
@@ -74,10 +80,11 @@ static const char *getPropertyType(objc_property_t property)
         if (attribute[0] == 'T' && attribute[1] == '@')
         {
             // it's another ObjC object type:
-            return (const char *)[[NSData dataWithBytes:(attribute + 3) length:strlen(attribute) - 4] bytes];
+            NSString *name = [[NSString alloc] initWithBytes:attribute + 3 length:strlen(attribute) - 4 encoding:NSASCIIStringEncoding];
+            return (const char *)[name cStringUsingEncoding:NSASCIIStringEncoding];
         }
     }
-    
+
     return "";
 }
 
@@ -394,10 +401,37 @@ static const char *getPropertyType(objc_property_t property)
     }
 }
 
+- (NSString *)subtypeForPath:(NSString *)path
+{
+    NSString *subtype = [path stringByReplacingOccurrencesOfString:@"<(.*)>(.*)" withString:@"$1" options:NSRegularExpressionSearch range:NSMakeRange(0, path.length)];
+    if ([subtype isEqualToString:path])
+        return nil;
+    return subtype;
+}
+
+- (NSString *)propertyForPath:(NSString *)path
+{
+    NSString *property = [path stringByReplacingOccurrencesOfString:@"<(.*)>(.*)" withString:@"$2" options:NSRegularExpressionSearch range:NSMakeRange(0, path.length)];
+    if ([property isEqualToString:path])
+        return nil;
+    return property;
+}
+
 - (void)mapObject:(id)object1 toObject:(id)object2 strict:(BOOL)strict
 {
+    if (!_mapPlist)
+    {
+        // typically the destination object will be a model and should supply the map
+        if ([object2 respondsToSelector:@selector(mappingDictionary)])
+            _mapPlist = [object2 mappingDictionary];
+        else
+        // if we didn't find a mappingDictionary on object2, check object1
+        if ([object1 respondsToSelector:@selector(mappingDictionary)])
+            _mapPlist = [object1 mappingDictionary];
+    }
+
     [_mapPlist enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        id value = [object1 objectForKey:key];
+        id value = [object1 valueForKeyPath:key];
         
         // allow for multiple assignments, ie: name, textLabel.text
         NSMutableString *keysString = [obj mutableCopy];
@@ -406,11 +440,72 @@ static const char *getPropertyType(objc_property_t property)
         
         for (NSString *path in keyPaths)
         {
+            NSString *subtypeName = [self subtypeForPath:path];
+            NSString *propertyName = [self propertyForPath:path];
+
             // look for @ to denote a selector to be called.
             if ([self hasSelectorMarker:path])
                 [self performSelectorOnTarget:object2 forKeyPath:path withValue:value strict:strict];
             else
-                [self setValue:value forKeyPath:path withTarget:object2];
+            {
+                if (!subtypeName)
+                    [self setValue:value forKeyPath:path withTarget:object2];
+                else
+                {
+                    /*
+                     it's an array or dictionary, and the map says the sub items should be
+                     of specific types.
+                    */
+
+                    if ([value isKindOfClass:[NSArray class]])
+                    {
+                        NSArray *array = value;
+                        NSMutableArray *outputArray = [NSMutableArray array];
+                        for (NSUInteger i = 0; i < array.count; i++)
+                        {
+                            Class specificClass = NSClassFromString(subtypeName);
+                            id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
+
+                            // if the model object doesn't support the protocol, we don't know how
+                            // to map the objects, if it does, let's do it.
+                            if ([modelObject respondsToSelector:@selector(mappingDictionary)])
+                            {
+                                NSDictionary *map = [modelObject mappingDictionary];
+                                SDDataMap *newMap = [SDDataMap mapForDictionary:map];
+
+                                id item = [array objectAtIndex:i];
+                                [newMap mapObject:item toObject:modelObject strict:strict];
+
+                                // assume models are valid unless model explicitly says no.
+                                BOOL validModel = YES;
+
+                                if ([modelObject respondsToSelector:@selector(validModel)])
+                                {
+                                    validModel = [modelObject validModel];
+                                }
+
+                                if (validModel)
+                                    [outputArray addObject:modelObject];
+                            }
+                        }
+
+                        // if it's not empty, then set it.
+                        if (outputArray.count > 0)
+                            [object2 setValue:outputArray forKey:propertyName];
+                    }
+                    else
+                    if ([value isKindOfClass:[NSDictionary class]])
+                    {
+
+                    }
+                    else
+                    {
+                        // not sure how we'd get here, but try and do it the normal way then
+                        // and hope for the best.
+                        [self setValue:value forKeyPath:path withTarget:object2];
+                    }
+                }
+            }
         }
     }];
 }

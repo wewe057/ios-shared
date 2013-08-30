@@ -3,7 +3,7 @@
 //  samsclub
 //
 //  Created by Sam Grover on 1/10/13.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import "UINavigationController+SDExtensions.h"

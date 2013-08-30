@@ -6,8 +6,7 @@
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
-#import "UIDeviceTests.h"
-
+#import <XCTest/XCTest.h>
 #import "UIDevice+machine.h"
 
 typedef NS_ENUM(NSUInteger, SystemVersionReturnValues)
@@ -149,7 +148,10 @@ static NSUInteger sCurrentSystemReturnValue = eSystemReturn500;
 
 @end
 
-@implementation ios_shared_UIDeviceTests
+@interface UIDeviceTests : XCTestCase
+@end
+
+@implementation UIDeviceTests
 
 - (void)setUp
 {
@@ -169,115 +171,115 @@ static NSUInteger sCurrentSystemReturnValue = eSystemReturn500;
 {
     sCurrentSystemReturnValue = eSystemReturn5;
     uint32_t system5 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system5 == 0x050000, @"bcdSystemVersion did not understand 5");
+    XCTAssertTrue(system5 == 0x050000, @"bcdSystemVersion did not understand 5");
 
     sCurrentSystemReturnValue = eSystemReturn50;
     uint32_t system50 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system50 == 0x050000, @"bcdSystemVersion did not understand 5.0");
+    XCTAssertTrue(system50 == 0x050000, @"bcdSystemVersion did not understand 5.0");
 
     sCurrentSystemReturnValue = eSystemReturn500;
     uint32_t system500 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system500 == 0x050000, @"bcdSystemVersion did not understand 5.0.0");
+    XCTAssertTrue(system500 == 0x050000, @"bcdSystemVersion did not understand 5.0.0");
 
     sCurrentSystemReturnValue = eSystemReturn501;
     uint32_t system501 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system501 == 0x050001, @"bcdSystemVersion did not understand 5.0.1");
+    XCTAssertTrue(system501 == 0x050001, @"bcdSystemVersion did not understand 5.0.1");
 
     sCurrentSystemReturnValue = eSystemReturn502;
     uint32_t system502 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system502 == 0x050002, @"bcdSystemVersion did not understand 5.0.2");
+    XCTAssertTrue(system502 == 0x050002, @"bcdSystemVersion did not understand 5.0.2");
 
     sCurrentSystemReturnValue = eSystemReturn510;
     uint32_t system510 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system510 == 0x050100, @"bcdSystemVersion did not understand 5.1.0");
+    XCTAssertTrue(system510 == 0x050100, @"bcdSystemVersion did not understand 5.1.0");
 
     sCurrentSystemReturnValue = eSystemReturn511;
     uint32_t system511 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system511 == 0x050101, @"bcdSystemVersion did not understand 5.1.1");
+    XCTAssertTrue(system511 == 0x050101, @"bcdSystemVersion did not understand 5.1.1");
 
     sCurrentSystemReturnValue = eSystemReturn6;
     uint32_t system6 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system6 == 0x060000, @"bcdSystemVersion did not understand 6");
+    XCTAssertTrue(system6 == 0x060000, @"bcdSystemVersion did not understand 6");
 
     sCurrentSystemReturnValue = eSystemReturn60;
     uint32_t system60 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system60 == 0x060000, @"bcdSystemVersion did not understand 6.0");
+    XCTAssertTrue(system60 == 0x060000, @"bcdSystemVersion did not understand 6.0");
 
     sCurrentSystemReturnValue = eSystemReturn600;
     uint32_t system600 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system600 == 0x060000, @"bcdSystemVersion did not understand 6.0.0");
+    XCTAssertTrue(system600 == 0x060000, @"bcdSystemVersion did not understand 6.0.0");
 
     sCurrentSystemReturnValue = eSystemReturn601;
     uint32_t system601 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system601 == 0x060001, @"bcdSystemVersion did not understand 6.0.1");
+    XCTAssertTrue(system601 == 0x060001, @"bcdSystemVersion did not understand 6.0.1");
 
     sCurrentSystemReturnValue = eSystemReturn602;
     uint32_t system602 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system602 == 0x060002, @"bcdSystemVersion did not understand 6.0.2");
+    XCTAssertTrue(system602 == 0x060002, @"bcdSystemVersion did not understand 6.0.2");
 
     sCurrentSystemReturnValue = eSystemReturn610;
     uint32_t system610 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system610 == 0x060100, @"bcdSystemVersion did not understand 6.1.0");
+    XCTAssertTrue(system610 == 0x060100, @"bcdSystemVersion did not understand 6.1.0");
 
     sCurrentSystemReturnValue = eSystemReturn611;
     uint32_t system611 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system611 == 0x060101, @"bcdSystemVersion did not understand 6.1.1");
+    XCTAssertTrue(system611 == 0x060101, @"bcdSystemVersion did not understand 6.1.1");
 
     sCurrentSystemReturnValue = eSystemReturn7;
     uint32_t system7 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system7 == 0x070000, @"bcdSystemVersion did not understand 7");
+    XCTAssertTrue(system7 == 0x070000, @"bcdSystemVersion did not understand 7");
 
     sCurrentSystemReturnValue = eSystemReturn70;
     uint32_t system70 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system70 == 0x070000, @"bcdSystemVersion did not understand 7.0");
+    XCTAssertTrue(system70 == 0x070000, @"bcdSystemVersion did not understand 7.0");
     
     sCurrentSystemReturnValue = eSystemReturn700;
     uint32_t system700 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system700 == 0x070000, @"bcdSystemVersion did not understand 7.0.0");
+    XCTAssertTrue(system700 == 0x070000, @"bcdSystemVersion did not understand 7.0.0");
 
     sCurrentSystemReturnValue = eSystemReturn701;
     uint32_t system701 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system701 == 0x070001, @"bcdSystemVersion did not understand 7.0.1");
+    XCTAssertTrue(system701 == 0x070001, @"bcdSystemVersion did not understand 7.0.1");
 
     sCurrentSystemReturnValue = eSystemReturn702;
     uint32_t system702 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system702 == 0x070002, @"bcdSystemVersion did not understand 7.0.2");
+    XCTAssertTrue(system702 == 0x070002, @"bcdSystemVersion did not understand 7.0.2");
 
     sCurrentSystemReturnValue = eSystemReturn710;
     uint32_t system710 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system710 == 0x070100, @"bcdSystemVersion did not understand 7.1.0");
+    XCTAssertTrue(system710 == 0x070100, @"bcdSystemVersion did not understand 7.1.0");
 
     sCurrentSystemReturnValue = eSystemReturn711;
     uint32_t system711 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system711 == 0x070101, @"bcdSystemVersion did not understand 7.1.1");
+    XCTAssertTrue(system711 == 0x070101, @"bcdSystemVersion did not understand 7.1.1");
 
     sCurrentSystemReturnValue = eSystemReturn8;
     uint32_t system8 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system8 == 0x080000, @"bcdSystemVersion did not understand 8");
+    XCTAssertTrue(system8 == 0x080000, @"bcdSystemVersion did not understand 8");
 
     sCurrentSystemReturnValue = eSystemReturn80;
     uint32_t system80 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system80 == 0x080000, @"bcdSystemVersion did not understand 8.0");
+    XCTAssertTrue(system80 == 0x080000, @"bcdSystemVersion did not understand 8.0");
 
     sCurrentSystemReturnValue = eSystemReturn800;
     uint32_t system800 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system800 == 0x080000, @"bcdSystemVersion did not understand 8.0.0");
+    XCTAssertTrue(system800 == 0x080000, @"bcdSystemVersion did not understand 8.0.0");
 
     sCurrentSystemReturnValue = eSystemReturn801;
     uint32_t system801 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system801 == 0x080001, @"bcdSystemVersion did not understand 8.0.1");
+    XCTAssertTrue(system801 == 0x080001, @"bcdSystemVersion did not understand 8.0.1");
 
     sCurrentSystemReturnValue = eSystemReturn802;
     uint32_t system802 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system802 == 0x080002, @"bcdSystemVersion did not understand 8.0.2");
+    XCTAssertTrue(system802 == 0x080002, @"bcdSystemVersion did not understand 8.0.2");
 
     sCurrentSystemReturnValue = eSystemReturn810;
     uint32_t system810 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system810 == 0x080100, @"bcdSystemVersion did not understand 8.1.0");
+    XCTAssertTrue(system810 == 0x080100, @"bcdSystemVersion did not understand 8.1.0");
 
     sCurrentSystemReturnValue = eSystemReturn811;
     uint32_t system811 = [UIDevice bcdSystemVersion];
-    STAssertTrue(system811 == 0x080101, @"bcdSystemVersion did not understand 8.1.1");
+    XCTAssertTrue(system811 == 0x080101, @"bcdSystemVersion did not understand 8.1.1");
 }
 
 @end

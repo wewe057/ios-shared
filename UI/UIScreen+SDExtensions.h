@@ -1,9 +1,9 @@
 //
 //  UIScreen+SDExtensions.h
-//  walmart
+//  SetDirection
 //
 //  Created by Sam Grover on 9/19/11.
-//  Copyright 2011 Walmart. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

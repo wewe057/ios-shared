@@ -1,9 +1,9 @@
 //
 //  SDSearchDisplayController.h
-//  walmart
+//  SetDirection
 //
 //  Created by brandon on 3/9/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

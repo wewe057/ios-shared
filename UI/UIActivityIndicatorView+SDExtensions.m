@@ -1,9 +1,9 @@
 //
 //  UIActivityIndicatorView+SDExtensions.m
-//  walmart
+//  SetDirection
 //
 //  Created by Brandon Sneed on 8/18/11.
-//  Copyright 2011 Walmart. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import "UIActivityIndicatorView+SDExtensions.h"

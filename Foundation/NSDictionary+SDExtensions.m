@@ -1,15 +1,22 @@
 //
 //  NSDictionary+SDExtensions.m
-//  walmart
+//  SetDirection
 //
 //  Created by Brandon Sneed on 6/27/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import "NSDictionary+SDExtensions.h"
 #import "NSString+SDExtensions.h"
 
 @implementation NSDictionary (SDExtensions)
+
+- (NSDictionary *)dictionaryByAddingEntriesFromDictionary:(NSDictionary *)dictionary {
+	NSMutableDictionary *result = [self mutableCopy];
+	[result addEntriesFromDictionary:dictionary];
+	return result;
+}
+
 
 - (NSString *)stringForKey:(NSString *)key
 {
@@ -283,7 +290,6 @@
 }
 
 
-
 - (NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath defaultValue:(NSDictionary*)defaultValue
 {
 	id	value = [self valueForKeyPath:keyPath defaultValue:defaultValue];
@@ -294,6 +300,7 @@
 	
 	return value;
 }
+
 
 - (NSArray*)conformedArrayForKeyPath:(NSString*)keyPath defaultValue:(NSArray*)defaultValue
 {
@@ -332,5 +339,6 @@
 	
 	return [keyValuePairs componentsJoinedByString:@"&"];
 }
+
 
 @end
