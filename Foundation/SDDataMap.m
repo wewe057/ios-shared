@@ -470,20 +470,17 @@ static const char *getPropertyType(objc_property_t property)
                             // to map the objects, if it does, let's do it.
                             if ([modelObject respondsToSelector:@selector(mappingDictionary)])
                             {
-                                NSDictionary *map = [modelObject mappingDictionary];
-                                SDDataMap *newMap = [SDDataMap mapForDictionary:map];
+                                SDDataMap *newMap = [SDDataMap map];
 
                                 id item = [array objectAtIndex:i];
                                 [newMap mapObject:item toObject:modelObject strict:strict];
 
                                 // assume models are valid unless model explicitly says no.
                                 BOOL validModel = YES;
-
                                 if ([modelObject respondsToSelector:@selector(validModel)])
                                 {
                                     validModel = [modelObject validModel];
                                 }
-
                                 if (validModel)
                                     [outputArray addObject:modelObject];
                             }
@@ -496,7 +493,22 @@ static const char *getPropertyType(objc_property_t property)
                     else
                     if ([value isKindOfClass:[NSDictionary class]])
                     {
+                        Class specificClass = NSClassFromString(subtypeName);
+                        id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
+                        if ([modelObject respondsToSelector:@selector(mappingDictionary)])
+                        {
+                            SDDataMap *newMap = [SDDataMap map];
+                            [newMap mapObject:value toObject:modelObject strict:strict];
 
+                            // assume models are valid unless model explicitly says no.
+                            BOOL validModel = YES;
+                            if ([modelObject respondsToSelector:@selector(validModel)])
+                            {
+                                validModel = [modelObject validModel];
+                            }
+                            if (validModel)
+                                [object2 setValue:modelObject forKey:propertyName];
+                        }
                     }
                     else
                     {
