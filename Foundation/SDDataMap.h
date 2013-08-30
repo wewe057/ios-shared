@@ -8,6 +8,18 @@
 #import <Foundation/Foundation.h>
 
 /**
+ Objects that support this protocol may be used to generate sub-objects, such as
+ dictionaries and arrays being mapped into objects of specific types.
+ */
+@protocol SDDataMapProtocol <NSObject>
+
+- (NSDictionary *)mappingDictionary;
+- (BOOL)validModel;
+
+@end
+
+
+/**
  SDDataMap provides a mechanism by which to assign keypaths from one object to another.
  A plist can be specified by name to provide definitions, optionally a dictionary can be used.
  A sample plist is available as a private gist at: https://gist.github.com/bsneed/f32db309d2ed70902702
@@ -27,7 +39,6 @@
      a setter for a given property.
 
  */
-
 @interface SDDataMap : NSObject
 
 /**
@@ -38,6 +49,13 @@
  Loads a dictionary for use as a map specification.
  */
 + (SDDataMap *)mapForDictionary:(NSDictionary *)dictionary;
+
+/**
+ Returns an SDDataMap with an empty mapping dictionary.  It's assumed that
+ the model will supply the map when mapObject* is called.
+ */
++ (SDDataMap *)map;
+
 /**
  Maps object1's keypaths to object2 based on the specification that SDDataMap was instantiated with.
  */
