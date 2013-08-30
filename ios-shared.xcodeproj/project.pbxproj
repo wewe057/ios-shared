@@ -77,6 +77,8 @@
 		CA9DC86317C945DC00F0CBE3 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA9DC86017C945DC00F0CBE3 /* UIImageViewTests.m */; };
 		CA9DC86417C94B2900F0CBE3 /* SDABTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80795D17C942AC009574BB /* SDABTesting.m */; };
 		CA9DC86517C9535800F0CBE3 /* NSUserDefaults+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80797117C942B6009574BB /* NSUserDefaults+SDExtensions.m */; };
+		E2C6B5A317D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
+		E2C6B5A417D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -223,6 +225,9 @@
 		CA9DC85E17C945DC00F0CBE3 /* SDABTestingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDABTestingTests.m; sourceTree = "<group>"; };
 		CA9DC85F17C945DC00F0CBE3 /* UIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIDeviceTests.m; sourceTree = "<group>"; };
 		CA9DC86017C945DC00F0CBE3 /* UIImageViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageViewTests.m; sourceTree = "<group>"; };
+		E2C6B5A017D117BA00D5C9D1 /* ObjectiveCGenerics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCGenerics.h; sourceTree = "<group>"; };
+		E2C6B5A117D117F800D5C9D1 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
+		E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -320,6 +325,7 @@
 			isa = PBXGroup;
 			children = (
 				CA80795A17C9429B009574BB /* SDMacros.h */,
+				E2C6B5A017D117BA00D5C9D1 /* ObjectiveCGenerics.h */,
 			);
 			path = Macros;
 			sourceTree = SOURCE_ROOT;
@@ -352,6 +358,8 @@
 				CA80796D17C942B6009574BB /* NSNumber+SDExtensions.m */,
 				CA80796E17C942B6009574BB /* NSString+SDExtensions.h */,
 				CA80796F17C942B6009574BB /* NSString+SDExtensions.m */,
+				E2C6B5A117D117F800D5C9D1 /* NSRunLoop+SDExtensions.h */,
+				E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */,
 				CA80797017C942B6009574BB /* NSUserDefaults+SDExtensions.h */,
 				CA80797117C942B6009574BB /* NSUserDefaults+SDExtensions.m */,
 				CA80797217C942B6009574BB /* SDBase64.h */,
@@ -587,6 +595,7 @@
 				CA80797B17C942B6009574BB /* NSData+SDExtensions.m in Sources */,
 				CA80799217C942CF009574BB /* SDLocationManager.m in Sources */,
 				CA8079D717C942E4009574BB /* UIAlertView+SDExtensions.m in Sources */,
+				E2C6B5A317D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */,
 				CA8079FD17C942F1009574BB /* UIImageView+SDExtensions.m in Sources */,
 				CA8079C817C942E4009574BB /* NSObject+SDExtensions.m in Sources */,
 				CA80797C17C942B6009574BB /* NSDate+SDExtensions.m in Sources */,
@@ -635,6 +644,7 @@
 				CA9DC86417C94B2900F0CBE3 /* SDABTesting.m in Sources */,
 				CA80794917C94199009574BB /* ios_sharedTests.m in Sources */,
 				CA9DC85917C9443C00F0CBE3 /* UIImageView+SDExtensions.m in Sources */,
+				E2C6B5A417D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */,
 				CA9DC85A17C9444000F0CBE3 /* SDURLConnection.m in Sources */,
 				CA9DC86117C945DC00F0CBE3 /* SDABTestingTests.m in Sources */,
 				CA9DC85717C9440500F0CBE3 /* UIDevice+machine.m in Sources */,

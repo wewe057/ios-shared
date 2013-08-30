@@ -3,7 +3,7 @@
 //  testdrag
 //
 //  Created by Brandon Sneed on 8/23/11.
-//  Copyright 2011-2013 Walmart. All rights reserved.
+//  Copyright 2011-2013 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
