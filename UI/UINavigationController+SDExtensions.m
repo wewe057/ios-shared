@@ -27,9 +27,9 @@
 - (NSArray *)popToRootViewControllerDismissingModalAnimated:(BOOL)animated
 {
     UIViewController *v = [self.viewControllers lastObject];
-    if (v.modalViewController != nil)
+    if (v.presentedViewController != nil)
     {
-        [v dismissModalViewControllerAnimated:animated];
+        [v dismissViewControllerAnimated:animated completion:nil];
     }
     return [self popToRootViewControllerAnimated:animated];
 }
