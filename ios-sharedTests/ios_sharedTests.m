@@ -2,13 +2,13 @@
 //  ios_sharedTests.m
 //  ios-sharedTests
 //
-//  Created by Brandon Sneed on 8/24/13.
+//  Created by Brandon Sneed on 9/4/13.
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import <SenTestingKit/SenTestingKit.h>
 
-@interface ios_sharedTests : XCTestCase
+@interface ios_sharedTests : SenTestCase
 
 @end
 
@@ -28,7 +28,7 @@
 
 - (void)testExample
 {
-    //XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    STFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
 }
 
 @end
