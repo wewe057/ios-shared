@@ -48,6 +48,16 @@
                ReferencedContainer = "container:ios-shared.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CA01F1AE17D7A6EF00E7C553"
+               BuildableName = "ios-shared Tests.octest"
+               BlueprintName = "ios-shared Tests"
+               ReferencedContainer = "container:ios-shared.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

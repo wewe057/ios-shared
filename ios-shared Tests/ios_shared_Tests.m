@@ -1,6 +1,6 @@
 //
-//  ios_sharedTests.m
-//  ios-sharedTests
+//  ios_shared_Tests.m
+//  ios-shared Tests
 //
 //  Created by Brandon Sneed on 9/4/13.
 //  Copyright (c) 2013 SetDirection. All rights reserved.
@@ -8,11 +8,11 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-@interface ios_sharedTests : SenTestCase
+@interface ios_shared_Tests : SenTestCase
 
 @end
 
-@implementation ios_sharedTests
+@implementation ios_shared_Tests
 
 - (void)setUp
 {
@@ -26,9 +26,9 @@
     [super tearDown];
 }
 
-- (void)testExample
-{
-    STFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
-}
+//- (void)testExample
+//{
+//    STFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+//}
 
 @end
