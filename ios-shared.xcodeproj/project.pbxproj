@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA01F17C17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */; };
 		CA80792D17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
 		CA80793B17C94199009574BB /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80793A17C94199009574BB /* XCTest.framework */; };
 		CA80793C17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
@@ -104,6 +105,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CA01F17A17D79DDC00E7C553 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
+		CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
 		CA80792917C94199009574BB /* libios-shared.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-shared.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA80792C17C94199009574BB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CA80793917C94199009574BB /* ios-sharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-sharedTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -342,6 +345,8 @@
 		CA80795F17C942B6009574BB /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
+				CA01F17A17D79DDC00E7C553 /* NSRunLoop+SDExtensions.h */,
+				CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */,
 				CA80796017C942B6009574BB /* NSArray+SDExtensions.h */,
 				CA80796117C942B6009574BB /* NSArray+SDExtensions.m */,
 				CA80796217C942B6009574BB /* NSData+SDExtensions.h */,
@@ -600,6 +605,7 @@
 				CA8079C817C942E4009574BB /* NSObject+SDExtensions.m in Sources */,
 				CA80797C17C942B6009574BB /* NSDate+SDExtensions.m in Sources */,
 				CA8079CE17C942E4009574BB /* SDLabel.m in Sources */,
+				CA01F17C17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m in Sources */,
 				CA8079C917C942E4009574BB /* SDContainerViewController.m in Sources */,
 				CA8079F617C942F1009574BB /* NSURLCache+SDExtensions.m in Sources */,
 				CA8079CA17C942E4009574BB /* SDDeckController.m in Sources */,
