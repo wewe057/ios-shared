@@ -50,7 +50,10 @@
         outputError = error;
     }];
 
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:_runLoopWait]];
+    [[NSRunLoop mainRunLoop] runBlock:^(BOOL *stop) {
+        if (blockWasCalled)
+            *stop = YES;
+    } interval:0.1 untilDate:[NSDate dateWithTimeIntervalSinceNow:120]];
 
     STAssertTrue(blockWasCalled == YES, @"The block was not called.");
     STAssertTrue(_imageView.image != nil, @"The image was not downloaded.");
@@ -70,7 +73,11 @@
         outputError = error;
     }];
 
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:_runLoopWait]];
+    [[NSRunLoop mainRunLoop] runBlock:^(BOOL *stop) {
+        if (blockWasCalled)
+            *stop = YES;
+    } interval:0.1 untilDate:[NSDate dateWithTimeIntervalSinceNow:120]];
+
 
     STAssertTrue(blockWasCalled == YES, @"The block was not called.");
     STAssertTrue([outputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");
@@ -91,7 +98,10 @@
         outputError = error;
     }];
 
-    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:_runLoopWait]];
+    [[NSRunLoop mainRunLoop] runBlock:^(BOOL *stop) {
+        if (blockWasCalled)
+            *stop = YES;
+    } interval:0.1 untilDate:[NSDate dateWithTimeIntervalSinceNow:120]];
 
     STAssertTrue(blockWasCalled == YES, @"The block was not called.");
     STAssertTrue([outputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");

@@ -23,6 +23,7 @@
 		CA01F1D517D7A80B00E7C553 /* NSURLCache+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E517C942F1009574BB /* NSURLCache+SDExtensions.m */; };
 		CA01F1D617D7A81600E7C553 /* NSURLRequest+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E717C942F1009574BB /* NSURLRequest+SDExtensions.m */; };
 		CA01F1D717D7A82E00E7C553 /* NSError+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80796917C942B6009574BB /* NSError+SDExtensions.m */; };
+		CA01F1D817D7AEFB00E7C553 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */; };
 		CA80792D17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
 		CA80795E17C942AC009574BB /* SDABTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80795D17C942AC009574BB /* SDABTesting.m */; };
 		CA80797A17C942B6009574BB /* NSArray+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80796117C942B6009574BB /* NSArray+SDExtensions.m */; };
@@ -591,6 +592,7 @@
 				CA01F1D717D7A82E00E7C553 /* NSError+SDExtensions.m in Sources */,
 				CA01F1D217D7A7D700E7C553 /* SDURLConnection.m in Sources */,
 				CA01F1C617D7A72D00E7C553 /* UIImageViewTests.m in Sources */,
+				CA01F1D817D7AEFB00E7C553 /* NSRunLoop+SDExtensions.m in Sources */,
 				CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */,
 				CA01F1D417D7A7FD00E7C553 /* UIDevice+machine.m in Sources */,
 				CA01F1C517D7A72D00E7C553 /* UIDeviceTests.m in Sources */,
