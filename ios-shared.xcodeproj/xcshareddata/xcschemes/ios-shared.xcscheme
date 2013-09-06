@@ -32,9 +32,29 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "CA80793817C94199009574BB"
-               BuildableName = "ios-sharedTests.xctest"
+               BlueprintIdentifier = "CA01F19817D7A36900E7C553"
+               BuildableName = "ios-sharedTests.octest"
                BlueprintName = "ios-sharedTests"
+               ReferencedContainer = "container:ios-shared.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CA01F18217D7A24B00E7C553"
+               BuildableName = "ios_sharedTests.octest"
+               BlueprintName = "ios_sharedTests"
+               ReferencedContainer = "container:ios-shared.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CA01F1AE17D7A6EF00E7C553"
+               BuildableName = "ios-shared Tests.octest"
+               BlueprintName = "ios-shared Tests"
                ReferencedContainer = "container:ios-shared.xcodeproj">
             </BuildableReference>
          </TestableReference>

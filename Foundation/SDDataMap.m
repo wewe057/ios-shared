@@ -156,16 +156,7 @@ static const char *getPropertyType(objc_property_t property)
         if ([type isEqualToString:@"NSString"])
             value = [value stringValue];
     }
-    
-    // uncomment to see conversion info in the logs.
-    if (result != value)
-    {
-        if (result == nil)
-            SDLog(@"value %@ (%@) converted to <nil>", value, NSStringFromClass([value class]));
-        else
-            SDLog(@"value %@ (%@) converted to %@ (%@)", value, NSStringFromClass([value class]), result, NSStringFromClass([result class]));
-    }
-    
+
     return result;
 }
 
@@ -194,8 +185,7 @@ static const char *getPropertyType(objc_property_t property)
     
     //NSLog(@"props = %@", props);
     NSString *propType = [props objectForKey:propName];
-    SDLog(@"%@ type is %@", propName, propType);
-    
+
     // Try to do type conversions where possible to match the receiver.
     // Only do this on object types.  KVO handles scalar types on its own.
 
@@ -273,8 +263,7 @@ static const char *getPropertyType(objc_property_t property)
     {
         NSMethodSignature *signature = [target methodSignatureForSelector:selector];
         const char *type = [signature getArgumentTypeAtIndex:2]; // 0 is self, 1 is SEL, 2 is the first parameter.
-        SDLog(@"Selector type is %s", type);
-        
+
         // attempt to convert value to an NSNumber to pass to the selector.
         NSNumber *tempValue = nil;
         if ([value isKindOfClass:[NSString class]])
@@ -457,33 +446,31 @@ static const char *getPropertyType(objc_property_t property)
                      of specific types.
                     */
 
+                    Class specificClass = NSClassFromString(subtypeName);
+
                     if ([value isKindOfClass:[NSArray class]])
                     {
                         NSArray *array = value;
                         NSMutableArray *outputArray = [NSMutableArray array];
                         for (NSUInteger i = 0; i < array.count; i++)
                         {
-                            Class specificClass = NSClassFromString(subtypeName);
                             id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
 
                             // if the model object doesn't support the protocol, we don't know how
                             // to map the objects, if it does, let's do it.
                             if ([modelObject respondsToSelector:@selector(mappingDictionary)])
                             {
-                                NSDictionary *map = [modelObject mappingDictionary];
-                                SDDataMap *newMap = [SDDataMap mapForDictionary:map];
+                                SDDataMap *newMap = [SDDataMap map];
 
                                 id item = [array objectAtIndex:i];
                                 [newMap mapObject:item toObject:modelObject strict:strict];
 
                                 // assume models are valid unless model explicitly says no.
                                 BOOL validModel = YES;
-
                                 if ([modelObject respondsToSelector:@selector(validModel)])
                                 {
                                     validModel = [modelObject validModel];
                                 }
-
                                 if (validModel)
                                     [outputArray addObject:modelObject];
                             }
@@ -494,15 +481,29 @@ static const char *getPropertyType(objc_property_t property)
                             [object2 setValue:outputArray forKey:propertyName];
                     }
                     else
-                    if ([value isKindOfClass:[NSDictionary class]])
+                    if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:specificClass])
                     {
+                        id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
+                        if ([modelObject respondsToSelector:@selector(mappingDictionary)])
+                        {
+                            SDDataMap *newMap = [SDDataMap map];
+                            [newMap mapObject:value toObject:modelObject strict:strict];
 
+                            // assume models are valid unless model explicitly says no.
+                            BOOL validModel = YES;
+                            if ([modelObject respondsToSelector:@selector(validModel)])
+                            {
+                                validModel = [modelObject validModel];
+                            }
+                            if (validModel)
+                                [object2 setValue:modelObject forKey:propertyName];
+                        }
                     }
                     else
                     {
                         // not sure how we'd get here, but try and do it the normal way then
                         // and hope for the best.
-                        [self setValue:value forKeyPath:path withTarget:object2];
+                        [self setValue:value forKeyPath:propertyName withTarget:object2];
                     }
                 }
             }

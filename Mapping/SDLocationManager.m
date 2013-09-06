@@ -11,10 +11,19 @@
 NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationManagerHasReceivedLocationUpdate";
 
 @implementation SDLocationManager
+{
+    BOOL _isUpdatingLocation;
+    BOOL _isUpdatingHeading;
+    NSMutableArray *_delegates;
+
+	NSTimer *_timeoutTimer;
+	NSDate *_timestamp;
+	CLLocationAccuracy _actualDesiredAccuracy;
+    BOOL _gotFirstLocationUpdate;
+}
 
 @synthesize timeout;
 @synthesize hasReceivedLocationUpdate;
-@synthesize isUpdatingLocation;
 
 static SDLocationManager *sdLocationManagerInstance = NULL;
 
@@ -32,7 +41,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	self = [super init];
 	
 	timeout = 60;
-    delegates = [[NSMutableArray alloc] init];
+    _delegates = [[NSMutableArray alloc] init];
 	
 	return self;
 }
@@ -40,8 +49,8 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 - (void)dealloc
 {
     
-	[timeoutTimer invalidate];
-	timeoutTimer = nil;
+	[_timeoutTimer invalidate];
+	_timeoutTimer = nil;
 	
 }
 
@@ -63,28 +72,28 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)timeoutHandler
 {
-	timeoutTimer = nil;
+	_timeoutTimer = nil;
 	
 	// if we have a location, pass it along...
 	if (self.location)
 	{
         CLLocation *location = self.location;
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
+        [_delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
 	}
 	else
 	{
 		// otherwise, lets simulate a failure...
         NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
+        [_delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
 	}
 }
 
 - (void)internalStart
 {
 	// make ourselves a timestamp to compare against.
-	timestamp = [NSDate date];
+	_timestamp = [NSDate date];
 	
-	if ([delegates count] > 0)
+	if ([_delegates count] > 0)
 		[super setDelegate:self];	
 	else
 		[super setDelegate:nil];	
@@ -92,10 +101,10 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)internalStop
 {
-	[timeoutTimer invalidate];
-	timeoutTimer = nil;
+	[_timeoutTimer invalidate];
+	_timeoutTimer = nil;
 	
-	timestamp = nil;
+	_timestamp = nil;
 
 	[super setDelegate:nil];
 }
@@ -114,10 +123,10 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
-    [delegates addObject:delegate];
-    if (!isUpdatingLocation)
+    [_delegates addObject:delegate];
+    if (!_isUpdatingLocation)
     {
-        isUpdatingLocation = YES;
+        _isUpdatingLocation = YES;
         [self internalStart];
 
         if ([self isLocationAllowed])
@@ -137,10 +146,10 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
-    [delegates removeObject:delegate];
-    if ([delegates count] == 0 && isUpdatingLocation)
+    [_delegates removeObject:delegate];
+    if ([_delegates count] == 0 && _isUpdatingLocation)
     {
-        isUpdatingLocation = NO;
+        _isUpdatingLocation = NO;
         [self internalStop];
         [super stopUpdatingLocation];
     }
@@ -148,6 +157,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)stopUpdatingLocationForAllDelegates
 {
+    NSArray *delegates = [_delegates copy];
     for (id delegate in delegates) {
         [self stopUpdatingLocationWithDelegate:delegate];
     }
@@ -167,7 +177,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)setDesiredAccuracy:(CLLocationAccuracy)anAccuracy
 {
-	actualDesiredAccuracy = anAccuracy;
+	_actualDesiredAccuracy = anAccuracy;
 	// actually set it somewhat below what we want.  this insures we get something under what we asked for.
 	anAccuracy -= 600;
 	if (anAccuracy < 10)
@@ -179,70 +189,70 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
-    if ( ! gotFirstLocationUpdate )
+    if ( ! _gotFirstLocationUpdate )
     {
         // dont start the timeout until we got the first location change, which should only happen after the user said YES to
         // Apple's built-in prompt to use current location, or if use of location was pre-approved in a previous run. And once
         // approved, this should always get called at least once, so we should never have a case of waiting forever to get here
-        gotFirstLocationUpdate = YES;
+        _gotFirstLocationUpdate = YES;
 		
 		//Ensure this is set as well. This BOOL differs slightly from 'gotFirstLocationUpdate' and is handled separately as such:
 		[[NSUserDefaults standardUserDefaults] setBool: YES forKey: kSDLocationManagerHasReceivedLocationUpdateDefaultsKey];
 		
         // timeout in 60 (or whatever they set it to) seconds.
-        timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(timeoutHandler) userInfo:nil repeats:NO];
+        _timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(timeoutHandler) userInfo:nil repeats:NO];
     }
     
 	SDLog(@"newLocation = %@", newLocation);
 	SDLog(@"desiredAccuracy = %f", self.desiredAccuracy);
-	if ([newLocation.timestamp timeIntervalSinceDate:timestamp] < 0)
+	if ([newLocation.timestamp timeIntervalSinceDate:_timestamp] < 0)
 	{
 		SDLog(@"SDLocationManager: this location was cached.");
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+        [_delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
 		return; // this one is cached, lets wait for a good one.
 	}
 	
 	// if the accuracy is within what we're looking for, OR.. we got the same accuracy multiple times.. continue on..
-	if ((newLocation.horizontalAccuracy >= actualDesiredAccuracy) || (newLocation.horizontalAccuracy > oldLocation.horizontalAccuracy))
+	if ((newLocation.horizontalAccuracy >= _actualDesiredAccuracy) || (newLocation.horizontalAccuracy > oldLocation.horizontalAccuracy))
 	{
 		SDLog(@"SDLocationManager: this location didn't meet the accuracy requirements (%f).", newLocation.horizontalAccuracy);
 		//return; // the accuracy isn't good enough, wait some more...
-        [delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+        [_delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
         return;
 	}
 	
 	SDLog(@"SDLocationManager: location obtained.");
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newLocation, &oldLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
 {
-	if ([newHeading.timestamp timeIntervalSinceDate:timestamp] < 0)
+	if ([newHeading.timestamp timeIntervalSinceDate:_timestamp] < 0)
 		return; // this one is cached, lets wait for a good one.
 	
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newHeading];
+    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newHeading];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
 	// we're masking out didFail unless they've said NO to the "allow" dialog.
 	if ([error.domain isEqualToString:kCLErrorDomain] && error.code == kCLErrorDenied)
-        [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
+        [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
+    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
+    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
 {
-    [delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region, &error];
+    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region, &error];
 }
 
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager

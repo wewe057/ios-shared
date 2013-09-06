@@ -24,4 +24,14 @@
     return [self popToViewController:[viewControllersOnStack objectAtIndex:indexToPopTo] animated:animated];
 }
 
+- (NSArray *)popToRootViewControllerDismissingModalAnimated:(BOOL)animated
+{
+    UIViewController *v = [self.viewControllers lastObject];
+    if (v.presentedViewController != nil)
+    {
+        [v dismissViewControllerAnimated:animated completion:nil];
+    }
+    return [self popToRootViewControllerAnimated:animated];
+}
+
 @end
