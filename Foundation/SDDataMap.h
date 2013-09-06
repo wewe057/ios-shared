@@ -12,10 +12,9 @@
  dictionaries and arrays being mapped into objects of specific types.
  */
 @protocol SDDataMapProtocol <NSObject>
-
+@optional
 - (NSDictionary *)mappingDictionary;
 - (BOOL)validModel;
-
 @end
 
 

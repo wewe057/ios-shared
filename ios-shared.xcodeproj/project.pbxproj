@@ -7,13 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA01F17C17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */; };
+		CA01F1B017D7A6F000E7C553 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */; };
+		CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
+		CA01F1B217D7A6F000E7C553 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80793D17C94199009574BB /* UIKit.framework */; };
+		CA01F1B817D7A6F000E7C553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA01F1B617D7A6F000E7C553 /* InfoPlist.strings */; };
+		CA01F1BA17D7A6F000E7C553 /* ios_shared_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F1B917D7A6F000E7C553 /* ios_shared_Tests.m */; };
+		CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */; };
+		CA01F1C517D7A72D00E7C553 /* UIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */; };
+		CA01F1C617D7A72D00E7C553 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */; };
+		CA01F1D117D7A7B800E7C553 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079EB17C942F1009574BB /* SDImageCache.m */; };
+		CA01F1D217D7A7D700E7C553 /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079EF17C942F1009574BB /* SDURLConnection.m */; };
+		CA01F1D317D7A7EC00E7C553 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F317C942F1009574BB /* UIImageView+SDExtensions.m */; };
+		CA01F1D417D7A7FD00E7C553 /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80797917C942B6009574BB /* UIDevice+machine.m */; };
+		CA01F1D517D7A80B00E7C553 /* NSURLCache+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E517C942F1009574BB /* NSURLCache+SDExtensions.m */; };
+		CA01F1D617D7A81600E7C553 /* NSURLRequest+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E717C942F1009574BB /* NSURLRequest+SDExtensions.m */; };
+		CA01F1D717D7A82E00E7C553 /* NSError+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80796917C942B6009574BB /* NSError+SDExtensions.m */; };
+		CA01F1D817D7AEFB00E7C553 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */; };
 		CA80792D17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
-		CA80793B17C94199009574BB /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80793A17C94199009574BB /* XCTest.framework */; };
-		CA80793C17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
-		CA80793E17C94199009574BB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80793D17C94199009574BB /* UIKit.framework */; };
-		CA80794117C94199009574BB /* libios-shared.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792917C94199009574BB /* libios-shared.a */; };
-		CA80794717C94199009574BB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA80794517C94199009574BB /* InfoPlist.strings */; };
-		CA80794917C94199009574BB /* ios_sharedTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80794817C94199009574BB /* ios_sharedTests.m */; };
 		CA80795E17C942AC009574BB /* SDABTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80795D17C942AC009574BB /* SDABTesting.m */; };
 		CA80797A17C942B6009574BB /* NSArray+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80796117C942B6009574BB /* NSArray+SDExtensions.m */; };
 		CA80797B17C942B6009574BB /* NSData+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80796317C942B6009574BB /* NSData+SDExtensions.m */; };
@@ -65,24 +76,11 @@
 		CA8079FB17C942F1009574BB /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079EF17C942F1009574BB /* SDURLConnection.m */; };
 		CA8079FC17C942F1009574BB /* SDWebService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F117C942F1009574BB /* SDWebService.m */; };
 		CA8079FD17C942F1009574BB /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F317C942F1009574BB /* UIImageView+SDExtensions.m */; };
-		CA9DC85717C9440500F0CBE3 /* UIDevice+machine.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80797917C942B6009574BB /* UIDevice+machine.m */; };
-		CA9DC85817C9443000F0CBE3 /* NSURLCache+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E517C942F1009574BB /* NSURLCache+SDExtensions.m */; };
-		CA9DC85917C9443C00F0CBE3 /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F317C942F1009574BB /* UIImageView+SDExtensions.m */; };
-		CA9DC85A17C9444000F0CBE3 /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079EF17C942F1009574BB /* SDURLConnection.m */; };
-		CA9DC85B17C9445600F0CBE3 /* NSURLRequest+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E717C942F1009574BB /* NSURLRequest+SDExtensions.m */; };
-		CA9DC85C17C9449B00F0CBE3 /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079EB17C942F1009574BB /* SDImageCache.m */; };
-		CA9DC85D17C944EE00F0CBE3 /* NSError+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80796917C942B6009574BB /* NSError+SDExtensions.m */; };
-		CA9DC86117C945DC00F0CBE3 /* SDABTestingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA9DC85E17C945DC00F0CBE3 /* SDABTestingTests.m */; };
-		CA9DC86217C945DC00F0CBE3 /* UIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA9DC85F17C945DC00F0CBE3 /* UIDeviceTests.m */; };
-		CA9DC86317C945DC00F0CBE3 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA9DC86017C945DC00F0CBE3 /* UIImageViewTests.m */; };
-		CA9DC86417C94B2900F0CBE3 /* SDABTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80795D17C942AC009574BB /* SDABTesting.m */; };
-		CA9DC86517C9535800F0CBE3 /* NSUserDefaults+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80797117C942B6009574BB /* NSUserDefaults+SDExtensions.m */; };
 		E2C6B5A317D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
-		E2C6B5A417D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CA80793F17C94199009574BB /* PBXContainerItemProxy */ = {
+		CA01F1BC17D7A6F000E7C553 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CA80792117C94199009574BB /* Project object */;
 			proxyType = 1;
@@ -104,14 +102,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CA01F17A17D79DDC00E7C553 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
+		CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
+		CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		CA01F1AF17D7A6EF00E7C553 /* ios-shared Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA01F1B517D7A6F000E7C553 /* ios-shared Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-shared Tests-Info.plist"; sourceTree = "<group>"; };
+		CA01F1B717D7A6F000E7C553 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CA01F1B917D7A6F000E7C553 /* ios_shared_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ios_shared_Tests.m; sourceTree = "<group>"; };
+		CA01F1BB17D7A6F000E7C553 /* ios-shared Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ios-shared Tests-Prefix.pch"; sourceTree = "<group>"; };
+		CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDABTestingTests.m; sourceTree = "<group>"; };
+		CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIDeviceTests.m; sourceTree = "<group>"; };
+		CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageViewTests.m; sourceTree = "<group>"; };
 		CA80792917C94199009574BB /* libios-shared.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-shared.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA80792C17C94199009574BB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		CA80793917C94199009574BB /* ios-sharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-sharedTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA80793A17C94199009574BB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		CA80793D17C94199009574BB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		CA80794417C94199009574BB /* ios-sharedTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ios-sharedTests-Info.plist"; sourceTree = "<group>"; };
-		CA80794617C94199009574BB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CA80794817C94199009574BB /* ios_sharedTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ios_sharedTests.m; sourceTree = "<group>"; };
 		CA80795217C9425B009574BB /* ios-shared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ios-shared.h"; sourceTree = SOURCE_ROOT; };
 		CA80795A17C9429B009574BB /* SDMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMacros.h; sourceTree = "<group>"; };
 		CA80795C17C942AC009574BB /* SDABTesting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDABTesting.h; sourceTree = "<group>"; };
@@ -222,15 +227,22 @@
 		CA8079FF17C942FD009574BB /* Global-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Global-iOS.xcconfig"; sourceTree = "<group>"; };
 		CA807A0017C942FD009574BB /* Project-iOS-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Debug.xcconfig"; sourceTree = "<group>"; };
 		CA807A0117C942FD009574BB /* Project-iOS-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Release.xcconfig"; sourceTree = "<group>"; };
-		CA9DC85E17C945DC00F0CBE3 /* SDABTestingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDABTestingTests.m; sourceTree = "<group>"; };
-		CA9DC85F17C945DC00F0CBE3 /* UIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIDeviceTests.m; sourceTree = "<group>"; };
-		CA9DC86017C945DC00F0CBE3 /* UIImageViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIImageViewTests.m; sourceTree = "<group>"; };
 		E2C6B5A017D117BA00D5C9D1 /* ObjectiveCGenerics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCGenerics.h; sourceTree = "<group>"; };
 		E2C6B5A117D117F800D5C9D1 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
 		E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		CA01F1AC17D7A6EF00E7C553 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA01F1B017D7A6F000E7C553 /* SenTestingKit.framework in Frameworks */,
+				CA01F1B217D7A6F000E7C553 /* UIKit.framework in Frameworks */,
+				CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA80792617C94199009574BB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -239,26 +251,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CA80793617C94199009574BB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CA80794117C94199009574BB /* libios-shared.a in Frameworks */,
-				CA80793B17C94199009574BB /* XCTest.framework in Frameworks */,
-				CA80793E17C94199009574BB /* UIKit.framework in Frameworks */,
-				CA80793C17C94199009574BB /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CA01F1B317D7A6F000E7C553 /* ios-shared Tests */ = {
+			isa = PBXGroup;
+			children = (
+				CA01F1B917D7A6F000E7C553 /* ios_shared_Tests.m */,
+				CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */,
+				CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */,
+				CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */,
+				CA01F1B417D7A6F000E7C553 /* Supporting Files */,
+			);
+			path = "ios-shared Tests";
+			sourceTree = "<group>";
+		};
+		CA01F1B417D7A6F000E7C553 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CA01F1B517D7A6F000E7C553 /* ios-shared Tests-Info.plist */,
+				CA01F1B617D7A6F000E7C553 /* InfoPlist.strings */,
+				CA01F1BB17D7A6F000E7C553 /* ios-shared Tests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		CA80792017C94199009574BB = {
 			isa = PBXGroup;
 			children = (
 				CA80792E17C94199009574BB /* ios-shared */,
 				CA8079FE17C942FD009574BB /* Configurations */,
-				CA80794217C94199009574BB /* Tests */,
+				CA01F1B317D7A6F000E7C553 /* ios-shared Tests */,
 				CA80792B17C94199009574BB /* Frameworks */,
 				CA80792A17C94199009574BB /* Products */,
 			);
@@ -268,7 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				CA80792917C94199009574BB /* libios-shared.a */,
-				CA80793917C94199009574BB /* ios-sharedTests.xctest */,
+				CA01F1AF17D7A6EF00E7C553 /* ios-shared Tests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -276,6 +299,7 @@
 		CA80792B17C94199009574BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */,
 				CA80792C17C94199009574BB /* Foundation.framework */,
 				CA80793A17C94199009574BB /* XCTest.framework */,
 				CA80793D17C94199009574BB /* UIKit.framework */,
@@ -299,28 +323,6 @@
 			path = "ios-shared";
 			sourceTree = "<group>";
 		};
-		CA80794217C94199009574BB /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				CA80794817C94199009574BB /* ios_sharedTests.m */,
-				CA9DC85E17C945DC00F0CBE3 /* SDABTestingTests.m */,
-				CA9DC85F17C945DC00F0CBE3 /* UIDeviceTests.m */,
-				CA9DC86017C945DC00F0CBE3 /* UIImageViewTests.m */,
-				CA80794317C94199009574BB /* Supporting Files */,
-			);
-			name = Tests;
-			path = "ios-sharedTests";
-			sourceTree = "<group>";
-		};
-		CA80794317C94199009574BB /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				CA80794417C94199009574BB /* ios-sharedTests-Info.plist */,
-				CA80794517C94199009574BB /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		CA80795917C9429B009574BB /* Macros */ = {
 			isa = PBXGroup;
 			children = (
@@ -342,6 +344,8 @@
 		CA80795F17C942B6009574BB /* Foundation */ = {
 			isa = PBXGroup;
 			children = (
+				CA01F17A17D79DDC00E7C553 /* NSRunLoop+SDExtensions.h */,
+				CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */,
 				CA80796017C942B6009574BB /* NSArray+SDExtensions.h */,
 				CA80796117C942B6009574BB /* NSArray+SDExtensions.m */,
 				CA80796217C942B6009574BB /* NSData+SDExtensions.h */,
@@ -499,6 +503,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		CA01F1AE17D7A6EF00E7C553 /* ios-shared Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA01F1BE17D7A6F000E7C553 /* Build configuration list for PBXNativeTarget "ios-shared Tests" */;
+			buildPhases = (
+				CA01F1AB17D7A6EF00E7C553 /* Sources */,
+				CA01F1AC17D7A6EF00E7C553 /* Frameworks */,
+				CA01F1AD17D7A6EF00E7C553 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA01F1BD17D7A6F000E7C553 /* PBXTargetDependency */,
+			);
+			name = "ios-shared Tests";
+			productName = "ios-shared Tests";
+			productReference = CA01F1AF17D7A6EF00E7C553 /* ios-shared Tests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		CA80792817C94199009574BB /* ios-shared */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA80794C17C94199009574BB /* Build configuration list for PBXNativeTarget "ios-shared" */;
@@ -516,24 +538,6 @@
 			productReference = CA80792917C94199009574BB /* libios-shared.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		CA80793817C94199009574BB /* ios-sharedTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CA80794F17C94199009574BB /* Build configuration list for PBXNativeTarget "ios-sharedTests" */;
-			buildPhases = (
-				CA80793517C94199009574BB /* Sources */,
-				CA80793617C94199009574BB /* Frameworks */,
-				CA80793717C94199009574BB /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				CA80794017C94199009574BB /* PBXTargetDependency */,
-			);
-			name = "ios-sharedTests";
-			productName = "ios-sharedTests";
-			productReference = CA80793917C94199009574BB /* ios-sharedTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -543,6 +547,11 @@
 				CLASSPREFIX = SD;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = SetDirection;
+				TargetAttributes = {
+					CA01F1AE17D7A6EF00E7C553 = {
+						TestTargetID = CA80792817C94199009574BB;
+					};
+				};
 			};
 			buildConfigurationList = CA80792417C94199009574BB /* Build configuration list for PBXProject "ios-shared" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -557,23 +566,42 @@
 			projectRoot = "";
 			targets = (
 				CA80792817C94199009574BB /* ios-shared */,
-				CA80793817C94199009574BB /* ios-sharedTests */,
+				CA01F1AE17D7A6EF00E7C553 /* ios-shared Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		CA80793717C94199009574BB /* Resources */ = {
+		CA01F1AD17D7A6EF00E7C553 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA80794717C94199009574BB /* InfoPlist.strings in Resources */,
+				CA01F1B817D7A6F000E7C553 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		CA01F1AB17D7A6EF00E7C553 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA01F1D517D7A80B00E7C553 /* NSURLCache+SDExtensions.m in Sources */,
+				CA01F1D617D7A81600E7C553 /* NSURLRequest+SDExtensions.m in Sources */,
+				CA01F1D717D7A82E00E7C553 /* NSError+SDExtensions.m in Sources */,
+				CA01F1D217D7A7D700E7C553 /* SDURLConnection.m in Sources */,
+				CA01F1C617D7A72D00E7C553 /* UIImageViewTests.m in Sources */,
+				CA01F1D817D7AEFB00E7C553 /* NSRunLoop+SDExtensions.m in Sources */,
+				CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */,
+				CA01F1D417D7A7FD00E7C553 /* UIDevice+machine.m in Sources */,
+				CA01F1C517D7A72D00E7C553 /* UIDeviceTests.m in Sources */,
+				CA01F1BA17D7A6F000E7C553 /* ios_shared_Tests.m in Sources */,
+				CA01F1D317D7A7EC00E7C553 /* UIImageView+SDExtensions.m in Sources */,
+				CA01F1D117D7A7B800E7C553 /* SDImageCache.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CA80792517C94199009574BB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -600,6 +628,7 @@
 				CA8079C817C942E4009574BB /* NSObject+SDExtensions.m in Sources */,
 				CA80797C17C942B6009574BB /* NSDate+SDExtensions.m in Sources */,
 				CA8079CE17C942E4009574BB /* SDLabel.m in Sources */,
+				CA01F17C17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m in Sources */,
 				CA8079C917C942E4009574BB /* SDContainerViewController.m in Sources */,
 				CA8079F617C942F1009574BB /* NSURLCache+SDExtensions.m in Sources */,
 				CA8079CA17C942E4009574BB /* SDDeckController.m in Sources */,
@@ -633,42 +662,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CA80793517C94199009574BB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CA9DC85817C9443000F0CBE3 /* NSURLCache+SDExtensions.m in Sources */,
-				CA9DC86317C945DC00F0CBE3 /* UIImageViewTests.m in Sources */,
-				CA9DC85B17C9445600F0CBE3 /* NSURLRequest+SDExtensions.m in Sources */,
-				CA9DC85D17C944EE00F0CBE3 /* NSError+SDExtensions.m in Sources */,
-				CA9DC86417C94B2900F0CBE3 /* SDABTesting.m in Sources */,
-				CA80794917C94199009574BB /* ios_sharedTests.m in Sources */,
-				CA9DC85917C9443C00F0CBE3 /* UIImageView+SDExtensions.m in Sources */,
-				E2C6B5A417D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */,
-				CA9DC85A17C9444000F0CBE3 /* SDURLConnection.m in Sources */,
-				CA9DC86117C945DC00F0CBE3 /* SDABTestingTests.m in Sources */,
-				CA9DC85717C9440500F0CBE3 /* UIDevice+machine.m in Sources */,
-				CA9DC85C17C9449B00F0CBE3 /* SDImageCache.m in Sources */,
-				CA9DC86517C9535800F0CBE3 /* NSUserDefaults+SDExtensions.m in Sources */,
-				CA9DC86217C945DC00F0CBE3 /* UIDeviceTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CA80794017C94199009574BB /* PBXTargetDependency */ = {
+		CA01F1BD17D7A6F000E7C553 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CA80792817C94199009574BB /* ios-shared */;
-			targetProxy = CA80793F17C94199009574BB /* PBXContainerItemProxy */;
+			targetProxy = CA01F1BC17D7A6F000E7C553 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		CA80794517C94199009574BB /* InfoPlist.strings */ = {
+		CA01F1B617D7A6F000E7C553 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CA80794617C94199009574BB /* en */,
+				CA01F1B717D7A6F000E7C553 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -676,6 +684,44 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		CA01F1BF17D7A6F000E7C553 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ios-shared Tests/ios-shared Tests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "ios-shared Tests/ios-shared Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		CA01F1C017D7A6F000E7C553 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ios-shared Tests/ios-shared Tests-Prefix.pch";
+				INFOPLIST_FILE = "ios-shared Tests/ios-shared Tests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
 		CA80794A17C94199009574BB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CA807A0017C942FD009574BB /* Project-iOS-Debug.xcconfig */;
@@ -770,45 +816,17 @@
 			};
 			name = Release;
 		};
-		CA80795017C94199009574BB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ios-shared/ios-shared-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "ios-sharedTests/ios-sharedTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		CA80795117C94199009574BB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ios-shared/ios-shared-Prefix.pch";
-				INFOPLIST_FILE = "ios-sharedTests/ios-sharedTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		CA01F1BE17D7A6F000E7C553 /* Build configuration list for PBXNativeTarget "ios-shared Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA01F1BF17D7A6F000E7C553 /* Debug */,
+				CA01F1C017D7A6F000E7C553 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		CA80792417C94199009574BB /* Build configuration list for PBXProject "ios-shared" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -823,15 +841,6 @@
 			buildConfigurations = (
 				CA80794D17C94199009574BB /* Debug */,
 				CA80794E17C94199009574BB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CA80794F17C94199009574BB /* Build configuration list for PBXNativeTarget "ios-sharedTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CA80795017C94199009574BB /* Debug */,
-				CA80795117C94199009574BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

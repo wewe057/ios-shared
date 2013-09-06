@@ -16,7 +16,7 @@
 
     while (!stop && ([NSDate timeIntervalSinceReferenceDate] < giveUpInterval))
     {
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:interval]];
+        [self runUntilDate:[NSDate dateWithTimeIntervalSinceNow:interval]];
         completion(&stop);
     }
 }

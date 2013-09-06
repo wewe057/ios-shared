@@ -26,17 +26,6 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 @end
 
 @interface SDLocationManager: CLLocationManager <CLLocationManagerDelegate>
-{
-    BOOL isUpdatingLocation;
-    BOOL isUpdatingHeading;
-    NSMutableArray *delegates;
-	NSTimeInterval timeout;
-	
-	NSTimer *timeoutTimer;
-	NSDate *timestamp;
-	CLLocationAccuracy actualDesiredAccuracy;
-    BOOL gotFirstLocationUpdate;
-}
 
 @property (nonatomic, assign) NSTimeInterval timeout;
 @property (nonatomic, readonly) BOOL hasReceivedLocationUpdate;

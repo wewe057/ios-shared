@@ -6,7 +6,8 @@
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+//#import <XCTest/XCTest.h>
+#import <SenTestingKit/SenTestingKit.h>
 #import "SDABTesting.h"
 
 @interface SDABTesting (Private)
@@ -15,7 +16,7 @@
 - (void)setBool:(BOOL)value forDefaultsKey:(NSString *)keyName;
 @end
 
-@interface SDABTestingTests : XCTestCase
+@interface SDABTestingTests : SenTestCase
 
 @end
 

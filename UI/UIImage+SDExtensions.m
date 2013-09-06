@@ -49,4 +49,26 @@
     return retImage;
 }
 
+- (UIColor*) averageColor
+{
+    CGSize size = CGSizeMake( 1.0f, 1.0f );
+    
+    UIGraphicsBeginImageContext( size );
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetInterpolationQuality( context, kCGInterpolationMedium );
+    
+    [self drawInRect: CGRectMake( 0.0f, 0.0f, size.width, size.height )
+           blendMode: kCGBlendModeCopy
+               alpha: 1.0f];
+    
+    uint8_t* data = CGBitmapContextGetData( context );
+    UIColor* color = [UIColor colorWithRed: data[2] / 255.0f
+                                     green: data[1] / 255.0f
+                                      blue: data[0] / 255.0f
+                                     alpha: 1.0f];
+    UIGraphicsEndImageContext();
+    
+    return color;
+}
+
 @end
