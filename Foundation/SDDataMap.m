@@ -154,7 +154,7 @@ static const char *getPropertyType(objc_property_t property)
     if ([value isKindOfClass:[NSNumber class]])
     {
         if ([type isEqualToString:@"NSString"])
-            value = [value stringValue];
+            result = [value stringValue];
     }
 
     return result;
