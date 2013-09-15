@@ -154,7 +154,7 @@ static const char *getPropertyType(objc_property_t property)
     if ([value isKindOfClass:[NSNumber class]])
     {
         if ([type isEqualToString:@"NSString"])
-            value = [value stringValue];
+            result = [value stringValue];
     }
 
     return result;
@@ -446,13 +446,14 @@ static const char *getPropertyType(objc_property_t property)
                      of specific types.
                     */
 
+                    Class specificClass = NSClassFromString(subtypeName);
+
                     if ([value isKindOfClass:[NSArray class]])
                     {
                         NSArray *array = value;
                         NSMutableArray *outputArray = [NSMutableArray array];
                         for (NSUInteger i = 0; i < array.count; i++)
                         {
-                            Class specificClass = NSClassFromString(subtypeName);
                             id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
 
                             // if the model object doesn't support the protocol, we don't know how
@@ -480,9 +481,8 @@ static const char *getPropertyType(objc_property_t property)
                             [object2 setValue:outputArray forKey:propertyName];
                     }
                     else
-                    if ([value isKindOfClass:[NSDictionary class]])
+                    if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:specificClass])
                     {
-                        Class specificClass = NSClassFromString(subtypeName);
                         id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
                         if ([modelObject respondsToSelector:@selector(mappingDictionary)])
                         {
@@ -503,7 +503,7 @@ static const char *getPropertyType(objc_property_t property)
                     {
                         // not sure how we'd get here, but try and do it the normal way then
                         // and hope for the best.
-                        [self setValue:value forKeyPath:path withTarget:object2];
+                        [self setValue:value forKeyPath:propertyName withTarget:object2];
                     }
                 }
             }

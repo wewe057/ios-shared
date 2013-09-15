@@ -36,6 +36,14 @@
 
 #define __deprecated__(s) __attribute__((deprecated(s)))
 
+#ifdef DEBUG
+#define __dontshipthis__(s) _Pragma(string(error(s)))
+#else
+#define __dontshipthis__(s)
+#endif
+
+
+
 /**
  @weakify, @unsafeify and @strongify are loosely based on EXTobjc's implementation with some subtle
  differences.  The main change here has been to reduce the amount of macro-foo to something more
@@ -119,6 +127,9 @@
 
 
 /****** It's probably best not to call macros below this line directly. *******/
+
+// Support bits for __dontshipthis__
+#define string(x) #x
 
 // Support bits for macro dispatching based on parameter count.
 

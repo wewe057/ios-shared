@@ -58,4 +58,9 @@
  */
 - (NSArray *)arrayByMappingBlock:(id (^)(id))block;
 
+/**
+ Returns a deepCopy of an array. It will recursively deepCopy contained arrays too.
+ */
+- (NSArray *)deepCopy;
+
 @end
