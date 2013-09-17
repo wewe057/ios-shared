@@ -263,20 +263,21 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
         if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]])
         {
             NSDate *expirationDate = [NSURLCache expirationDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
-            if (!expirationDate)
-                SDLog(@"oooh its old");
-            NSDate *fetchDate = [NSURLCache fetchDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
-            
-            if (ttl > 0)
-            {
-                NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:fetchDate];
-                if ([expirationDate timeIntervalSinceNow] > 0 && timePassed < ttl)
-                    return response;
-            }
-            else
+            if (expirationDate)
             {
                 if ([expirationDate timeIntervalSinceNow] > 0)
+                {
                     return response;
+                }
+            }
+            else if (ttl > 0)
+            {
+                NSDate *fetchDate = [NSURLCache fetchDateFromHeaders:[httpResponse allHeaderFields] withStatusCode:[httpResponse statusCode]];
+                NSTimeInterval timePassed = [[NSDate date] timeIntervalSinceDate:fetchDate];
+                if (timePassed < ttl)
+                {
+                    return response;
+                }
             }
         }
     }

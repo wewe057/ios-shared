@@ -32,4 +32,9 @@
 */
 + (NSInteger)systemMajorVersion;
 
+/**
+ Returns YES/NO as to whether the current device is an iPad.
+ */
++ (BOOL)iPad;
+
 @end
