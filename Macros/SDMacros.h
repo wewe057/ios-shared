@@ -42,7 +42,7 @@
  is not defined, an error will be thrown during compile.
  */
 #ifndef DEBUG
-#define __dontshipthis__(s) _Pragma(string(error(s)))
+#define __dontshipthis__(s) DO_NOT_SHIP_THIS//_Pragma(string(error(s)))
 #else
 #define __dontshipthis__(s)
 #endif
