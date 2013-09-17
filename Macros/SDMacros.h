@@ -36,7 +36,12 @@
 
 #define __deprecated__(s) __attribute__((deprecated(s)))
 
-#ifdef DEBUG
+
+/**
+ __dontshipthis__ prevents unwanted code or options from going into production.  If DEBUG
+ is not defined, an error will be thrown during compile.
+ */
+#ifndef DEBUG
 #define __dontshipthis__(s) _Pragma(string(error(s)))
 #else
 #define __dontshipthis__(s)
