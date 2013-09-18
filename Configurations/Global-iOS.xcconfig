@@ -3,7 +3,7 @@
 // Latest iOS SDK and lowest supported iOS
 
 SDKROOT = iphoneos
-IPHONEOS_DEPLOYMENT_TARGET = 5.0
+IPHONEOS_DEPLOYMENT_TARGET = 6.0
 
 // iOS builds are Simulator and ARMV7.
 
