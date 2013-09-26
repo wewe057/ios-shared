@@ -27,8 +27,19 @@
     return [[UINavigationController alloc] initWithRootViewController:self];
 }
 
+- (UIViewController *)viewControllerFromStoryboard
+{
+    return [self viewControllerFromStoryboard:nil];
+}
+
 - (UIViewController *)viewControllerFromStoryboard:(NSString *)storyboardName
 {
+    if (!storyboardName)
+    {
+        NSString *className = [self className];
+        storyboardName = [NSString stringWithFormat:@"%@_%@", className, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+    }
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:[NSBundle bundleForClass:[self class]]];
     UIViewController *result = [storyboard instantiateInitialViewController];
 
@@ -41,6 +52,12 @@
 
 - (UIViewController *)viewControllerFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier
 {
+    if (!storyboardName)
+    {
+        NSString *className = [self className];
+        storyboardName = [NSString stringWithFormat:@"%@_%@", className, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+    }
+
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:[NSBundle bundleForClass:[self class]]];
     UIViewController *result = [storyboard instantiateViewControllerWithIdentifier:identifier];
 
