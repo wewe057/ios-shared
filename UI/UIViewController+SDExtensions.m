@@ -27,12 +27,12 @@
     return [[UINavigationController alloc] initWithRootViewController:self];
 }
 
-- (UIViewController *)viewControllerFromStoryboard
++ (instancetype)loadFromStoryboard
 {
-    return [self viewControllerFromStoryboard:nil];
+    return [self loadFromStoryboard:nil];
 }
 
-- (UIViewController *)viewControllerFromStoryboard:(NSString *)storyboardName
++ (instancetype)loadFromStoryboard:(NSString *)storyboardName
 {
     if (!storyboardName)
     {
@@ -50,7 +50,7 @@
     return nil;
 }
 
-- (UIViewController *)viewControllerFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier
++ (instancetype)loadFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier
 {
     if (!storyboardName)
     {

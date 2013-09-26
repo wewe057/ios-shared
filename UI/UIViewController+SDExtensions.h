@@ -34,14 +34,14 @@
 
  The viewController's class name will be used as the storyboard name with _iPhone or _iPad appended to the end.
  */
-- (UIViewController *)viewControllerFromStoryboard;
++ (instancetype)loadFromStoryboard;
 
 /**
  Loads a UIViewController from a storyboard.  It assumes your controller is the initialViewController. 
  
  @param storyboardName the name of the storyboard file to search in.  if nil, the viewController's class name will be used as the name with _iPhone or _iPad appended to the end.
  */
-- (UIViewController *)viewControllerFromStoryboard:(NSString *)storyboardName;
++ (instancetype)loadFromStoryboard:(NSString *)storyboardName;
 
 /**
  Loads a UIViewController with a specific identifier from a storyboard.
@@ -49,6 +49,6 @@
  @param storyboardName the name of the storyboard file to search in.  if nil, the viewController's class name will be used as the name with _iPhone or _iPad appended to the end.
  @param identifier the identifier of the viewController within the storyboard to load.
  */
-- (UIViewController *)viewControllerFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier;
++ (instancetype)loadFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier;
 
 @end
