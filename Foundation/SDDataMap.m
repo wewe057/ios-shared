@@ -411,16 +411,14 @@ static const char *getPropertyType(objc_property_t property)
     if (!_mapPlist)
     {
         // typically the destination object will be a model and should supply the map
-        if ([object2 respondsToSelector:@selector(mappingDictionary)])
-            _mapPlist = [object2 mappingDictionary];
-        else
-        // if we didn't find a mappingDictionary on object2, check object1
-        if ([object1 respondsToSelector:@selector(mappingDictionary)])
-            _mapPlist = [object1 mappingDictionary];
+        if ([object2 respondsToSelector:@selector(mappingDictionaryForData:)])
+            _mapPlist = [object2 mappingDictionaryForData:object1];
     }
 
     [_mapPlist enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         id value = [object1 valueForKeyPath:key];
+        if (!value)
+            return;
         
         // allow for multiple assignments, ie: name, textLabel.text
         NSMutableString *keysString = [obj mutableCopy];
@@ -458,7 +456,7 @@ static const char *getPropertyType(objc_property_t property)
 
                             // if the model object doesn't support the protocol, we don't know how
                             // to map the objects, if it does, let's do it.
-                            if ([modelObject respondsToSelector:@selector(mappingDictionary)])
+                            if ([modelObject respondsToSelector:@selector(mappingDictionaryForData:)])
                             {
                                 SDDataMap *newMap = [SDDataMap map];
 
@@ -484,7 +482,7 @@ static const char *getPropertyType(objc_property_t property)
                     if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:specificClass])
                     {
                         id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
-                        if ([modelObject respondsToSelector:@selector(mappingDictionary)])
+                        if ([modelObject respondsToSelector:@selector(mappingDictionaryForData:)])
                         {
                             SDDataMap *newMap = [SDDataMap map];
                             [newMap mapObject:value toObject:modelObject strict:strict];
