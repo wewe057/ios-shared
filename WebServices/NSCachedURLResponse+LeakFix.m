@@ -40,9 +40,10 @@
                 CFRelease((__bridge CFTypeRef)result);
             }
         }
-    } else {
-        result = self.data;
     }
+    else
+        result = self.data;
+
     return result;
 }
 

@@ -9,8 +9,21 @@
 #import <UIKit/UIKit.h>
 #import "SDImageCache.h"
 
+extern NSString * const SDImageViewErrorDomain;
+
+typedef enum {
+    SDImageViewErrorUnknown = 0,
+    SDImageViewErrorConnectionError,
+    SDImageViewErrorAlreadyBeingFetched,
+    SDImageViewErrorHasBeenReused,
+} SDImageViewError;
 
 @interface UIImageView (SDExtensions)
+
+/**
+ * Returns the currently specified URL for the image view.
+ */
+@property (nonatomic, readonly) NSURL *URL;
 
 /**
  * Set the imageView `image` with an `url`.
@@ -38,6 +51,10 @@
  *
  * @param url The url for the image.
  * @param A block to be executed when the image request finishes.
+ *
+ * See `SDImageViewError` for a list of possible errors that can be returned to the block.
+ * Connection errors will typically have a userInfo object attached with the underlying
+ * error contained within.
  */
 - (void)setImageWithURL:(NSURL *)url completionBlock:(UIImageViewURLCompletionBlock)completionBlock;
 
@@ -49,6 +66,10 @@
  * @param url The url for the image.
  * @param placeholder The image to be set initially, until the image request finishes.
  * @param A block to be executed when the image request finishes.
+ *
+ * See `SDImageViewError` for a list of possible errors that can be returned to the block.
+ * Connection errors will typically have a userInfo object attached with the underlying
+ * error contained within.
  */
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completionBlock:(UIImageViewURLCompletionBlock)completionBlock;
 

@@ -1,9 +1,9 @@
 //
 //  UIView+SDExtensions.h
-//  walmart
+//  SetDirection
 //
 //  Created by Sam Grover on 2/27/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -47,17 +47,27 @@
 /**
  Convenience method to set the receiver's `frame.origin.y`.
  */
--(void)setFrameOriginY:(CGFloat)newY;
+- (void)setFrameOriginY:(CGFloat)newY;
 
 /**
  Convenience method to set the receiver's `frame.origin.x`.
  */
--(void)setFrameOriginX:(CGFloat)newX;
+- (void)setFrameOriginX:(CGFloat)newX;
 
 /**
  Returns the first subview that is of the type of `aViewClass`. Returns `nil` if there's none found.
  */
--(id)firstSubviewOfClass:(Class)aViewClass;
+- (id)firstSubviewOfClass:(Class)aViewClass;
+
+/**
+ Returns a visual stand-in for the current view that can be shown in it's place.
+ */
+- (UIView *)snapshot;
+
+/**
+ Returns a UIImage representation of a view and it's subview heirarchy.
+ */
+- (UIImage *)screenshot;
 
 
 @end

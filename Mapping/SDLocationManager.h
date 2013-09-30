@@ -2,7 +2,7 @@
 //  SDLocationManager.h
 //
 //  Created by brandon on 2/11/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -26,17 +26,6 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 @end
 
 @interface SDLocationManager: CLLocationManager <CLLocationManagerDelegate>
-{
-    BOOL isUpdatingLocation;
-    BOOL isUpdatingHeading;
-    NSMutableArray *delegates;
-	NSTimeInterval timeout;
-	
-	NSTimer *timeoutTimer;
-	NSDate *timestamp;
-	CLLocationAccuracy actualDesiredAccuracy;
-    BOOL gotFirstLocationUpdate;
-}
 
 @property (nonatomic, assign) NSTimeInterval timeout;
 @property (nonatomic, readonly) BOOL hasReceivedLocationUpdate;
@@ -44,8 +33,11 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 
 + (SDLocationManager *)instance;
 
-- (void)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (BOOL)isLocationAllowed;
+
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (void)stopUpdatingLocationForAllDelegates;
 - (void)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 

@@ -3,7 +3,7 @@
 //  testdrag
 //
 //  Created by Brandon Sneed on 8/23/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
+//  Copyright 2011-2013 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIGestureRecognizerSubclass.h>
@@ -60,7 +60,7 @@
 - (void)processAction:(SDDragDropGestureRecognizer *)gesture
 {
     // do nothing.
-    NSLog(@"state in-action = %u", self.state);
+//    NSLog(@"state in-action = %u", self.state);
     
 }
 
@@ -137,7 +137,7 @@
 - (void)setState:(UIGestureRecognizerState)state
 {
     [super setState:state];
-    NSLog(@"state = %u", self.state);
+//    NSLog(@"state = %u", self.state);
     if (state == UIGestureRecognizerStateBegan)
     {
         [self performSelector:@selector(startDrag) withObject:nil afterDelay:0.1];

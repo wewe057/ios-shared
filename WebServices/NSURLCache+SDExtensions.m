@@ -8,6 +8,7 @@
 
 #import "NSURLCache+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
+#import "NSURLRequest+SDExtensions.h"
 
 static float const kSDURLCacheDefault = 3600; // Default cache expiration delay if none defined (1 hour)
 static float const kNSURLCacheLastModFraction = 0.1f; // 10% since Last-Modified suggested by RFC2616 section 13.2.4
@@ -281,11 +282,13 @@ static NSDateFormatter* CreateDateFormatter(NSString *format)
     }
     
     // if we get here, it didn't pass our validation checks.  forcibly remove it.
-    if (remove)
+    // Only call removeCachedResponseForRequest if there is a response in order to try and work around iOS 7 removeAllCachedResponses bug
+    if (remove && response && [request isValid])
+    {
         [urlCache removeCachedResponseForRequest:request];
+    }
     
 	return nil; // Valid cached response not found
 }
-
 
 @end

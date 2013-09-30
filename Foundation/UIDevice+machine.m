@@ -1,9 +1,9 @@
 //
 //  UIDevice+machine.m
-//  walmart
+//  SetDirection
 //
 //  Created by Justin Zealand on 4/1/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 //  Based upon http://iphonedevelopertips.com/device/determine-if-iphone-is-3g-or-3gs-determine-if-ipod-is-first-or-second-generation.html
 
@@ -82,6 +82,29 @@
         if (components.count)
         {
             version |= (0x000000FF & (uint)[[components objectAtIndex: 0] integerValue]) << 16;
+        }
+    }
+
+    return version;
+}
+
++ (NSInteger)systemMajorVersion
+{
+    static NSInteger version = 0;
+
+#ifndef DEBUG
+    if (version == 0)
+#else
+    version = 0;
+#endif
+    {
+        NSString *versionString = [[UIDevice currentDevice] systemVersion];
+        NSArray *components = [versionString componentsSeparatedByString:@"."];
+
+        if (components.count > 0)
+        {
+            NSString *stringVersion = [components objectAtIndex:0];
+            version = [stringVersion integerValue];
         }
     }
 

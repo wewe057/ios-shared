@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
-#import "UIDeviceTests.h"
-
+//#import <XCTest/XCTest.h>
+#import <SenTestingKit/SenTestingKit.h>
 #import "UIDevice+machine.h"
 
 typedef NS_ENUM(NSUInteger, SystemVersionReturnValues)
@@ -149,7 +149,10 @@ static NSUInteger sCurrentSystemReturnValue = eSystemReturn500;
 
 @end
 
-@implementation ios_shared_UIDeviceTests
+@interface UIDeviceTests : SenTestCase
+@end
+
+@implementation UIDeviceTests
 
 - (void)setUp
 {

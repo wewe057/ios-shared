@@ -2,7 +2,7 @@
 //  SDWebService.h
 //
 //  Created by brandon on 2/14/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -96,7 +96,7 @@ typedef enum
 @property (nonatomic, assign) NSUInteger timeout;
 
 /**
- Returns the singleton for the web service class.
+ Returns the singleton for the web service class.  This should be overridden if multiple subclasses are in use.
  */
 + (instancetype)sharedInstance;
 

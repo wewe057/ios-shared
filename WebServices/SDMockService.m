@@ -4,7 +4,7 @@
 //  
 //
 //  Created by Steven Woolgar on 06/27/2013.
-//  Copyright 2011-2013 Set Direction. All rights reserved.
+//  Copyright 2011-2013 SetDirection. All rights reserved.
 //
 
 #import "SDMockService.h"
@@ -679,7 +679,8 @@
                 {
                     // remove it from the cache if its there.
                     NSURLCache *urlCache = [NSURLCache sharedURLCache];
-                    [urlCache removeCachedResponseForRequest:request];
+                    if ([request isValid])
+                        [urlCache removeCachedResponseForRequest:request];
 
                     SDMockRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 

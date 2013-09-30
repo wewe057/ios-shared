@@ -112,6 +112,14 @@ static char wmdeck_kvoContext;
 
 #pragma mark - NSObject
 
++ (instancetype)sharedInstance
+{
+	static dispatch_once_t oncePred;
+	static id sharedInstance = nil;
+	dispatch_once(&oncePred, ^{ sharedInstance = [[[self class] alloc] init]; });
+	return sharedInstance;
+}
+
 - (void)dealloc
 {
     [_centerDeck removeObserver:self forKeyPath:@"view"];
@@ -198,15 +206,6 @@ static char wmdeck_kvoContext;
 }
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    self.tapView = nil;
-    self.centerDeckContainer = nil;
-    self.leftDeckContainer = nil;
-    self.rightDeckContainer = nil;
-}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {

@@ -3,7 +3,7 @@
 //  samsclub
 //
 //  Created by Sam Grover on 1/10/13.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import "UINavigationController+SDExtensions.h"
@@ -22,6 +22,16 @@
     
     NSUInteger indexToPopTo = viewControllersOnStack.count - numLevels;
     return [self popToViewController:[viewControllersOnStack objectAtIndex:indexToPopTo] animated:animated];
+}
+
+- (NSArray *)popToRootViewControllerDismissingModalAnimated:(BOOL)animated
+{
+    UIViewController *v = [self.viewControllers lastObject];
+    if (v.presentedViewController != nil)
+    {
+        [v dismissViewControllerAnimated:animated completion:nil];
+    }
+    return [self popToRootViewControllerAnimated:animated];
 }
 
 @end

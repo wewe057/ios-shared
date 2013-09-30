@@ -3,13 +3,11 @@
 //  Photos
 //
 //  Created by Brandon Sneed on 5/10/13.
-//  Copyright (c) 2013 walmart. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import "SDPhotoImageView.h"
 #import <QuartzCore/QuartzCore.h>
-
-#define ZOOM_STEP 1.5
 
 @implementation SDPhotoImageView
 {
@@ -71,8 +69,9 @@
 
 - (void)handleSingleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-    if ([self.delegate respondsToSelector:@selector(photoImageView:wasTappedAtPoint:)])
-        [self.delegate photoImageView:self wasTappedAtPoint:[gestureRecognizer locationInView:gestureRecognizer.view]];
+    @strongify(self.delegate, strongDelegate);
+    if ([strongDelegate respondsToSelector:@selector(photoImageView:wasTappedAtPoint:)])
+        [strongDelegate photoImageView:self wasTappedAtPoint:[gestureRecognizer locationInView:gestureRecognizer.view]];
 }
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer

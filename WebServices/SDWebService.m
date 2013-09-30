@@ -2,7 +2,7 @@
 //  SDWebService.m
 //
 //  Created by brandon on 2/14/11.
-//  Copyright 2011 Set Direction. All rights reserved.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
 
 #import "SDWebService.h"
@@ -11,6 +11,7 @@
 #import "NSDictionary+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
 #import "NSData+SDExtensions.h"
+#import "NSURLRequest+SDExtensions.h"
 
 NSString *const SDWebServiceError = @"SDWebServiceError";
 
@@ -697,10 +698,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
     }
 
-    // setup caching
-    if ([cache boolValue])
-        [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
-	else
+    // setup caching, default is to let the server decide.
+    [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+    // it has to be explicitly disabled to go through here...
+	if (cache && ![cache boolValue])
 		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
 
 	// setup the completion blocks.  we call the same block because failure means
@@ -714,7 +715,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
 #ifdef DEBUG
-        SDLog(@"Service call took %lf seconds. URL was: %@", [[NSDate date] timeIntervalSinceDate:startDate], request.URL);
+        NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:startDate];
+        if (interval)           // This is a DEBUG mode workaround for SDLog() being defined but empty in Unit Test builds.
+            ;
+        SDLog(@"Service call took %lf seconds. URL was: %@", interval, request.URL);
 #endif
         // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
         if ([error code] != NSURLErrorCancelled)
@@ -727,7 +731,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                 {
                     // remove it from the cache if its there.
                     NSURLCache *blockCache = [NSURLCache sharedURLCache];
-                    [blockCache removeCachedResponseForRequest:request];
+                    if ([request isValid])
+                        [blockCache removeCachedResponseForRequest:request];
 
                     SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 
@@ -836,7 +841,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:urlCompletionBlock];
 
     [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
     if (singleRequest)

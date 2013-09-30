@@ -7,8 +7,10 @@
 //
 
 #import "SDImageCache.h"
+#import "SDURLConnection.h"
 #import "NSURLCache+SDExtensions.h"
 #import "NSCachedURLResponse+LeakFix.h"
+#import "NSURLRequest+SDExtensions.h"
 
 #import <objc/runtime.h>
 
@@ -70,6 +72,17 @@
 {
     [_memoryCache removeAllObjects];
     _imageCounter = 0;
+}
+
+- (void)flushDiskCache
+{
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+}
+
+- (void)flushCache
+{
+    [self flushMemoryCache];
+    [self flushDiskCache];
 }
 
 - (void)cleanCacheAsNeeded
@@ -143,7 +156,8 @@
     if (cachedImage)
     {
         SDLog(@"image found in memory cache: %@", url);
-        completionBlock(cachedImage, nil);
+        if (completionBlock)
+            completionBlock(cachedImage, nil);
         return;
     }
 
@@ -157,15 +171,23 @@
         if (diskCachedImage)
         {
             SDLog(@"image found in disk cache: %@", url);
-            completionBlock(diskCachedImage, nil);
+            if (completionBlock)
+                completionBlock(diskCachedImage, nil);
             return;
         }
     }
 
-    SDURLConnection *urlConnection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
+    SDURLConnection *urlConnection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
         UIImage *image = nil;
         if (responseData && responseData.length > 0)
             image = [UIImage imageWithData:responseData];
+
+        if ([response isKindOfClass:[NSHTTPURLResponse class]])
+        {
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            if (httpResponse.statusCode >= 400)
+                error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
+        }
 
         [_decodeQueue addOperationWithBlock:^{
             UIImage *decodedImage = nil;
@@ -173,7 +195,8 @@
                 decodedImage = [SDImageCache decodedImageWithImage:image];
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 [self addImageToMemoryCache:decodedImage withURL:url];
-                completionBlock(decodedImage, error);
+                if (completionBlock)
+                    completionBlock(decodedImage, error);
                 if (decodedImage.size.width == 0 || decodedImage.size.height == 0)
                     [self removeImageURLFromCache:url];
             }];
@@ -198,7 +221,8 @@
     NSURLCache *cache = [NSURLCache sharedURLCache];
 
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [cache removeCachedResponseForRequest:request];
+    if ([request isValid])
+        [cache removeCachedResponseForRequest:request];
 }
 
 - (void)addImageToMemoryCache:(UIImage *)image withURL:(NSURL *)url
