@@ -111,4 +111,11 @@
     return version;
 }
 
++ (BOOL)iPad
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        return YES; // Device is iPad.
+    return NO;
+}
+
 @end
