@@ -52,7 +52,7 @@ const NSString *SDABTestingActionFailure = @"failure";
 
 - (SDABTestingValue)getAorB
 {
-    int tmp = (arc4random() % 30) + 1;
+    NSInteger tmp = (arc4random() % 30) + 1;
     if (tmp % 5 == 0)
         return SDABTestingValueBPath;
     return SDABTestingValueAPath;
