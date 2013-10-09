@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA00E52D1805D4EE00005518 /* SDPoser.m in Sources */ = {isa = PBXBuildFile; fileRef = CA00E52C1805D4EE00005518 /* SDPoser.m */; };
 		CA01F17C17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */; };
 		CA01F1B017D7A6F000E7C553 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */; };
 		CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
@@ -102,6 +103,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CA00E52B1805D4EE00005518 /* SDPoser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPoser.h; sourceTree = "<group>"; };
+		CA00E52C1805D4EE00005518 /* SDPoser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPoser.m; sourceTree = "<group>"; };
 		CA01F17A17D79DDC00E7C553 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
 		CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
 		CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -374,6 +377,8 @@
 				CA80797717C942B6009574BB /* SDTimer.m */,
 				CA80797817C942B6009574BB /* UIDevice+machine.h */,
 				CA80797917C942B6009574BB /* UIDevice+machine.m */,
+				CA00E52B1805D4EE00005518 /* SDPoser.h */,
+				CA00E52C1805D4EE00005518 /* SDPoser.m */,
 			);
 			path = Foundation;
 			sourceTree = SOURCE_ROOT;
@@ -612,6 +617,7 @@
 				CA80797E17C942B6009574BB /* NSError+SDExtensions.m in Sources */,
 				CA8079D117C942E4009574BB /* SDPickerModalViewController.m in Sources */,
 				CA8079CF17C942E4009574BB /* SDPagingView.m in Sources */,
+				CA00E52D1805D4EE00005518 /* SDPoser.m in Sources */,
 				CA80798417C942B6009574BB /* SDDataMap.m in Sources */,
 				CA8079FC17C942F1009574BB /* SDWebService.m in Sources */,
 				CA8079F417C942F1009574BB /* NSCachedURLResponse+LeakFix.m in Sources */,
@@ -826,6 +832,7 @@
 				CA01F1C017D7A6F000E7C553 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA80792417C94199009574BB /* Build configuration list for PBXProject "ios-shared" */ = {
 			isa = XCConfigurationList;
