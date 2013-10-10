@@ -95,6 +95,12 @@
 
     SDPoserItem *item = [_poserMap objectForKey:lookupName];
 
+    if (!item && containerClass!=nil)
+    {
+        lookupName = [self lookupNameForImpersonatedClass:impersonatedClass containerClass:nil];
+        item = [_poserMap objectForKey:lookupName];
+    }
+    
     if (!item)
     {
         // if there's no item for this, just return a raw version of the impersonated object.
