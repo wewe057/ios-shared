@@ -8,6 +8,8 @@
 
 #import "NSObject+SDExtensions.h"
 
+#import <objc/runtime.h>
+#import <objc/message.h>
 
 @implementation NSObject (SDExtensions)
 
@@ -142,6 +144,51 @@
     
     if (performBlock)
         [self performSelector:@selector(__performBlockSelector:) withObject:[performBlock copy] afterDelay:delay];
+}
+
+#pragma mark - JRSwizzle code adoption
+
+//   Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+//   Some rights reserved: http://opensource.org/licenses/MIT
+//   https://github.com/rentzsch/jrswizzle
+
+#define SetNSErrorFor(FUNC, ERROR_VAR, FORMAT,...)	\
+    if (ERROR_VAR) {	\
+        NSString *errStr = [NSString stringWithFormat:@"%s: " FORMAT,FUNC,##__VA_ARGS__]; \
+        *ERROR_VAR = [NSError errorWithDomain:@"NSCocoaErrorDomain" \
+                                         code:-1	\
+                                     userInfo:[NSDictionary dictionaryWithObject:errStr forKey:NSLocalizedDescriptionKey]]; \
+    }
+
+#define SetNSError(ERROR_VAR, FORMAT,...) SetNSErrorFor(__func__, ERROR_VAR, FORMAT, ##__VA_ARGS__)
+
++ (BOOL)swizzleMethod:(SEL)originalSelector withMethod:(SEL)alternateSelector error:(NSError**)error
+{
+	Method origMethod = class_getInstanceMethod(self, originalSelector);
+	if (!origMethod)
+    {
+		SetNSError(error, @"original method %@ not found for class %@", NSStringFromSelector(originalSelector), [self class]);
+		return NO;
+	}
+
+	Method altMethod = class_getInstanceMethod(self, alternateSelector);
+	if (!altMethod)
+    {
+		SetNSError(error, @"alternate method %@ not found for class %@", NSStringFromSelector(alternateSelector), [self class]);
+		return NO;
+	}
+
+	class_addMethod(self, originalSelector, class_getMethodImplementation(self, originalSelector), method_getTypeEncoding(origMethod));
+	class_addMethod(self, alternateSelector, class_getMethodImplementation(self, alternateSelector), method_getTypeEncoding(altMethod));
+
+	method_exchangeImplementations(class_getInstanceMethod(self, originalSelector), class_getInstanceMethod(self, alternateSelector));
+
+	return YES;
+}
+
++ (BOOL)swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)alternateSelector error:(NSError**)error
+{
+	return [object_getClass((id)self) swizzleMethod:originalSelector withMethod:alternateSelector error:error];
 }
 
 @end

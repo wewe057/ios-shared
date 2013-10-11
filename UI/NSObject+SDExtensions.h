@@ -72,4 +72,20 @@ typedef void (^NSObjectPerformBlock)();
  */
 - (void)performBlock:(NSObjectPerformBlock)performBlock afterDelay:(NSTimeInterval)delay;
 
+/**
+ Swizzle instances methods on an object.  Gratefully stolen from:
+ 
+    Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+    Some rights reserved: http://opensource.org/licenses/MIT
+ */
++ (BOOL)swizzleMethod:(SEL)originalSelector withMethod:(SEL)alternateSelector error:(NSError**)error;
+
+/**
+ Swizzle class methods on an object.  Gratefully stolen from:
+
+ Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+ Some rights reserved: http://opensource.org/licenses/MIT
+ */
++ (BOOL)swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)alternateSelector error:(NSError**)error;
+
 @end
