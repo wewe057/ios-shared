@@ -146,6 +146,21 @@
         [self performSelector:@selector(__performBlockSelector:) withObject:[performBlock copy] afterDelay:delay];
 }
 
+- (void)performBlockOnMainThread:(NSObjectPerformBlock)performBlock
+{
+    /*dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
+     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+     if (performBlock)
+     performBlock();
+     });*/
+
+    // ^^^ produces significant delay in just telling the block to execute.  when on the main queue, its less
+    // performant to do this.
+
+    if (performBlock)
+        [self performSelectorOnMainThread:@selector(__performBlockSelector:) withObject:[performBlock copy] waitUntilDone:NO];
+}
+
 #pragma mark - JRSwizzle code adoption
 
 //   Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com

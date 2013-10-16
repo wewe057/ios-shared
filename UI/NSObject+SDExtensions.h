@@ -73,6 +73,12 @@ typedef void (^NSObjectPerformBlock)();
 - (void)performBlock:(NSObjectPerformBlock)performBlock afterDelay:(NSTimeInterval)delay;
 
 /**
+ Execute a block on the main thread.
+ @param performBlock The block to execute on the main thread.
+ */
+- (void)performBlockOnMainThread:(NSObjectPerformBlock)performBlock;
+
+/**
  Swizzle instances methods on an object.  Gratefully stolen from:
  
     Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
