@@ -23,8 +23,8 @@
 
 - (NSDictionary *)mappingDictionaryForData:(id)data
 {
-    // this is the base class, so we'll just give it an empty map.
-    return [NSDictionary dictionary];
+    // this is the base class, so we'll return nothing.
+    return nil;
 }
 
 + (instancetype)mapFromObject:(id)sourceObject
@@ -127,6 +127,15 @@
         [aDictionary addEntriesFromDictionary:aSubDictionary];
 
     return aDictionary;
+}
+
+@end
+
+@implementation SDErrorModelObject
+
+- (BOOL)validModel
+{
+    @throw [NSException exceptionWithName:@"SDErrorModelObjectException" reason:@"Subclasses MUST override -validModel." userInfo:nil];
 }
 
 @end

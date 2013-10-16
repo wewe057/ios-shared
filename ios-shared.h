@@ -31,5 +31,6 @@
 
 #import "SDURLConnection.h"
 #import "SDWebService.h"
+#import "SDWebService+SDProcessingBlocks.h"
 
 #endif

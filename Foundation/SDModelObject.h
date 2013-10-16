@@ -16,7 +16,7 @@
  *  make a call to mappingDictionaryForData in order to retrieve a map for use with SDDataMap
  *  and then map the sourceObject to the newly created instance.
  */
-@interface SDModelObject : NSObject
+@interface SDModelObject : NSObject<SDDataMapProtocol>
 
 /**
  *	Subclasses should override this method to provide a data map dictionary per the specifications
@@ -40,8 +40,20 @@
  *
  *  @param sourceObject The source name / value pairs
  *
- *  @return A newly created and mapped object
+ *  @return A newly created and mapped object or nil if the model was not valid.  See -isValidModel.
  */
 + (instancetype)mapFromObject:(id)sourceObject;
+
+@end
+
+
+@interface SDErrorModelObject : SDModelObject
+
+/**
+ *  Subclasses MUST override this method to do valid error model checking.
+ *
+ *  @return YES if the model is valid.  No if the model is not valid.
+ */
+- (BOOL)validModel;
 
 @end
