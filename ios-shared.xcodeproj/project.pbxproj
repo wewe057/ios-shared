@@ -78,6 +78,8 @@
 		CA8079FC17C942F1009574BB /* SDWebService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F117C942F1009574BB /* SDWebService.m */; };
 		CA8079FD17C942F1009574BB /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F317C942F1009574BB /* UIImageView+SDExtensions.m */; };
 		CAFD1F42180DEBAF003669B3 /* SDModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F41180DEBAF003669B3 /* SDModelObject.m */; };
+		CAFD1F4B180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */; };
+		CAFD1F4C180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */; };
 		E2C6B5A317D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
@@ -233,6 +235,8 @@
 		CA807A0117C942FD009574BB /* Project-iOS-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Release.xcconfig"; sourceTree = "<group>"; };
 		CAFD1F40180DEBAF003669B3 /* SDModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDModelObject.h; sourceTree = "<group>"; };
 		CAFD1F41180DEBAF003669B3 /* SDModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDModelObject.m; sourceTree = "<group>"; };
+		CAFD1F49180F48CC003669B3 /* SDWebService+SDProcessingBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SDWebService+SDProcessingBlocks.h"; sourceTree = "<group>"; };
+		CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SDWebService+SDProcessingBlocks.m"; sourceTree = "<group>"; };
 		E2C6B5A017D117BA00D5C9D1 /* ObjectiveCGenerics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCGenerics.h; sourceTree = "<group>"; };
 		E2C6B5A117D117F800D5C9D1 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
 		E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
@@ -492,6 +496,8 @@
 				CA8079ED17C942F1009574BB /* SDMockService.m */,
 				CA8079EE17C942F1009574BB /* SDURLConnection.h */,
 				CA8079EF17C942F1009574BB /* SDURLConnection.m */,
+				CAFD1F49180F48CC003669B3 /* SDWebService+SDProcessingBlocks.h */,
+				CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */,
 				CA8079F017C942F1009574BB /* SDWebService.h */,
 				CA8079F117C942F1009574BB /* SDWebService.m */,
 				CA8079F217C942F1009574BB /* UIImageView+SDExtensions.h */,
@@ -599,6 +605,7 @@
 			files = (
 				CA01F1D517D7A80B00E7C553 /* NSURLCache+SDExtensions.m in Sources */,
 				CA01F1D617D7A81600E7C553 /* NSURLRequest+SDExtensions.m in Sources */,
+				CAFD1F4C180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA01F1D717D7A82E00E7C553 /* NSError+SDExtensions.m in Sources */,
 				CA01F1D217D7A7D700E7C553 /* SDURLConnection.m in Sources */,
 				CA01F1C617D7A72D00E7C553 /* UIImageViewTests.m in Sources */,
@@ -653,6 +660,7 @@
 				CA80797D17C942B6009574BB /* NSDictionary+SDExtensions.m in Sources */,
 				CA80799017C942CF009574BB /* CLLocation+SDExtensions.m in Sources */,
 				CA80798217C942B6009574BB /* NSUserDefaults+SDExtensions.m in Sources */,
+				CAFD1F4B180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA8079D417C942E4009574BB /* SDStackView.m in Sources */,
 				CA8079CD17C942E4009574BB /* SDImageButton.m in Sources */,
 				CA80799617C942D9009574BB /* SDKeychain.m in Sources */,

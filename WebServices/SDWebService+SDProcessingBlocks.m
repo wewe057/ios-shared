@@ -105,7 +105,7 @@
 
 + (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlockForClass:(Class)classType errorClassType:(Class)errorClassType
 {
-    NSAssert([classType isSubclassOfClass:[RxObject class]], @"defaultJSONProcessingBlockForClass: works on concrete subclasses of RxObject");
+    NSAssert([classType isSubclassOfClass:[SDModelObject class]], @"defaultJSONProcessingBlockForClass: works on concrete subclasses of SDModelObject");
 
     SDWebServiceDataCompletionBlock completionBlock = ^id (NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
         SDLog(@"%@: %d:\n%@", response, responseCode, [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
@@ -141,9 +141,9 @@
         if ([responseObject isKindOfClass:[NSArray class]])
         {
             NSArray *responseObjects = responseObject;
-            NSMutableArray *rxObjects = [NSMutableArray array];
+            NSMutableArray *modelObjects = [NSMutableArray array];
 
-            for (NSUInteger i = 0; i<[rxObjects count]; i++)
+            for (NSUInteger i = 0; i<[modelObjects count]; i++)
             {
                 NSDictionary *dataDictionary = [responseObjects objectAtIndex:i];
                 NSDictionary *subDictionary = [dataDictionary objectForKey:@"data"];
@@ -151,14 +151,14 @@
                 if (subDictionary)
                     dataDictionary = subDictionary;
 
-                RxObject *modelObject = [classType mapFromObject:dataDictionary];
+                SDModelObject *modelObject = [classType mapFromObject:dataDictionary];
 
                 if (modelObject)
-                    [rxObjects addObject:modelObject];
+                    [modelObjects addObject:modelObject];
             }
             
-            if ([rxObjects count] > 0)
-                return [NSArray arrayWithArray:rxObjects];
+            if ([modelObjects count] > 0)
+                return [NSArray arrayWithArray:modelObjects];
         }
 
         return nil;
