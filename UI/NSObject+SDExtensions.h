@@ -75,8 +75,9 @@ typedef void (^NSObjectPerformBlock)();
 /**
  Execute a block on the main thread.
  @param performBlock The block to execute on the main thread.
+ @param waitUntilDone Specifies whether it should wait for the block to complete before returning.
  */
-- (void)performBlockOnMainThread:(NSObjectPerformBlock)performBlock;
+- (void)performBlockOnMainThread:(NSObjectPerformBlock)performBlock waitUntilDone:(BOOL)waitUntilDone;
 
 /**
  Swizzle instances methods on an object.  Gratefully stolen from:

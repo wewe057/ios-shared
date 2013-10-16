@@ -146,7 +146,7 @@
         [self performSelector:@selector(__performBlockSelector:) withObject:[performBlock copy] afterDelay:delay];
 }
 
-- (void)performBlockOnMainThread:(NSObjectPerformBlock)performBlock
+- (void)performBlockOnMainThread:(NSObjectPerformBlock)performBlock waitUntilDone:(BOOL)waitUntilDone
 {
     /*dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC);
      dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -158,7 +158,7 @@
     // performant to do this.
 
     if (performBlock)
-        [self performSelectorOnMainThread:@selector(__performBlockSelector:) withObject:[performBlock copy] waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(__performBlockSelector:) withObject:[performBlock copy] waitUntilDone:waitUntilDone];
 }
 
 #pragma mark - JRSwizzle code adoption
