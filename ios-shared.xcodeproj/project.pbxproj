@@ -80,6 +80,11 @@
 		CAFD1F42180DEBAF003669B3 /* SDModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F41180DEBAF003669B3 /* SDModelObject.m */; };
 		CAFD1F4B180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */; };
 		CAFD1F4C180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */; };
+		CAFD1F4D180F4E2D003669B3 /* SDModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F41180DEBAF003669B3 /* SDModelObject.m */; };
+		CAFD1F4E180F4EC8003669B3 /* SDDataMap.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80797517C942B6009574BB /* SDDataMap.m */; };
+		CAFD1F4F180F4EDF003669B3 /* SDWebService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F117C942F1009574BB /* SDWebService.m */; };
+		CAFD1F50180F4EEA003669B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E917C942F1009574BB /* Reachability.m */; };
+		CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */; };
 		E2C6B5A317D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
@@ -237,6 +242,7 @@
 		CAFD1F41180DEBAF003669B3 /* SDModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDModelObject.m; sourceTree = "<group>"; };
 		CAFD1F49180F48CC003669B3 /* SDWebService+SDProcessingBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SDWebService+SDProcessingBlocks.h"; sourceTree = "<group>"; };
 		CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SDWebService+SDProcessingBlocks.m"; sourceTree = "<group>"; };
+		CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E2C6B5A017D117BA00D5C9D1 /* ObjectiveCGenerics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCGenerics.h; sourceTree = "<group>"; };
 		E2C6B5A117D117F800D5C9D1 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
 		E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
@@ -247,6 +253,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */,
 				CA01F1B017D7A6F000E7C553 /* SenTestingKit.framework in Frameworks */,
 				CA01F1B217D7A6F000E7C553 /* UIKit.framework in Frameworks */,
 				CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */,
@@ -309,6 +316,7 @@
 		CA80792B17C94199009574BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */,
 				CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */,
 				CA80792C17C94199009574BB /* Foundation.framework */,
 				CA80793A17C94199009574BB /* XCTest.framework */,
@@ -610,12 +618,16 @@
 				CA01F1D217D7A7D700E7C553 /* SDURLConnection.m in Sources */,
 				CA01F1C617D7A72D00E7C553 /* UIImageViewTests.m in Sources */,
 				CA01F1D817D7AEFB00E7C553 /* NSRunLoop+SDExtensions.m in Sources */,
+				CAFD1F4D180F4E2D003669B3 /* SDModelObject.m in Sources */,
 				CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */,
 				CA01F1D417D7A7FD00E7C553 /* UIDevice+machine.m in Sources */,
+				CAFD1F4E180F4EC8003669B3 /* SDDataMap.m in Sources */,
 				CA01F1C517D7A72D00E7C553 /* UIDeviceTests.m in Sources */,
 				CA01F1BA17D7A6F000E7C553 /* ios_shared_Tests.m in Sources */,
 				CA01F1D317D7A7EC00E7C553 /* UIImageView+SDExtensions.m in Sources */,
 				CA01F1D117D7A7B800E7C553 /* SDImageCache.m in Sources */,
+				CAFD1F4F180F4EDF003669B3 /* SDWebService.m in Sources */,
+				CAFD1F50180F4EEA003669B3 /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
