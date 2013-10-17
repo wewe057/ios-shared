@@ -130,88 +130,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
-#pragma mark - Default processing blocks
-
-+ (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONObject];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultMutableJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONObjectMutable:YES error:nil];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONArray];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultMutableArrayJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONMutableArray];
-        return dataObject;
-    };
-    return result;
-
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-        dataObject = [responseData JSONDictionary];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultMutableDictionaryJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONMutableDictionary];
-        return dataObject;
-    };
-    return result;
-
-}
-
 #pragma mark - Network activity
 
 - (void)showNetworkActivityIfNeeded
@@ -406,53 +324,47 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	// **************************************************************
 	// Scheme
     NSString *altBaseScheme = [replacements objectForKey:@"baseScheme"];
-    if (altBaseScheme) {
+    if (altBaseScheme)
         baseScheme = altBaseScheme;
-    }
-    else {
+    else
+    {
         // if this method has its own baseScheme use it instead.
         altBaseScheme = [requestDetails objectForKey:@"baseScheme"];
-        if (altBaseScheme) {
+        if (altBaseScheme)
             baseScheme = altBaseScheme;
-        }
     }
 
 	if (baseScheme && ([baseScheme rangeOfString:@"://"].location == NSNotFound))
-	{
 		baseScheme = [baseScheme stringByAppendingString:@"://"];
-	}
 
 	// **************************************************************
 	// Host
 	NSString *altBaseHost = [replacements objectForKey:@"baseHost"];
-    if (altBaseHost) {
+    if (altBaseHost)
         baseHost = altBaseHost;
-    }
-    else {
+    else
+    {
         // if this method has its own baseHost use it instead.
         altBaseHost = [requestDetails objectForKey:@"baseHost"];
-        if (altBaseHost) {
+        if (altBaseHost)
             baseHost = altBaseHost;
-        }
     }
 
 	// **************************************************************
 	// Path
 	NSString *altBasePath = [replacements objectForKey:@"basePath"];
-    if (altBasePath) {
+    if (altBasePath)
         basePath = altBasePath;
-    }
-    else {
+    else
+    {
         // if this method has its own basePath use it instead.
         altBasePath = [requestDetails objectForKey:@"basePath"];
-        if (altBasePath) {
+        if (altBasePath)
             basePath = altBasePath;
-        }
     }
 
 	if (!baseScheme)
 		[NSException raise:@"SDException" format:@"Unable to create request.  Missing scheme."];
-
 
 	if (!baseHost)
 		[NSException raise:@"SDException" format:@"Unable to create request.  Missing host."];
@@ -469,27 +381,24 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
-	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
+	BOOL postMethod = ([[method uppercaseString] isEqualToString:@"POST"] || [[method uppercaseString] isEqualToString:@"PUT"]);
 
     // Allowing for the dynamic specification of baseURL at runtime
     // (initially to accomodate the suggestions search)
     NSString *altBaseURL = [replacements objectForKey:@"baseURL"];
-    if (altBaseURL) {
+    if (altBaseURL)
         baseURL = altBaseURL;
-    }
-    else {
+    else
+    {
         // if this method has its own baseURL use it instead.
         altBaseURL = [requestDetails objectForKey:@"baseURL"];
-        if (altBaseURL) {
+        if (altBaseURL)
             baseURL = altBaseURL;
-        }
     }
 
 	// If there was no altBaseURL, then we need to build the baseURL
 	if (!altBaseURL)
-	{
 		baseURL = [self buildBaseURLForScheme:baseScheme host:baseHost path:basePath details:requestDetails replacements:replacements];
-	}
 
 	// Look for {KEY} key ands replace them
 	baseURL = [self stringByReplacingPrefKeys:baseURL];
