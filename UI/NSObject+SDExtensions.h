@@ -72,4 +72,27 @@ typedef void (^NSObjectPerformBlock)();
  */
 - (void)performBlock:(NSObjectPerformBlock)performBlock afterDelay:(NSTimeInterval)delay;
 
+/**
+ Execute a block on the main thread.
+ @param performBlock The block to execute on the main thread.
+ @param waitUntilDone Specifies whether it should wait for the block to complete before returning.
+ */
+- (void)performBlockOnMainThread:(NSObjectPerformBlock)performBlock waitUntilDone:(BOOL)waitUntilDone;
+
+/**
+ Swizzle instances methods on an object.  Gratefully stolen from:
+ 
+    Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+    Some rights reserved: http://opensource.org/licenses/MIT
+ */
++ (BOOL)swizzleMethod:(SEL)originalSelector withMethod:(SEL)alternateSelector error:(NSError**)error;
+
+/**
+ Swizzle class methods on an object.  Gratefully stolen from:
+
+ Copyright (c) 2007-2011 Jonathan 'Wolf' Rentzsch: http://rentzsch.com
+ Some rights reserved: http://opensource.org/licenses/MIT
+ */
++ (BOOL)swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)alternateSelector error:(NSError**)error;
+
 @end

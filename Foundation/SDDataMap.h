@@ -13,7 +13,14 @@
  */
 @protocol SDDataMapProtocol <NSObject>
 @optional
-- (NSDictionary *)mappingDictionary;
+/**
+ Provides a mapping dictionary based on the input data in the form of "srcKey":"destKey".
+ Caller can optionally pass nil which should return a default map.
+ */
+- (NSDictionary *)mappingDictionaryForData:(id)data;
+/**
+ Allows the model to be validated against some known values.
+ */
 - (BOOL)validModel;
 @end
 

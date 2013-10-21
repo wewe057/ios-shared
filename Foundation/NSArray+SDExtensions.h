@@ -54,8 +54,14 @@
 - (NSString *)JSONStringRepresentation;
 
 /**
- Returns a new array created by calling the block on each object in the receiver
+ Returns a new array created by calling the block on each object in the receiver.
+ Does not add items if the block returns nil.
  */
 - (NSArray *)arrayByMappingBlock:(id (^)(id))block;
+
+/**
+ Returns a deepCopy of an array. It will recursively deepCopy contained arrays too.
+ */
+- (NSArray *)deepCopy;
 
 @end

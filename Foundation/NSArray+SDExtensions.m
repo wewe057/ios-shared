@@ -12,9 +12,9 @@
 
 - (void)shuffle
 {
-	for (NSUInteger i = [self count] - 1; i > 0; --i) {
-		[self exchangeObjectAtIndex: arc4random() % (i+1) withObjectAtIndex: i];
-	}
+    for (NSUInteger i = [self count] - 1; i > 0; --i) {
+    	[self exchangeObjectAtIndex: arc4random() % (i+1) withObjectAtIndex: i];
+    }
 }
 
 @end
@@ -140,6 +140,23 @@
         mappedArray = [anArray copy];
     }
     return mappedArray;
+}
+
+- (NSArray *)deepCopy
+{
+    NSMutableArray* deepCopyArray = [[NSMutableArray alloc] initWithCapacity: self.count];
+    for (id object in self) {
+        id deepObject = nil;
+        if( [object respondsToSelector: @selector(deepCopy)] ) {
+            deepObject = [object deepCopy];
+        }
+        else {
+            deepObject = [object copy];
+        }
+        [deepCopyArray addObject: deepObject];
+    }
+
+    return [deepCopyArray copy];
 }
 
 @end
