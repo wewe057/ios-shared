@@ -112,6 +112,11 @@
 
         id responseObject = [responseData JSONObject];
 
+        // First check for error response codes
+        id<SDDataMapProtocol> errorObject = [errorClassType mapFromObject:responseObject];
+        if (errorObject)
+            return errorObject;
+
         /* One of the standards for webservices wraps the accompanying data in a "data" dictionary
            one level in.  We'll handle that format too since it's not hard or intensive. */
 
@@ -128,11 +133,6 @@
             }
         }
 
-        // First check for error response codes
-        id<SDDataMapProtocol> errorObject = [errorClassType mapFromObject:responseObject];
-        if (errorObject)
-            return errorObject;
-        else
         if ([responseObject isKindOfClass:[NSDictionary class]])
         {
             return [classType mapFromObject:responseObject];
