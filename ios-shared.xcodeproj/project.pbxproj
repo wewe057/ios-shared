@@ -86,6 +86,7 @@
 		CAFD1F50180F4EEA003669B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E917C942F1009574BB /* Reachability.m */; };
 		CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */; };
 		E2C6B5A317D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
+		E2F2708518197D02002A771B /* SDAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = E2F2708418197D02002A771B /* SDAlertView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -246,6 +247,8 @@
 		E2C6B5A017D117BA00D5C9D1 /* ObjectiveCGenerics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCGenerics.h; sourceTree = "<group>"; };
 		E2C6B5A117D117F800D5C9D1 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
 		E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
+		E2F2708318197D02002A771B /* SDAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAlertView.h; sourceTree = "<group>"; };
+		E2F2708418197D02002A771B /* SDAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAlertView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -435,6 +438,8 @@
 			children = (
 				CA80799817C942E3009574BB /* NSObject+SDExtensions.h */,
 				CA80799917C942E3009574BB /* NSObject+SDExtensions.m */,
+				E2F2708318197D02002A771B /* SDAlertView.h */,
+				E2F2708418197D02002A771B /* SDAlertView.m */,
 				CA80799A17C942E3009574BB /* SDContainerViewController.h */,
 				CA80799B17C942E3009574BB /* SDContainerViewController.m */,
 				CA80799C17C942E3009574BB /* SDDeckController.h */,
@@ -672,6 +677,7 @@
 				CA80797D17C942B6009574BB /* NSDictionary+SDExtensions.m in Sources */,
 				CA80799017C942CF009574BB /* CLLocation+SDExtensions.m in Sources */,
 				CA80798217C942B6009574BB /* NSUserDefaults+SDExtensions.m in Sources */,
+				E2F2708518197D02002A771B /* SDAlertView.m in Sources */,
 				CAFD1F4B180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA8079D417C942E4009574BB /* SDStackView.m in Sources */,
 				CA8079CD17C942E4009574BB /* SDImageButton.m in Sources */,
