@@ -37,7 +37,6 @@
     if ([modelObject validModel])
         return modelObject;
 
-    SDLog(@"Returning nil (%@ mapping failed) from response: %@", [self class], sourceObject);
     return nil;
 }
 
