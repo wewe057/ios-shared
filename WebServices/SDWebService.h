@@ -85,7 +85,9 @@ typedef enum
  Instructs SDWebService to use mock service responses if available.
 
  Mock service responses should be .json files included in the bundle and consist of just the response payload.  The filename
- should match the method specified in the plist.
+ should match the method specified in the plist.  You can also include .errorjson files to test error paths.  You can use this
+ to test error handling within the application.  Simply un-include the happy path .json from the bundle and include the .errorjson
+ instead.
  
  Example:
  

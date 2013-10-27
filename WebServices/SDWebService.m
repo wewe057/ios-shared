@@ -171,11 +171,21 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (NSData *)loadMockDataForRequestName:(NSString *)requestName
 {
-    NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"json"];
+    NSString *happyPath = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"json"];
+    NSString *errorPath = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"errorjson"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
 
+    NSString *path = nil;
     NSData *mockData = nil;
-    if ([fileManager fileExistsAtPath:path])
+    if (errorPath && [fileManager fileExistsAtPath:errorPath])
+        path = errorPath;
+    if (happyPath && [fileManager fileExistsAtPath:happyPath])
+        path = happyPath;
+
+    // we prefer the happy path.  removing the happy path json from the bundle will cause us to load
+    // the error path instead.
+    
+    if (path)
     {
         SDLog(@"*** Mocks Enabled: Using mock data in '%@.json'", requestName);
         mockData = [NSData dataWithContentsOfFile:path];
