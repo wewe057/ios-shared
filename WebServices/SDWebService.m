@@ -42,6 +42,14 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 @implementation SDWebService
 {
     NSHTTPCookieStorage *_cookieStorage;
+
+    NSMutableDictionary *_normalRequests;
+	NSMutableDictionary *_singleRequests;
+    NSLock *_dictionaryLock;
+
+	NSDictionary *_serviceSpecification;
+    NSUInteger _requestCount;
+    NSOperationQueue *_dataProcessingQueue;
 }
 
 #pragma mark - Singleton bits
@@ -58,21 +66,21 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
 	self = [super init];
 
-    singleRequests = [[NSMutableDictionary alloc] init];
-    normalRequests = [[NSMutableDictionary alloc] init];
-    dictionaryLock = [[NSLock alloc] init];
+    _singleRequests = [[NSMutableDictionary alloc] init];
+    _normalRequests = [[NSMutableDictionary alloc] init];
+    _dictionaryLock = [[NSLock alloc] init];
 
     self.timeout = 60; // 1-minute default.
 	
     NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
-	serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
-	if (!serviceSpecification)
+	_serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
+	if (!_serviceSpecification)
 		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
 
-    dataProcessingQueue = [[NSOperationQueue alloc] init];
+    _dataProcessingQueue = [[NSOperationQueue alloc] init];
     // let the system determine how many threads are best, dynamically.
-    dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
-    dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
+    _dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+    _dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
 
     _cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 
@@ -83,10 +91,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
 	self = [self initWithSpecification:specificationName];
 
-    NSMutableDictionary *altServiceSpecification = [serviceSpecification mutableCopy];
+    NSMutableDictionary *altServiceSpecification = [_serviceSpecification mutableCopy];
     [altServiceSpecification setObject:defaultHost forKey:@"baseHost"];
     [altServiceSpecification setObject:defaultPath forKey:@"basePath"];
-    serviceSpecification = altServiceSpecification;
+    _serviceSpecification = altServiceSpecification;
 
 	return self;
 }
@@ -105,10 +113,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)dealloc
 {
-    dataProcessingQueue = nil;
-	serviceSpecification = nil;
-    singleRequests = nil;
-    normalRequests = nil;
+    _dataProcessingQueue = nil;
+	_serviceSpecification = nil;
+    _singleRequests = nil;
+    _normalRequests = nil;
 }
 
 #pragma mark - Reachability
@@ -134,29 +142,50 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)showNetworkActivityIfNeeded
 {
-    if (requestCount > 0)
+    if (_requestCount > 0)
         [self showNetworkActivity];
 }
 
 - (void)hideNetworkActivityIfNeeded
 {
-    if (requestCount <= 0)
+    if (_requestCount <= 0)
     {
-        requestCount = 0;
+        _requestCount = 0;
         [self performSelector:@selector(hideNetworkActivity) withObject:nil afterDelay:0.5];
     }
 }
 
 - (void)incrementRequests
 {
-    requestCount++;
+    _requestCount++;
     [self showNetworkActivityIfNeeded];
 }
 
 - (void)decrementRequests
 {
-	requestCount--;
+	_requestCount--;
 	[self hideNetworkActivityIfNeeded];
+}
+
+#pragma mark - Mock Data utilities
+
+- (NSData *)loadMockDataForRequestName:(NSString *)requestName
+{
+    NSString *path = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"json"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSData *mockData = nil;
+    if ([fileManager fileExistsAtPath:path])
+    {
+        SDLog(@"*** Mocks Enabled: Using mock data in '%@.json'", requestName);
+        mockData = [NSData dataWithContentsOfFile:path];
+    }
+    else
+    {
+        SDLog(@"*** Mocks Enabled: Unable to find '%@.json'", requestName);
+    }
+
+    return mockData;
 }
 
 #pragma mark - URL building utilities
@@ -186,19 +215,19 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (NSString *)baseSchemeInServiceSpecification
 {
-	NSString *baseScheme = [serviceSpecification objectForKey:@"baseScheme"];
+	NSString *baseScheme = [_serviceSpecification objectForKey:@"baseScheme"];
 	return baseScheme;
 }
 
 - (NSString *)baseHostInServiceSpecification
 {
-	NSString *baseHost = [serviceSpecification objectForKey:@"baseHost"];
+	NSString *baseHost = [_serviceSpecification objectForKey:@"baseHost"];
 	return baseHost;
 }
 
 - (NSString *)basePathInServiceSpecification
 {
-	NSString *basePath = [serviceSpecification objectForKey:@"basePath"];
+	NSString *basePath = [_serviceSpecification objectForKey:@"basePath"];
 
 	if (!basePath)
 		basePath = @"/";
@@ -584,7 +613,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSString *baseScheme = [self baseSchemeInServiceSpecification];
 	NSString *baseHost = [self baseHostInServiceSpecification];
 	NSString *basePath = [self basePathInServiceSpecification];
-	NSDictionary *requestList = [serviceSpecification objectForKey:@"requests"];
+	NSDictionary *requestList = [_serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
 
     NSMutableURLRequest *request = [self buildRequestForScheme:baseScheme headers:headers host:baseHost path:basePath details:requestDetails replacements:replacements];
@@ -646,18 +675,18 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                     SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 
                     // do some sync/cleanup stuff here.
-                    SDURLConnection *newConnection = [normalRequests objectForKey:newObject.identifier];
+                    SDURLConnection *newConnection = [_normalRequests objectForKey:newObject.identifier];
 
                     // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
-                    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+                    [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
                     if (newConnection)
                     {
-                        [normalRequests setObject:newConnection forKey:identifier];
-                        [normalRequests removeObjectForKey:newObject.identifier];
+                        [_normalRequests setObject:newConnection forKey:identifier];
+                        [_normalRequests removeObjectForKey:newObject.identifier];
                     }
                     else
-                        [normalRequests removeObjectForKey:identifier];
-                    [dictionaryLock unlock];
+                        [_normalRequests removeObjectForKey:identifier];
+                    [_dictionaryLock unlock];
 
                     [self decrementRequests];
                     return;
@@ -666,10 +695,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
 
         // remove from the requests lists
-        [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-        [singleRequests removeObjectForKey:requestName];
-        [normalRequests removeObjectForKey:identifier];
-        [dictionaryLock unlock];
+        [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+        [_singleRequests removeObjectForKey:requestName];
+        [_normalRequests removeObjectForKey:identifier];
+        [_dictionaryLock unlock];
 
         // Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
         // So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
@@ -695,7 +724,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
         else
         {
-            [dataProcessingQueue addOperationWithBlock:^{
+            [_dataProcessingQueue addOperationWithBlock:^{
                 id dataObject = nil;
                 if (code != NSURLErrorCancelled)
                     dataObject = dataProcessingBlock(response, code, responseData, error);
@@ -737,34 +766,57 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         // if it is, lets cancel any with matching names.
         if (singleRequest)
         {
-			SDURLConnection *existingConnection = [singleRequests objectForKey:requestName];
+			SDURLConnection *existingConnection = [_singleRequests objectForKey:requestName];
 			if (existingConnection)
 			{
 				SDLog(@"Cancelling call.");
 				[existingConnection cancel];
-                [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-				[singleRequests removeObjectForKey:requestName];
-                [dictionaryLock unlock];
+                [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+				[_singleRequests removeObjectForKey:requestName];
+                [_dictionaryLock unlock];
 				[self decrementRequests];
 			}
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:urlCompletionBlock];
+    // attempt to find any mock data if available.
 
-    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-    if (singleRequest)
-        [singleRequests setObject:connection forKey:requestName];
+    NSData *mockData = nil;
+    if (self.useMocksIfAvailable)
+        mockData = [self loadMockDataForRequestName:requestName];
+
+    if (!mockData)
+    {
+        // no mock data was found, or we don't want to use mocks.  send out the request.
+
+        SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:urlCompletionBlock];
+
+        [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+        if (singleRequest)
+            [_singleRequests setObject:connection forKey:requestName];
+        else
+            [_normalRequests setObject:connection forKey:identifier];
+        [_dictionaryLock unlock];
+    }
     else
-        [normalRequests setObject:connection forKey:identifier];
-    [dictionaryLock unlock];
+    {
+        // we have mock data for this service call.
+        // attempt to recreate the path as best we can.
+
+        [_dataProcessingQueue addOperationWithBlock:^{
+            id dataObject = dataProcessingBlock(nil, 200, mockData, nil);
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                uiUpdateBlock(dataObject, nil);
+            }];
+        }];
+    }
 
 	return [SDRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier request:request];
 }
 
 - (void)cancelRequestForIdentifier:(NSString *)identifier
 {
-    SDURLConnection *connection = [normalRequests objectForKey:identifier];
+    SDURLConnection *connection = [_normalRequests objectForKey:identifier];
     [connection cancel];
 }
 

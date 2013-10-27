@@ -80,15 +80,25 @@ typedef enum
  */
 
 @interface SDWebService : NSObject
-{
-    NSMutableDictionary *normalRequests;
-	NSMutableDictionary *singleRequests;
-    NSLock *dictionaryLock;
 
-	NSDictionary *serviceSpecification;
-    NSUInteger requestCount;
-    NSOperationQueue *dataProcessingQueue;
-}
+/**
+ Instructs SDWebService to use mock service responses if available.
+
+ Mock service responses should be .json files included in the bundle and consist of just the response payload.  The filename
+ should match the method specified in the plist.
+ 
+ Example:
+ 
+ plist method name: prescriptions
+ file name: prescriptions.json
+ contents:
+
+ {
+ "status": 1
+ }
+
+ */
+@property (nonatomic, assign) BOOL useMocksIfAvailable;
 
 /**
  The timeout, in seconds, for calls made to this service. Default is `60.0`.
