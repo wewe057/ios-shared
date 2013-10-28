@@ -121,7 +121,7 @@ static const char *getPropertyType(objc_property_t property)
 
     // if we didn't do any conversion, send the same thing back out.
     id result = value;
-    
+
     if (!value)
     {
         // handle non-obj types that need to be set to 0.
@@ -156,6 +156,10 @@ static const char *getPropertyType(objc_property_t property)
         if ([type isEqualToString:@"NSString"])
             result = [value stringValue];
     }
+
+    // it's a C type, and we're about to try to set it to nil, yikes!
+    if (type.length == 1 && !result)
+        result = [NSNumber numberWithInteger:0];
 
     return result;
 }
@@ -588,7 +592,7 @@ static const char *getPropertyType(objc_property_t property)
     else
     if ([temp isEqualToString:@"1"])
         return 1;
-    
+
     // default result should be false.
     return 0;
 }
