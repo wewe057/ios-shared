@@ -412,6 +412,18 @@ static const char *getPropertyType(objc_property_t property)
 
 - (void)mapObject:(id)object1 toObject:(id)object2 strict:(BOOL)strict
 {
+    // allow for pulling data from deeper within objec1.
+    id tempObject1 = object1;
+    if ([object2 respondsToSelector:@selector(initialKeyPath)])
+    {
+        NSString *initialKeyPath = [object2 initialKeyPath];
+        id newObject1 = [object1 valueForKeyPath:initialKeyPath];
+        if (newObject1)
+            tempObject1 = newObject1;
+    }
+    object1 = tempObject1;
+
+
     if (!_mapPlist)
     {
         // typically the destination object will be a model and should supply the map
