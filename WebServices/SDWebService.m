@@ -469,7 +469,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
 	NSString *method = [requestDetails objectForKey:@"method"];
-	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
+	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"] || [[method uppercaseString] isEqualToString:@"PUT"];
 
     // Allowing for the dynamic specification of baseURL at runtime
     // (initially to accomodate the suggestions search)
