@@ -100,7 +100,7 @@
 + (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlockForClass:(Class)classType;
 {
     Class errorClass = [[self class] errorClass];
-    return [SDWebService defaultJSONProcessingBlockForClass:classType errorClassType:errorClass];
+    return [[self class] defaultJSONProcessingBlockForClass:classType errorClassType:errorClass];
 }
 
 + (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlockForClass:(Class)classType errorClassType:(Class)errorClassType
@@ -111,6 +111,11 @@
         SDLog(@"%@: %d:\n%@", response, (int)responseCode, [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
 
         id responseObject = [responseData JSONObject];
+
+        // First check for error response codes
+        id<SDDataMapProtocol> errorObject = [errorClassType mapFromObject:responseObject];
+        if (errorObject)
+            return errorObject;
 
         /* One of the standards for webservices wraps the accompanying data in a "data" dictionary
            one level in.  We'll handle that format too since it's not hard or intensive. */
@@ -128,11 +133,6 @@
             }
         }
 
-        // First check for error response codes
-        id<SDDataMapProtocol> errorObject = [errorClassType mapFromObject:responseObject];
-        if (errorObject)
-            return errorObject;
-        else
         if ([responseObject isKindOfClass:[NSDictionary class]])
         {
             return [classType mapFromObject:responseObject];

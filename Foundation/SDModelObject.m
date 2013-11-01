@@ -30,9 +30,7 @@
 + (instancetype)mapFromObject:(id)sourceObject
 {
     id modelObject = [[self alloc] init];
-
-    SDDataMap *dataMapper = [SDDataMap mapForDictionary:[modelObject mappingDictionaryForData:sourceObject]];
-    [dataMapper mapObject:sourceObject toObject:modelObject];
+    [[SDDataMap map] mapObject:sourceObject toObject:modelObject];
 
     if ([modelObject validModel])
         return modelObject;

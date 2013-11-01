@@ -24,10 +24,12 @@
 
 #if NS_BLOCKS_AVAILABLE
 	#define GENERICSABLE_ALL(__className) \
+        @protocol __className; \
 		__GENERICSABLE_WITHOUT_BLOCKS(__className) \
 		__GENERICSABLE_WITH_BLOCKS(__className)
 #else
 	#define GENERICSABLE_ALL(__className) \
+        @protocol __className; \
 		__GENERICSABLE_WITHOUT_BLOCKS(__className)
 #endif
 
