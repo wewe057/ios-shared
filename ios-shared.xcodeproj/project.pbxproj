@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA00E52D1805D4EE00005518 /* SDPoser.m in Sources */ = {isa = PBXBuildFile; fileRef = CA00E52C1805D4EE00005518 /* SDPoser.m */; };
 		CA01F17C17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */; };
 		CA01F1B017D7A6F000E7C553 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */; };
 		CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
@@ -76,7 +77,16 @@
 		CA8079FB17C942F1009574BB /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079EF17C942F1009574BB /* SDURLConnection.m */; };
 		CA8079FC17C942F1009574BB /* SDWebService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F117C942F1009574BB /* SDWebService.m */; };
 		CA8079FD17C942F1009574BB /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F317C942F1009574BB /* UIImageView+SDExtensions.m */; };
+		CAFD1F42180DEBAF003669B3 /* SDModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F41180DEBAF003669B3 /* SDModelObject.m */; };
+		CAFD1F4B180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */; };
+		CAFD1F4C180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */; };
+		CAFD1F4D180F4E2D003669B3 /* SDModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CAFD1F41180DEBAF003669B3 /* SDModelObject.m */; };
+		CAFD1F4E180F4EC8003669B3 /* SDDataMap.m in Sources */ = {isa = PBXBuildFile; fileRef = CA80797517C942B6009574BB /* SDDataMap.m */; };
+		CAFD1F4F180F4EDF003669B3 /* SDWebService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079F117C942F1009574BB /* SDWebService.m */; };
+		CAFD1F50180F4EEA003669B3 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CA8079E917C942F1009574BB /* Reachability.m */; };
+		CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */; };
 		E2C6B5A317D117F800D5C9D1 /* NSRunLoop+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */; };
+		E2F2708518197D02002A771B /* SDAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = E2F2708418197D02002A771B /* SDAlertView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +112,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CA00E52B1805D4EE00005518 /* SDPoser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPoser.h; sourceTree = "<group>"; };
+		CA00E52C1805D4EE00005518 /* SDPoser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPoser.m; sourceTree = "<group>"; };
 		CA01F17A17D79DDC00E7C553 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
 		CA01F17B17D79DDC00E7C553 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
 		CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -227,9 +239,16 @@
 		CA8079FF17C942FD009574BB /* Global-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Global-iOS.xcconfig"; sourceTree = "<group>"; };
 		CA807A0017C942FD009574BB /* Project-iOS-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Debug.xcconfig"; sourceTree = "<group>"; };
 		CA807A0117C942FD009574BB /* Project-iOS-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Release.xcconfig"; sourceTree = "<group>"; };
+		CAFD1F40180DEBAF003669B3 /* SDModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDModelObject.h; sourceTree = "<group>"; };
+		CAFD1F41180DEBAF003669B3 /* SDModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDModelObject.m; sourceTree = "<group>"; };
+		CAFD1F49180F48CC003669B3 /* SDWebService+SDProcessingBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SDWebService+SDProcessingBlocks.h"; sourceTree = "<group>"; };
+		CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SDWebService+SDProcessingBlocks.m"; sourceTree = "<group>"; };
+		CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E2C6B5A017D117BA00D5C9D1 /* ObjectiveCGenerics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCGenerics.h; sourceTree = "<group>"; };
 		E2C6B5A117D117F800D5C9D1 /* NSRunLoop+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRunLoop+SDExtensions.h"; sourceTree = "<group>"; };
 		E2C6B5A217D117F800D5C9D1 /* NSRunLoop+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRunLoop+SDExtensions.m"; sourceTree = "<group>"; };
+		E2F2708318197D02002A771B /* SDAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAlertView.h; sourceTree = "<group>"; };
+		E2F2708418197D02002A771B /* SDAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAlertView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +256,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */,
 				CA01F1B017D7A6F000E7C553 /* SenTestingKit.framework in Frameworks */,
 				CA01F1B217D7A6F000E7C553 /* UIKit.framework in Frameworks */,
 				CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */,
@@ -299,6 +319,7 @@
 		CA80792B17C94199009574BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */,
 				CA01F17D17D79EF500E7C553 /* SenTestingKit.framework */,
 				CA80792C17C94199009574BB /* Foundation.framework */,
 				CA80793A17C94199009574BB /* XCTest.framework */,
@@ -374,6 +395,10 @@
 				CA80797717C942B6009574BB /* SDTimer.m */,
 				CA80797817C942B6009574BB /* UIDevice+machine.h */,
 				CA80797917C942B6009574BB /* UIDevice+machine.m */,
+				CA00E52B1805D4EE00005518 /* SDPoser.h */,
+				CA00E52C1805D4EE00005518 /* SDPoser.m */,
+				CAFD1F40180DEBAF003669B3 /* SDModelObject.h */,
+				CAFD1F41180DEBAF003669B3 /* SDModelObject.m */,
 			);
 			path = Foundation;
 			sourceTree = SOURCE_ROOT;
@@ -413,6 +438,8 @@
 			children = (
 				CA80799817C942E3009574BB /* NSObject+SDExtensions.h */,
 				CA80799917C942E3009574BB /* NSObject+SDExtensions.m */,
+				E2F2708318197D02002A771B /* SDAlertView.h */,
+				E2F2708418197D02002A771B /* SDAlertView.m */,
 				CA80799A17C942E3009574BB /* SDContainerViewController.h */,
 				CA80799B17C942E3009574BB /* SDContainerViewController.m */,
 				CA80799C17C942E3009574BB /* SDDeckController.h */,
@@ -482,6 +509,8 @@
 				CA8079ED17C942F1009574BB /* SDMockService.m */,
 				CA8079EE17C942F1009574BB /* SDURLConnection.h */,
 				CA8079EF17C942F1009574BB /* SDURLConnection.m */,
+				CAFD1F49180F48CC003669B3 /* SDWebService+SDProcessingBlocks.h */,
+				CAFD1F4A180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m */,
 				CA8079F017C942F1009574BB /* SDWebService.h */,
 				CA8079F117C942F1009574BB /* SDWebService.m */,
 				CA8079F217C942F1009574BB /* UIImageView+SDExtensions.h */,
@@ -589,16 +618,21 @@
 			files = (
 				CA01F1D517D7A80B00E7C553 /* NSURLCache+SDExtensions.m in Sources */,
 				CA01F1D617D7A81600E7C553 /* NSURLRequest+SDExtensions.m in Sources */,
+				CAFD1F4C180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA01F1D717D7A82E00E7C553 /* NSError+SDExtensions.m in Sources */,
 				CA01F1D217D7A7D700E7C553 /* SDURLConnection.m in Sources */,
 				CA01F1C617D7A72D00E7C553 /* UIImageViewTests.m in Sources */,
 				CA01F1D817D7AEFB00E7C553 /* NSRunLoop+SDExtensions.m in Sources */,
+				CAFD1F4D180F4E2D003669B3 /* SDModelObject.m in Sources */,
 				CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */,
 				CA01F1D417D7A7FD00E7C553 /* UIDevice+machine.m in Sources */,
+				CAFD1F4E180F4EC8003669B3 /* SDDataMap.m in Sources */,
 				CA01F1C517D7A72D00E7C553 /* UIDeviceTests.m in Sources */,
 				CA01F1BA17D7A6F000E7C553 /* ios_shared_Tests.m in Sources */,
 				CA01F1D317D7A7EC00E7C553 /* UIImageView+SDExtensions.m in Sources */,
 				CA01F1D117D7A7B800E7C553 /* SDImageCache.m in Sources */,
+				CAFD1F4F180F4EDF003669B3 /* SDWebService.m in Sources */,
+				CAFD1F50180F4EEA003669B3 /* Reachability.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -612,6 +646,7 @@
 				CA80797E17C942B6009574BB /* NSError+SDExtensions.m in Sources */,
 				CA8079D117C942E4009574BB /* SDPickerModalViewController.m in Sources */,
 				CA8079CF17C942E4009574BB /* SDPagingView.m in Sources */,
+				CA00E52D1805D4EE00005518 /* SDPoser.m in Sources */,
 				CA80798417C942B6009574BB /* SDDataMap.m in Sources */,
 				CA8079FC17C942F1009574BB /* SDWebService.m in Sources */,
 				CA8079F417C942F1009574BB /* NSCachedURLResponse+LeakFix.m in Sources */,
@@ -642,6 +677,8 @@
 				CA80797D17C942B6009574BB /* NSDictionary+SDExtensions.m in Sources */,
 				CA80799017C942CF009574BB /* CLLocation+SDExtensions.m in Sources */,
 				CA80798217C942B6009574BB /* NSUserDefaults+SDExtensions.m in Sources */,
+				E2F2708518197D02002A771B /* SDAlertView.m in Sources */,
+				CAFD1F4B180F48CC003669B3 /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA8079D417C942E4009574BB /* SDStackView.m in Sources */,
 				CA8079CD17C942E4009574BB /* SDImageButton.m in Sources */,
 				CA80799617C942D9009574BB /* SDKeychain.m in Sources */,
@@ -658,6 +695,7 @@
 				CA8079DA17C942E4009574BB /* UIImage+SDExtensions.m in Sources */,
 				CA80797A17C942B6009574BB /* NSArray+SDExtensions.m in Sources */,
 				CA8079F917C942F1009574BB /* SDImageCache.m in Sources */,
+				CAFD1F42180DEBAF003669B3 /* SDModelObject.m in Sources */,
 				CA80798117C942B6009574BB /* NSString+SDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -795,6 +833,7 @@
 		CA80794D17C94199009574BB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/ios_shared.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ios-shared/ios-shared-Prefix.pch";
@@ -807,6 +846,7 @@
 		CA80794E17C94199009574BB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/ios_shared.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ios-shared/ios-shared-Prefix.pch";
@@ -826,6 +866,7 @@
 				CA01F1C017D7A6F000E7C553 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA80792417C94199009574BB /* Build configuration list for PBXProject "ios-shared" */ = {
 			isa = XCConfigurationList;

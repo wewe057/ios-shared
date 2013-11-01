@@ -121,7 +121,7 @@ static const char *getPropertyType(objc_property_t property)
 
     // if we didn't do any conversion, send the same thing back out.
     id result = value;
-    
+
     if (!value)
     {
         // handle non-obj types that need to be set to 0.
@@ -156,6 +156,10 @@ static const char *getPropertyType(objc_property_t property)
         if ([type isEqualToString:@"NSString"])
             result = [value stringValue];
     }
+
+    // it's a C type, and we're about to try to set it to nil, yikes!
+    if (type.length == 1 && !result)
+        result = [NSNumber numberWithInteger:0];
 
     return result;
 }
@@ -408,19 +412,29 @@ static const char *getPropertyType(objc_property_t property)
 
 - (void)mapObject:(id)object1 toObject:(id)object2 strict:(BOOL)strict
 {
+    // allow for pulling data from deeper within objec1.
+    id tempObject1 = object1;
+    if ([object2 respondsToSelector:@selector(initialKeyPath)])
+    {
+        NSString *initialKeyPath = [object2 initialKeyPath];
+        id newObject1 = [object1 valueForKeyPath:initialKeyPath];
+        if (newObject1)
+            tempObject1 = newObject1;
+    }
+    object1 = tempObject1;
+
+
     if (!_mapPlist)
     {
         // typically the destination object will be a model and should supply the map
-        if ([object2 respondsToSelector:@selector(mappingDictionary)])
-            _mapPlist = [object2 mappingDictionary];
-        else
-        // if we didn't find a mappingDictionary on object2, check object1
-        if ([object1 respondsToSelector:@selector(mappingDictionary)])
-            _mapPlist = [object1 mappingDictionary];
+        if ([object2 respondsToSelector:@selector(mappingDictionaryForData:)])
+            _mapPlist = [object2 mappingDictionaryForData:object1];
     }
 
     [_mapPlist enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         id value = [object1 valueForKeyPath:key];
+        if (!value)
+            return;
         
         // allow for multiple assignments, ie: name, textLabel.text
         NSMutableString *keysString = [obj mutableCopy];
@@ -458,7 +472,7 @@ static const char *getPropertyType(objc_property_t property)
 
                             // if the model object doesn't support the protocol, we don't know how
                             // to map the objects, if it does, let's do it.
-                            if ([modelObject respondsToSelector:@selector(mappingDictionary)])
+                            if ([modelObject respondsToSelector:@selector(mappingDictionaryForData:)])
                             {
                                 SDDataMap *newMap = [SDDataMap map];
 
@@ -484,7 +498,7 @@ static const char *getPropertyType(objc_property_t property)
                     if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:specificClass])
                     {
                         id<SDDataMapProtocol> modelObject = [[specificClass alloc] init];
-                        if ([modelObject respondsToSelector:@selector(mappingDictionary)])
+                        if ([modelObject respondsToSelector:@selector(mappingDictionaryForData:)])
                         {
                             SDDataMap *newMap = [SDDataMap map];
                             [newMap mapObject:value toObject:modelObject strict:strict];
@@ -590,7 +604,7 @@ static const char *getPropertyType(objc_property_t property)
     else
     if ([temp isEqualToString:@"1"])
         return 1;
-    
+
     // default result should be false.
     return 0;
 }
