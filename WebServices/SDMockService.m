@@ -578,7 +578,7 @@
                 // It's a kind of NSString
                 postData = [post dataUsingEncoding:NSUTF8StringEncoding];
 
-			[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
+			[request setValue:[NSString stringWithFormat:@"%ld", (long)[postData length]] forHTTPHeaderField:@"Content-Length"];
 			[request setHTTPBody:postData];
 		}
     }
