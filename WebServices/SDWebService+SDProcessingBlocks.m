@@ -100,7 +100,7 @@
 + (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlockForClass:(Class)classType;
 {
     Class errorClass = [[self class] errorClass];
-    return [SDWebService defaultJSONProcessingBlockForClass:classType errorClassType:errorClass];
+    return [[self class] defaultJSONProcessingBlockForClass:classType errorClassType:errorClass];
 }
 
 + (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlockForClass:(Class)classType errorClassType:(Class)errorClassType
