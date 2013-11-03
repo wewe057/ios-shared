@@ -9,7 +9,7 @@
 #import "SDURLConnection.h"
 #import "Reachability.h"
 
-typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
+typedef void (^SDWebServiceCompletionBlock)(NSInteger responseCode, NSString *response, NSError **error);
 typedef id (^SDWebServiceDataCompletionBlock)(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error);
 typedef void (^SDWebServiceUICompletionBlock)(id dataObject, NSError *error);
 
