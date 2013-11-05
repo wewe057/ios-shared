@@ -1,70 +1,88 @@
 //
-//  SDMockService.m
+//  SDWebService.m
 //
-//  
+//  Created by brandon on 2/14/11.
+//  Copyright 2011 SetDirection. All rights reserved.
 //
-//  Created by Steven Woolgar on 06/27/2013.
-//  Copyright 2011-2013 SetDirection. All rights reserved.
-//
-
-#import "SDMockService.h"
-
-#ifdef DEBUG
 
 #import "SDWebService.h"
+#import "NSString+SDExtensions.h"
+#import "NSURLCache+SDExtensions.h"
+#import "NSDictionary+SDExtensions.h"
+#import "NSCachedURLResponse+LeakFix.h"
+#import "NSData+SDExtensions.h"
+#import "NSURLRequest+SDExtensions.h"
 
-@implementation SDMockRequestResult
+NSString *const SDWebServiceError = @"SDWebServiceError";
 
-+ (SDMockRequestResult *)objectForResult:(SDWebServiceResult)result
-                              identifier:(NSString *)identifier
-                                 request:(NSURLRequest *)request
+#ifdef DEBUG
+@interface NSURLRequest(SDExtensionsDebug)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host;
+@end
+
+@implementation NSURLRequest(SDExtensionsDebug)
++ (BOOL)allowsAnyHTTPSCertificateForHost:(NSString*)host
 {
-    SDMockRequestResult *object = [[SDMockRequestResult alloc] init];
+	return YES;
+}
+@end
+#endif
+
+@implementation SDRequestResult
++ (SDRequestResult *)objectForResult:(SDWebServiceResult)result identifier:(NSString *)identifier request:(NSURLRequest *)request
+{
+    SDRequestResult *object = [[SDRequestResult alloc] init];
     object.result = result;
     object.identifier = identifier;
     object.request = request;
     return object;
 }
-
 @end
 
-@interface SDMockService()
+@implementation SDWebService
+{
+    NSHTTPCookieStorage *_cookieStorage;
 
-@property (nonatomic, strong) NSMutableDictionary *normalRequests;
-@property (nonatomic, assign) NSUInteger requestCount;
-@property (nonatomic, strong) NSDictionary *serviceSpecification;
-@property (nonatomic, strong) NSHTTPCookieStorage *cookieStorage;
+    NSMutableDictionary *_normalRequests;
+	NSMutableDictionary *_singleRequests;
+    NSLock *_dictionaryLock;
 
-@end
-
-@implementation SDMockService
+	NSDictionary *_serviceSpecification;
+    NSUInteger _requestCount;
+    NSOperationQueue *_dataProcessingQueue;
+}
 
 #pragma mark - Singleton bits
 
 + (instancetype)sharedInstance
 {
 	static dispatch_once_t oncePred;
-	static id sSharedInstance = nil;
-	dispatch_once( &oncePred, ^
-    {
-        sSharedInstance = [[[self class] alloc] init];
-    } );
-	return sSharedInstance;
+	static id sharedInstance = nil;
+	dispatch_once(&oncePred, ^{ sharedInstance = [[[self class] alloc] init]; });
+	return sharedInstance;
 }
 
 - (instancetype)initWithSpecification:(NSString *)specificationName
 {
 	self = [super init];
 
-    if (self != nil)
-    {
-        NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
-        _serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
-        if (!_serviceSpecification)
-        {
-            [NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
-        }
-    }
+    _singleRequests = [[NSMutableDictionary alloc] init];
+    _normalRequests = [[NSMutableDictionary alloc] init];
+    _dictionaryLock = [[NSLock alloc] init];
+
+    self.timeout = 60; // 1-minute default.
+	
+    NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
+	_serviceSpecification = [NSDictionary dictionaryWithContentsOfFile:specFile];
+	if (!_serviceSpecification)
+		[NSException raise:@"SDException" format:@"Unable to load the specifications file %@.plist", specificationName];
+
+    _dataProcessingQueue = [[NSOperationQueue alloc] init];
+    // let the system determine how many threads are best, dynamically.
+    _dataProcessingQueue.maxConcurrentOperationCount = NSOperationQueueDefaultMaxConcurrentOperationCount;
+    _dataProcessingQueue.name = @"com.setdirection.dataprocessingqueue";
+
+    _cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 
 	return self;
 }
@@ -73,9 +91,10 @@
 {
 	self = [self initWithSpecification:specificationName];
 
-    if (self != nil)
-    {
-    }
+    NSMutableDictionary *altServiceSpecification = [_serviceSpecification mutableCopy];
+    [altServiceSpecification setObject:defaultHost forKey:@"baseHost"];
+    [altServiceSpecification setObject:defaultPath forKey:@"basePath"];
+    _serviceSpecification = altServiceSpecification;
 
 	return self;
 }
@@ -92,113 +111,31 @@
     return nil;
 }
 
+- (void)dealloc
+{
+    _dataProcessingQueue = nil;
+	_serviceSpecification = nil;
+    _singleRequests = nil;
+    _normalRequests = nil;
+}
+
 #pragma mark - Reachability
 
 - (BOOL)isReachableToHost:(NSString *)hostName showError:(BOOL)showError
 {
-//    return [[SDReachability reachabilityWithHostname:hostName] isReachable];
-    return YES;
+    return [[SDReachability reachabilityWithHostname:hostName] isReachable];
 }
 
 - (BOOL)isReachable:(BOOL)showError
 {
-//    return [[SDReachability reachabilityForInternetConnection] isReachable];
-    return YES;
+    return [[SDReachability reachabilityForInternetConnection] isReachable];
 }
 
 #pragma mark - Cache
 
 - (void)clearCache
 {
-//    [[NSURLCache sharedURLCache] removeAllCachedResponses];
-}
-
-#pragma mark - Default processing blocks
-
-+ (SDWebServiceDataCompletionBlock)defaultJSONProcessingBlock
-{
-    // refactor SDMockService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
-    {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONObject];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultMutableJSONProcessingBlock
-{
-    // Refactor SDMockService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
-    {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONObjectMutable:YES error:nil];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultArrayJSONProcessingBlock
-{
-    // refactor SDMockService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
-    {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONArray];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultMutableArrayJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
-    {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONMutableArray];
-        return dataObject;
-    };
-    return result;
-
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultDictionaryJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
-    {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONDictionary];
-        return dataObject;
-    };
-    return result;
-}
-
-+ (SDWebServiceDataCompletionBlock)defaultMutableDictionaryJSONProcessingBlock
-{
-    // refactor SDWebService so error's are passed around properly. -- BKS
-
-    SDWebServiceDataCompletionBlock result = ^(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error)
-    {
-        id dataObject = nil;
-        if (responseData && responseData.length > 0)
-            dataObject = [responseData JSONMutableDictionary];
-        return dataObject;
-    };
-    return result;
-
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 #pragma mark - Network activity
@@ -230,6 +167,37 @@
 	[self hideNetworkActivityIfNeeded];
 }
 
+#pragma mark - Mock Data utilities
+
+- (NSData *)loadMockDataForRequestName:(NSString *)requestName
+{
+    NSString *happyPath = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"json"];
+    NSString *errorPath = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"errorjson"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+
+    NSString *path = nil;
+    NSData *mockData = nil;
+    if (errorPath && [fileManager fileExistsAtPath:errorPath])
+        path = errorPath;
+    if (happyPath && [fileManager fileExistsAtPath:happyPath])
+        path = happyPath;
+
+    // we prefer the happy path.  removing the happy path json from the bundle will cause us to load
+    // the error path instead.
+    
+    if (path)
+    {
+        SDLog(@"*** Mocks Enabled: Using mock data in '%@.json'", requestName);
+        mockData = [NSData dataWithContentsOfFile:path];
+    }
+    else
+    {
+        SDLog(@"*** Mocks Enabled: Unable to find '%@.json'", requestName);
+    }
+
+    return mockData;
+}
+
 #pragma mark - URL building utilities
 
 // Iterate through the string and look for {KEY}, replacing with the string value of that key from NSUserDefaults
@@ -249,30 +217,27 @@
 			prefKey = [string substringWithRange:range];
 			NSString *prefValue = [[NSUserDefaults standardUserDefaults] objectForKey:prefKey];
 			string = [string stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", prefKey] withString:prefValue];
-		}
-        else
-        {
+		} else
 			doneReplacing = YES;
-        }
 	}
 	return string;
 }
 
 - (NSString *)baseSchemeInServiceSpecification
 {
-	NSString *baseScheme = self.serviceSpecification[@"baseScheme"];
+	NSString *baseScheme = [_serviceSpecification objectForKey:@"baseScheme"];
 	return baseScheme;
 }
 
 - (NSString *)baseHostInServiceSpecification
 {
-	NSString *baseHost = self.serviceSpecification[@"baseHost"];
+	NSString *baseHost = [_serviceSpecification objectForKey:@"baseHost"];
 	return baseHost;
 }
 
 - (NSString *)basePathInServiceSpecification
 {
-	NSString *basePath = self.serviceSpecification[@"basePath"];
+	NSString *basePath = [_serviceSpecification objectForKey:@"basePath"];
 
 	if (!basePath)
 		basePath = @"/";
@@ -280,11 +245,66 @@
 	return basePath;
 }
 
+// Backwards compatible method
+// DEPRECATED
+- (NSString *)baseURLInServiceSpecification
+{
+	NSString *baseScheme = [self baseSchemeInServiceSpecification];
+	NSString *baseHost = [self baseHostInServiceSpecification];
+	NSString *basePath = [self basePathInServiceSpecification];
+
+	// Support http or http://
+	if (baseScheme && ([baseScheme rangeOfString:@"://"].location == NSNotFound))
+	{
+		baseScheme = [baseScheme stringByAppendingString:@"://"];
+	}
+
+	NSString *baseURL = [NSString stringWithFormat:@"%@%@%@",baseScheme,baseHost,basePath];
+
+	// Support QA servers
+	baseURL = [self stringByReplacingPrefKeys:baseURL];
+
+	return baseURL;
+}
+
+- (NSString *)parameterizeDictionary:(NSDictionary *)dictionary
+{
+    NSArray *keys = [dictionary allKeys];
+    NSMutableString *result = [[NSMutableString alloc] init];
+
+    if (!dictionary || keys.count == 0)
+        return @"";
+
+    for (NSString *key in keys)
+    {
+		id object = [dictionary objectForKey:key];
+		NSString *value = nil;
+
+        if ([object isKindOfClass:[NSDictionary class]])
+            value = [self parameterizeDictionary:object];
+		else
+        if ([object isKindOfClass:[NSString class]])
+            value = [object escapedString];
+        else
+        {
+            // if its not, run some tests to see what we can do...
+            if ([object isKindOfClass:[NSNumber class]])
+                value = [[object stringValue] escapedString];
+            else
+            if ([object respondsToSelector:@selector(stringValue)])
+                value = [[object stringValue] escapedString];
+        }
+		if (value)
+            [result appendFormat:@"&%@=%@", key, value];
+    }
+
+    return result;
+}
+
 - (NSString *)performReplacements:(NSDictionary *)replacements andUserReplacements:(NSDictionary *)userReplacements withFormat:(NSString *)routeFormat
 {
     // combine the contents of routeReplacements and the passed in replacements to form
 	// a complete name and value list.
-
 	NSArray *keyList = [userReplacements allKeys];
 	NSMutableDictionary *actualReplacements = [replacements mutableCopy];
     if (!actualReplacements)
@@ -293,38 +313,34 @@
 	{
 		// this takes all the data provided in replacements and overwrites any default
 		// values specified in the plist.
-
-		NSObject *value = userReplacements[key];
-		actualReplacements[key] = value;
+		NSObject *value = [userReplacements objectForKey:key];
+		[actualReplacements setObject:value forKey:key];
 	}
 
 	// now lets take that final list and apply it to the route format.
-
 	keyList = [actualReplacements allKeys];
 	NSString *result = routeFormat;
 	for (NSString *key in keyList)
 	{
-		id object = actualReplacements[key];
+		id object = [actualReplacements objectForKey:key];
 		NSString *value = nil;
 
-		// if its a string, assign it.
-
-		if ([object isKindOfClass:[NSString class]])
-        {
-            value = object;
-        }
+        if ([object isKindOfClass:[NSDictionary class]])
+            value = [self parameterizeDictionary:object];
 		else
+		if ([object isKindOfClass:[NSString class]])
+			value = [object escapedString];
+        else
 		{
 			// if its not, run some tests to see what we can do...
-
 			if ([object isKindOfClass:[NSNumber class]])
-				value = [object stringValue];
+				value = [[object stringValue] escapedString];
 			else
-                if ([object respondsToSelector:@selector(stringValue)])
-                    value = [object stringValue];
+            if ([object respondsToSelector:@selector(stringValue)])
+                value = [[object stringValue] escapedString];
 		}
 		if (value)
-			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:[value escapedString]];
+			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:value];
 	}
 
     actualReplacements = nil;
@@ -346,58 +362,44 @@
 
 	// **************************************************************
 	// Scheme
-    NSString *altBaseScheme = replacements[@"baseScheme"];
+    NSString *altBaseScheme = [replacements objectForKey:@"baseScheme"];
     if (altBaseScheme)
-    {
         baseScheme = altBaseScheme;
-    }
     else
     {
         // if this method has its own baseScheme use it instead.
-        altBaseScheme = requestDetails[@"baseScheme"];
+        altBaseScheme = [requestDetails objectForKey:@"baseScheme"];
         if (altBaseScheme)
-        {
             baseScheme = altBaseScheme;
-        }
     }
 
 	if (baseScheme && ([baseScheme rangeOfString:@"://"].location == NSNotFound))
-	{
 		baseScheme = [baseScheme stringByAppendingString:@"://"];
-	}
 
 	// **************************************************************
 	// Host
-	NSString *altBaseHost = replacements[@"baseHost"];
+	NSString *altBaseHost = [replacements objectForKey:@"baseHost"];
     if (altBaseHost)
-    {
         baseHost = altBaseHost;
-    }
     else
     {
         // if this method has its own baseHost use it instead.
-        altBaseHost = requestDetails[@"baseHost"];
+        altBaseHost = [requestDetails objectForKey:@"baseHost"];
         if (altBaseHost)
-        {
             baseHost = altBaseHost;
-        }
     }
 
 	// **************************************************************
 	// Path
-	NSString *altBasePath = replacements[@"basePath"];
+	NSString *altBasePath = [replacements objectForKey:@"basePath"];
     if (altBasePath)
-    {
         basePath = altBasePath;
-    }
     else
     {
         // if this method has its own basePath use it instead.
-        altBasePath = requestDetails[@"basePath"];
+        altBasePath = [requestDetails objectForKey:@"basePath"];
         if (altBasePath)
-        {
             basePath = altBasePath;
-        }
     }
 
 	if (!baseScheme)
@@ -411,44 +413,36 @@
 	return baseURL;
 }
 
-- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme
-                                       headers:(NSDictionary *)headers
-                                          host:(NSString *)baseHost
-                                          path:(NSString *)basePath
-                                       details:(NSDictionary *)requestDetails
-                                  replacements:(NSDictionary *)replacements
+- (NSMutableURLRequest *)buildRequestForScheme:(NSString *)baseScheme headers:(NSDictionary *)headers host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
     NSMutableURLRequest *request = nil;
 	NSString *baseURL = nil;
 
-    NSString *routeFormat = requestDetails[@"routeFormat"];
-	NSString *method = requestDetails[@"method"];
-	BOOL postMethod = [[method uppercaseString] isEqualToString:@"POST"];
+    NSString *routeFormat = [requestDetails objectForKey:@"routeFormat"];
+	NSString *method = [requestDetails objectForKey:@"method"];
+	BOOL postMethod = ([[method uppercaseString] isEqualToString:@"POST"] || [[method uppercaseString] isEqualToString:@"PUT"]);
 
     // Allowing for the dynamic specification of baseURL at runtime
     // (initially to accomodate the suggestions search)
-    NSString *altBaseURL = replacements[@"baseURL"];
-    if (altBaseURL) {
+    NSString *altBaseURL = [replacements objectForKey:@"baseURL"];
+    if (altBaseURL)
         baseURL = altBaseURL;
-    }
-    else {
+    else
+    {
         // if this method has its own baseURL use it instead.
-        altBaseURL = requestDetails[@"baseURL"];
-        if (altBaseURL) {
+        altBaseURL = [requestDetails objectForKey:@"baseURL"];
+        if (altBaseURL)
             baseURL = altBaseURL;
-        }
     }
 
 	// If there was no altBaseURL, then we need to build the baseURL
 	if (!altBaseURL)
-	{
 		baseURL = [self buildBaseURLForScheme:baseScheme host:baseHost path:basePath details:requestDetails replacements:replacements];
-	}
 
 	// Look for {KEY} key ands replace them
 	baseURL = [self stringByReplacingPrefKeys:baseURL];
 
-    NSDictionary *routeReplacements = requestDetails[@"routeReplacement"];
+    NSDictionary *routeReplacements = [requestDetails objectForKey:@"routeReplacement"];
     if (!routeReplacements)
         routeReplacements = [NSDictionary dictionary];
     NSString *route = [self performReplacements:routeReplacements andUserReplacements:replacements withFormat:routeFormat];
@@ -471,12 +465,12 @@
 			if ([postFormat isEqualToString:@"JSON"])
 			{
 				// post data is raw JSON but can be NSString or NSData depending on implementation of calling method
-				postObject = replacements[@"JSON"];
+				postObject = [replacements objectForKey:@"JSON"];
 			}
             else
             if ([postFormat isEqualToString:@"SOAP"])
             {
-                postObject = replacements[@"SOAP"];
+                postObject = [replacements objectForKey:@"SOAP"];
             }
 			else
 			{
@@ -578,7 +572,7 @@
                 // It's a kind of NSString
                 postData = [post dataUsingEncoding:NSUTF8StringEncoding];
 
-			[request setValue:[NSString stringWithFormat:@"%d", [postData length]] forHTTPHeaderField:@"Content-Length"];
+			[request setValue:[NSString stringWithFormat:@"%ld", (long)[postData length]] forHTTPHeaderField:@"Content-Length"];
 			[request setHTTPBody:postData];
 		}
     }
@@ -598,8 +592,7 @@
 
 - (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
 {
-    SDWebServiceDataCompletionBlock combinedBlock = ^id (NSURLResponse *response, NSInteger statusCode, NSData *responseData, NSError *error)
-    {
+    SDWebServiceDataCompletionBlock combinedBlock = ^id (NSURLResponse *response, NSInteger statusCode, NSData *responseData, NSError *error) {
         NSString *responseString = [self responseFromData:responseData];
         completionBlock(statusCode, responseString, &error);
         return nil;
@@ -607,22 +600,22 @@
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
 }
 
-- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
 {
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
 }
 
-- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
 {
     return [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
 }
 
-- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
 {
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:shouldRetry];
 }
 
-- (SDMockRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
+- (SDRequestResult *)performRequestWithMethod:(NSString *)requestName headers:(NSDictionary *)headers routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock shouldRetry:(BOOL)shouldRetry;
 {
     NSString *identifier = [NSString stringWithNewUUID];
 
@@ -630,16 +623,16 @@
 	NSString *baseScheme = [self baseSchemeInServiceSpecification];
 	NSString *baseHost = [self baseHostInServiceSpecification];
 	NSString *basePath = [self basePathInServiceSpecification];
-	NSDictionary *requestList = self.serviceSpecification[@"requests"];
-	NSDictionary *requestDetails = requestList[requestName];
+	NSDictionary *requestList = [_serviceSpecification objectForKey:@"requests"];
+	NSDictionary *requestDetails = [requestList objectForKey:requestName];
 
     NSMutableURLRequest *request = [self buildRequestForScheme:baseScheme headers:headers host:baseHost path:basePath details:requestDetails replacements:replacements];
 
     // get cache details
-    NSNumber *cache = requestDetails[@"cache"];
-//    NSNumber *cacheTTL = requestDetails[@"cacheTTL"];
+    NSNumber *cache = [requestDetails objectForKey:@"cache"];
+    NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
 
-    NSNumber *showNoConnectionAlertObj = requestDetails[@"showNoConnectionAlert"];
+    NSNumber *showNoConnectionAlertObj = [requestDetails objectForKey:@"showNoConnectionAlert"];
     BOOL showNoConnectionAlert = showNoConnectionAlertObj != nil ? [showNoConnectionAlertObj boolValue] : YES;
     if (![self isReachable:showNoConnectionAlert])
     {
@@ -650,13 +643,13 @@
         else
 			uiUpdateBlock(nil, error);
 
-        return [SDMockRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
+        return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
     }
 
-    // setup caching
-    if (cache && [cache boolValue])
-        [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
-	else
+    // setup caching, default is to let the server decide.
+    [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+    // it has to be explicitly disabled to go through here...
+	if (cache && ![cache boolValue])
 		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
 
 	// setup the completion blocks.  we call the same block because failure means
@@ -664,11 +657,18 @@
 	// to the handler, and let it decide.  if its an HTTP failure, that'll get
 	// passed along as well.
 
-#if 0
-	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error)
-    {
-        // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
+#ifdef DEBUG
+    NSDate *startDate = [NSDate date];
+#endif
 
+	SDURLConnectionResponseBlock urlCompletionBlock = ^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
+#ifdef DEBUG
+        NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:startDate];
+        if (interval)           // This is a DEBUG mode workaround for SDLog() being defined but empty in Unit Test builds.
+            ;
+        SDLog(@"Service call took %lf seconds. URL was: %@", interval, request.URL);
+#endif
+        // if the connection was cancelled, skip the retry bit.  this lets your block get called with nil data, etc.
         if ([error code] != NSURLErrorCancelled)
         {
             if ([error code] == NSURLErrorTimedOut)
@@ -678,27 +678,25 @@
                 if (shouldRetry)
                 {
                     // remove it from the cache if its there.
-                    NSURLCache *urlCache = [NSURLCache sharedURLCache];
+                    NSURLCache *blockCache = [NSURLCache sharedURLCache];
                     if ([request isValid])
-                        [urlCache removeCachedResponseForRequest:request];
+                        [blockCache removeCachedResponseForRequest:request];
 
-                    SDMockRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
+                    SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 
                     // do some sync/cleanup stuff here.
-                    SDURLConnection *newConnection = normalRequests[newObject.identifier];
+                    SDURLConnection *newConnection = [_normalRequests objectForKey:newObject.identifier];
 
                     // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
-                    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+                    [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
                     if (newConnection)
                     {
-                        [normalRequests setObject:newConnection forKey:identifier];
-                        [normalRequests removeObjectForKey:newObject.identifier];
+                        [_normalRequests setObject:newConnection forKey:identifier];
+                        [_normalRequests removeObjectForKey:newObject.identifier];
                     }
                     else
-                    {
-                        [normalRequests removeObjectForKey:identifier];
-                    }
-                    [dictionaryLock unlock];
+                        [_normalRequests removeObjectForKey:identifier];
+                    [_dictionaryLock unlock];
 
                     [self decrementRequests];
                     return;
@@ -707,14 +705,14 @@
         }
 
         // remove from the requests lists
-        [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-        [singleRequests removeObjectForKey:requestName];
-        [normalRequests removeObjectForKey:identifier];
-        [dictionaryLock unlock];
+        [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+        [_singleRequests removeObjectForKey:requestName];
+        [_normalRequests removeObjectForKey:identifier];
+        [_dictionaryLock unlock];
 
         // Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
         // So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
-        int code = SDWTFResponseCode;
+        NSInteger code = SDWTFResponseCode;
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         if ([response isKindOfClass:[NSHTTPURLResponse class]])
         {
@@ -730,15 +728,13 @@
         if (uiUpdateBlock == nil)
         {
             NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
-            [mainQueue addOperationWithBlock:^
-            {
+            [mainQueue addOperationWithBlock:^{
                 dataProcessingBlock(response, code, responseData, error);
             }];
         }
         else
         {
-            [dataProcessingQueue addOperationWithBlock:^
-            {
+            [_dataProcessingQueue addOperationWithBlock:^{
                 id dataObject = nil;
                 if (code != NSURLErrorCancelled)
                     dataObject = dataProcessingBlock(response, code, responseData, error);
@@ -753,7 +749,7 @@
 
 	NSURLCache *urlCache = [NSURLCache sharedURLCache];
 	NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue] removeIfInvalid:YES];
-	if (cache && cachedResponse && cachedResponse.response)
+	if ([cache boolValue] && cachedResponse && cachedResponse.response)
 	{
 		NSString *cachedString = [self responseFromData:cachedResponse.responseData];
 		if (cachedString)
@@ -764,16 +760,15 @@
 
             urlCompletionBlock(nil, cachedResponse.response, cachedResponse.responseData, nil);
 
-			return [SDMockRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
+			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
 		}
 	}
 
 	[self incrementRequests];
 
 	// see if this is a singleton request.
-
     BOOL singleRequest = NO;
-	NSNumber *singleRequestNumber = requestDetails[@"singleRequest"];
+	NSNumber *singleRequestNumber = [requestDetails objectForKey:@"singleRequest"];
     if (singleRequestNumber)
     {
         singleRequest = [singleRequestNumber boolValue];
@@ -781,35 +776,57 @@
         // if it is, lets cancel any with matching names.
         if (singleRequest)
         {
-			SDURLConnection *existingConnection = singleRequests[requestName];
+			SDURLConnection *existingConnection = [_singleRequests objectForKey:requestName];
 			if (existingConnection)
 			{
 				SDLog(@"Cancelling call.");
 				[existingConnection cancel];
-                [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-				[singleRequests removeObjectForKey:requestName];
-                [dictionaryLock unlock];
+                [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+				[_singleRequests removeObjectForKey:requestName];
+                [_dictionaryLock unlock];
 				[self decrementRequests];
 			}
         }
     }
 
-	SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request shouldCache:YES withResponseHandler:urlCompletionBlock];
+    // attempt to find any mock data if available.
 
-    [dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-    if (singleRequest)
-        [singleRequests setObject:connection forKey:requestName];
+    NSData *mockData = nil;
+    if (self.useMocksIfAvailable)
+        mockData = [self loadMockDataForRequestName:requestName];
+
+    if (!mockData)
+    {
+        // no mock data was found, or we don't want to use mocks.  send out the request.
+
+        SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:urlCompletionBlock];
+
+        [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
+        if (singleRequest)
+            [_singleRequests setObject:connection forKey:requestName];
+        else
+            [_normalRequests setObject:connection forKey:identifier];
+        [_dictionaryLock unlock];
+    }
     else
-        [normalRequests setObject:connection forKey:identifier];
-    [dictionaryLock unlock];
+    {
+        // we have mock data for this service call.
+        // attempt to recreate the path as best we can.
 
-#endif
-	return [SDMockRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier request:request];
+        [_dataProcessingQueue addOperationWithBlock:^{
+            id dataObject = dataProcessingBlock(nil, 200, mockData, nil);
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                uiUpdateBlock(dataObject, nil);
+            }];
+        }];
+    }
+
+	return [SDRequestResult objectForResult:SDWebServiceResultSuccess identifier:identifier request:request];
 }
 
 - (void)cancelRequestForIdentifier:(NSString *)identifier
 {
-    SDURLConnection *connection = self.normalRequests[identifier];
+    SDURLConnection *connection = [_normalRequests objectForKey:identifier];
     [connection cancel];
 }
 
@@ -864,5 +881,3 @@
 }
 
 @end
-
-#endif

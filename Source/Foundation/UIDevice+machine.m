@@ -85,7 +85,7 @@
         }
     }
 
-    return version;
+    return (uint32_t)version;
 }
 
 + (NSInteger)systemMajorVersion

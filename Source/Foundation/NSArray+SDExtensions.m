@@ -144,15 +144,19 @@
 
 - (NSArray *)deepCopy
 {
-    NSMutableArray* deepCopyArray = [[NSMutableArray alloc] initWithCapacity: self.count];
-    for (id object in self) {
+    NSMutableArray *deepCopyArray = [[NSMutableArray alloc] initWithCapacity: self.count];
+    for (id object in self)
+    {
         id deepObject = nil;
-        if( [object respondsToSelector: @selector(deepCopy)] ) {
+        if([object respondsToSelector: @selector(deepCopy)])
+        {
             deepObject = [object deepCopy];
         }
-        else {
+        else
+        {
             deepObject = [object copy];
         }
+        
         [deepCopyArray addObject: deepObject];
     }
 

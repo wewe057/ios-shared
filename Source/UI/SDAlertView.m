@@ -16,17 +16,17 @@
 
 + (instancetype)showAlertWithTitle:(NSString *)title
 {
-    return [[self class] showAlertWithTitle:title message:nil cancelButtonTitle:nil otherButtonTitles:nil completion:nil];
+    return [[self class] showAlertWithTitle:title message:nil cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil completion:nil];
 }
 
 + (instancetype)showAlertWithTitle:(NSString *)title message:(NSString *)message
 {
-    return [[self class] showAlertWithTitle:title message:message cancelButtonTitle:nil otherButtonTitles:nil completion:nil];
+    return [[self class] showAlertWithTitle:title message:message cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil completion:nil];
 }
 
 + (instancetype)showAlertWithTitle:(NSString *)title message:(NSString *)message completion:(SDAlertViewCompletionBlock)completionBlock
 {
-    return [[self class] showAlertWithTitle:title message:message cancelButtonTitle:nil otherButtonTitles:nil completion:completionBlock];
+    return [[self class] showAlertWithTitle:title message:message cancelButtonTitle:NSLocalizedString(@"OK", @"OK") otherButtonTitles:nil completion:completionBlock];
 }
 
 + (instancetype)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle completion:(SDAlertViewCompletionBlock)completionBlock
