@@ -69,7 +69,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
             //NSMutableArray *temp = [[alternateResults filteredArrayUsingPredicate:predicate] mutableCopy];
             NSMutableArray *temp = [alternateResults mutableCopy];
-            [temp sortUsingSelector:@selector(compare:)];
+            //[temp sortUsingSelector:@selector(compare:)];
             filteredHistory = temp;
         }
     }
