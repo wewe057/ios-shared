@@ -11,6 +11,17 @@
 #import "SDSwitch.h"
 
 @interface SDSwitch () <UIGestureRecognizerDelegate>
+
+@property (nonatomic, assign) BOOL pressed;
+
+- (void)setBackgroundOn:(BOOL)on animated:(BOOL)animated;
+- (void)showFillLayer:(BOOL)show animated:(BOOL)animated;
+- (CGRect)thumbFrameForState:(BOOL)isOn;
+
+@end
+
+
+@implementation SDSwitch
 {
     CAShapeLayer *_thumbLayer;
     CAShapeLayer *_fillLayer;
@@ -18,17 +29,6 @@
     BOOL _dragging;
     BOOL _on;
 }
-
-@property (nonatomic, assign) BOOL pressed;
-
-- (void) setBackgroundOn:(BOOL)on animated:(BOOL)animated;
-- (void) showFillLayer:(BOOL)show animated:(BOOL)animated;
-- (CGRect) thumbFrameForState:(BOOL)isOn;
-
-@end
-
-
-@implementation SDSwitch
 
 - (id)initWithFrame:(CGRect)frame
 {
