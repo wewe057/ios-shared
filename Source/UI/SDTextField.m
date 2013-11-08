@@ -4,314 +4,166 @@
 //  Created by Brandon Sneed on 11/7/13.
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
-//  Only slightly modified from RPFloatingPlaceholder* by Rob Phillips
-//  The MIT License (MIT)
+//  Copyright (c) 2013 Jared Verdi
+//  Original Concept by Matt D. Smith
+//  http://dribbble.com/shots/1254439--GIF-Mobile-Form-Interaction?list=users
 //
-//  Copyright (c) 2013 Rob Phillips.
+//  Permission is hereby granted, free of charge, to any person obtaining a copy of
+//  this software and associated documentation files (the "Software"), to deal in
+//  the Software without restriction, including without limitation the rights to
+//  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+//  the Software, and to permit persons to whom the Software is furnished to do so,
+//  subject to the following conditions:
 //
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
 //
 //  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+//  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+//  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+//  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+//  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import "SDTextField.h"
 
-#pragma mark - SDTextField Private properties
-
 @interface SDTextField ()
-
-/**
- Used to cache the placeholder string.
- */
-@property (nonatomic, strong) NSString *cachedPlaceholder;
-
-/**
- Used to draw the placeholder string if necessary.
- */
-@property (nonatomic, assign) BOOL shouldDrawPlaceholder;
-
-/**
- Frames used to animate the floating label and text field into place.
- */
-@property (nonatomic, assign) CGRect originalTextFieldFrame;
-@property (nonatomic, assign) CGRect offsetTextFieldFrame;
-@property (nonatomic, assign) CGRect originalFloatingLabelFrame;
-@property (nonatomic, assign) CGRect offsetFloatingLabelFrame;
-
+@property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @end
-
-#pragma mark - SDTextField implementation
 
 @implementation SDTextField
 
-#pragma mark - Programmatic Initializer
-
-- (instancetype)initWithFrame:(CGRect)frame
+- (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self)
-    {
-        // Setup the view defaults
-        [self setupViewDefaults];
-    }
+    [self configureView];
     return self;
 }
 
-#pragma mark - Nib/Storyboard Initializers
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
+- (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    if (self)
-    {
-        // Setup the view defaults
-        [self setupViewDefaults];
-    }
+    [self configureView];
+
+    // force setter to be called on a placeholder defined in a NIB/Storyboard
+    if (self.placeholder)
+        self.placeholder = self.placeholder;
+
     return self;
 }
 
-- (void)awakeFromNib
+- (void)configureView
 {
-    [super awakeFromNib];
+    _floatingLabel = [UILabel new];
+    _floatingLabel.alpha = 0.0f;
+    [self addSubview:_floatingLabel];
 
-    // Ensures that the placeholder & text are set through our custom setters
-    // when loaded from a nib/storyboard.
-    self.placeholder = self.placeholder;
-    self.text = self.text;
+    // some basic default fonts/colors
+    _floatingLabel.font = [UIFont boldSystemFontOfSize:12.0f];
+    _floatingLabelInactiveTextColor = [UIColor grayColor];
 }
 
-#pragma mark - Unsupported Initializers
-
-- (instancetype)init
+- (void)setPlaceholder:(NSString *)placeholder
 {
-    [NSException raise:NSInvalidArgumentException format:@"%s Using the %@ initializer directly is not supported. Use %@ instead.", __PRETTY_FUNCTION__, NSStringFromSelector(@selector(init)), NSStringFromSelector(@selector(initWithFrame:))];
-    return nil;
+    [super setPlaceholder:placeholder];
+
+    _floatingLabel.text = placeholder;
+    [_floatingLabel sizeToFit];
+
+    CGFloat originX = 0.f;
+
+    if (self.textAlignment == NSTextAlignmentCenter)
+        originX = (self.frame.size.width/2) - (_floatingLabel.frame.size.width/2);
+    else
+    if (self.textAlignment == NSTextAlignmentRight)
+        originX = self.frame.size.width - _floatingLabel.frame.size.width;
+
+    _floatingLabel.frame = CGRectMake(originX, _floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
 }
 
-#pragma mark - Dealloc
-
-- (void)dealloc
+- (CGRect)textRectForBounds:(CGRect)bounds
 {
-    // Remove the text view observers
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    return UIEdgeInsetsInsetRect([super textRectForBounds:bounds], UIEdgeInsetsMake(_floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, 0.0f, 0.0f, 0.0f));
 }
 
-#pragma mark - Setters & Getters
-
-- (void)setText:(NSString *)text
+- (CGRect)editingRectForBounds:(CGRect)bounds
 {
-    [super setText:text];
-
-    // Check if we need to redraw for pre-existing text
-    [self checkForExistingText];
+    return UIEdgeInsetsInsetRect([super editingRectForBounds:bounds], UIEdgeInsetsMake(_floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, 0.0f, 0.0f, 0.0f));
 }
 
-- (void)setPlaceholder:(NSString *)aPlaceholder
+- (CGRect)clearButtonRectForBounds:(CGRect)bounds
 {
-    if ([_cachedPlaceholder isEqualToString:aPlaceholder]) return;
-
-    // We draw the placeholder ourselves so we can control when it is shown
-    // during the animations
-    [super setPlaceholder:nil];
-
-    _cachedPlaceholder = aPlaceholder;
-
-    _floatingLabel.text = _cachedPlaceholder;
-    [self adjustFramesForNewPlaceholder];
-
-    // Flags the view to redraw
-    [self setNeedsDisplay];
+    CGRect rect = [super clearButtonRectForBounds:bounds];
+    rect = CGRectMake(rect.origin.x, rect.origin.y + (_floatingLabel.font.lineHeight / 2.0) + (_floatingLabelYPadding.floatValue / 2.0f), rect.size.width, rect.size.height);
+    return rect;
 }
-
-- (BOOL)hasText
-{
-    return self.text.length != 0;
-}
-
-#pragma mark - View Defaults
-
-- (void)setupViewDefaults
-{
-    // Add observers for the text field state changes
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidBeginEditing:) name:UITextFieldTextDidBeginEditingNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldDidEndEditing:) name:UITextFieldTextDidEndEditingNotification object:self];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textFieldTextDidChange:) name:UITextFieldTextDidChangeNotification object:self];
-
-    // Setup default colors for the floating label states
-    UIColor *defaultActiveColor = [self respondsToSelector:@selector(tintColor)] ? self.tintColor : [UIColor blueColor]; // iOS 6
-    self.floatingLabelActiveTextColor = defaultActiveColor;
-    self.floatingLabelInactiveTextColor = [UIColor colorWithWhite:0.7f alpha:1.f];
-
-    // Create the floating label instance and add it to the view
-    _floatingLabel = [[UILabel alloc] init];
-    _floatingLabel.font = [UIFont boldSystemFontOfSize:11.f];
-    _floatingLabel.textColor = self.floatingLabelActiveTextColor;
-    _floatingLabel.backgroundColor = [UIColor clearColor];
-    _floatingLabel.alpha = 1.f;
-
-    // Adjust the top margin of the text field and then cache the original
-    // view frame
-    _originalTextFieldFrame = UIEdgeInsetsInsetRect(self.frame, UIEdgeInsetsMake(5.f, 0.f, 2.f, 0.f));
-    self.frame = _originalTextFieldFrame;
-
-    // Set the background to a clear color
-    self.backgroundColor = [UIColor clearColor];
-}
-
-#pragma mark - Drawing & Animations
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
 
-    // Check if we need to redraw for pre-existing text
-    if (![self isFirstResponder])
-        [self checkForExistingText];
-}
+    if (self.floatingLabelFont)
+        _floatingLabel.font = self.floatingLabelFont;
 
-- (void)drawRect:(CGRect)aRect
-{
-    [super drawRect:aRect];
-
-    // Check if we should draw the placeholder string.
-    // Use RGB values found via Photoshop for placeholder color #c7c7cd.
-    if (_shouldDrawPlaceholder)
+    if (self.isFirstResponder)
     {
-        UIColor *placeholderGray = [UIColor colorWithRed:199/255.f green:199/255.f blue:205/255.f alpha:1.f];
-        CGRect placeholderFrame = CGRectMake(0.f, floorf((self.frame.size.height - self.font.lineHeight) / 2.f), self.frame.size.width, self.frame.size.height);
-        NSDictionary *placeholderAttributes = @{NSFontAttributeName : self.font, NSForegroundColorAttributeName : placeholderGray};
-
-        if ([self respondsToSelector:@selector(tintColor)])
-            [_cachedPlaceholder drawInRect:placeholderFrame withAttributes:placeholderAttributes];
+        if (!self.text || 0 == [self.text length])
+            [self hideFloatingLabel];
         else
         {
-            // iOS 6
-            NSAttributedString *attributedPlaceholder = [[NSAttributedString alloc] initWithString:_cachedPlaceholder attributes:placeholderAttributes];
-            [attributedPlaceholder drawInRect:placeholderFrame];
+            [self setLabelActiveColor];
+            [self showFloatingLabel];
         }
-    }
-}
-
-- (void)showFloatingLabelWithAnimation:(BOOL)isAnimated
-{
-    // Add it to the superview
-    if (!_floatingLabel.superview)
-        [self.superview addSubview:_floatingLabel];
-
-    // Flags the view to redraw
-    [self setNeedsDisplay];
-
-    if (isAnimated)
-    {
-        UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut;
-        [UIView animateWithDuration:0.2f delay:0.f options:options animations:^{
-            _floatingLabel.alpha = 1.f;
-            _floatingLabel.frame = CGRectIntegral(_offsetFloatingLabelFrame);
-
-        } completion:nil];
     }
     else
     {
-        _floatingLabel.alpha = 1.f;
-        _floatingLabel.frame = CGRectIntegral(_offsetFloatingLabelFrame);
+        _floatingLabel.textColor = self.floatingLabelInactiveTextColor;
+        if (!self.text || 0 == [self.text length])
+            [self hideFloatingLabel];
+        else
+            [self showFloatingLabel];
     }
+}
+
+- (void)setLabelActiveColor
+{
+    if (self.floatingLabelActiveTextColor)
+        _floatingLabel.textColor = self.floatingLabelActiveTextColor;
+    else
+        _floatingLabel.textColor = self.tintColor;
+}
+
+- (void)showFloatingLabel
+{
+    [self setLabelOriginForTextAlignment];
+
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut animations:^{
+        _floatingLabel.alpha = 1.0f;
+        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, 2.0f, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
+    } completion:nil];
 }
 
 - (void)hideFloatingLabel
 {
-    @weakify(self);
-    UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseIn;
-    [UIView animateWithDuration:0.2f delay:0.f options:options animations:^{
-        _floatingLabel.alpha = 0.f;
-        _floatingLabel.frame = CGRectIntegral(_originalFloatingLabelFrame);
+    [self setLabelOriginForTextAlignment];
 
-    } completion:^(BOOL finished) {
-        // Flags the view to redraw
-        @strongify(self);
-        [self setNeedsDisplay];
-    }];
-}
-
-- (void)checkForExistingText
-{
-    // Check if we need to redraw for pre-existing text
-    _shouldDrawPlaceholder = !self.hasText;
-
-    if (self.hasText)
-    {
-        _floatingLabel.textColor = self.floatingLabelInactiveTextColor;
-        [self showFloatingLabelWithAnimation:NO];
-    }
-}
-
-- (void)adjustFramesForNewPlaceholder
-{
-    [_floatingLabel sizeToFit];
-
-    CGFloat offset = _floatingLabel.font.lineHeight;
-    _originalFloatingLabelFrame = CGRectMake(_originalTextFieldFrame.origin.x, _originalTextFieldFrame.origin.y,
-                                             _originalTextFieldFrame.size.width, _floatingLabel.frame.size.height);
-    _floatingLabel.frame = CGRectIntegral(_originalFloatingLabelFrame);
-    _offsetFloatingLabelFrame = CGRectIntegral(CGRectMake(_originalFloatingLabelFrame.origin.x, _originalFloatingLabelFrame.origin.y - offset,
-                                           _originalFloatingLabelFrame.size.width, _originalFloatingLabelFrame.size.height));
-    _offsetTextFieldFrame = CGRectMake(_originalTextFieldFrame.origin.x, _originalTextFieldFrame.origin.y + offset,
-                                       _originalTextFieldFrame.size.width, _originalTextFieldFrame.size.height);
-}
-
-- (void)animateFloatingLabelColorChangeWithAnimationBlock:(void (^)(void))animationBlock
-{
-    UIViewAnimationOptions options = UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionTransitionCrossDissolve;
-    [UIView transitionWithView:_floatingLabel duration:0.2 options:options animations:^{
-        animationBlock();
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseIn animations:^{
+        _floatingLabel.alpha = 0.0f;
+        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, _floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
     } completion:nil];
 }
 
-#pragma mark - Text Field Observers
-
-- (void)textFieldDidBeginEditing:(NSNotification *)notification
+- (void)setLabelOriginForTextAlignment
 {
-    @weakify(self);
-    [self animateFloatingLabelColorChangeWithAnimationBlock:^{
-        @strongify(self);
-        _floatingLabel.textColor = self.floatingLabelActiveTextColor;
-    }];
-}
+    CGFloat originX = _floatingLabel.frame.origin.x;
 
-- (void)textFieldDidEndEditing:(NSNotification *)notification
-{
-    @weakify(self);
-    [self animateFloatingLabelColorChangeWithAnimationBlock:^{
-        @strongify(self);
-        _floatingLabel.textColor = self.floatingLabelInactiveTextColor;
-    }];
-}
+    if (self.textAlignment == NSTextAlignmentCenter)
+        originX = (self.frame.size.width/2) - (_floatingLabel.frame.size.width/2);
+    else
+    if (self.textAlignment == NSTextAlignmentRight)
+        originX = self.frame.size.width - _floatingLabel.frame.size.width;
 
-- (void)textFieldTextDidChange:(NSNotification *)notification
-{
-    BOOL _previousShouldDrawPlaceholderValue = _shouldDrawPlaceholder;
-    _shouldDrawPlaceholder = !self.hasText;
-
-    // Only redraw if _shouldDrawPlaceholder value was changed
-    if (_previousShouldDrawPlaceholderValue != _shouldDrawPlaceholder)
-    {
-        if (_shouldDrawPlaceholder)
-            [self hideFloatingLabel];
-        else
-            [self showFloatingLabelWithAnimation:YES];
-    }
+    _floatingLabel.frame = CGRectMake(originX, _floatingLabel.frame.origin.y, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
 }
 
 @end
