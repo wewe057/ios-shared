@@ -1,10 +1,12 @@
 //
 //  SDSwitch.m
-//  RxClient
 //
 //  Created by Brandon Sneed on 11/7/13.
-//  Copyright (c) 2013 walmart. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
+//  Based on MBSwitch by Mathieu Bolard.
+//  https://github.com/mattlawer/MBSwitch
+//  Copyright (c) 2013, Mathieu Bolard All rights reserved.
 
 #import "SDSwitch.h"
 
