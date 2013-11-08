@@ -49,4 +49,8 @@
  */
 @property (nonatomic, strong) UIColor *floatingLabelActiveTextColor UI_APPEARANCE_SELECTOR; // tint color is used by default if not provided
 
+@property (nonatomic, strong) IBOutlet UITextField *previousTextField;
+@property (nonatomic, strong) IBOutlet UITextField *nextTextField;
+
+
 @end
