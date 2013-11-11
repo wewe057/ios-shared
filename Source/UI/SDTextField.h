@@ -30,6 +30,10 @@
 @interface SDTextField : UITextField
 
 /**
+ *  Disable the floating label aspect of the text field.
+ */
+@property (nonatomic, assign) BOOL disableFloatingLabels;
+/**
  *  Adjust the Y padding for the floating label.  The default is 0.0f.
  */
 @property (nonatomic, strong) NSNumber *floatingLabelYPadding UI_APPEARANCE_SELECTOR;

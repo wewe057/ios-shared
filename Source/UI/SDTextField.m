@@ -79,17 +79,26 @@
 
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
+    if (self.disableFloatingLabels)
+        return [super textRectForBounds:bounds];
+    
     return UIEdgeInsetsInsetRect([super textRectForBounds:bounds], UIEdgeInsetsMake(_floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, 0.0f, 0.0f, 0.0f));
 }
 
 - (CGRect)editingRectForBounds:(CGRect)bounds
 {
+    if (self.disableFloatingLabels)
+        return [super editingRectForBounds:bounds];
+    
     return UIEdgeInsetsInsetRect([super editingRectForBounds:bounds], UIEdgeInsetsMake(_floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, 0.0f, 0.0f, 0.0f));
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
+    
+    if (self.disableFloatingLabels)
+        return;
 
     if (self.floatingLabelFont)
         _floatingLabel.font = self.floatingLabelFont;
@@ -118,6 +127,9 @@
 
 - (CGRect)clearButtonRectForBounds:(CGRect)bounds
 {
+    if (self.disableFloatingLabels)
+        return [super clearButtonRectForBounds:bounds];
+    
     CGRect rect = [super clearButtonRectForBounds:bounds];
     rect = CGRectMake(rect.origin.x, rect.origin.y + (_floatingLabel.font.lineHeight / 2.0) + (_floatingLabelYPadding.floatValue / 2.0f), rect.size.width, rect.size.height);
     return rect;
@@ -125,6 +137,9 @@
 
 - (void)showFloatingLabel
 {
+    if (self.disableFloatingLabels)
+        return;
+    
     [self setLabelOriginForTextAlignment];
 
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut animations:^{
@@ -135,6 +150,9 @@
 
 - (void)hideFloatingLabel
 {
+    if (self.disableFloatingLabels)
+        return;
+    
     [self setLabelOriginForTextAlignment];
 
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseIn animations:^{
@@ -164,7 +182,10 @@
         {
             // handle ios6.
             _segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Previous", nil), NSLocalizedString(@"Next", nil)]];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+#pragma clang diagnostic pop
             _segmentedControl.momentary = YES;
             [_segmentedControl addTarget:self action:@selector(selectAdjacentResponder:) forControlEvents:UIControlEventValueChanged];
             UIBarButtonItem *segmentedControlBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_segmentedControl];

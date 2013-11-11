@@ -84,6 +84,7 @@
 - (IBAction)alertWithContentAction:(id)sender
 {
     SDNumberTextField *textField = [[SDNumberTextField alloc] initWithFrame:CGRectMake(0, 0, 124, 30)];
+    textField.disableFloatingLabels = YES;
     textField.format = @"##/##/####";
     textField.placeholder = @"MM/DD/YYYY";
     textField.borderStyle = UITextBorderStyleRoundedRect;

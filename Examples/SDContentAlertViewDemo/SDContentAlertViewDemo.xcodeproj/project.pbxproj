@@ -82,6 +82,8 @@
 		CA0E791418285FBA00B4398F /* SDWebService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E790818285FBA00B4398F /* SDWebService.m */; };
 		CA0E791518285FBA00B4398F /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E790A18285FBA00B4398F /* UIImageView+SDExtensions.m */; };
 		CA0E791718285FFE00B4398F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0E791618285FFE00B4398F /* SystemConfiguration.framework */; };
+		CA708AE81831A0EA0067C575 /* SDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CA708AE71831A0EA0067C575 /* SDTextField.m */; };
+		CA708AE91831A0EA0067C575 /* SDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CA708AE71831A0EA0067C575 /* SDTextField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -231,6 +233,8 @@
 		CA0E790918285FBA00B4398F /* UIImageView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+SDExtensions.h"; sourceTree = "<group>"; };
 		CA0E790A18285FBA00B4398F /* UIImageView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+SDExtensions.m"; sourceTree = "<group>"; };
 		CA0E791618285FFE00B4398F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		CA708AE61831A0EA0067C575 /* SDTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTextField.h; sourceTree = "<group>"; };
+		CA708AE71831A0EA0067C575 /* SDTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTextField.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -422,6 +426,8 @@
 			children = (
 				CA0E786318285D4D00B4398F /* NSObject+SDExtensions.h */,
 				CA0E786418285D4D00B4398F /* NSObject+SDExtensions.m */,
+				CA708AE61831A0EA0067C575 /* SDTextField.h */,
+				CA708AE71831A0EA0067C575 /* SDTextField.m */,
 				CA0E786518285D4D00B4398F /* SDAlertView.h */,
 				CA0E786618285D4D00B4398F /* SDAlertView.m */,
 				CA0E786718285D4D00B4398F /* SDContainerViewController.h */,
@@ -611,6 +617,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA708AE81831A0EA0067C575 /* SDTextField.m in Sources */,
 				CA0E780A18285A1D00B4398F /* MyViewController.m in Sources */,
 				CA0E791318285FBA00B4398F /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA0E78DB18285D4D00B4398F /* UIActivityIndicatorView+SDExtensions.m in Sources */,
@@ -673,6 +680,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA708AE91831A0EA0067C575 /* SDTextField.m in Sources */,
 				CA0E781F18285A1D00B4398F /* SDContentAlertViewDemoTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -876,6 +884,7 @@
 				CA0E782418285A1D00B4398F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA0E782518285A1D00B4398F /* Build configuration list for PBXNativeTarget "SDContentAlertViewDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -884,6 +893,7 @@
 				CA0E782718285A1D00B4398F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
