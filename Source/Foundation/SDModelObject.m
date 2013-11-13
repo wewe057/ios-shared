@@ -133,12 +133,12 @@
 
 - (NSData *)JSONRepresentation
 {
-    return [[self reversedDictionaryRepresentation] JSONRepresentation];
+    return [[self dictionaryRepresentation] JSONRepresentation];
 }
 
 - (NSString *)JSONStringRepresentation
 {
-    return [[self reversedDictionaryRepresentation] JSONStringRepresentation];
+    return [[self dictionaryRepresentation] JSONStringRepresentation];
 }
 
 @end
