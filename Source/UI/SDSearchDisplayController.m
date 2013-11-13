@@ -57,6 +57,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     
     if (filterString && [filterString length] > 0)
     {
+        recentSearchTableView.hidden = YES;
+
         if ([alternateResults count] == 0)
         {
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
@@ -67,12 +69,14 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(SELF beginswith[cd] %@)", filterString];
             //NSMutableArray *temp = [[alternateResults filteredArrayUsingPredicate:predicate] mutableCopy];
             NSMutableArray *temp = [alternateResults mutableCopy];
-            [temp sortUsingSelector:@selector(compare:)];
+            //[temp sortUsingSelector:@selector(compare:)];
             filteredHistory = temp;
         }
     }
     else
     {
+        recentSearchTableView.hidden = NO;
+        
         filteredHistory = searchHistory;
         UIView *superview = self.searchContentsController.view;
         // this is sketchy, but needs to happen.  if it doesn't, our tableview ends up in the BG because something

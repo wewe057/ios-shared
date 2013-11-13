@@ -73,4 +73,11 @@
  */
 - (BOOL)isValidateEmailFormat;
 
+/**
+ Returns the string formatted with the given number format.
+ 
+ ie: ##/##/#### would return 08/25/1977 for example.
+ */
+- (NSString *)stringWithNumberFormat:(NSString *)format;
+
 @end
