@@ -8,7 +8,10 @@
 
 #import "NSString+SDExtensions.h"
 
-static NSString *kFirstPriceRegEx = @"[^0-9]*([0-9]+.[0-9]+)";
+// Thanks to the Android team for the regex
+// https://github.com/walmartlabs/walmart-android/commit/1b6978a4ece3
+// Parse "From $1,789.00" into "1,789"
+static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d{2})?)(.*)$";
 
 
 @implementation NSString(SDExtensions)
@@ -301,6 +304,9 @@ static NSString *kFirstPriceRegEx = @"[^0-9]*([0-9]+.[0-9]+)";
         
         NSRange r = [[matches objectAtIndex:0] rangeAtIndex:1];
         extractedPriceString = [self substringWithRange:r];
+        
+        // My RegexFu is weak; Eliminate any commas here
+        extractedPriceString = [extractedPriceString stringByReplacingOccurrencesOfString:@"," withString:@""];
     }
     return extractedPriceString;
  }
