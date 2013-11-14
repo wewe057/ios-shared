@@ -8,6 +8,8 @@
 
 #import "NSString+SDExtensions.h"
 
+static NSString *kFirstPriceRegEx = @"[^0-9]*([0-9]+.[0-9]+)";
+
 
 @implementation NSString(SDExtensions)
 
@@ -284,6 +286,24 @@
 
     return [result substringWithRange:NSMakeRange(0, result.length - 1)];
 }
+
+- (NSString *)extractFirstPrice
+{
+    NSError *error;
+    NSRegularExpression *firstPriceExpression = [NSRegularExpression regularExpressionWithPattern:kFirstPriceRegEx options:0 error:&error];
+    
+    NSString *extractedPriceString;
+    
+    NSRange range = NSMakeRange(0, [self length]);
+    if ([firstPriceExpression numberOfMatchesInString:self options:0 range:range])
+    {
+        NSArray *matches = [firstPriceExpression matchesInString:self options:0 range:range];
+        
+        NSRange r = [[matches objectAtIndex:0] rangeAtIndex:1];
+        extractedPriceString = [self substringWithRange:r];
+    }
+    return extractedPriceString;
+ }
 
 @end
 
