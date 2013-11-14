@@ -302,7 +302,7 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
     {
         NSArray *matches = [firstPriceExpression matchesInString:self options:0 range:range];
         
-        NSRange r = [[matches objectAtIndex:0] rangeAtIndex:1];
+        NSRange r = [[matches objectAtIndex:0] rangeAtIndex:2];
         extractedPriceString = [self substringWithRange:r];
         
         // My RegexFu is weak; Eliminate any commas here
