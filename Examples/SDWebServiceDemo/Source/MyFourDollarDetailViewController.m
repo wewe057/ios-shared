@@ -43,8 +43,8 @@
          cellForRowAtIndexPath: (NSIndexPath*) indexPath
 {
     static NSString* CellIdentifier = @"detailCell";
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier: CellIdentifier
+                                                            forIndexPath: indexPath];
     // Configure the cell.
     
     MyFourDollarItem* itemData = (MyFourDollarItem*)[self.category.drugList objectAtIndex: (NSUInteger)indexPath.row];

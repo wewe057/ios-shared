@@ -25,7 +25,7 @@
 
 #pragma mark - Object lifecycle
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
     [super viewDidLoad];
 
@@ -41,7 +41,8 @@
     return 1;
 }
 
-- (NSInteger) tableView: (UITableView*) tableView numberOfRowsInSection: (NSInteger) section
+- (NSInteger) tableView: (UITableView*) tableView
+  numberOfRowsInSection: (NSInteger) section
 {
     return (NSInteger)self.categories.count;
 }
@@ -123,7 +124,7 @@
              
              MyFourDollarDrugList* fourDollarDrugList = dataObject;
              
-             self.categories = fourDollarDrugList.drugList;
+             self.categories = fourDollarDrugList.drugCategoryList;
              
              [self.tableView reloadData];
          }

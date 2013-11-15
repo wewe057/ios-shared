@@ -13,13 +13,11 @@
  *
  */
 
-@class MyFourDollarCategory;
 @protocol MyFourDollarCategory;
 
 
 @interface MyFourDollarDrugList : SDModelObject
 
-@property (nonatomic, strong, readonly) NSArray *categories;
-@property (nonatomic, strong, readonly) NSArray<MyFourDollarCategory> *drugList;
+@property (nonatomic, strong, readonly) NSArray<MyFourDollarCategory>* drugCategoryList;
 
 @end

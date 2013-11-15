@@ -18,6 +18,6 @@
 @interface MyFourDollarCategory : SDModelObject
 
 @property (nonatomic, copy, readonly) NSString* categoryName;
-@property (nonatomic, strong, readonly) NSArray<MyFourDollarItem> *drugList;
+@property (nonatomic, strong, readonly) NSArray<MyFourDollarItem>* drugList;
 
 @end

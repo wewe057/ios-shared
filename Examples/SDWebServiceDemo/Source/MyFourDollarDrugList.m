@@ -19,8 +19,7 @@
     
     // The map is formatted as follows - responseKey: classProperty
 
-    return @{ @"category": @"<NSString>categoryName",
-              @"drugList": @"<MyFourDollarCategory>drugList" };
+    return @{ @"drugList": @"<MyFourDollarCategory>drugCategoryList" };
 }
 
 - (BOOL) validModel
