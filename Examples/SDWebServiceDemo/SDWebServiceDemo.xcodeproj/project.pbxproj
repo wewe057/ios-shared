@@ -10,20 +10,20 @@
 		FBE54C1B18344A4400FA3AEE /* MyFourDollarDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBE54C1818344A4400FA3AEE /* MyFourDollarDetailViewController.m */; };
 		FBE54C1C18344A4400FA3AEE /* MyFourDollarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBE54C1A18344A4400FA3AEE /* MyFourDollarViewController.m */; };
 		FBE54C2518357AA900FA3AEE /* MyFourDollarViewController_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBE54C2318357AA900FA3AEE /* MyFourDollarViewController_iPhone.storyboard */; };
+		FBE54C281836974000FA3AEE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBE54C261836974000FA3AEE /* InfoPlist.strings */; };
+		FBE54C2D1836976E00FA3AEE /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBE54C291836976E00FA3AEE /* Main_iPad.storyboard */; };
+		FBE54C2E1836976E00FA3AEE /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBE54C2B1836976E00FA3AEE /* Main_iPhone.storyboard */; };
+		FBE54C311836979900FA3AEE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBE54C2F1836979900FA3AEE /* InfoPlist.strings */; };
 		FBE86201183405770012469F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE86200183405770012469F /* Foundation.framework */; };
 		FBE86203183405770012469F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE86202183405770012469F /* CoreGraphics.framework */; };
 		FBE86205183405770012469F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE86204183405770012469F /* UIKit.framework */; };
-		FBE8620B183405770012469F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBE86209183405770012469F /* InfoPlist.strings */; };
 		FBE8620D183405770012469F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FBE8620C183405770012469F /* main.m */; };
 		FBE86211183405770012469F /* MyAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FBE86210183405770012469F /* MyAppDelegate.m */; };
-		FBE86214183405770012469F /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBE86212183405770012469F /* Main_iPhone.storyboard */; };
-		FBE86217183405770012469F /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBE86215183405770012469F /* Main_iPad.storyboard */; };
 		FBE8621A183405770012469F /* MyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FBE86219183405770012469F /* MyViewController.m */; };
 		FBE8621C183405770012469F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBE8621B183405770012469F /* Images.xcassets */; };
 		FBE86223183405770012469F /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE86222183405770012469F /* XCTest.framework */; };
 		FBE86224183405770012469F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE86200183405770012469F /* Foundation.framework */; };
 		FBE86225183405770012469F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBE86204183405770012469F /* UIKit.framework */; };
-		FBE8622D183405770012469F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FBE8622B183405770012469F /* InfoPlist.strings */; };
 		FBE8622F183405770012469F /* SDWebServiceDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FBE8622E183405770012469F /* SDWebServiceDemoTests.m */; };
 		FBE862C6183405BC0012469F /* Global-iOS.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FBE8623B183405BC0012469F /* Global-iOS.xcconfig */; };
 		FBE862C7183405BC0012469F /* Project-iOS-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FBE8623C183405BC0012469F /* Project-iOS-Debug.xcconfig */; };
@@ -118,26 +118,26 @@
 		FBE54C1918344A4400FA3AEE /* MyFourDollarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFourDollarViewController.h; path = Source/MyFourDollarViewController.h; sourceTree = SOURCE_ROOT; };
 		FBE54C1A18344A4400FA3AEE /* MyFourDollarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyFourDollarViewController.m; path = Source/MyFourDollarViewController.m; sourceTree = SOURCE_ROOT; };
 		FBE54C2418357AA900FA3AEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Resources/Base.lproj/MyFourDollarViewController_iPhone.storyboard; sourceTree = SOURCE_ROOT; };
+		FBE54C271836974000FA3AEE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Resources/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
+		FBE54C2A1836976E00FA3AEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Resources/Base.lproj/Main_iPad.storyboard; sourceTree = SOURCE_ROOT; };
+		FBE54C2C1836976E00FA3AEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Resources/Base.lproj/Main_iPhone.storyboard; sourceTree = SOURCE_ROOT; };
+		FBE54C301836979900FA3AEE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Tests/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
 		FBE861FD183405770012469F /* SDWebServiceDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDWebServiceDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBE86200183405770012469F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FBE86202183405770012469F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		FBE86204183405770012469F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		FBE86208183405770012469F /* SDWebServiceDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SDWebServiceDemo-Info.plist"; path = "../Resources/SDWebServiceDemo-Info.plist"; sourceTree = "<group>"; };
-		FBE8620A183405770012469F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		FBE8620C183405770012469F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../Source/main.m; sourceTree = "<group>"; };
-		FBE8620E183405770012469F /* SDWebServiceDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SDWebServiceDemo-Prefix.pch"; path = "../Resources/SDWebServiceDemo-Prefix.pch"; sourceTree = "<group>"; };
-		FBE8620F183405770012469F /* MyAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyAppDelegate.h; path = ../Source/MyAppDelegate.h; sourceTree = "<group>"; };
-		FBE86210183405770012469F /* MyAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyAppDelegate.m; path = ../Source/MyAppDelegate.m; sourceTree = "<group>"; };
-		FBE86213183405770012469F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
-		FBE86216183405770012469F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		FBE86218183405770012469F /* MyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyViewController.h; path = ../Source/MyViewController.h; sourceTree = "<group>"; };
-		FBE86219183405770012469F /* MyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyViewController.m; path = ../Source/MyViewController.m; sourceTree = "<group>"; };
-		FBE8621B183405770012469F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../Resources/Images.xcassets; sourceTree = "<group>"; };
+		FBE86208183405770012469F /* SDWebServiceDemo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SDWebServiceDemo-Info.plist"; path = "Resources/SDWebServiceDemo-Info.plist"; sourceTree = SOURCE_ROOT; };
+		FBE8620C183405770012469F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Source/main.m; sourceTree = SOURCE_ROOT; };
+		FBE8620E183405770012469F /* SDWebServiceDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SDWebServiceDemo-Prefix.pch"; path = "Resources/SDWebServiceDemo-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		FBE8620F183405770012469F /* MyAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyAppDelegate.h; path = Source/MyAppDelegate.h; sourceTree = SOURCE_ROOT; };
+		FBE86210183405770012469F /* MyAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyAppDelegate.m; path = Source/MyAppDelegate.m; sourceTree = SOURCE_ROOT; };
+		FBE86218183405770012469F /* MyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MyViewController.h; path = Source/MyViewController.h; sourceTree = SOURCE_ROOT; };
+		FBE86219183405770012469F /* MyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MyViewController.m; path = Source/MyViewController.m; sourceTree = SOURCE_ROOT; };
+		FBE8621B183405770012469F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Resources/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		FBE86221183405770012469F /* SDWebServiceDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SDWebServiceDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBE86222183405770012469F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		FBE8622A183405770012469F /* SDWebServiceDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SDWebServiceDemoTests-Info.plist"; path = "../Tests/SDWebServiceDemoTests-Info.plist"; sourceTree = "<group>"; };
-		FBE8622C183405770012469F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		FBE8622E183405770012469F /* SDWebServiceDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SDWebServiceDemoTests.m; path = ../Tests/SDWebServiceDemoTests.m; sourceTree = "<group>"; };
+		FBE8622A183405770012469F /* SDWebServiceDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SDWebServiceDemoTests-Info.plist"; path = "Tests/SDWebServiceDemoTests-Info.plist"; sourceTree = SOURCE_ROOT; };
+		FBE8622E183405770012469F /* SDWebServiceDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SDWebServiceDemoTests.m; path = Tests/SDWebServiceDemoTests.m; sourceTree = SOURCE_ROOT; };
 		FBE8623B183405BC0012469F /* Global-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Global-iOS.xcconfig"; sourceTree = "<group>"; };
 		FBE8623C183405BC0012469F /* Project-iOS-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Debug.xcconfig"; sourceTree = "<group>"; };
 		FBE8623D183405BC0012469F /* Project-iOS-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Release.xcconfig"; sourceTree = "<group>"; };
@@ -321,22 +321,24 @@
 				FBE54C1818344A4400FA3AEE /* MyFourDollarDetailViewController.m */,
 			);
 			name = "View Controllers";
-			sourceTree = "<group>";
+			path = SDWebServiceDemo;
+			sourceTree = SOURCE_ROOT;
 		};
 		FBE54C1E18344ACE00FA3AEE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				FBE8621B183405770012469F /* Images.xcassets */,
 				FBE86208183405770012469F /* SDWebServiceDemo-Info.plist */,
-				FBE86209183405770012469F /* InfoPlist.strings */,
+				FBE54C261836974000FA3AEE /* InfoPlist.strings */,
 				FBE8620C183405770012469F /* main.m */,
 				FBE8620E183405770012469F /* SDWebServiceDemo-Prefix.pch */,
-				FBE86212183405770012469F /* Main_iPhone.storyboard */,
-				FBE86215183405770012469F /* Main_iPad.storyboard */,
+				FBE54C2B1836976E00FA3AEE /* Main_iPhone.storyboard */,
+				FBE54C291836976E00FA3AEE /* Main_iPad.storyboard */,
 				FBE54C2318357AA900FA3AEE /* MyFourDollarViewController_iPhone.storyboard */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
+			path = SDWebServiceDemo;
+			sourceTree = SOURCE_ROOT;
 		};
 		FBE54C2118354FAC00FA3AEE /* Errors */ = {
 			isa = PBXGroup;
@@ -345,7 +347,7 @@
 				FBE8631018342AF40012469F /* MyResponseError.m */,
 			);
 			name = Errors;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		FBE54C2218354FB500FA3AEE /* Responses */ = {
 			isa = PBXGroup;
@@ -358,7 +360,7 @@
 				FBE8631D183435890012469F /* MyFourDollarItem.m */,
 			);
 			name = Responses;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		FBE861F4183405770012469F = {
 			isa = PBXGroup;
@@ -420,10 +422,11 @@
 			isa = PBXGroup;
 			children = (
 				FBE8622A183405770012469F /* SDWebServiceDemoTests-Info.plist */,
-				FBE8622B183405770012469F /* InfoPlist.strings */,
+				FBE54C2F1836979900FA3AEE /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
+			path = SDWebServiceDemoTests;
+			sourceTree = SOURCE_ROOT;
 		};
 		FBE86238183405A80012469F /* Externals */ = {
 			isa = PBXGroup;
@@ -652,7 +655,8 @@
 				FBE8631318342AF40012469F /* MyServices.plist */,
 			);
 			name = Services;
-			sourceTree = "<group>";
+			path = SDWebServiceDemo;
+			sourceTree = SOURCE_ROOT;
 		};
 		FBE8631918342B150012469F /* Models */ = {
 			isa = PBXGroup;
@@ -661,7 +665,8 @@
 				FBE54C2218354FB500FA3AEE /* Responses */,
 			);
 			name = Models;
-			sourceTree = "<group>";
+			path = SDWebServiceDemo;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -741,16 +746,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBE862C7183405BC0012469F /* Project-iOS-Debug.xcconfig in Resources */,
-				FBE86217183405770012469F /* Main_iPad.storyboard in Resources */,
+				FBE54C311836979900FA3AEE /* InfoPlist.strings in Resources */,
 				FBE8621C183405770012469F /* Images.xcassets in Resources */,
+				FBE54C281836974000FA3AEE /* InfoPlist.strings in Resources */,
 				FBE862C6183405BC0012469F /* Global-iOS.xcconfig in Resources */,
+				FBE54C2E1836976E00FA3AEE /* Main_iPhone.storyboard in Resources */,
 				FBE8631718342AF40012469F /* MyServices.plist in Resources */,
 				FBE862EB183405BC0012469F /* SDPickerModalViewController-iOS7.xib in Resources */,
-				FBE86214183405770012469F /* Main_iPhone.storyboard in Resources */,
-				FBE8620B183405770012469F /* InfoPlist.strings in Resources */,
 				FBE54C2518357AA900FA3AEE /* MyFourDollarViewController_iPhone.storyboard in Resources */,
 				FBE862ED183405BC0012469F /* SDPickerModalViewController.xib in Resources */,
 				FBE862C9183405BC0012469F /* README.md in Resources */,
+				FBE54C2D1836976E00FA3AEE /* Main_iPad.storyboard in Resources */,
 				FBE862F4183405BC0012469F /* SDWebViewCell.xib in Resources */,
 				FBE862C8183405BC0012469F /* Project-iOS-Release.xcconfig in Resources */,
 			);
@@ -760,7 +766,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FBE8622D183405770012469F /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -871,40 +876,36 @@
 			name = MyFourDollarViewController_iPhone.storyboard;
 			sourceTree = "<group>";
 		};
-		FBE86209183405770012469F /* InfoPlist.strings */ = {
+		FBE54C261836974000FA3AEE /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				FBE8620A183405770012469F /* en */,
+				FBE54C271836974000FA3AEE /* en */,
 			);
 			name = InfoPlist.strings;
-			path = ../Resources;
 			sourceTree = "<group>";
 		};
-		FBE86212183405770012469F /* Main_iPhone.storyboard */ = {
+		FBE54C291836976E00FA3AEE /* Main_iPad.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				FBE86213183405770012469F /* Base */,
-			);
-			name = Main_iPhone.storyboard;
-			path = ../Resources;
-			sourceTree = "<group>";
-		};
-		FBE86215183405770012469F /* Main_iPad.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FBE86216183405770012469F /* Base */,
+				FBE54C2A1836976E00FA3AEE /* Base */,
 			);
 			name = Main_iPad.storyboard;
-			path = ../Resources;
 			sourceTree = "<group>";
 		};
-		FBE8622B183405770012469F /* InfoPlist.strings */ = {
+		FBE54C2B1836976E00FA3AEE /* Main_iPhone.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				FBE8622C183405770012469F /* en */,
+				FBE54C2C1836976E00FA3AEE /* Base */,
+			);
+			name = Main_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		FBE54C2F1836979900FA3AEE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FBE54C301836979900FA3AEE /* en */,
 			);
 			name = InfoPlist.strings;
-			path = ../Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
