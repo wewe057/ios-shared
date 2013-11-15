@@ -11,10 +11,6 @@
 #import "MyFourDollarItem.h"
 
 
-@interface MyFourDollarDetailViewController ()
-
-@end
-
 @implementation MyFourDollarDetailViewController
 
 #pragma mark - Property overrides
@@ -42,8 +38,8 @@
 - (UITableViewCell*) tableView: (UITableView*) tableView
          cellForRowAtIndexPath: (NSIndexPath*) indexPath
 {
-    static NSString* CellIdentifier = @"detailCell";
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier: CellIdentifier
+    static NSString* sDetailCellIdentifier = @"detailCell";
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier: sDetailCellIdentifier
                                                             forIndexPath: indexPath];
     // Configure the cell.
     

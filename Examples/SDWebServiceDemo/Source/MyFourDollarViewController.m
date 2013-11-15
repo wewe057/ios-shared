@@ -50,8 +50,8 @@
 - (UITableViewCell*) tableView: (UITableView*) tableView
          cellForRowAtIndexPath: (NSIndexPath*) indexPath
 {
-    static NSString* CellIdentifier = @"categoryCell";
-    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier: CellIdentifier
+    static NSString* sCategoryCellIdentifier = @"categoryCell";
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier: sCategoryCellIdentifier
                                                             forIndexPath: indexPath];
     // Configure the cell.
 
