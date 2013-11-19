@@ -51,8 +51,8 @@
 		if ([object isKindOfClass:self])
 			return object;
 	}
-    
-#if DEBUG
+
+#ifdef DEBUG
 	NSAssert(NO, @"Could not find object of class %@ in nib %@", [self class], [self nibName]);
 #endif
 	return nil;
