@@ -58,6 +58,28 @@
 	return nil;
 }
 
+- (BOOL)keyPathExists:(NSString *)keyPath
+{
+    id targetObject = self;
+    BOOL exists = NO;
+    
+    NSArray *components = [keyPath componentsSeparatedByString:@"."];
+    for (NSUInteger i = 0; i < components.count; i++)
+    {
+        NSString *key = [components objectAtIndex:i];
+        if ([self respondsToSelector:NSSelectorFromString(key)])
+        {
+            targetObject = [targetObject valueForKey:key];
+            if (i == components.count - 1)
+                exists = YES;
+        }
+        else
+            break;
+    }
+    
+    return exists;
+}
+
 // This is tightly tied to the implementation found in NSArray+SDExtensions.m
 // These is a reason that the implementation is duplicated and not called into NSObject's version.
 // Please keep them duplicated otherwise the recursion bug that is being solved will happen again.
