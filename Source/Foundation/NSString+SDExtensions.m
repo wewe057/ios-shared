@@ -311,5 +311,48 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
     return extractedPriceString;
  }
 
+/**
+ *
+ * Returns a UIColor objects for the string's hex representation:
+ *
+ * For example: [@"#fff" uicolor] returns a UIColor of white.
+ *              [@"#118653" uicolor] returns something green.
+ *
+ */
+- (UIColor *)uicolor
+{
+    UIColor *color = [UIColor whiteColor];
+    NSString *hexString = [self copy];
+    
+    /* strip out undesired pound character */
+    hexString = [hexString stringByReplacingOccurrencesOfString:@"#" withString:@""];
+    
+    /* pad the string to 6 characters when coder was lazy and specified something like: #fff */
+    if (hexString.length == 3)
+    {
+        NSString __block *paddedHexString = @"";
+        [hexString enumerateSubstringsInRange:NSMakeRange(0, hexString.length)
+                                      options:NSStringEnumerationByComposedCharacterSequences
+                                   usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+                                       paddedHexString = [paddedHexString stringByAppendingString:substring];
+                                       paddedHexString = [paddedHexString stringByAppendingString:substring];
+                                   }];
+        hexString = paddedHexString;
+    }
+    
+    /* if we have a 6 character string, try and make a color out of it */
+    if (hexString.length == 6)
+    {
+        unsigned int hexValue;
+        [[NSScanner scannerWithString:hexString] scanHexInt:&hexValue];
+        color = [UIColor colorWithRed:((hexValue >> 16) & 0xFF) / 255.0f
+                                green:((hexValue >>  8) & 0xFF) / 255.0f
+                                 blue:((hexValue >>  0) & 0xFF) / 255.0f
+                                alpha:1.0f];
+    }
+    
+    return color;
+}
+
 @end
 
