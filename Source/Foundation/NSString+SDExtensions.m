@@ -317,6 +317,7 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
  *
  * For example: [@"#fff" uicolor] returns a UIColor of white.
  *              [@"#118653" uicolor] returns something green.
+ *              [@"#1186537F" uicolor] returns something green with a 50% alpha value
  *
  */
 - (UIColor *)uicolor
@@ -351,6 +352,17 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
                                 alpha:1.0f];
     }
     
+    /* if we have a 8 character string, try and make a color out of it with a suppplied alpha */
+    if (hexString.length == 8)
+    {
+        unsigned int hexValue;
+        [[NSScanner scannerWithString:hexString] scanHexInt:&hexValue];
+        color = [UIColor colorWithRed:((hexValue >> 24) & 0xFF) / 255.0f
+                                green:((hexValue >> 16) & 0xFF) / 255.0f
+                                 blue:((hexValue >>  8) & 0xFF) / 255.0f
+                                alpha:((hexValue >>  0) & 0xFF) / 255.0f];
+    }
+
     return color;
 }
 
