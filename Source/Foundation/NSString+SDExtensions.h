@@ -88,4 +88,14 @@
  *  @return A string of the first extracted price
  */
 - (NSString *)extractFirstPrice;
+
+/**
+ *
+ * Returns a UIColor objects for the string's hex representation:
+ *
+ * For example: [@"#fff" uicolor] returns a UIColor of white.
+ *              [@"#118653" uicolor] returns something green.
+ *
+ */
+- (UIColor *)uicolor;
 @end
