@@ -99,15 +99,7 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
                                        withTemplate:@" "];
 
     // replace two or more spaces with one
-    error = NULL;
-    regex = [NSRegularExpression regularExpressionWithPattern:@"\\s{2,}"
-                                                      options:NSRegularExpressionCaseInsensitive
-                                                        error:&error];
-    fixed = [regex stringByReplacingMatchesInString:fixed 
-                                            options:0 
-                                              range:NSMakeRange(0, [fixed length]) 
-                                       withTemplate:@" "];
-
+    fixed = [self removeExcessWhitespace];
     return fixed;
 }
 
@@ -120,14 +112,11 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
 
 - (NSString *)removeExcessWhitespace 
 {
+    // The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
     NSError *error = NULL;
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\s{2,}"
-                                                                           options:0
-                                                                             error:&error];
-    return [regex stringByReplacingMatchesInString:self 
-                                            options:0 
-                                              range:NSMakeRange(0, [self length]) 
-                                       withTemplate:@" "];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\s+" options:0 error:&error];
+    NSString *result = [regex stringByReplacingMatchesInString:self options:0 range:NSMakeRange(0, [self length]) withTemplate:@" "];
+    return result;
 }
 
 - (NSString *)removeLeadingWhitespace 
