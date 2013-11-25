@@ -147,6 +147,9 @@
 		CAA3E93F182D516E00602210 /* SDSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E93D182D516E00602210 /* SDSwitch.m */; };
 		CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */; };
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
+		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
+		E22B373E184406B000C7CBEE /* UIColor+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373A1843FF9E00C7CBEE /* UIColor+SDExtensions.m */; };
+		E22B373F184408AC00C7CBEE /* UIColor+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373A1843FF9E00C7CBEE /* UIColor+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -319,6 +322,9 @@
 		CAA3E93D182D516E00602210 /* SDSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDSwitch.m; sourceTree = "<group>"; };
 		CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SDExtensionsTests.m"; sourceTree = "<group>"; };
+		E22B37391843FF9E00C7CBEE /* UIColor+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+SDExtensions.h"; sourceTree = "<group>"; };
+		E22B373A1843FF9E00C7CBEE /* UIColor+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SDExtensions.m"; sourceTree = "<group>"; };
+		E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SDExtensionsTests.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -356,6 +362,7 @@
 				CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */,
 				CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */,
 				E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */,
+				E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */,
 				CA01F1B417D7A6F000E7C553 /* Supporting Files */,
 			);
 			path = "ios-shared Tests";
@@ -432,6 +439,8 @@
 				CA0E770218284DD500B4398F /* SDPoser.m */,
 				CA0E770318284DD500B4398F /* SDTimer.h */,
 				CA0E770418284DD500B4398F /* SDTimer.m */,
+				E22B37391843FF9E00C7CBEE /* UIColor+SDExtensions.h */,
+				E22B373A1843FF9E00C7CBEE /* UIColor+SDExtensions.m */,
 				CA0E770518284DD500B4398F /* UIDevice+machine.h */,
 				CA0E770618284DD500B4398F /* UIDevice+machine.m */,
 			);
@@ -731,6 +740,7 @@
 				CA0E77C318284DD600B4398F /* UINavigationController+SDExtensions.m in Sources */,
 				CA0E777E18284DD600B4398F /* NSUserDefaults+SDExtensions.m in Sources */,
 				CA0E777A18284DD600B4398F /* NSRunLoop+SDExtensions.m in Sources */,
+				E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */,
 				CA0E77B618284DD600B4398F /* SDWebViewCell.m in Sources */,
 				CA0E77BF18284DD600B4398F /* UIColor+SDExtensions.m in Sources */,
 				CA0E77AD18284DD600B4398F /* SDPickerModalViewController.m in Sources */,
@@ -769,6 +779,7 @@
 				CA0E77AA18284DD600B4398F /* SDPhotoImageView.m in Sources */,
 				CA0E777218284DD600B4398F /* NSDictionary+SDExtensions.m in Sources */,
 				CA0E778A18284DD600B4398F /* UIDevice+machine.m in Sources */,
+				E22B373F184408AC00C7CBEE /* UIColor+SDExtensions.m in Sources */,
 				CA0E77D518284DD600B4398F /* SDImageCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -803,6 +814,7 @@
 				CA0E77C618284DD600B4398F /* UIView+SDExtensions.m in Sources */,
 				CA0E77B518284DD600B4398F /* SDWebViewCell.m in Sources */,
 				CA0E778518284DD600B4398F /* SDPoser.m in Sources */,
+				E22B373E184406B000C7CBEE /* UIColor+SDExtensions.m in Sources */,
 				CA0E778F18284DD600B4398F /* SDLocationManager.m in Sources */,
 				CA0E777318284DD600B4398F /* NSError+SDExtensions.m in Sources */,
 				CAA3E935182C15F500602210 /* SDTextField.m in Sources */,
