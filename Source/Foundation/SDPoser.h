@@ -79,4 +79,7 @@ typedef id(^SDPoserInstantiationBlock)(void);
  */
 + (id)poserForClass:(Class)impersonatedClass containerClass:(Class)containerClass;
 
++ (id)poserClassForClass:(Class)impersonatedClass;
++ (Class)poserClassForClass:(Class)impersonatedClass containerClass:(Class)containerClass;
+
 @end
