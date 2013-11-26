@@ -15,6 +15,14 @@
  A convenience method to create and return a UIColor object using the standard RGB values that range from `0.0` to `255.0` each.
  */
 + (UIColor *)colorWith8BitRed:(NSUInteger)red green:(NSUInteger)green blue:(NSUInteger)blue alpha:(CGFloat)alpha;
-+ (UIColor *)colorWithHexString:(NSString *)hexString;
+
+/*
+ * Returns a UIColor objects for the string's hex representation:
+ *
+ * For example: [@"#fff" uicolor] returns a UIColor of white.
+ *              [@"#118653" uicolor] returns something green.
+ *              [@"#1186537F" uicolor] returns something green with a 50% alpha value
+ */
++ (UIColor *)colorWithHexValue:(NSString *)hexValueString;
 
 @end
