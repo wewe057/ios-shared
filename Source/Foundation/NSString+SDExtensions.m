@@ -8,12 +8,6 @@
 
 #import "NSString+SDExtensions.h"
 
-// Thanks to the Android team for the regex
-// https://github.com/walmartlabs/walmart-android/commit/1b6978a4ece3
-// Parse "From $1,789.00" into "1,789.00"
-static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d{2})?)(.*)$";
-
-
 @implementation NSString(SDExtensions)
 
 - (NSString *)replaceHTMLWithUnformattedText {
