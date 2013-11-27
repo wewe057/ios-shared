@@ -9,12 +9,26 @@
 
 @implementation SDContainerViewController
 
-- (id)init
+/**
+ Designated initializer for ContainerViewController. Same as calling init and then setting the viewController array.
+ */
+- (instancetype)initWithViewControllers:(NSArray *)viewControllers
 {
     self = [super initWithNibName:nil bundle:nil];
+    if(self != nil)
+    {
+        _viewControllers = viewControllers;
+    }
+
     return self;
 }
 
+- (instancetype)init
+{
+    return [super initWithNibName:nil bundle:nil];
+}
+
+// Leaving in for Legacy support. Use the designated initializer instead.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -24,7 +38,7 @@
 - (void)loadView
 {
     [super loadView];
-    
+
     self.view.autoresizesSubviews = YES;
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
@@ -36,12 +50,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)viewDidAppear:(BOOL)animated
