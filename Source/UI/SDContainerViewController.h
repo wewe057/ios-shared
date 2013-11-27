@@ -14,6 +14,11 @@
 @interface SDContainerViewController : UIViewController
 
 /**
+ Designated initializer for ContainerViewController. Same as calling init and then setting the viewController array.
+ */
+- (instancetype)initWithViewControllers:(NSArray *)viewControllers;
+
+/**
  Returns the selected view controller or sets it. read/write.
  */
 @property (nonatomic, assign) UIViewController *selectedViewController;
