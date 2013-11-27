@@ -15,7 +15,7 @@
 }
 
 - (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets {
-    NSString* fixed = self;
+    NSString* fixed = [self copy];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
@@ -71,7 +71,7 @@
 }
 
 - (NSString*)stripHTMLFromListItems {
-    NSString *fixed = self;
+    NSString *fixed = [self copy];
 
     // some common entities
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
@@ -81,7 +81,6 @@
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
 
-    
     // replace any HTML tag with a space
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<*[A-Z][A-Z0-9]* ?\\/>"
@@ -93,7 +92,7 @@
                                        withTemplate:@" "];
 
     // replace two or more spaces with one
-    fixed = [self removeExcessWhitespace];
+    fixed = [fixed removeExcessWhitespace];
     return fixed;
 }
 
