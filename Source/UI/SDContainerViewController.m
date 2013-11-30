@@ -109,10 +109,10 @@
     [currentController didMoveToParentViewController:nil];
     
     _selectedViewController = selectedViewController;
-    
+
     // add the new one to the parent controller (only set frame when not using autolayout)
     [self addChildViewController:_selectedViewController];
-    
+
     BOOL controllerWantsAutolayout = NO;
     if([_selectedViewController isKindOfClass:[UINavigationController class]])
         controllerWantsAutolayout = [(UINavigationController*)_selectedViewController topViewController].view.constraints.count;
@@ -123,7 +123,7 @@
         [_selectedViewController.view setNeedsUpdateConstraints];
     else
         _selectedViewController.view.frame = self.containerView.bounds;
-    
+
     [self.containerView addSubview:_selectedViewController.view];
     [_selectedViewController didMoveToParentViewController:self];
 }
