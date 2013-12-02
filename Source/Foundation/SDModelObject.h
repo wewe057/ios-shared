@@ -21,7 +21,7 @@
 /**
  *	Subclasses should override this method to provide a data map dictionary per the specifications
  *  for SDDataMap.  The map should be in the format of @{@"sourceKey": @"destKey"}.  The destination
- *  will always be the subclass of RxObject.
+ *  will always be the subclass of SDModelObject.
  *
  *	@return	A dictionary containing the data mapping dictionary.
  */

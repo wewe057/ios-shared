@@ -21,3 +21,7 @@ GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1 $(inherited)
 // Default signing for development
 
 CODE_SIGN_IDENTITY = iPhone Developer
+
+// Allows for tests to work in the best possible way.
+
+GCC_SYMBOLS_PRIVATE_EXTERN = NO
