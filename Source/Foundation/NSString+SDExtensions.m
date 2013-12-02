@@ -8,12 +8,6 @@
 
 #import "NSString+SDExtensions.h"
 
-// Thanks to the Android team for the regex
-// https://github.com/walmartlabs/walmart-android/commit/1b6978a4ece3
-// Parse "From $1,789.00" into "1,789.00"
-static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d{2})?)(.*)$";
-
-
 @implementation NSString(SDExtensions)
 
 - (NSString *)replaceHTMLWithUnformattedText {
@@ -21,7 +15,7 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
 }
 
 - (NSString *)replaceHTMLWithUnformattedText:(BOOL)keepBullets {
-    NSString* fixed = self;
+    NSString* fixed = [self copy];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&apos;" withString:@"'"];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&amp;" withString:@"&"];
@@ -77,7 +71,7 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
 }
 
 - (NSString*)stripHTMLFromListItems {
-    NSString *fixed = self;
+    NSString *fixed = [self copy];
 
     // some common entities
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&quot;" withString:@"\""];
@@ -87,7 +81,6 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&gt;" withString:@">"];
     fixed = [fixed stringByReplacingOccurrencesOfString:@"&nbsp;" withString:@" "];
 
-    
     // replace any HTML tag with a space
     NSError *error = NULL;
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<*[A-Z][A-Z0-9]* ?\\/>"
@@ -99,7 +92,7 @@ static NSString *kFirstPriceRegEx =  @"([^$]*?)\\$?(\\d{1,3}(?:,?\\d{3})*(\\.\\d
                                        withTemplate:@" "];
 
     // replace two or more spaces with one
-    fixed = [self removeExcessWhitespace];
+    fixed = [fixed removeExcessWhitespace];
     return fixed;
 }
 

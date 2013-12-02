@@ -68,7 +68,7 @@ typedef id(^SDPoserInstantiationBlock)(void);
 + (id)poserForClass:(Class)impersonatedClass;
 
 /**
- Returns the poser specified for 'impersonatedClass'.  If containerClass is not nil, return the poser to be used when contained within
+ Returns an instance of the poser specified for 'impersonatedClass'.  If containerClass is not nil, return the poser to be used when contained within
  the specified 'containerClass'.
  
  @param impersonatedClass The class type being impersonated.
@@ -78,5 +78,22 @@ typedef id(^SDPoserInstantiationBlock)(void);
  returns an instance of 'impersonatedClass' via alloc/init.
  */
 + (id)poserForClass:(Class)impersonatedClass containerClass:(Class)containerClass;
+
+/**
+ See +poserClassForClass:containerClass for a full description.  This method calls poserForClass:containerClass: with a nil container class.
+ */
++ (id)poserClassForClass:(Class)impersonatedClass;
+
+/**
+ Returns the poser class specified for 'impersonatedClass'.  If containerClass is not nil, return the poser to be used when contained within
+ the specified 'containerClass'.
+ 
+ @param impersonatedClass The class type being impersonated.
+ @param containerClass The containerClass type, or nil.
+ 
+ @return The posing class.  If no poser is found matching the values of impersonatedClass and containerClass, this
+ returns 'impersonatedClass'.
+ */
++ (Class)poserClassForClass:(Class)impersonatedClass containerClass:(Class)containerClass;
 
 @end
