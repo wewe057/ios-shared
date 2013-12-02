@@ -80,6 +80,16 @@
     return [[self sharedInstance] poserForClass:impersonatedClass containerClass:containerClass];
 }
 
++ (id)poserClassForClass:(Class)impersonatedClass
+{
+    return [[self sharedInstance] poserClassForClass:impersonatedClass containerClass:nil];
+}
+
++ (id)poserClassForClass:(Class)impersonatedClass containerClass:(Class)containerClass
+{
+    return [[self sharedInstance] poserClassForClass:impersonatedClass containerClass:containerClass];
+}
+
 - (id)poserForClass:(Class)impersonatedClass
 {
     return [self poserForClass:impersonatedClass containerClass:nil];
@@ -122,6 +132,30 @@
         result = [[item.poserClass alloc] init];
     }
 
+    return result;
+}
+
+- (Class)poserClassForClass:(Class)impersonatedClass containerClass:(Class)containerClass
+{
+    NSString *lookupName = [self lookupNameForImpersonatedClass:impersonatedClass containerClass:containerClass];
+    if (!lookupName)
+        return nil;
+    
+    Class result = nil;
+    
+    SDPoserItem *item = [_poserMap objectForKey:lookupName];
+    
+    if (!item && containerClass!=nil)
+    {
+        lookupName = [self lookupNameForImpersonatedClass:impersonatedClass containerClass:nil];
+        item = [_poserMap objectForKey:lookupName];
+    }
+    
+    if (!item)
+        result = impersonatedClass;
+    else
+        result = item.poserClass;
+    
     return result;
 }
 
