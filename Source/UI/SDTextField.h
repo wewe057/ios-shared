@@ -27,6 +27,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class SDTextField;
+
+typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
+
+
 @interface SDTextField : UITextField
 
 /**
@@ -53,8 +58,27 @@
  */
 @property (nonatomic, strong) UIColor *floatingLabelActiveTextColor UI_APPEARANCE_SELECTOR; // tint color is used by default if not provided
 
-@property (nonatomic, strong) IBOutlet UITextField *previousTextField;
-@property (nonatomic, strong) IBOutlet UITextField *nextTextField;
+/**
+ *  A pointer to the previous text field.  If these properties are set, a toolbar with
+ *  next/previous buttons appears above the keyboard.
+ */
+@property (nonatomic, weak) IBOutlet SDTextField *previousTextField;
 
+/**
+ *  A pointer to the next text field.  If these properties are set, a toolbar with
+ *  next/previous buttons appears above the keyboard.
+ */
+@property (nonatomic, weak) IBOutlet SDTextField *nextTextField;
+
+/**
+ * A block to use for field validation.
+ */
+@property (nonatomic, copy) SDTextFieldValidationBlock validationBlock;
+
+/**
+ * Performs validation using the validation block on this field and any associated fields (see nextTextField).  If
+ * any return FALSE, validateFields will return FALSE as well.  Otherwise, this returns TRUE.
+ */
+- (BOOL)validateFields;
 
 @end

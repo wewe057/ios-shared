@@ -64,6 +64,12 @@
 
 - (void)configureView
 {
+    self.validationBlock = ^(SDTextField *textField) {
+        if (textField.text.length > 0)
+            return YES;
+        return NO;
+    };
+    
     _floatingLabel = [UILabel new];
     _floatingLabel.alpha = 0.0f;
     _floatingLabel.backgroundColor = [UIColor clearColor];
@@ -123,6 +129,29 @@
     }
 }
 
+- (BOOL)resignFirstResponder
+{
+    BOOL result = [super resignFirstResponder];
+    
+    BOOL valid = [self internalValidate];
+    if (!valid)
+        [self showFloatingLabel];
+    
+    return result;
+}
+
+- (BOOL)becomeFirstResponder
+{
+    BOOL result = [super becomeFirstResponder];
+    
+    [self stripInvalidLabelChar];
+    /*BOOL valid = [self internalValidate];
+    if (!valid)
+        [self showFloatingLabel];*/
+    
+    return result;
+}
+
 #pragma mark - Utilities
 
 - (CGRect)clearButtonRectForBounds:(CGRect)bounds
@@ -141,10 +170,13 @@
         return;
     
     [self setLabelOriginForTextAlignment];
-
+    
+    if (![self isFirstResponder])
+        [self internalValidate];
+    
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut animations:^{
         _floatingLabel.alpha = 1.0f;
-        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, 2.0f, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
+        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, 2.0f, _floatingLabel.frame.size.width + 30, _floatingLabel.frame.size.height);
     } completion:nil];
 }
 
@@ -153,11 +185,18 @@
     if (self.disableFloatingLabels)
         return;
     
+    if (![self isFirstResponder])
+    {
+        BOOL valid = [self internalValidate];
+        if (!valid)
+            return;
+    }
+
     [self setLabelOriginForTextAlignment];
 
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseIn animations:^{
         _floatingLabel.alpha = 0.0f;
-        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, _floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
+        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, _floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, _floatingLabel.frame.size.width + 30, _floatingLabel.frame.size.height);
     } completion:nil];
 }
 
@@ -210,29 +249,34 @@
 
 - (void)selectAdjacentResponder:(UISegmentedControl *)sender
 {
+    @strongify(self.previousTextField, previousTextField);
+    @strongify(self.nextTextField, nextTextField);
+    
     NSInteger selection = sender.selectedSegmentIndex; // 0 = prev, 1 = next.
     if (selection == 0)
     {
-        if (self.previousTextField)
-            [self.previousTextField becomeFirstResponder];
+        if (previousTextField)
+            [previousTextField becomeFirstResponder];
     }
     else
     {
-        if (self.nextTextField)
-            [self.nextTextField becomeFirstResponder];
+        if (nextTextField)
+            [nextTextField becomeFirstResponder];
     }
 }
 
 - (void)gotoPreviousTextField:(id)sender
 {
-    if (self.previousTextField)
-        [self.previousTextField becomeFirstResponder];
+    @strongify(self.previousTextField, previousTextField);
+    if (previousTextField)
+        [previousTextField becomeFirstResponder];
 }
 
 - (void)gotoNextTextField:(id)sender
 {
-    if (self.nextTextField)
-        [self.nextTextField becomeFirstResponder];
+    @strongify(self.nextTextField, nextTextField);
+    if (nextTextField)
+        [nextTextField becomeFirstResponder];
 }
 
 - (void)doneEditing:(id)sender
@@ -290,6 +334,11 @@
     _floatingLabel.textColor = self.floatingLabelActiveTextColor;
 }
 
+- (void)setLabelInactiveColor
+{
+    _floatingLabel.textColor = self.floatingLabelInactiveTextColor;
+}
+
 - (void)setLabelOriginForTextAlignment
 {
     CGFloat originX = _floatingLabel.frame.origin.x;
@@ -303,18 +352,72 @@
     _floatingLabel.frame = CGRectMake(originX, _floatingLabel.frame.origin.y, _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
 }
 
-- (void)setPreviousTextField:(UITextField *)previousTextField
+- (void)setPreviousTextField:(SDTextField *)previousTextField
 {
     _previousTextField = previousTextField;
-    if (_previousTextField)
+    @strongify(_previousTextField, localTextField);
+    if (localTextField)
         self.inputAccessoryView = [self accessoryToolbar];
 }
 
-- (void)setNextTextField:(UITextField *)nextTextField
+- (void)setNextTextField:(SDTextField *)nextTextField
 {
     _nextTextField = nextTextField;
-    if (_nextTextField)
+    @strongify(_nextTextField, localTextField);
+    if (localTextField)
         self.inputAccessoryView = [self accessoryToolbar];
+}
+
+#pragma mark - Field validation
+
+- (void)stripInvalidLabelChar
+{
+    NSString *newString = [_floatingLabel.text stringByReplacingOccurrencesOfString:@"✖︎ " withString:@""];
+    _floatingLabel.text = newString;
+}
+
+- (BOOL)internalValidate
+{
+    BOOL result = YES;
+    
+    SDTextFieldValidationBlock validationBlock = self.validationBlock;
+    if (validationBlock)
+    {
+        result = validationBlock(self);
+        if (!result)
+        {
+            [self stripInvalidLabelChar];
+            _floatingLabel.text = [NSString stringWithFormat:@"✖︎ %@", _floatingLabel.text];
+            _floatingLabel.textColor = [UIColor redColor];
+        }
+        else
+        {
+            [self stripInvalidLabelChar];
+            if ([self isFirstResponder])
+                [self setLabelActiveColor];
+            else
+                [self setLabelInactiveColor];
+        }
+    }
+    
+    return result;
+}
+
+- (BOOL)validateFields
+{
+    SDTextField *currentTextField = self;
+    BOOL fieldsAreValid = YES;
+    
+    while (currentTextField)
+    {
+        BOOL isValid = [currentTextField internalValidate];    
+        if (!isValid)
+            fieldsAreValid = NO;
+        
+        currentTextField = currentTextField.nextTextField;
+    }
+    
+    return fieldsAreValid;
 }
 
 @end
