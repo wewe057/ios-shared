@@ -24,6 +24,25 @@
     return [self popToViewController:[viewControllersOnStack objectAtIndex:indexToPopTo] animated:animated];
 }
 
+- (void)removePreviousViewControllers:(NSUInteger)count pushViewController:(UIViewController *)controller
+{
+    NSArray *viewControllersOnStack = self.viewControllers;
+    NSUInteger vcCount = viewControllersOnStack.count;
+    NSMutableArray *viewControllers = [viewControllersOnStack mutableCopy];
+    if (count < vcCount)
+    {
+        for (NSUInteger i = 0; i < count; i++)
+        {
+            [viewControllers removeLastObject];
+        }
+    }
+    
+    [viewControllers addObject:controller];
+    
+    NSArray *newViewControllers = [NSArray arrayWithArray:viewControllers];
+    [self setViewControllers:newViewControllers animated:YES];
+}
+
 - (NSArray *)popToRootViewControllerDismissingModalAnimated:(BOOL)animated
 {
     UIViewController *v = [self.viewControllers lastObject];

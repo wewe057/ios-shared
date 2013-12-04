@@ -32,4 +32,9 @@
  */
 - (NSArray *)popToRootViewControllerDismissingModalAnimated:(BOOL)animated;
 
+/**
+ Removes the previous X view controllers and pushes the specified controller.
+ */
+- (void)removePreviousViewControllers:(NSUInteger)count pushViewController:(UIViewController *)controller;
+
 @end
