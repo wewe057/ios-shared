@@ -47,7 +47,7 @@
  Loads a UIViewController with a specific identifier from a storyboard.
  
  @param storyboardName the name of the storyboard file to search in.  if nil, the viewController's class name will be used as the name with _iPhone or _iPad appended to the end.
- @param identifier the identifier of the viewController within the storyboard to load.
+ @param identifier the identifier of the viewController within the storyboard to load.  If none is specified it'll use the className as an identifier.
  */
 + (instancetype)loadFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier;
 

@@ -36,6 +36,7 @@
 {
     NSString *modifiedName = [storyboardName copy];
     NSString *originalName = [storyboardName copy];
+    UIViewController *result = nil;
 
     if (!modifiedName)
     {
@@ -49,19 +50,26 @@
 
     // this will throw an exception if it can't find the storyboard.
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:modifiedName bundle:[NSBundle bundleForClass:[self class]]];
-    UIViewController *result = [storyboard instantiateInitialViewController];
+    result = [storyboard instantiateInitialViewController];
 
     if ([result isKindOfClass:[self class]])
-        return result;
+        [result view];
+    else
+        result = nil;
+    
+    // try the identifier...
+    if (!result)
+        result = [self loadFromStoryboard:storyboardName identifier:[self className]];
 
     // the types didn't match.  best to return nil.
-    return nil;
+    return result;
 }
 
 + (instancetype)loadFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier
 {
     NSString *modifiedName = [storyboardName copy];
     NSString *originalName = [storyboardName copy];
+    UIViewController *result = nil;
 
     if (!modifiedName)
     {
@@ -73,15 +81,20 @@
     if (!resourcePath)
         modifiedName = [NSString stringWithFormat:@"%@_%@", originalName, [UIDevice iPad] ? @"iPad" : @"iPhone"];
 
+    if (!identifier)
+        identifier = [self className];
+    
     // this will throw an exception if it can't find the storyboard.
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:modifiedName bundle:[NSBundle bundleForClass:[self class]]];
-    UIViewController *result = [storyboard instantiateViewControllerWithIdentifier:identifier];
+    result = [storyboard instantiateViewControllerWithIdentifier:identifier];
 
     if ([result isKindOfClass:[self class]])
-        return result;
+        [result view];
+    else
+        result = nil;
 
     // the types didn't match.  best to return nil.
-    return nil;
+    return result;
 }
 
 @end
