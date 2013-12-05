@@ -26,6 +26,9 @@
 
 - (void)removePreviousViewControllers:(NSUInteger)count pushViewController:(UIViewController *)controller
 {
+    if (!controller)
+        return;
+    
     NSArray *viewControllersOnStack = self.viewControllers;
     NSUInteger vcCount = viewControllersOnStack.count;
     NSMutableArray *viewControllers = [viewControllersOnStack mutableCopy];
