@@ -8,6 +8,9 @@
 
 #import "UIViewController+SDExtensions.h"
 
+#import "NSObject+SDExtensions.h"
+#import "UIDevice+machine.h"
+
 @implementation UIViewController (SDExtensions)
 
 + (UINavigationController *)instanceInNavigationController;
