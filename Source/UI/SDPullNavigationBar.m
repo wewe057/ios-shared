@@ -92,8 +92,8 @@
     _menuContainer.layer.shadowRadius = 3.0f;
     _menuContainer.layer.shadowOpacity = 1.0;
 
-    _menuController = [[UIStoryboard storyboardWithName:[SDPullNavigationManager globalMenuStoryboardId]
-                                                 bundle:[NSBundle bundleForClass:[self class]]] instantiateViewControllerWithIdentifier:[SDPullNavigationManager globalMenuStoryboardId]];
+    UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager globalMenuStoryboardId] bundle:nil];
+    _menuController = [menuStoryBoard instantiateInitialViewController];
     _menuController.view.clipsToBounds = YES;
     _menuController.view.opaque = YES;
 
