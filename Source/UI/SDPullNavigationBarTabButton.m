@@ -21,7 +21,7 @@
     self = [super initWithFrame:CGRectZero];
     if(self != nil)
     {
-        self.frame = (CGRect){ self.frame.origin, { 53.0f, 51.0f } };
+        self.frame = (CGRect){ self.frame.origin, { 53.0f, 55.0f } };
         _tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:navigationBar action:@selector(tapAction:)];
         self.backgroundColor = [UIColor clearColor];
         self.opaque = NO;
@@ -54,15 +54,15 @@
         {
             //// tabBezier Drawing
             UIBezierPath* tabBezierPath = [UIBezierPath bezierPath];
-            [tabBezierPath moveToPoint: CGPointMake(10.95, 51)];
-            [tabBezierPath addLineToPoint: CGPointMake(42.05, 51)];
-            [tabBezierPath addLineToPoint: CGPointMake(44.24, 50.26)];
-            [tabBezierPath addLineToPoint: CGPointMake(46.43, 49.16)];
-            [tabBezierPath addLineToPoint: CGPointMake(53, 44)];
-            [tabBezierPath addLineToPoint: CGPointMake(0, 44)];
-            [tabBezierPath addLineToPoint: CGPointMake(6.57, 49.16)];
-            [tabBezierPath addLineToPoint: CGPointMake(8.76, 50.26)];
-            [tabBezierPath addLineToPoint: CGPointMake(10.95, 51)];
+            [tabBezierPath moveToPoint: CGPointMake(10.95, 53)];
+            [tabBezierPath addLineToPoint: CGPointMake(42.05, 53)];
+            [tabBezierPath addLineToPoint: CGPointMake(44.24, 52.26)];
+            [tabBezierPath addLineToPoint: CGPointMake(46.43, 51.16)];
+            [tabBezierPath addLineToPoint: CGPointMake(53, 46)];
+            [tabBezierPath addLineToPoint: CGPointMake(0, 46)];
+            [tabBezierPath addLineToPoint: CGPointMake(6.57, 51.16)];
+            [tabBezierPath addLineToPoint: CGPointMake(8.76, 52.26)];
+            [tabBezierPath addLineToPoint: CGPointMake(10.95, 53)];
             [tabBezierPath closePath];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, backgroundShadowOffset, backgroundShadowBlurRadius, backgroundShadow.CGColor);
@@ -71,7 +71,7 @@
             CGContextRestoreGState(context);
 
             //// dot1Rectangle Drawing
-            UIBezierPath* dot1RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(20, 46, 2, 2)];
+            UIBezierPath* dot1RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(20, 48, 2, 2)];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, dotShadowOffset, dotShadowBlurRadius, dotShadow.CGColor);
             [[UIColor whiteColor] setFill];
@@ -79,7 +79,7 @@
             CGContextRestoreGState(context);
 
             //// dot2Rectangle Drawing
-            UIBezierPath* dot2RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(25, 46, 2, 2)];
+            UIBezierPath* dot2RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(25, 48, 2, 2)];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, dotShadowOffset, dotShadowBlurRadius, dotShadow.CGColor);
             [[UIColor whiteColor] setFill];
@@ -87,7 +87,7 @@
             CGContextRestoreGState(context);
 
             //// dot3Rectangle Drawing
-            UIBezierPath* dot3RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(30, 46, 2, 2)];
+            UIBezierPath* dot3RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(30, 48, 2, 2)];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, dotShadowOffset, dotShadowBlurRadius, dotShadow.CGColor);
             [[UIColor whiteColor] setFill];
