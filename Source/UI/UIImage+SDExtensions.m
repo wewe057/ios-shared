@@ -49,7 +49,7 @@
     return retImage;
 }
 
-- (UIColor*) averageColor
+- (UIColor *)averageColor
 {
     CGSize size = CGSizeMake( 1.0f, 1.0f );
     
@@ -69,6 +69,25 @@
     UIGraphicsEndImageContext();
     
     return color;
+}
+
++ (UIImage *)filledImageWithFrame:(CGSize)size andColor:(UIColor *)color
+{
+    UIImage *compositedImage = nil;
+
+    UIGraphicsBeginImageContextWithOptions( size, NO, [[UIScreen mainScreen] scale] );
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextRetain( context );
+    {
+        [color set];
+        UIRectFill((CGRect){ CGPointZero, size });
+
+        compositedImage = UIGraphicsGetImageFromCurrentImageContext();
+    }
+    CGContextRelease( context );
+    UIGraphicsEndImageContext();
+
+    return compositedImage;
 }
 
 @end
