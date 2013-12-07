@@ -29,59 +29,135 @@
 
 + (instancetype)loadFromStoryboard
 {
-    return [self loadFromStoryboard:nil];
+    return [self loadFromStoryboardNamed:nil];
 }
 
-+ (instancetype)loadFromStoryboard:(NSString *)storyboardName
++ (instancetype)loadFromStoryboardNamed:(NSString *)storyboardName
 {
     NSString *modifiedName = [storyboardName copy];
-    NSString *originalName = [storyboardName copy];
-
+    NSString *className = [self className];
+    NSString *resourcePath = nil;
+    UIViewController *result = nil;
+    BOOL usingClassName = NO;
+    
+    // they passed in nil, assume the storyboardName should be the class name.
     if (!modifiedName)
     {
-        NSString *className = [self className];
-        modifiedName = [NSString stringWithFormat:@"%@_%@", className, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+        modifiedName = className;
+        usingClassName = YES;
     }
 
-    NSString *resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
-    if (!resourcePath)
-        modifiedName = [NSString stringWithFormat:@"%@_%@", originalName, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+    // Search for: storyboardName.storyboardc / className.storyboardc
+    resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
 
-    // this will throw an exception if it can't find the storyboard.
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:modifiedName bundle:[NSBundle bundleForClass:[self class]]];
-    UIViewController *result = [storyboard instantiateInitialViewController];
+    // Search for: storyboardName_iPhone.storyboardc / className_iPhone.storyboardc
+    if (!resourcePath)
+    {
+        modifiedName = [NSString stringWithFormat:@"%@_%@", modifiedName, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+        resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+    }
+
+    if (!usingClassName && !resourcePath) // prevents duplicate searches.
+    {
+        // Search for: className.storyboardc
+        if (!resourcePath)
+        {
+            modifiedName = className;
+            resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+        }
+
+        // Search for: className_iPhone.storyboardc
+        if (!resourcePath)
+        {
+            modifiedName = [NSString stringWithFormat:@"%@_%@", className, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+            resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+        }
+    }
+    
+    // if so, load that motherfucker.
+    if (resourcePath)
+    {
+        // this will throw an exception if it can't find the storyboard.
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:modifiedName bundle:[NSBundle bundleForClass:[self class]]];
+        result = [storyboard instantiateInitialViewController];
+    }
+    // else we're kind of SOL.  the caller had better support getting a nil view controller.
 
     if ([result isKindOfClass:[self class]])
-        return result;
+        [result view];
+    else
+        result = nil;
+    
+    // try the identifier...
+    if (!result)
+        result = [self loadFromStoryboardNamed:storyboardName identifier:[self className]];
 
     // the types didn't match.  best to return nil.
-    return nil;
+    return result;
 }
 
-+ (instancetype)loadFromStoryboard:(NSString *)storyboardName identifier:(NSString *)identifier
++ (instancetype)loadFromStoryboardNamed:(NSString *)storyboardName identifier:(NSString *)identifier
 {
+    // if no identifier was given, use the class name.
+    if (!identifier)
+        identifier = [self className];
+    
     NSString *modifiedName = [storyboardName copy];
-    NSString *originalName = [storyboardName copy];
-
+    NSString *className = [self className];
+    NSString *resourcePath = nil;
+    UIViewController *result = nil;
+    BOOL usingClassName = NO;
+    
+    // they passed in nil, assume the storyboardName should be the class name.
     if (!modifiedName)
     {
-        NSString *className = [self className];
-        modifiedName = [NSString stringWithFormat:@"%@_%@", className, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+        modifiedName = className;
+        usingClassName = YES;
     }
-
-    NSString *resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+    
+    // Search for: storyboardName.storyboardc / className.storyboardc
+    resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+    
+    // Search for: storyboardName_iPhone.storyboardc / className_iPhone.storyboardc
     if (!resourcePath)
-        modifiedName = [NSString stringWithFormat:@"%@_%@", originalName, [UIDevice iPad] ? @"iPad" : @"iPhone"];
-
-    // this will throw an exception if it can't find the storyboard.
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:modifiedName bundle:[NSBundle bundleForClass:[self class]]];
-    UIViewController *result = [storyboard instantiateViewControllerWithIdentifier:identifier];
-
+    {
+        modifiedName = [NSString stringWithFormat:@"%@_%@", modifiedName, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+        resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+    }
+    
+    if (!usingClassName && !resourcePath) // prevents duplicate searches.
+    {
+        // Search for: className.storyboardc
+        if (!resourcePath)
+        {
+            modifiedName = className;
+            resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+        }
+        
+        // Search for: className_iPhone.storyboardc
+        if (!resourcePath)
+        {
+            modifiedName = [NSString stringWithFormat:@"%@_%@", className, [UIDevice iPad] ? @"iPad" : @"iPhone"];
+            resourcePath = [[NSBundle bundleForClass:[self class]] pathForResource:modifiedName ofType:@"storyboardc"];
+        }
+    }
+    
+    // if so, load that motherfucker.
+    if (resourcePath)
+    {
+        // this will throw an exception if it can't find the storyboard.
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:modifiedName bundle:[NSBundle bundleForClass:[self class]]];
+        result = [storyboard instantiateViewControllerWithIdentifier:identifier];
+    }
+    // else we're kind of SOL.  the caller had better support getting a nil view controller.
+    
     if ([result isKindOfClass:[self class]])
-        return result;
+        [result view];
+    else
+        result = nil;
 
     // the types didn't match.  best to return nil.
-    return nil;
+    return result;
 }
 
 @end

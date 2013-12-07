@@ -1,8 +1,9 @@
 //
 //  SDDataMap.h
+//  SDDataMapDemo
 //
-//  Created by brandon on 9/18/12.
-//  Copyright (c) 2012 SetDirection. All rights reserved.
+//  Created by Brandon Sneed on 11/14/13.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -13,11 +14,18 @@
  */
 @protocol SDDataMapProtocol <NSObject>
 @optional
+
 /**
  Provides a mapping dictionary based on the input data in the form of "srcKey":"destKey".
  Caller can optionally pass nil which should return a default map.
  */
 - (NSDictionary *)mappingDictionaryForData:(id)data;
+
+/**
+ Provides an export mapping dictionary based on the object itself that determines how the data within
+ should be exported. A dictionary in the form of "srcKey":"destKey" should be returned.
+ */
+- (NSDictionary *)exportMappingDictionary;
 
 /**
  Allows the model to specify an initial keypath by which to start mapping within the object.
@@ -48,9 +56,9 @@
  * `browseIdentifier`: ie: myObject.browseIdentifier
  * `textLabel.text, name`: This would assign the value to myObject.textLabel.text as well as myObject.name
  * `@selector(testSelector:)`: This would call the selector specified.  This is useful is additional processing
-     needs to take place before the assignment.  This could also be accomplished in the above examples by making
-     a setter for a given property.
-
+ needs to take place before the assignment.  This could also be accomplished in the above examples by making
+ a setter for a given property.
+ 
  */
 @interface SDDataMap : NSObject
 

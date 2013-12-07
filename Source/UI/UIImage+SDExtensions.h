@@ -21,4 +21,9 @@
  */
 - (UIColor*) averageColor;
 
+/**
+ Returns a UIImage filled with the supplied color of the request size.
+ */
++ (UIImage *)filledImageWithFrame:(CGSize)size andColor:(UIColor *)color;
+
 @end

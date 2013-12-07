@@ -8,6 +8,27 @@
 
 #import "SDModelObject.h"
 
+#pragma mark - SDObjectProperty interface declaration
+
+// we use the SDObjectProperty implementation in SDDataMap.
+
+@interface SDObjectProperty : NSObject
+
+@property (nonatomic, strong) NSString *propertyName;
+@property (nonatomic, strong) NSString *propertyType;
+@property (nonatomic, strong) NSString *propertySubtype;
+@property (nonatomic, assign) SEL propertySelector;
+
++ (NSArray *)propertiesForObject:(id)object;
++ (instancetype)propertyFromObject:(NSObject *)object named:(NSString *)name;
++ (instancetype)propertyFromString:(NSString *)propertyString;
+- (BOOL)isValid;
+- (Class)desiredOutputClass;
+
+@end
+
+#pragma mark - SDModelObject implementation
+
 @implementation SDModelObject
 
 - (id)init
@@ -27,6 +48,18 @@
     return nil;
 }
 
+- (NSDictionary *)importMappingDictionaryForData:(id)data
+{
+    // this is the base class, so we'll return nothing.
+    return nil;
+}
+
+- (NSDictionary *)exportMappingDictionary
+{
+    // this is the base class, so we'll return nothing.
+    return nil;
+}
+
 + (instancetype)mapFromObject:(id)sourceObject
 {
     id modelObject = [[self alloc] init];
@@ -40,96 +73,63 @@
 
 - (NSString *)description
 {
-    NSDictionary *aDict = [self dictionaryRepresentation];
-
-    NSError *error;
-    NSData *data = [NSJSONSerialization dataWithJSONObject:aDict options:NSJSONWritingPrettyPrinted error:&error];
-    if (error)
-        SDLog(@"error converting event into JSON: %@", error);
-    NSString *result = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-
-    return [NSString stringWithFormat:@"%@\n%@", [super description], result];
+    NSDictionary *aDict = [self dictionaryForModel:YES];
+    return [NSString stringWithFormat:@"%@", [aDict description]];
 }
 
-- (id)representationForKey:(NSString *)aKey
+#pragma mark - Dictionary representation
+
+- (NSDictionary *)dictionaryForModel:(BOOL)showNils
 {
-    NSObject *theObj = [self valueForKey:aKey];
+    NSArray *properties = [SDObjectProperty propertiesForObject:self];
+    NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
+    
+    for (NSUInteger i = 0; i < properties.count; i++)
+    {
+        SDObjectProperty *property = [properties objectAtIndex:i];
+        
+        // skip it if there's no property name.  this shouldn't happen,
+        // but lets do it just in case.
+        if (!property.propertyName)
+            continue;
+        
+        id value = [self valueForKey:property.propertyName];
+        if ([value isKindOfClass:[SDModelObject class]])
+            value = [value dictionaryRepresentation];
 
-    if (!theObj)
-    {
-        return nil;
-    }
-    else
-    if ([theObj respondsToSelector:@selector(dictionaryRepresentation)])
-    {
-        return [(SDModelObject *)theObj dictionaryRepresentation];
-    }
-    else
-    if ([theObj isKindOfClass:[NSArray class]])
-    {
-        NSArray *theArray = (NSArray *)theObj;
-        NSMutableArray *arrayRep = [NSMutableArray arrayWithCapacity:[theArray count]];
-        for (NSObject *arrayItem in theArray)
+        if ([value isKindOfClass:[NSArray class]])
         {
-            if ([arrayItem respondsToSelector:@selector(dictionaryRepresentation)])
+            NSArray *oldArray = (NSArray *)value;
+            NSMutableArray *newArray = [NSMutableArray array];
+            for (NSUInteger oldArrayIndex = 0; oldArrayIndex < oldArray.count; oldArrayIndex++)
             {
-                // It's a sub item
-                [arrayRep addObject:[(SDModelObject *)arrayItem dictionaryRepresentation]];
+                id newValue = [oldArray objectAtIndex:oldArrayIndex];
+                if ([newValue isKindOfClass:[SDModelObject class]])
+                    newValue = [newValue dictionaryRepresentation];
+                
+                if (newValue)
+                    [newArray addObject:newValue];
             }
-            else
-            {
-                // It's a plain nsvalue sub item
-                [arrayRep addObject:arrayItem];
-            }
+            
+            value = newArray;
         }
-        return arrayRep;
-    }
 
-    // If we get here, we need to validate this
-    NSAssert([theObj isKindOfClass:[NSValue class]], @"representationForKey: failed");
-    return theObj;
+        if (value)
+            [outputDictionary setValue:value forKey:property.propertyName];
+        else
+        if (showNils)
+            [outputDictionary setValue:@"<nil>" forKey:property.propertyName];
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:outputDictionary];
 }
 
 - (NSDictionary *)dictionaryRepresentation
 {
-    NSMutableDictionary *aDictionary = [NSMutableDictionary dictionary];
-    NSMutableDictionary *aSubDictionary = [NSMutableDictionary dictionary];
-    NSDictionary *mappingDictionary = [self mappingDictionaryForData:nil];
-    NSMutableDictionary *cleanMappingDictionary = [NSMutableDictionary dictionary];
-    
-    // Here we change the @"<RxObject>foo" values to @"foo" to force nsdictionary output
-    NSArray *cleanKeys = [mappingDictionary allKeys];
-    
-    for (NSString *theKey in cleanKeys)
-    {
-        NSString *thePath = [mappingDictionary objectForKey:theKey];
-        
-        // The values that were mapped to a selector cannot be "unmapped"
-        if ([thePath rangeOfString:@"@selector("].location == NSNotFound)
-        {
-            NSString *theMappedPath = [thePath stringByReplacingOccurrencesOfString:@"<(.*)>(.*)" withString:@"$2" options:NSRegularExpressionSearch range:NSMakeRange(0, thePath.length)];
-            if ([theMappedPath isEqualToString:thePath])
-            {
-                // We are creating a reverse dictionary
-                [cleanMappingDictionary setObject:theKey forKey:thePath];
-            }
-            else
-            {
-                NSObject *theSubValue = [self representationForKey:theKey];
-                if (theSubValue)
-                    [aSubDictionary setObject:theSubValue forKey:theMappedPath];
-            }
-        }
-    }
-    
-    SDDataMap *dataMapper = [SDDataMap mapForDictionary:cleanMappingDictionary];
-    [dataMapper mapObject:self toObject:aDictionary];
-    
-    if ([aSubDictionary count]>0)
-        [aDictionary addEntriesFromDictionary:aSubDictionary];
-    
-    return aDictionary;
+    return [self dictionaryForModel:NO];
 }
+
+#pragma mark - JSON Representations
 
 - (NSData *)JSONRepresentation
 {

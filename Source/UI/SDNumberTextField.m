@@ -8,6 +8,10 @@
 #import "SDNumberTextField.h"
 #import "NSString+SDExtensions.h"
 
+@interface SDTextField()
+- (void)configureView;
+@end
+
 @interface SDNumberTextField ()
 @property (nonatomic, copy) NSString *currentFormattedText;
 @end
@@ -31,6 +35,18 @@
     self.keyboardType = UIKeyboardTypeNumberPad;
     self.format = @"#";
     [self addTarget:self action:@selector(formatInput:) forControlEvents:UIControlEventEditingChanged];
+}
+
+- (void)configureView
+{
+    [super configureView];
+    
+    self.validationBlock = ^(SDTextField *textField) {
+        SDNumberTextField *numberField = (SDNumberTextField *)textField;
+        if (numberField.text.length == numberField.format.length)
+            return YES;
+        return NO;
+    };
 }
 
 - (NSString *)string:(NSString *)string withNumberFormat:(NSString *)format

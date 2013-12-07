@@ -641,7 +641,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		if (uiUpdateBlock == nil)
 			dataProcessingBlock(nil, 0, nil, error); // This mimicks SDWebService 1.0
         else
-			uiUpdateBlock(nil, error);
+        {
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                uiUpdateBlock(nil, error);
+            }];
+        }
 
         return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
     }
