@@ -16,13 +16,18 @@
 - (void)setupGlobalMenu;
 @end
 
+@protocol SDPullNavigationBarDelegate <NSObject>
+@property (nonatomic, weak) SDPullNavigationBar* pullNavigationBarDelegate;
+@end
+
 @interface SDPullNavigationBar : UINavigationBar
 
-@property (nonatomic, strong) IBOutlet UITableViewController* menuController;
+@property (nonatomic, strong) IBOutlet UITableViewController<SDPullNavigationBarDelegate>* menuController;
 
 + (void)setupDefaults;
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController;
 
 - (IBAction)tapAction:(id)sender;
+- (void)dismissPullMenu;
 
 @end
