@@ -96,6 +96,7 @@
     _menuController = [menuStoryBoard instantiateInitialViewController];
     _menuController.view.clipsToBounds = YES;
     _menuController.view.opaque = YES;
+    _menuController.pullNavigationBarDelegate = self;
 
     [_menuContainer addSubview:_menuController.view];
 
@@ -192,6 +193,11 @@
 }
 
 - (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
+{
+    [self dismissPullMenu];
+}
+
+- (void)dismissPullMenu
 {
     if(self.tabOpen)
     {
