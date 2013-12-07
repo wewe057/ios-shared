@@ -8,10 +8,11 @@
 
 #import "SDPullNavigationBar.h"
 
-#import "SDMenuController.h"
 #import "SDPullNavigationBarBackground.h"
 #import "SDPullNavigationBarTabButton.h"
 #import "SDPullNavigationManager.h"
+#import "UIDevice+machine.h"
+#import "UIColor+SDExtensions.h"
 
 #pragma mark - SDPullNavigationBar
 

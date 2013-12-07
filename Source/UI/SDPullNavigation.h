@@ -20,8 +20,6 @@
 // Import all of the classes necessary for the SDPullNavigation
 
 #import "SDContainerViewController.h"
-#import "SDMenuController.h"
-#import "SDMenuItemCell.h"
 #import "SDPullNavigationBar.h"
 #import "SDPullNavigationBarView.h"
 #import "SDPullNavigationBarControlsView.h"
