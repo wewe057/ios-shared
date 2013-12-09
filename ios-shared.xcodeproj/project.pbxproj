@@ -154,6 +154,7 @@
 		E2C8A21F1853E660000DD265 /* SDPullNavigationBarTabButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2171853E660000DD265 /* SDPullNavigationBarTabButton.m */; };
 		E2C8A2201853E660000DD265 /* SDPullNavigationBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2191853E660000DD265 /* SDPullNavigationBarView.m */; };
 		E2C8A2211853E660000DD265 /* SDPullNavigationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */; };
+		E2CADC74185649FF0018A704 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2CADC73185649FF0018A704 /* Accelerate.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -340,6 +341,7 @@
 		E2C8A2191853E660000DD265 /* SDPullNavigationBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBarView.m; sourceTree = "<group>"; };
 		E2C8A21A1853E660000DD265 /* SDPullNavigationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationManager.h; sourceTree = "<group>"; };
 		E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationManager.m; sourceTree = "<group>"; };
+		E2CADC73185649FF0018A704 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -358,6 +360,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E2CADC74185649FF0018A704 /* Accelerate.framework in Frameworks */,
 				CA0E77E4182850CB00B4398F /* UIKit.framework in Frameworks */,
 				CA0E77E11828509700B4398F /* libresolv.dylib in Frameworks */,
 				CA0E77E6182850D700B4398F /* SystemConfiguration.framework in Frameworks */,
@@ -639,6 +642,7 @@
 			isa = PBXGroup;
 			children = (
 				CA0E77E01828509700B4398F /* libresolv.dylib */,
+				E2CADC73185649FF0018A704 /* Accelerate.framework */,
 				CA80792C17C94199009574BB /* Foundation.framework */,
 				CA0E77E3182850CB00B4398F /* UIKit.framework */,
 				CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */,
