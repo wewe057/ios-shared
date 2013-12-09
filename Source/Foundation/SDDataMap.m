@@ -115,6 +115,12 @@ static NSNumberFormatter *__internalformatter = nil;
         NSString *destPropertyString = (NSString *)obj;
         SDObjectProperty *destProperty = [SDObjectProperty propertyFromString:destPropertyString];
         
+        /** temp **/
+        SDObjectProperty *actualProperty = [SDObjectProperty propertyFromObject:object2 named:destProperty.propertyName];
+        if (!destProperty.propertyType)
+            destProperty.propertyType = actualProperty.propertyType;
+        /** temp **/
+        
         if (destProperty.propertySelector)
         {
             // do the selector shit.
