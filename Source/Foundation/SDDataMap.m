@@ -115,12 +115,14 @@ static NSNumberFormatter *__internalformatter = nil;
         NSString *destPropertyString = (NSString *)obj;
         SDObjectProperty *destProperty = [SDObjectProperty propertyFromString:destPropertyString];
         
-        /** temp **/
-        SDObjectProperty *actualProperty = [SDObjectProperty propertyFromObject:object2 named:destProperty.propertyName];
+        // if we don't have a destination property type, do some introspection on the destination
+        // object to see what it's type actually is.
         if (!destProperty.propertyType)
+        {
+            SDObjectProperty *actualProperty = [SDObjectProperty propertyFromObject:object2 named:destProperty.propertyName];
             destProperty.propertyType = actualProperty.propertyType;
-        /** temp **/
-        
+        }
+
         if (destProperty.propertySelector)
         {
             // do the selector shit.
@@ -137,6 +139,18 @@ static NSNumberFormatter *__internalformatter = nil;
             {
                 Class outputClass = [destProperty desiredOutputClass];
                 
+                if ([value isKindOfClass:[NSSet class]])
+                {
+                    NSArray *arrayItems = [value allObjects];
+                    
+                    // is the destination an array?  if so, hand off to our boy Leroy so he can take care of bid'ness.
+                    
+                    // ^  it sure as shit is now.  setArrayValue knows how to convert between sets and arrays and
+                    // outputs the proper type.
+                    
+                    [self setArrayValue:arrayItems destProperty:destProperty targetObject:object2];
+                }
+                else
                 if ([value isKindOfClass:[NSArray class]])
                 {
                     // is the destination an array?  if so, hand off to our boy Leroy so he can take care of bid'ness.
@@ -200,6 +214,13 @@ static NSNumberFormatter *__internalformatter = nil;
 {
     Class outputClass = [destProperty desiredOutputClass];
     
+    BOOL itsAnNSSet = NO;
+    if (outputClass == [NSSet class])
+    {
+        outputClass = [NSArray class];
+        itsAnNSSet = YES;
+    }
+    
     NSArray *array = value;
     NSMutableArray *workArray = [NSMutableArray array];
     for (NSUInteger i = 0; i < array.count; i++)
@@ -238,12 +259,22 @@ static NSNumberFormatter *__internalformatter = nil;
                 if (validModel)
                     [workArray addObject:outputObject];
             }
+            else
+            {
+                // it's of some other thing..
+                outputObject = [self convertValue:item forType:[outputClass className]];
+                if (outputObject)
+                    [workArray addObject:outputObject];
+            }
         }
     }
     
-    NSArray *outputArray = [NSArray arrayWithArray:workArray];
+    id outputArray = [NSArray arrayWithArray:workArray];
     
-    if (outputArray.count > 0)
+    if (itsAnNSSet)
+        outputArray = [NSSet setWithArray:workArray];
+    
+    if ([outputArray count] > 0)
     {
         // if it's not empty, then set it.
         [self setValue:outputArray destProperty:destProperty targetObject:targetObject];
@@ -401,16 +432,19 @@ static NSNumberFormatter *__internalformatter = nil;
     
     SDObjectProperty *objectProperty = nil;
     objc_property_t property = class_getProperty([object class], [name UTF8String]);
-    const char *propName = property_getName(property);
-    if (propName)
+    if (property)
     {
-        objectProperty = [SDObjectProperty property];
-        objectProperty.propertyName = [NSString stringWithUTF8String:propName];
-        objectProperty.propertyType = [SDObjectProperty propertyType:property];
-        if (!objectProperty.isValid)
-            return nil;
+        const char *propName = property_getName(property);
+        if (propName)
+        {
+            objectProperty = [SDObjectProperty property];
+            objectProperty.propertyName = [NSString stringWithUTF8String:propName];
+            objectProperty.propertyType = [SDObjectProperty propertyType:property];
+            if (!objectProperty.isValid)
+                return nil;
+        }
     }
-
+    
     return objectProperty;
 }
 
