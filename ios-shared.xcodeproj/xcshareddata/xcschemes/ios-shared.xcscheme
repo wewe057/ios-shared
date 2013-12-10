@@ -53,7 +53,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CA01F1AE17D7A6EF00E7C553"
-               BuildableName = "ios-shared Tests.octest"
+               BuildableName = "ios-shared Tests.xctest"
                BlueprintName = "ios-shared Tests"
                ReferencedContainer = "container:ios-shared.xcodeproj">
             </BuildableReference>

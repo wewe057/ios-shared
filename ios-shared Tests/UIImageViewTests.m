@@ -7,11 +7,11 @@
 //
 
 //#import <XCTest/XCTest.h>
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "UIImageView+SDExtensions.h"
 #import "SDImageCache.h"
 
-@interface UIImageViewTests : SenTestCase
+@interface UIImageViewTests : XCTestCase
 @end
 
 @implementation UIImageViewTests
@@ -55,9 +55,9 @@
             *stop = YES;
     } interval:0.1 untilDate:[NSDate dateWithTimeIntervalSinceNow:120]];
 
-    STAssertTrue(blockWasCalled == YES, @"The block was not called.");
-    STAssertTrue(_imageView.image != nil, @"The image was not downloaded.");
-    STAssertTrue(outputError == nil, @"outputError is not nil bitches.");
+    XCTAssertTrue(blockWasCalled == YES, @"The block was not called.");
+    XCTAssertTrue(_imageView.image != nil, @"The image was not downloaded.");
+    XCTAssertTrue(outputError == nil, @"outputError is not nil bitches.");
 
     _imageView.image = nil;
 }
@@ -79,10 +79,10 @@
     } interval:0.1 untilDate:[NSDate dateWithTimeIntervalSinceNow:120]];
 
 
-    STAssertTrue(blockWasCalled == YES, @"The block was not called.");
-    STAssertTrue([outputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");
-    STAssertTrue(outputError.code == SDImageViewErrorConnectionError, @"The error code should be SDImageViewErrorConnectionError.");
-    STAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
+    XCTAssertTrue(blockWasCalled == YES, @"The block was not called.");
+    XCTAssertTrue([outputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");
+    XCTAssertTrue(outputError.code == SDImageViewErrorConnectionError, @"The error code should be SDImageViewErrorConnectionError.");
+    XCTAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
 
     _imageView.image = nil;
 }
@@ -103,10 +103,10 @@
             *stop = YES;
     } interval:0.1 untilDate:[NSDate dateWithTimeIntervalSinceNow:120]];
 
-    STAssertTrue(blockWasCalled == YES, @"The block was not called.");
-    STAssertTrue([outputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");
-    STAssertTrue(outputError.code == SDImageViewErrorConnectionError, @"The error code should be SDImageViewErrorConnectionError.");
-    STAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
+    XCTAssertTrue(blockWasCalled == YES, @"The block was not called.");
+    XCTAssertTrue([outputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");
+    XCTAssertTrue(outputError.code == SDImageViewErrorConnectionError, @"The error code should be SDImageViewErrorConnectionError.");
+    XCTAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
 
     _imageView.image = nil;
 }
@@ -125,9 +125,9 @@
 
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:_runLoopWait]];
 
-    STAssertTrue(blockWasCalled == YES, @"The block was not called.");
-    STAssertTrue(outputError == nil, @"The output error should be nil.");
-    STAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
+    XCTAssertTrue(blockWasCalled == YES, @"The block was not called.");
+    XCTAssertTrue(outputError == nil, @"The output error should be nil.");
+    XCTAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
 
     _imageView.image = nil;
 }
@@ -156,14 +156,14 @@
 
     [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:_runLoopWait]];
 
-    STAssertTrue(firstBlockWasCalled == YES, @"The first block was not called.");
-    STAssertTrue([firstOutputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");
-    STAssertTrue(firstOutputError.code == SDImageViewErrorHasBeenReused, @"The error code should be SDImageViewErrorHasBeenReused.");
+    XCTAssertTrue(firstBlockWasCalled == YES, @"The first block was not called.");
+    XCTAssertTrue([firstOutputError.domain isEqualToString:SDImageViewErrorDomain], @"The error domain isn't correct.");
+    XCTAssertTrue(firstOutputError.code == SDImageViewErrorHasBeenReused, @"The error code should be SDImageViewErrorHasBeenReused.");
 
-    STAssertTrue(secondBlockWasCalled == YES, @"The second block was not called.");
-    STAssertTrue(secondOutputError == nil, @"The output error should be nil.");
+    XCTAssertTrue(secondBlockWasCalled == YES, @"The second block was not called.");
+    XCTAssertTrue(secondOutputError == nil, @"The output error should be nil.");
 
-    STAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
+    XCTAssertTrue(_imageView.image == nil, @"This test was designed to fail, there should be no image set, yet there is.");
 
     _imageView.image = nil;
 }
