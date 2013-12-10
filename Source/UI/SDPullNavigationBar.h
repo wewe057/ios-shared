@@ -25,6 +25,7 @@
 @property (nonatomic, strong) IBOutlet UITableViewController<SDPullNavigationBarDelegate>* menuController;
 
 + (void)setupDefaults;
++ (void)setMenuAdornmentImage:(UIImage*)image;
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController;
 
 - (IBAction)tapAction:(id)sender;
