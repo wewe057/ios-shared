@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface ios_shared_Tests : SenTestCase
+@interface ios_shared_Tests : XCTestCase
 
 @end
 

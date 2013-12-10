@@ -7,7 +7,7 @@
 //
 
 //#import <XCTest/XCTest.h>
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "SDABTesting.h"
 
 @interface SDABTesting (Private)
@@ -16,7 +16,7 @@
 - (void)setBool:(BOOL)value forDefaultsKey:(NSString *)keyName;
 @end
 
-@interface SDABTestingTests : SenTestCase
+@interface SDABTestingTests : XCTestCase
 
 @end
 
