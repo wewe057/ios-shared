@@ -13,7 +13,6 @@
 @protocol SDPullNavigationSetupProtocol <NSObject, UITabBarControllerDelegate>
 @required
 - (void)setupNavigation;
-- (void)setupGlobalMenu;
 @end
 
 @protocol SDPullNavigationBarDelegate <NSObject>

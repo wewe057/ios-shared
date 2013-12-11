@@ -255,8 +255,8 @@ static NSNumberFormatter *__internalformatter = nil;
                 BOOL validModel = YES;
                 if ([outputObject respondsToSelector:@selector(validModel)])
                     validModel = [outputObject validModel];
-                
-                if (validModel)
+
+                if (validModel && outputObject)
                     [workArray addObject:outputObject];
             }
             else
