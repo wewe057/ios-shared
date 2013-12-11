@@ -18,7 +18,7 @@ static UIImage* sMenuAdornmentImage = nil;
 
 #pragma mark - SDPullNavigationBar
 
-@interface SDPullNavigationBar()
+@interface SDPullNavigationBar()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) SDPullNavigationBarBackground* pullBackgroundView;
 @property (nonatomic, strong) SDPullNavigationBarTabButton* tabButton;
@@ -129,7 +129,7 @@ static UIImage* sMenuAdornmentImage = nil;
     // Setup the starting point for the first opening animation.
 
     CGRect menuFrame = _menuController.view.frame;
-    menuFrame.size.height = 556.0f;
+    menuFrame.size.height = 680.0f;
     _menuController.view.frame = menuFrame;
     _menuBottomAdornmentView.frame = (CGRect){{menuFrame.origin.x, menuFrame.origin.y + menuFrame.size.height }, _menuBottomAdornmentView.frame.size};
 
@@ -194,7 +194,7 @@ static UIImage* sMenuAdornmentImage = nil;
             if(!self.tabOpen)
                 [self.tabButton setNeedsDisplay];
 
-            CGFloat height = self.tabOpen ? 0.0f : 556.0f;
+            CGFloat height = self.tabOpen ? 0.0f : 680.0f;
             CGFloat width = [UIDevice iPad] ? 320.0f : self.menuController.view.frame.size.width;
 
             self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, height } };
@@ -213,7 +213,12 @@ static UIImage* sMenuAdornmentImage = nil;
     }
 }
 
-- (void)dismissTapAction:(id)sender
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
+{
+    return ![touch.view isDescendantOfView:self.menuController.view];
+}
+
+- (void)dismissTapAction:(UITapGestureRecognizer*)sender
 {
     if(self.tabOpen)
         [self dismissPullMenu];
