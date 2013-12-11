@@ -114,7 +114,9 @@ static UIImage* sMenuAdornmentImage = nil;
     _menuController.view.opaque = YES;
     _menuController.pullNavigationBarDelegate = self;
     [_menuContainer addSubview:_menuController.view];
-    [_menuContainer addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)]];
+    UITapGestureRecognizer* dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)];
+    dismissTapGesture.delegate = self;
+    [_menuContainer addGestureRecognizer:dismissTapGesture];
 
     if(sMenuAdornmentImage)
     {
