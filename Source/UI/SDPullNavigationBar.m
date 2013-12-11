@@ -72,7 +72,6 @@ static UIImage* sMenuAdornmentImage = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-
 - (void)commonInit
 {
     self.translucent = NO;
@@ -115,6 +114,7 @@ static UIImage* sMenuAdornmentImage = nil;
     _menuController.view.opaque = YES;
     _menuController.pullNavigationBarDelegate = self;
     [_menuContainer addSubview:_menuController.view];
+    [_menuContainer addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)]];
 
     if(sMenuAdornmentImage)
     {
@@ -211,6 +211,12 @@ static UIImage* sMenuAdornmentImage = nil;
             self.menuBottomAdornmentView.hidden = !self.tabOpen;
         }];
     }
+}
+
+- (void)dismissTapAction:(id)sender
+{
+    if(self.tabOpen)
+        [self dismissPullMenu];
 }
 
 #pragma mark - Helpers
