@@ -309,7 +309,7 @@
     XCTAssertTrue([order isEqualToString:@"ALPRAZOLAM 0.5MG    TAB"], @"the first order in RxFill didn't come out properly!");
 }
 
-- (void)testDictionaryToEmptyDictionary
+- (void)testDictionaryToEmptyDictionaryAnd2CharNames
 {
     NSDictionary *inputDictionary = @{@"itemId": @28421697};
     NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
