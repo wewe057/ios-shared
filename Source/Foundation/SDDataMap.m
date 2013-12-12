@@ -526,7 +526,7 @@ static NSNumberFormatter *__internalformatter = nil;
         self.propertySelector = NSSelectorFromString(propertyType);
     }
     else
-    if (!isSelector && propertyName && propertyName.length > 2)
+    if (!isSelector && propertyName && propertyName.length > 1)
     {
         // break the property type apart if we need to.
         
@@ -548,7 +548,7 @@ static NSNumberFormatter *__internalformatter = nil;
 {
     BOOL isValid = NO;
     
-    isValid = ((self.propertyName && self.propertyName.length > 2) || self.propertySelector);
+    isValid = ((self.propertyName && self.propertyName.length > 1) || self.propertySelector);
     
     return isValid;
 }
