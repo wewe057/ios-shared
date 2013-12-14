@@ -10,8 +10,8 @@
 
 GENERICSABLE(NSString)
 
-typedef void(^SDPickerViewDateCompletionBlock)(NSDate *selectedDate);
-typedef void(^SDPickerViewItemSelectionCompletionBlock)(int selectedItemIndex, NSString *selectedItem);
+typedef void(^SDPickerViewDateCompletionBlock)(BOOL canceled, NSDate *selectedDate);
+typedef void(^SDPickerViewItemSelectionCompletionBlock)(BOOL canceled, int selectedItemIndex, NSString *selectedItem);
 
 @interface SDPickerView : UIButton
 

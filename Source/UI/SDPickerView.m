@@ -56,12 +56,11 @@ typedef enum
 
 #pragma mark - Actions
 
--(IBAction)doneAction:(id)sender
+-(void)dismissPickerWithCompletion:(void (^)(BOOL finished))completion
 {
     UIWindow *mainWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
     
     @weakify(self);
-    
     // Animate away
     // First fade in
     [UIView animateWithDuration:0.5f animations:^{
@@ -70,42 +69,83 @@ typedef enum
                                                     mainWindow.frame.size.width,
                                                     self.pickerContainerView.frame.size.height);
     } completion:^(BOOL finished) {
-        // Now animate the screen up.
+        // Now animate the screen down.
         [UIView animateWithDuration:0.2f animations:^{
-            self.modalScreenView.alpha = 1.0f;
-        } completion:^(BOOL fin) {
             @strongify(self);
-            [self.modalScreenView removeFromSuperview];
-            [self addTarget:self action:@selector(startAction:) forControlEvents:UIControlEventTouchUpInside];
-            switch (self.pickerMode)
-            {
-                case SDPickerViewMode_DatePicker:
-                {
-                    if (self.dateCompletion)
-                    {
-                        SDPickerViewDateCompletionBlock completion = [self.dateCompletion copy];
-                        completion(self.datePicker.date);
-                    }
-                }
-                    break;
-                    
-                case SDPickerViewMode_ItemPicker:
-                {
-                    if (self.itemCompletion)
-                    {
-                        SDPickerViewItemSelectionCompletionBlock completion = [self.itemCompletion copy];
-                        NSInteger selectedItem = [self.itemPicker selectedRowInComponent:0];
-                        completion(selectedItem, [self.items objectAtIndex:selectedItem]);
-                    }
-                }
-                    break;
-                    
-                default:
-                    break;
-            }
-        }];
+            self.modalScreenView.alpha = 1.0f;
+        } completion:completion];
     }];
-    
+}
+
+-(IBAction)doneAction:(id)sender
+{
+    @weakify(self);
+    [self dismissPickerWithCompletion:^(BOOL fin) {
+        @strongify(self);
+        [self.modalScreenView removeFromSuperview];
+        [self addTarget:self action:@selector(startAction:) forControlEvents:UIControlEventTouchUpInside];
+        switch (self.pickerMode)
+        {
+            case SDPickerViewMode_DatePicker:
+            {
+                if (self.dateCompletion)
+                {
+                    SDPickerViewDateCompletionBlock completion = [self.dateCompletion copy];
+                    completion(NO, self.datePicker.date);
+                }
+            }
+                break;
+                
+            case SDPickerViewMode_ItemPicker:
+            {
+                if (self.itemCompletion)
+                {
+                    SDPickerViewItemSelectionCompletionBlock completion = [self.itemCompletion copy];
+                    NSInteger selectedItem = [self.itemPicker selectedRowInComponent:0];
+                    completion(NO, selectedItem, [self.items objectAtIndex:selectedItem]);
+                }
+            }
+                break;
+                
+            default:
+                break;
+        }
+    }];
+}
+
+-(IBAction)cancelAction:(id)sender
+{
+    @weakify(self);
+    [self dismissPickerWithCompletion:^(BOOL fin) {
+        @strongify(self);
+        [self.modalScreenView removeFromSuperview];
+        [self addTarget:self action:@selector(startAction:) forControlEvents:UIControlEventTouchUpInside];
+        switch (self.pickerMode)
+        {
+            case SDPickerViewMode_DatePicker:
+            {
+                if (self.dateCompletion)
+                {
+                    SDPickerViewDateCompletionBlock completion = [self.dateCompletion copy];
+                    completion(YES, nil);
+                }
+            }
+                break;
+                
+            case SDPickerViewMode_ItemPicker:
+            {
+                if (self.itemCompletion)
+                {
+                    SDPickerViewItemSelectionCompletionBlock completion = [self.itemCompletion copy];
+                    completion(YES, -1, nil);
+                }
+            }
+                break;
+                
+            default:
+                break;
+        }
+    }];
 }
 
 -(IBAction)startAction:(id)sender
@@ -165,8 +205,10 @@ typedef enum
     if (!self.pickerBar)
     {
         UIToolbar *theBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, 44)];
+        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
+        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
-        [theBar setItems:[NSArray arrayWithObject:doneButton] animated:NO];
+        [theBar setItems:[NSArray arrayWithObjects:cancelButton, spacer, doneButton, nil] animated:NO];
         self.pickerBar = theBar;
     }
     
@@ -243,15 +285,9 @@ typedef enum
 
 #pragma mark - UIPickerViewDelegate
 
-// returns width of column and height of row for each component.
-//- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component;
-//- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component;
-
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
     return [self.items objectAtIndex:row];
 }
-
-//- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 
 @end
