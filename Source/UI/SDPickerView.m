@@ -10,8 +10,6 @@
 #import "UIColor+SDExtensions.h"
 #import <UIKit/UIKit.h>
 
-GENERICSABLE_IMPLEMENTATION(NSString)
-
 typedef enum
 {
     SDPickerViewMode_DatePicker,

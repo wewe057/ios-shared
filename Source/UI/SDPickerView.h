@@ -6,9 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ObjectiveCGenerics.h"
-
-GENERICSABLE(NSString)
 
 typedef void(^SDPickerViewDateCompletionBlock)(BOOL canceled, NSDate *selectedDate);
 typedef void(^SDPickerViewItemSelectionCompletionBlock)(BOOL canceled, int selectedItemIndex, NSString *selectedItem);
@@ -19,7 +16,7 @@ typedef void(^SDPickerViewItemSelectionCompletionBlock)(BOOL canceled, int selec
 -(void)configureAsDatePicker:(NSDate *)initialDate completion:(SDPickerViewDateCompletionBlock)completion;
 -(void)configureAsDatePicker:(NSDate *)initialDate datePickerMode:(UIDatePickerMode)datePickerMode completion:(SDPickerViewDateCompletionBlock)completion;
 
--(void)configureAsItemPicker:(NSArray <NSString>*)items completion:(SDPickerViewItemSelectionCompletionBlock)completion;
--(void)configureAsItemPicker:(NSArray <NSString>*)items initialItem:(NSInteger)selectedItem completion:(SDPickerViewItemSelectionCompletionBlock)completion;
+-(void)configureAsItemPicker:(NSArray<NSString>*)items completion:(SDPickerViewItemSelectionCompletionBlock)completion;
+-(void)configureAsItemPicker:(NSArray<NSString>*)items initialItem:(NSInteger)selectedItem completion:(SDPickerViewItemSelectionCompletionBlock)completion;
 
 @end
