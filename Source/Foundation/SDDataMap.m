@@ -255,8 +255,8 @@ static NSNumberFormatter *__internalformatter = nil;
                 BOOL validModel = YES;
                 if ([outputObject respondsToSelector:@selector(validModel)])
                     validModel = [outputObject validModel];
-                
-                if (validModel)
+
+                if (validModel && outputObject)
                     [workArray addObject:outputObject];
             }
             else
@@ -422,7 +422,7 @@ static NSNumberFormatter *__internalformatter = nil;
     free(properties);
     
     // returning a copy here to make sure the dictionary is immutable
-    return results;
+    return [NSArray arrayWithArray:results];
 }
 
 + (instancetype)propertyFromObject:(NSObject *)object named:(NSString *)name
@@ -526,7 +526,7 @@ static NSNumberFormatter *__internalformatter = nil;
         self.propertySelector = NSSelectorFromString(propertyType);
     }
     else
-    if (!isSelector && propertyName && propertyName.length > 2)
+    if (!isSelector && propertyName && propertyName.length > 1)
     {
         // break the property type apart if we need to.
         
@@ -548,7 +548,7 @@ static NSNumberFormatter *__internalformatter = nil;
 {
     BOOL isValid = NO;
     
-    isValid = ((self.propertyName && self.propertyName.length > 2) || self.propertySelector);
+    isValid = ((self.propertyName && self.propertyName.length > 1) || self.propertySelector);
     
     return isValid;
 }
@@ -628,6 +628,18 @@ static NSNumberFormatter *__internalformatter = nil;
         return 1;
     else
     if ([temp isEqualToString:@"NO"])
+        return 0;
+    else
+    if ([temp isEqualToString:@"true"])
+        return 1;
+    else
+    if ([temp isEqualToString:@"false"])
+        return 0;
+    else
+    if ([temp isEqualToString:@"yes"])
+        return 1;
+    else
+    if ([temp isEqualToString:@"no"])
         return 0;
     else
     if ([temp isEqualToString:@"0"])

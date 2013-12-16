@@ -14,12 +14,17 @@
 #import "UIDevice+machine.h"
 #import "UIColor+SDExtensions.h"
 
+static UIImage* sMenuAdornmentImage = nil;
+
 #pragma mark - SDPullNavigationBar
 
-@interface SDPullNavigationBar()
+@interface SDPullNavigationBar()<UIGestureRecognizerDelegate>
+
 @property (nonatomic, strong) SDPullNavigationBarBackground* pullBackgroundView;
 @property (nonatomic, strong) SDPullNavigationBarTabButton* tabButton;
 @property (nonatomic, strong) UIView* menuContainer;
+@property (nonatomic, strong) UIImageView* menuBackgroundEffectsView;
+@property (nonatomic, strong) UIImageView* menuBottomAdornmentView;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL tabOpen;
 
@@ -46,6 +51,11 @@
     }
 }
 
++ (void)setMenuAdornmentImage:(UIImage*)image
+{
+    sMenuAdornmentImage = image;
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -61,7 +71,6 @@
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
 
 - (void)commonInit
 {
@@ -92,19 +101,39 @@
     _menuContainer.layer.shadowRadius = 3.0f;
     _menuContainer.layer.shadowOpacity = 1.0;
 
+    _menuBackgroundEffectsView = [[UIImageView alloc] initWithFrame:_menuContainer.bounds];
+    _menuBackgroundEffectsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _menuBackgroundEffectsView.clipsToBounds = YES;
+    _menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+    _menuBackgroundEffectsView.opaque = NO;
+    [_menuContainer addSubview:_menuBackgroundEffectsView];
+
     UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager globalMenuStoryboardId] bundle:nil];
     _menuController = [menuStoryBoard instantiateInitialViewController];
     _menuController.view.clipsToBounds = YES;
     _menuController.view.opaque = YES;
     _menuController.pullNavigationBarDelegate = self;
-
     [_menuContainer addSubview:_menuController.view];
+    UITapGestureRecognizer* dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)];
+    dismissTapGesture.delegate = self;
+    [_menuContainer addGestureRecognizer:dismissTapGesture];
+
+    if(sMenuAdornmentImage)
+    {
+        _menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:(CGRect){CGPointZero, { _menuController.view.bounds.size.width, sMenuAdornmentImage.size.height }}];
+        _menuBottomAdornmentView.clipsToBounds = YES;
+        _menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
+        _menuBottomAdornmentView.opaque = YES;
+        _menuBottomAdornmentView.image = sMenuAdornmentImage;
+        [_menuContainer addSubview:_menuBottomAdornmentView];
+    }
 
     // Setup the starting point for the first opening animation.
 
     CGRect menuFrame = _menuController.view.frame;
-    menuFrame.size.height = 556.0f;
+    menuFrame.size.height = 680.0f;
     _menuController.view.frame = menuFrame;
+    _menuBottomAdornmentView.frame = (CGRect){{menuFrame.origin.x, menuFrame.origin.y + menuFrame.size.height }, _menuBottomAdornmentView.frame.size};
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(statusBarWillChangeRotationNotification:)
@@ -131,7 +160,7 @@
     [self insertSubview:self.pullBackgroundView atIndex:index];
     [self addSubview:self.tabButton];
 
-    _menuContainer.frame = self.superview.bounds;
+    self.menuContainer.frame = self.superview.bounds;
 }
 
 - (void)setFrame:(CGRect)frame
@@ -154,6 +183,8 @@
         if([UIDevice iPad] && !self.tabOpen)
         {
             self.menuController.view.frame = (CGRect){{ self.frame.size.width * 0.5f - 160.0f, 64.0f }, { 320.0f, 0.0f } };
+            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height },
+                                                           { self.menuController.view.frame.size.width, sMenuAdornmentImage.size.height } };
         }
 
         [self.superview insertSubview:self.menuContainer belowSubview:self];
@@ -165,10 +196,11 @@
             if(!self.tabOpen)
                 [self.tabButton setNeedsDisplay];
 
-            CGFloat height = self.tabOpen ? 0.0f : 556.0f;
+            CGFloat height = self.tabOpen ? 0.0f : 680.0f;
             CGFloat width = [UIDevice iPad] ? 320.0f : self.menuController.view.frame.size.width;
 
             self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, height } };
+            self.menuBottomAdornmentView.frame = (CGRect){{self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height }, self.menuBottomAdornmentView.frame.size };
 
             self.tabOpen = !self.tabOpen;
         }
@@ -178,8 +210,20 @@
                 [self.tabButton setNeedsDisplay];
             self.animating = NO;
             self.menuContainer.hidden = !self.tabOpen;
+            self.menuBottomAdornmentView.hidden = !self.tabOpen;
         }];
     }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
+{
+    return ![touch.view isDescendantOfView:self.menuController.view];
+}
+
+- (void)dismissTapAction:(UITapGestureRecognizer*)sender
+{
+    if(self.tabOpen)
+        [self dismissPullMenu];
 }
 
 #pragma mark - Helpers
