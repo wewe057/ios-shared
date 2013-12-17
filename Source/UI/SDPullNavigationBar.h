@@ -28,6 +28,6 @@
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController;
 
 - (IBAction)tapAction:(id)sender;
-- (void)dismissPullMenu;
+- (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion;
 
 @end
