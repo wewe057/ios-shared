@@ -96,6 +96,25 @@
     return compositedImage;
 }
 
+- (UIImage *)compositeWith:(UIImage *)overlayImage toPoint:(CGPoint)overlayPoint
+{
+    UIImage *compositedImage = nil;
+    
+    UIGraphicsBeginImageContextWithOptions(self.size, NO, [[UIScreen mainScreen] scale]);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextRetain( context );
+    {
+        [self drawAtPoint:CGPointZero];
+        [overlayImage drawAtPoint:overlayPoint];
+
+        compositedImage = UIGraphicsGetImageFromCurrentImageContext();
+    }
+    CGContextRelease( context );
+    UIGraphicsEndImageContext();
+
+    return compositedImage;
+}
+
 - (UIImage *)applyLightEffect
 {
     UIColor *tintColor = [UIColor colorWithWhite:1.0 alpha:0.3];
