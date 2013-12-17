@@ -176,17 +176,48 @@ static UIImage* sMenuAdornmentImage = nil;
 
 - (void)tapAction:(id)sender
 {
-    if( !self.animating )
+    [self togglePullMenuWithCompletionBlock:nil];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
+{
+    return ![touch.view isDescendantOfView:self.menuController.view];
+}
+
+- (void)dismissTapAction:(UITapGestureRecognizer*)sender
+{
+    if(self.tabOpen)
+        [self dismissPullMenuWithCompletionBlock:nil];
+}
+
+#pragma mark - Helpers
+
++ (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
+{
+    UINavigationController *navController = [[UINavigationController alloc] initWithNavigationBarClass:[self class] toolbarClass:nil];
+    [navController setViewControllers:@[viewController]];
+    navController.delegate = [SDPullNavigationManager sharedInstance];
+    return navController;
+}
+
+- (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
+{
+    [self dismissPullMenuWithCompletionBlock:nil];
+}
+
+- (void)togglePullMenuWithCompletionBlock:(void (^)(void))completion
+{
+    if(!self.animating)
     {
         self.animating = YES;
-
+        
         if([UIDevice iPad] && !self.tabOpen)
         {
             self.menuController.view.frame = (CGRect){{ self.frame.size.width * 0.5f - 160.0f, 64.0f }, { 320.0f, 0.0f } };
             self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height },
                                                            { self.menuController.view.frame.size.width, sMenuAdornmentImage.size.height } };
         }
-
+        
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         self.menuContainer.hidden = NO;
 
@@ -203,49 +234,32 @@ static UIImage* sMenuAdornmentImage = nil;
             self.menuBottomAdornmentView.frame = (CGRect){{self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height }, self.menuBottomAdornmentView.frame.size };
 
             self.tabOpen = !self.tabOpen;
-        }
-        completion:^(BOOL finished)
-        {
-            if(!self.tabOpen)
-                [self.tabButton setNeedsDisplay];
-            self.animating = NO;
-            self.menuContainer.hidden = !self.tabOpen;
-            self.menuBottomAdornmentView.hidden = !self.tabOpen;
-        }];
+         }
+         completion:^(BOOL finished)
+         {
+             if(!self.tabOpen)
+                 [self.tabButton setNeedsDisplay];
+             self.animating = NO;
+             self.menuContainer.hidden = !self.tabOpen;
+             self.menuBottomAdornmentView.hidden = !self.tabOpen;
+
+             if(completion)
+                 completion();
+         }];
+    }
+    else
+    {
+        // Don't forget that if we did not need to dismiss the menu, then we should still call the completion block.
+        if(completion)
+            completion();
     }
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
+- (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion
 {
-    return ![touch.view isDescendantOfView:self.menuController.view];
-}
-
-- (void)dismissTapAction:(UITapGestureRecognizer*)sender
-{
-    if(self.tabOpen)
-        [self dismissPullMenu];
-}
-
-#pragma mark - Helpers
-
-+ (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
-{
-    UINavigationController *navController = [[UINavigationController alloc] initWithNavigationBarClass:[self class] toolbarClass:nil];
-    [navController setViewControllers:@[viewController]];
-    navController.delegate = [SDPullNavigationManager sharedInstance];
-    return navController;
-}
-
-- (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
-{
-    [self dismissPullMenu];
-}
-
-- (void)dismissPullMenu
-{
-    if(self.tabOpen)
+    if( self.tabOpen )
     {
-        [self tapAction:self];
+        [self togglePullMenuWithCompletionBlock:completion];
     }
 }
 

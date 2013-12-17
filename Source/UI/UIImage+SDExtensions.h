@@ -29,6 +29,12 @@
  */
 + (UIImage *)filledImageWithFrame:(CGSize)size andColor:(UIColor *)color;
 
+/**
+ Composite a supplied image on top of the image this is being called at.
+ You also tell it where to draw inside of the rect of the image you are overlaying.
+ */
+- (UIImage *)compositeWith:(UIImage *)overlayImage toPoint:(CGPoint)overlayPoint;
+
 - (UIImage *)applyLightEffect;
 - (UIImage *)applyExtraLightEffect;
 - (UIImage *)applyDarkEffect;
