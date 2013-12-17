@@ -51,4 +51,12 @@
  */
 + (instancetype)loadFromStoryboardNamed:(NSString *)storyboardName identifier:(NSString *)identifier;
 
+/**
+ Recursive description for UIViewController hierarchies
+
+ An equivalent of UIView's recursiveDescription method, but for inspecting the view controller hierarchy in an application.
+ Taken from jrturton @ https://github.com/jrturton/UIViewController-RecursiveDescription
+ */
+- (NSString *)recursiveDescription;
+
 @end
