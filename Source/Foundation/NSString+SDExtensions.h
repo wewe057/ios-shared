@@ -7,7 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ObjectiveCGenerics.h"
 
+GENERICSABLE(NSString)
 
 @interface NSString(SDExtensions)
 

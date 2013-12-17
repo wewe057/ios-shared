@@ -102,6 +102,9 @@ typedef enum
  */
 @property (nonatomic, assign) BOOL useMocksIfAvailable;
 
+#ifdef DEBUG
+@property (nonatomic, assign) BOOL disableCaching;
+#endif
 /**
  The timeout, in seconds, for calls made to this service. Default is `60.0`.
  */
