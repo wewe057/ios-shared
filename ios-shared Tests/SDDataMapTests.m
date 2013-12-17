@@ -309,4 +309,19 @@
     XCTAssertTrue([order isEqualToString:@"ALPRAZOLAM 0.5MG    TAB"], @"the first order in RxFill didn't come out properly!");
 }
 
+- (void)testDictionaryToEmptyDictionaryAnd2CharNames
+{
+    NSDictionary *inputDictionary = @{@"itemId": @28421697};
+    NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
+    
+    NSDictionary *mappingDictionary = @{@"itemId" : @"id"};
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:inputDictionary toObject:outputDictionary];
+    
+    NSNumber *itemId = [outputDictionary objectForKey:@"id"];
+    XCTAssertTrue([itemId isKindOfClass:[NSNumber class]], @"id isn't of the NSNumber type!");
+    XCTAssertTrue(itemId.integerValue == 28421697, @"itemId's value should be 28421697!");
+}
+
 @end

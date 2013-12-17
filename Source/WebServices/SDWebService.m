@@ -631,6 +631,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     // get cache details
     NSNumber *cache = [requestDetails objectForKey:@"cache"];
     NSNumber *cacheTTL = [requestDetails objectForKey:@"cacheTTL"];
+    
+#ifdef DEBUG
+    if (self.disableCaching)
+        cache = [NSNumber numberWithBool:NO];
+#endif
 
     NSNumber *showNoConnectionAlertObj = [requestDetails objectForKey:@"showNoConnectionAlert"];
     BOOL showNoConnectionAlert = showNoConnectionAlertObj != nil ? [showNoConnectionAlertObj boolValue] : YES;
