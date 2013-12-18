@@ -61,8 +61,15 @@
 
 /**
  Returns a visual stand-in for the current view that can be shown in it's place.
+ On iOS7 it does snapshotViewAfterScreenUpdates: without waiting for updates.
  */
 - (UIView *)snapshot;
+
+/**
+ Returns a visual stand-in for the current view that can be shown in it's place.
+ On iOS7 you can control whether it applies updates first.
+ */
+- (UIView *)snapshotAfterScreenUpdates:(BOOL)applyUpdates;
 
 /**
  Returns a UIImage representation of a view and it's subview heirarchy.

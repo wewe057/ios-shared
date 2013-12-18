@@ -104,25 +104,17 @@
     
     // remove the existing one from the parent controller
     UIViewController *currentController = _selectedViewController;
-    [currentController removeFromParentViewController];
+    [currentController willMoveToParentViewController:nil];
     [currentController.view removeFromSuperview];
-    [currentController didMoveToParentViewController:nil];
-    
+    [currentController removeFromParentViewController];
+
     _selectedViewController = selectedViewController;
 
     // add the new one to the parent controller (only set frame when not using autolayout)
     [self addChildViewController:_selectedViewController];
 
-    BOOL controllerWantsAutolayout = NO;
-    if([_selectedViewController isKindOfClass:[UINavigationController class]])
-        controllerWantsAutolayout = [(UINavigationController*)_selectedViewController topViewController].view.constraints.count;
-    else
-        controllerWantsAutolayout = _selectedViewController.view.constraints.count;
-    
-    if(controllerWantsAutolayout)
-        [_selectedViewController.view setNeedsUpdateConstraints];
-    else
-        _selectedViewController.view.frame = self.containerView.bounds;
+    _selectedViewController.view.frame = self.containerView.bounds;
+    [_selectedViewController.view setNeedsUpdateConstraints];
 
     [self.containerView addSubview:_selectedViewController.view];
     [_selectedViewController didMoveToParentViewController:self];

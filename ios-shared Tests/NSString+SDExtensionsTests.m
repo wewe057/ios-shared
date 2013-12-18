@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "NSString+SDExtensions.h"
 
-@interface NSStringTests : SenTestCase
+@interface NSStringTests : XCTestCase
 {
     CGFloat _red;
     CGFloat _green;
@@ -41,28 +41,28 @@
 - (void)testNSStringNilUIColor
 {
     UIColor* lazyWhiteNoAlpha = [@"#fff" uicolor];
-    STAssertTrue(lazyWhiteNoAlpha != nil, @"A valid color should have been returned.");
+    XCTAssertTrue(lazyWhiteNoAlpha != nil, @"A valid color should have been returned.");
 }
 
 - (void)testNSStringLazyUIColor
 {
     UIColor* lazyWhiteNoAlpha = [@"#fff" uicolor];
     [lazyWhiteNoAlpha getRed:&_red green:&_green blue:&_blue alpha:&_alpha];
-    STAssertTrue(_red == 255.0f / 255.0f && _green == 255.0f / 255.0f & _blue == 255.0f / 255.0f & _alpha == 255.0f / 255.0f, @"#fff returned the wrong value.");
+    XCTAssertTrue(_red == 255.0f / 255.0f && _green == 255.0f / 255.0f & _blue == 255.0f / 255.0f & _alpha == 255.0f / 255.0f, @"#fff returned the wrong value.");
 }
 
 - (void)testNSStringGreenUIColor
 {
     UIColor* greenNoAlpha = [@"#112233" uicolor];
     [greenNoAlpha getRed:&_red green:&_green blue:&_blue alpha:&_alpha];
-    STAssertTrue(_red == 17.0f / 255.0f && _green == 34.0f / 255.0f & _blue == 51.0f / 255.0f & _alpha == 255.0f / 255.0f, @"#112233 returned the wrong value.");
+    XCTAssertTrue(_red == 17.0f / 255.0f && _green == 34.0f / 255.0f & _blue == 51.0f / 255.0f & _alpha == 255.0f / 255.0f, @"#112233 returned the wrong value.");
 }
 
 - (void)testNSStringGreenWithAlphaUIColor
 {
     UIColor* greenWithAlpha = [@"#11223344" uicolor];
     [greenWithAlpha getRed:&_red green:&_green blue:&_blue alpha:&_alpha];
-    STAssertTrue(_red == 17.0f / 255.0f && _green == 34.0f / 255.0f & _blue == 51.0f / 255.0f & _alpha == 68.0f / 255.0f, @"#11223344 returned the wrong value.");
+    XCTAssertTrue(_red == 17.0f / 255.0f && _green == 34.0f / 255.0f & _blue == 51.0f / 255.0f & _alpha == 68.0f / 255.0f, @"#11223344 returned the wrong value.");
 }
 
 - (void)testNSStringInvalidUIColor
@@ -76,7 +76,7 @@
 
     UIColor* invalidHexNoAlpha = [@"#1" uicolor];
     [invalidHexNoAlpha getRed:&_red green:&_green blue:&_blue alpha:&_alpha];
-    STAssertTrue(_red == whiteRed && _green == whiteGreen && _blue == whiteBlue & _alpha == whiteAlpha, @"A valid white color should have been returned.");
+    XCTAssertTrue(_red == whiteRed && _green == whiteGreen && _blue == whiteBlue & _alpha == whiteAlpha, @"A valid white color should have been returned.");
 }
 
 @end
