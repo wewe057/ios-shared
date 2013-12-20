@@ -64,7 +64,7 @@
     [self presentModallyFromViewController:controller onDone:done onCancel:cancel withSelectedRow:-1 inComponent:-1];
 }
 
-- (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel withSelectedRow:(int)row inComponent:(int)component
+- (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel withSelectedRow:(NSUInteger)row inComponent:(NSInteger)component
 {
     doneBlock = [done copy];
     cancelBlock = [cancel copy];
