@@ -9,6 +9,7 @@
 #import "SDPullNavigationManager.h"
 
 #import "NSObject+SDExtensions.h"
+#import "SDPullNavigationBar.h"
 #import "SDPullNavigationBarView.h"
 
 static Class sPullNavigationBarViewClass = Nil;
@@ -146,10 +147,15 @@ static NSString* sPullNavigationStoryboardId = Nil;
 - (UINavigationItem*)pullNavigationItem
 {
     UINavigationItem* item = [self pullNavigationItem];
-    [item setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@""
-                                                                style:UIBarButtonItemStyleBordered
-                                                               target:self
-                                                               action:@selector(sdBackAction:)]];
+
+    if([self.navigationController.navigationBar isKindOfClass: [SDPullNavigationBar class]])
+    {
+        [item setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@""
+                                                                    style:UIBarButtonItemStyleBordered
+                                                                   target:self
+                                                                   action:@selector(sdBackAction:)]];
+    }
+
     return item;
 }
 
