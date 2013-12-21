@@ -89,4 +89,19 @@
  *
  */
 - (UIColor *)uicolor;
+
+/**
+ *  Returns an NSArray of the JSON data in the string, or nil if the string is not a JSON array
+ *
+ *  @return NSArray of JSON data in this string
+ */
+- (NSArray *)JSONArrayRepresentation;
+
+/**
+ *  Returns an NSDictionary of the JSON data in the string, or nil if the string is not a JSON dictionary
+ *
+ *  @return NSDictionary of JSON data in this string
+ */
+- (NSDictionary *)JSONDictionaryRepresentation;
+
 @end

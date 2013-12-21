@@ -327,5 +327,18 @@
     return color;
 }
 
+- (NSArray *)JSONArrayRepresentation
+{
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    return [data JSONArray];
+}
+
+- (NSDictionary *)JSONDictionaryRepresentation
+{
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    return [data JSONDictionary];
+}
+
+
 @end
 
