@@ -59,7 +59,7 @@
 // ---------------------------------------------------------------- //
 // Time interval comparison convenience methods
 
--(BOOL)happenedMoreThanNSecondsAgo:(int)numSeconds
+-(BOOL)happenedMoreThanNSecondsAgo:(NSInteger)numSeconds
 {
 	if([self timeIntervalSinceNow] < -numSeconds)
 	{
@@ -68,22 +68,22 @@
 	return NO;
 }
 
--(BOOL)happenedMoreThanNMinutesAgo:(int)numMinutes
+-(BOOL)happenedMoreThanNMinutesAgo:(NSInteger)numMinutes
 {
 	return [self happenedMoreThanNSecondsAgo: numMinutes * 60];
 }
 
--(BOOL)happenedMoreThanNHoursAgo:(int)numHours
+-(BOOL)happenedMoreThanNHoursAgo:(NSInteger)numHours
 {
 	return [self happenedMoreThanNMinutesAgo: numHours * 60];
 }
 
--(BOOL)happenedMoreThanNDaysAgo:(int)numDays
+-(BOOL)happenedMoreThanNDaysAgo:(NSInteger)numDays
 {
 	return [self happenedMoreThanNHoursAgo: numDays * 24];
 }
 
--(BOOL)happenedLessThanNSecondsAgo:(int)numSeconds
+-(BOOL)happenedLessThanNSecondsAgo:(NSInteger)numSeconds
 {
 	if([self timeIntervalSinceNow] > -numSeconds)
 	{
@@ -92,17 +92,17 @@
 	return NO;
 }
 
--(BOOL)happenedLessThanNMinutesAgo:(int)numMinutes
+-(BOOL)happenedLessThanNMinutesAgo:(NSInteger)numMinutes
 {
 	return [self happenedLessThanNSecondsAgo: numMinutes * 60];
 }
 
--(BOOL)happenedLessThanNHoursAgo:(int)numHours
+-(BOOL)happenedLessThanNHoursAgo:(NSInteger)numHours
 {
 	return [self happenedLessThanNMinutesAgo: numHours * 60];
 }
 
--(BOOL)happenedLessThanNDaysAgo:(int)numDays
+-(BOOL)happenedLessThanNDaysAgo:(NSInteger)numDays
 {
 	return [self happenedLessThanNHoursAgo: numDays * 24];
 }

@@ -10,8 +10,8 @@
 #import "NSCachedURLResponse+LeakFix.h"
 #import "NSURLRequest+SDExtensions.h"
 
-static float const kSDURLCacheDefault = 3600; // Default cache expiration delay if none defined (1 hour)
-static float const kNSURLCacheLastModFraction = 0.1f; // 10% since Last-Modified suggested by RFC2616 section 13.2.4
+static CGFloat const kSDURLCacheDefault = 3600; // Default cache expiration delay if none defined (1 hour)
+static CGFloat const kNSURLCacheLastModFraction = 0.1f; // 10% since Last-Modified suggested by RFC2616 section 13.2.4
 
 static NSDateFormatter* CreateDateFormatter(NSString *format)
 {

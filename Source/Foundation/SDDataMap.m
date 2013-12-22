@@ -321,7 +321,7 @@ static NSNumberFormatter *__internalformatter = nil;
     {
         // handle non-obj types that need to be set to 0.
         if ([type length] == 1)
-            result = [NSNumber numberWithInt:0]; // kvo will turn this into 0 for everything.
+            result = [NSNumber numberWithInteger:0]; // kvo will turn this into 0 for everything.
         else
             result = nil;
     }
@@ -403,7 +403,7 @@ static NSNumberFormatter *__internalformatter = nil;
     
     NSMutableArray *results = [NSMutableArray array];
     
-    unsigned int outCount, i;
+    NSUInteger outCount, i;
     objc_property_t *properties = class_copyPropertyList([object class], &outCount);
     for (i = 0; i < outCount; i++)
     {
@@ -684,7 +684,7 @@ static NSNumberFormatter *__internalformatter = nil;
 
 - (unsigned int)unsignedIntValue
 {
-    unsigned int result = [[self numberValue] unsignedIntValue];
+    NSUInteger result = [[self numberValue] unsignedIntegerValue];
     return result;
 }
 

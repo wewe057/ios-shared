@@ -104,7 +104,7 @@
 /**
  Returns a `float` representation of the object for `keyPath`. Returns `0` if no representation is available using standard underlying data type conversion methods.
  */
-- (float)floatForKeyPath:(NSString *)keyPath;
+- (CGFloat)floatForKeyPath:(NSString *)keyPath;
 
 /**
  Returns a `double` representation of the object for `keyPath`. Returns `0` if no representation is available using standard underlying data type conversion methods.

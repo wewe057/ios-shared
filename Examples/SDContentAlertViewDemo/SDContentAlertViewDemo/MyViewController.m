@@ -102,7 +102,7 @@
 - (IBAction)stackedAlertAction:(id)sender
 {
     for (NSInteger i = 1; i <= 5; i++)
-        [SDContentAlertView showAlertWithTitle:[NSString stringWithFormat:@"Title %i", i] message:@"Message" cancelTitle:@"OK" completion:nil];
+        [SDContentAlertView showAlertWithTitle:[NSString stringWithFormat:@"Title %zd", i] message:@"Message" cancelTitle:@"OK" completion:nil];
 }
 
 #pragma mark - UIAlertView examples
@@ -131,7 +131,7 @@
 {
     for (NSInteger i = 1; i <= 5; i++)
     {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Title %i", i]
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"Title %zd", i]
                                                             message:@"Message"
                                                            delegate:self
                                                   cancelButtonTitle:@"Cancel"

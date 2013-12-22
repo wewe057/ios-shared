@@ -9,6 +9,7 @@
 //  Copyright (c) 2013, Mathieu Bolard All rights reserved.
 
 #import "SDSwitch.h"
+#include <tgmath.h>
 
 @interface SDSwitch () <UIGestureRecognizerDelegate>
 
@@ -62,7 +63,7 @@
     _backLayer.backgroundColor = [[UIColor clearColor] CGColor];
     _backLayer.frame = self.bounds;
     _backLayer.cornerRadius = self.bounds.size.height/2.0;
-    CGPathRef path1 = [UIBezierPath bezierPathWithRoundedRect:_backLayer.bounds cornerRadius:floorf(_backLayer.bounds.size.height/2.0)].CGPath;
+    CGPathRef path1 = [UIBezierPath bezierPathWithRoundedRect:_backLayer.bounds cornerRadius:floor(_backLayer.bounds.size.height/2.0)].CGPath;
     _backLayer.path = path1;
     [_backLayer setValue:[NSNumber numberWithBool:NO] forKey:@"isOn"];
     _backLayer.fillColor = [_tintColor CGColor];
@@ -71,7 +72,7 @@
     _fillLayer = [CAShapeLayer layer];
     _fillLayer.backgroundColor = [[UIColor clearColor] CGColor];
     _fillLayer.frame = CGRectInset(self.bounds, 1.5, 1.5);
-    CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:_fillLayer.bounds cornerRadius:floorf(_fillLayer.bounds.size.height/2.0)].CGPath;
+    CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:_fillLayer.bounds cornerRadius:floor(_fillLayer.bounds.size.height/2.0)].CGPath;
     _fillLayer.path = path;
     [_fillLayer setValue:[NSNumber numberWithBool:YES] forKey:@"isVisible"];
     _fillLayer.fillColor = [[UIColor whiteColor] CGColor];
@@ -82,7 +83,7 @@
     _thumbLayer.backgroundColor = [[UIColor clearColor] CGColor];
     _thumbLayer.frame = CGRectMake(1.0, 1.0, self.bounds.size.height-2.0, self.bounds.size.height-2.0);
     _thumbLayer.cornerRadius = self.bounds.size.height/2.0;
-    CGPathRef knobPath = [UIBezierPath bezierPathWithRoundedRect:_thumbLayer.bounds cornerRadius:floorf(_thumbLayer.bounds.size.height/2.0)].CGPath;
+    CGPathRef knobPath = [UIBezierPath bezierPathWithRoundedRect:_thumbLayer.bounds cornerRadius:floor(_thumbLayer.bounds.size.height/2.0)].CGPath;
     _thumbLayer.path = knobPath;
     _thumbLayer.fillColor = [UIColor whiteColor].CGColor;
     _thumbLayer.shadowColor = [UIColor blackColor].CGColor;
