@@ -403,7 +403,8 @@ static NSNumberFormatter *__internalformatter = nil;
     
     NSMutableArray *results = [NSMutableArray array];
     
-    NSUInteger outCount, i;
+    unsigned int outCount;
+    NSUInteger i;
     objc_property_t *properties = class_copyPropertyList([object class], &outCount);
     for (i = 0; i < outCount; i++)
     {
@@ -684,7 +685,7 @@ static NSNumberFormatter *__internalformatter = nil;
 
 - (unsigned int)unsignedIntValue
 {
-    NSUInteger result = [[self numberValue] unsignedIntegerValue];
+    unsigned int result = [[self numberValue] unsignedIntValue];
     return result;
 }
 

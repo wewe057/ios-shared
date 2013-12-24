@@ -513,8 +513,8 @@ static void SDTMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
 
 - (NSString *) description;
 {
-    NSString *description = [NSString stringWithFormat:@"<%@: %#x; isReachable: %s; current reachability flags: %@>",
-                             NSStringFromClass([self class]), (NSUInteger) self, (self.isReachable ? "YES" : "NO" ), self.currentReachabilityFlags];
+    NSString *description = [NSString stringWithFormat:@"<%@: %#tx; isReachable: %s; current reachability flags: %@>",
+                             NSStringFromClass([self class]), self, (self.isReachable ? "YES" : "NO" ), self.currentReachabilityFlags];
     return description;
 }
 
