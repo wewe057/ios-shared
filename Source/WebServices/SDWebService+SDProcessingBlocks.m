@@ -143,7 +143,7 @@
             NSArray *responseObjects = responseObject;
             NSMutableArray *modelObjects = [NSMutableArray array];
 
-            for (NSUInteger i = 0; i<[modelObjects count]; i++)
+            for (NSUInteger i = 0; i<[responseObjects count]; i++)
             {
                 NSDictionary *dataDictionary = [responseObjects objectAtIndex:i];
                 NSDictionary *subDictionary = [dataDictionary objectForKey:@"data"];
