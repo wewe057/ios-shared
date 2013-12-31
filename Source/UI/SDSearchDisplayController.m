@@ -149,8 +149,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     [super setActive:visible animated:animated];
     
     if (visible && !recentSearchTableView)
-    {        
-        searchHistory = [[[NSUserDefaults standardUserDefaults] arrayForKey:self.userDefaultsKey] mutableCopy];
+    {
+        [self updateSearchHistory];
         if (!searchHistory)
             searchHistory = [[NSMutableArray alloc] init];
         
@@ -338,6 +338,11 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     if (tableView == recentSearchTableView)
         return @"Recent Searches";
     return nil;
+}
+
+- (void)updateSearchHistory
+{
+    searchHistory = [[[NSUserDefaults standardUserDefaults] arrayForKey:self.userDefaultsKey] mutableCopy];
 }
 
 @end
