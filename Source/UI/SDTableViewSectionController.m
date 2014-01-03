@@ -56,12 +56,12 @@
 // This is where we hook to ask our dataSource for the Array of controllers
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    @strongify(self.dataSource, dataSource);
+    @strongify(self.delegate, delegate);
     if (tableView == self.tableView)
     {
-        if ([dataSource conformsToProtocol:@protocol(SDTableViewSectionControllerDataSource)])
+        if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
         {
-            self.sectionControllers = [dataSource controllersForTableView:tableView];
+            self.sectionControllers = [delegate controllersForTableView:tableView];
             NSInteger sectionCount = self.sectionControllers.count;
             return sectionCount;
         }
@@ -94,6 +94,17 @@
         return [sectionController sectionController:self didSelectRow:row];
     }
 
+}
+
+#pragma mark - SectionController Methods
+
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    @strongify(self.delegate, delegate);
+    if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
+    {
+        [delegate sectionController:self pushViewController:viewController animated:animated];
+    }
 }
 
 @end

@@ -12,8 +12,9 @@
 
 //__________________________________________________________________________
 // This protocol supplies section controllers to the SDTableViewSectionController
+// And handles delegate methods
 
-@protocol SDTableViewSectionControllerDataSource <NSObject>
+@protocol SDTableViewSectionControllerDelegate <NSObject>
 
 @required
 
@@ -25,6 +26,15 @@
  *  @return An array of objects that conform to SDTableViewSectionProtocol
  */
 - (NSArray *)controllersForTableView:(UITableView *)tableView;
+
+/**
+ *  A section controller is asking you to push a view controller
+ *
+ *  @param sectionController The section controller making the request
+ *  @param viewController    The view controller the section controller wants pushed
+ *  @param animated          YES if the section controller wants the push animated
+ */
+- (void)sectionController:(SDTableViewSectionController *)sectionController pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
 @end
 
 //________________________________________________________________________________________
@@ -55,13 +65,22 @@
 
 - (instancetype) initWithTableView:(UITableView *)tableView;
 
-@property (nonatomic, weak)             id <SDTableViewSectionControllerDataSource>  dataSource;
+@property (nonatomic, weak)             id <SDTableViewSectionControllerDelegate>  delegate;
 @property (nonatomic, weak, readonly)   UITableView                                 *tableView;
 
 /**
  *  Array of objects conforming to SDTableViewSectionProtocol
  */
 @property (nonatomic, strong, readonly) NSArray                                     *sectionControllers;
+
+/**
+ *  Asks the section controller's delegate to push this view controller.  Use this method
+ *  to push the view controller instead of trying to push it yourself to keep the design clean
+ *
+ *  @param viewController UIViewController to push
+ *  @param animated       YES if should be animated
+ */
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
 
 @end
 
