@@ -14,8 +14,6 @@
 #import "UIDevice+machine.h"
 #import "UIColor+SDExtensions.h"
 
-static UIImage* sMenuAdornmentImage = nil;
-
 #pragma mark - SDPullNavigationBar
 
 @interface SDPullNavigationBar()<UIGestureRecognizerDelegate>
@@ -49,11 +47,6 @@ static UIImage* sMenuAdornmentImage = nil;
     {
         pullBarAppearance.tintColor = [UIColor colorWith8BitRed:23 green:108 blue:172 alpha:1.0];
     }
-}
-
-+ (void)setMenuAdornmentImage:(UIImage*)image
-{
-    sMenuAdornmentImage = image;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -108,7 +101,7 @@ static UIImage* sMenuAdornmentImage = nil;
     _menuBackgroundEffectsView.opaque = NO;
     [_menuContainer addSubview:_menuBackgroundEffectsView];
 
-    UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager globalMenuStoryboardId] bundle:nil];
+    UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
     _menuController = [menuStoryBoard instantiateInitialViewController];
     _menuController.view.clipsToBounds = YES;
     _menuController.view.opaque = YES;
@@ -118,13 +111,14 @@ static UIImage* sMenuAdornmentImage = nil;
     dismissTapGesture.delegate = self;
     [_menuContainer addGestureRecognizer:dismissTapGesture];
 
-    if(sMenuAdornmentImage)
+    UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
+    if(menuAdornmentImage)
     {
-        _menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:(CGRect){CGPointZero, { _menuController.view.bounds.size.width, sMenuAdornmentImage.size.height }}];
+        _menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:(CGRect){CGPointZero, { _menuController.view.bounds.size.width, menuAdornmentImage.size.height }}];
         _menuBottomAdornmentView.clipsToBounds = YES;
         _menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
         _menuBottomAdornmentView.opaque = YES;
-        _menuBottomAdornmentView.image = sMenuAdornmentImage;
+        _menuBottomAdornmentView.image = menuAdornmentImage;
         [_menuContainer addSubview:_menuBottomAdornmentView];
     }
 
@@ -215,7 +209,7 @@ static UIImage* sMenuAdornmentImage = nil;
         {
             self.menuController.view.frame = (CGRect){{ self.frame.size.width * 0.5f - 160.0f, 64.0f }, { 320.0f, 0.0f } };
             self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height },
-                                                           { self.menuController.view.frame.size.width, sMenuAdornmentImage.size.height } };
+                                                           { self.menuController.view.frame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
         }
         
         [self.superview insertSubview:self.menuContainer belowSubview:self];

@@ -9,36 +9,10 @@
 #import "SDPullNavigationManager.h"
 
 #import "NSObject+SDExtensions.h"
-#import "SDPullNavigationBar.h"
 #import "SDPullNavigationBarView.h"
-
-static Class sPullNavigationBarViewClass = Nil;
-static NSString* sPullNavigationStoryboardId = Nil;
+#import "SDPullNavigationAutomation.h"
 
 @implementation SDPullNavigationManager
-
-+ (void)initialize
-{
-    if([self class] == [SDPullNavigationManager class])
-    {
-        sPullNavigationBarViewClass = [SDPullNavigationBarView class];
-    }
-}
-
-+ (void)setPullNavigationBarViewClass:(Class)overrideClass
-{
-    sPullNavigationBarViewClass = overrideClass;
-}
-
-+ (NSString*)globalMenuStoryboardId
-{
-    return sPullNavigationStoryboardId;
-}
-
-+ (void)setGlobalMenuStoryboardId:(NSString*)storyboardId
-{
-    sPullNavigationStoryboardId = [storyboardId copy];
-}
 
 + (instancetype)sharedInstance
 {
@@ -60,9 +34,9 @@ static NSString* sPullNavigationStoryboardId = Nil;
     self = [super init];
     if(self != nil)
     {
-        _leftBarItemsView = [[sPullNavigationBarViewClass alloc] initWithEdge:UIRectEdgeLeft];
+        _leftBarItemsView = [[[SDPullNavigationBarView class] alloc] initWithEdge:UIRectEdgeLeft];
         _leftBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftBarItemsView];
-        _rightBarItemsView = [[sPullNavigationBarViewClass alloc] initWithEdge:UIRectEdgeRight];
+        _rightBarItemsView = [[[SDPullNavigationBarView class] alloc] initWithEdge:UIRectEdgeRight];
         _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
 
         _showGlobalNavControls = YES;
@@ -79,6 +53,29 @@ static NSString* sPullNavigationStoryboardId = Nil;
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)setDelegate:(id)delegate
+{
+    if(delegate)
+    {
+        [delegate setupNavigationBar];
+        [delegate setupNavigationBarItems];
+        _globalPullNavController = [delegate setupGlobalContainerViewController];
+    }
+    else
+    {
+        _globalPullNavController = nil;
+        _delegate = nil;
+    }
+}
+
+- (void)setPullNavigationBarViewClass:(Class)overrideClass
+{
+    _leftBarItemsView = [[overrideClass alloc] initWithEdge:UIRectEdgeLeft];
+    _leftBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftBarItemsView];
+    _rightBarItemsView = [[overrideClass alloc] initWithEdge:UIRectEdgeRight];
+    _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
 }
 
 // Called when the navigation controller shows a new top view controller via a push, pop or setting of the view controller stack.
@@ -125,6 +122,35 @@ static NSString* sPullNavigationStoryboardId = Nil;
 - (void)statusBarDidChangeRotationNotification:(NSNotification*)notification
 {
     // TODO: We will need to update the size of the left and right global nav controls areas.
+}
+
+#pragma mark - Navigation Automation
+
+- (void)globalNavigationWithSteps:(NSArray*)steps
+{
+    NSAssert(steps, @"Not gonna automate a lot with a nil steps array.");
+    NSAssert(steps.count, @"Not gonna automate a lot with no steps in the array.");
+
+    NSDictionary* topLevelStep = steps[0];
+    id topLevelController = topLevelStep[SDPullNavigationControllerKey];
+
+    NSAssert(topLevelController, @"The first level of automation needs at least a controller.");
+
+    // Determine where this topLevel is. Is it part of the containerViewController
+    // or is it to be found in the navigationBarItems?
+
+    // Check to see if we can find the requested toplevel class somewhere in the list of containerViewControllers
+
+    UINavigationController* foundNavigationController = nil;
+    foundNavigationController = [self.globalPullNavController navigationControllerForViewControllerClass:topLevelController];
+    if(foundNavigationController == nil)
+        foundNavigationController = [self.globalPullNavController navigationControllerForViewController:topLevelController];
+
+    // We did not find the supplied controller in the list of top level view controllers in the globalPullNavControllers list.
+    // Now start looking through the things on the navigation bar.
+    if(foundNavigationController)
+    {
+    }
 }
 
 @end

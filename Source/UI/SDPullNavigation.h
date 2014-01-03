@@ -19,8 +19,10 @@
 
 // Import all of the classes necessary for the SDPullNavigation
 
+//#import "SDPullNavigationBar.h"   Making this more private and moving manipulation to the manager.
+
 #import "SDContainerViewController.h"
-#import "SDPullNavigationBar.h"
+#import "SDPullNavigationAutomation.h"
 #import "SDPullNavigationBarView.h"
 #import "SDPullNavigationBarControlsView.h"
 #import "SDPullNavigationManager.h"
