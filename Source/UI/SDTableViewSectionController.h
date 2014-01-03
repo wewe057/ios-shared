@@ -30,8 +30,9 @@
 //________________________________________________________________________________________
 // This protocol declares the data and delegate interface for section controllers
 
-@protocol SDTableViewSectionProtocol <NSObject>
+@protocol SDTableViewSectionDelegate <NSObject>
 
+// "DataSource" methods
 @required
 
 - (NSInteger)numberOfRowsForSectionController:(SDTableViewSectionController *)sectionController;
@@ -40,6 +41,10 @@
 @optional
 
 - (NSString *)sectionControllerTitleForHeader:(SDTableViewSectionController *)sectionController;
+
+// "Delegate" methods
+@optional
+- (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
 @end
 
 //__________________________________________________________________________

@@ -32,7 +32,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id<SDTableViewSectionProtocol>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(numberOfRowsForSectionController:)])
     {
         return [sectionController numberOfRowsForSectionController:self];
@@ -44,7 +44,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionProtocol>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionController:cellForRow:)])
     {
         UITableViewCell *cell = [sectionController sectionController:self cellForRow:row];
@@ -72,7 +72,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    id<SDTableViewSectionProtocol>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
     {
         return [sectionController sectionControllerTitleForHeader:self];
@@ -82,8 +82,18 @@
 }
 
 
-
 #pragma mark - UITableView Delegate
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    if ([sectionController respondsToSelector:@selector(sectionController:didSelectRow:)])
+    {
+        return [sectionController sectionController:self didSelectRow:row];
+    }
+
+}
 
 @end
