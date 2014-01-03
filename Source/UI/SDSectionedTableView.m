@@ -2,7 +2,7 @@
 //  SDSectionedTableView.m
 //  walmart
 //
-//  Created by Steve Riggins on 12/31/13.
+//  Created by Steve Riggins & Woolie on 12/31/13.
 //  Copyright (c) 2013 Walmart. All rights reserved.
 //
 
