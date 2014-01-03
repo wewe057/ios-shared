@@ -91,9 +91,8 @@
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionController:didSelectRow:)])
     {
-        return [sectionController sectionController:self didSelectRow:row];
+        [sectionController sectionController:self didSelectRow:row];
     }
-
 }
 
 #pragma mark - SectionController Methods
