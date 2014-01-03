@@ -36,6 +36,10 @@
 
 - (NSInteger)numberOfRowsForSectionController:(SDTableViewSectionController *)sectionController;
 - (UITableViewCell *)sectionController:(SDTableViewSectionController *)sectionController cellForRow:(NSInteger)row;
+
+@optional
+
+- (NSString *)sectionControllerTitleForHeader:(SDTableViewSectionController *)sectionController;
 @end
 
 //__________________________________________________________________________
