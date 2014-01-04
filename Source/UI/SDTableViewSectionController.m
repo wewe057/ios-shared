@@ -95,6 +95,18 @@
     }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    if ([sectionController respondsToSelector:@selector(sectionController:heightForRow:)])
+    {
+        return [sectionController sectionController:self heightForRow:row];
+    }
+    return 44; // Some default size so engineer sees a broken cell
+}
+
 #pragma mark - SectionController Methods
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -103,6 +115,24 @@
     if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
     {
         [delegate sectionController:self pushViewController:viewController animated:animated];
+    }
+}
+
+- (void)presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
+{
+    @strongify(self.delegate, delegate);
+    if ([delegate respondsToSelector:@selector(sectionController:presentViewController:animated:completion:)])
+    {
+        [delegate sectionController:self presentViewController:viewController animated:animated completion:completion];
+    }
+}
+
+- (void)dismissViewControllerAnimated: (BOOL)animated completion: (void (^)(void))completion
+{
+    @strongify(self.delegate, delegate);
+    if ([delegate respondsToSelector:@selector(sectionController:dismissViewControllerAnimated:completion:)])
+    {
+        [delegate sectionController:self dismissViewControllerAnimated:animated completion:completion];
     }
 }
 

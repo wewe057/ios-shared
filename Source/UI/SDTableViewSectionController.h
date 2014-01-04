@@ -27,6 +27,8 @@
  */
 - (NSArray *)controllersForTableView:(UITableView *)tableView;
 
+@optional
+
 /**
  *  A section controller is asking you to push a view controller
  *
@@ -35,6 +37,25 @@
  *  @param animated          YES if the section controller wants the push animated
  */
 - (void)sectionController:(SDTableViewSectionController *)sectionController pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
+
+/**
+ *  A section controller is asking you to present a view controller
+ *
+ *  @param sectionController The section controller making the request
+ *  @param viewController    The view controller the section controller wants presented
+ *  @param animated          YES if the section controller wants the presentation animated
+ *  @param completion        A completion block to call when presentation is complete
+ */
+- (void)sectionController:(SDTableViewSectionController *)sectionController presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion;
+
+/**
+ *  A section controller is asking you to dismiss the current view controller
+ *
+ *  @param sectionController The section controller making the request
+ *  @param animated          YES if the section controller wants the dismiss animated
+ *  @param completion        A completion block to call when presentation is complete
+ */
+- (void)sectionController:(SDTableViewSectionController *)sectionController dismissViewControllerAnimated: (BOOL)animated completion: (void (^)(void))completion;
 @end
 
 //________________________________________________________________________________________
@@ -55,6 +76,9 @@
 // "Delegate" methods
 @optional
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
+
+// Variable height support
+- (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
 @end
 
 //__________________________________________________________________________
@@ -75,12 +99,30 @@
 
 /**
  *  Asks the section controller's delegate to push this view controller.  Use this method
- *  to push the view controller instead of trying to push it yourself to keep the design clean
+ *  to push the view controller instead of trying to push it yourself
  *
  *  @param viewController UIViewController to push
  *  @param animated       YES if should be animated
  */
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
 
+/**
+ *  Asks the section controller's delegate to present this view controller.  Use this method
+ *  to present the view controller instead of trying to present it yourself
+ *
+ *  @param viewController UIViewController to present
+ *  @param animated       YES if should be animated
+ *  @param completion     completion block to call when done
+ */
+- (void)presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion;
+
+/**
+ *  Asks the section controller's delegate to dismiss the currently presented view controller.  Use this method
+ *  instead of trying to present it yourself
+ *
+ *  @param animated   YES if should be animated
+ *  @param completion completion block to call when done
+ */
+- (void)dismissViewControllerAnimated: (BOOL)animated completion: (void (^)(void))completion;
 @end
 
