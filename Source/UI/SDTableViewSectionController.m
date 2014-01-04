@@ -164,15 +164,18 @@
 - (void)p_updateFlags
 {
     _sectionsImplementHeightForRow = NO;
-    for (id<SDTableViewSectionDelegate>sectionController in self.sectionControllers)
+    for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
-        if ([sectionController respondsToSelector:@selector(sectionController:heightForRow:)])
+        id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[controllerIndex];
+        
+        BOOL implements = [sectionController respondsToSelector:@selector(sectionController:heightForRow:)];
+        if (controllerIndex == 0)
         {
-            _sectionsImplementHeightForRow = YES;
+            _sectionsImplementHeightForRow = implements;
         }
         else
         {
-            NSAssert(_sectionsImplementHeightForRow, @"If one section implements sectionController:heightForRow:, then all sections must");
+            NSAssert(_sectionsImplementHeightForRow == implements, @"If one section implements sectionController:heightForRow:, then all sections must");
         }
     }
 }
