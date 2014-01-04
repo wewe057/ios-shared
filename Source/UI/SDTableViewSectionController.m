@@ -9,6 +9,11 @@
 #import "SDTableViewSectionController.h"
 
 @interface SDTableViewSectionController () <UITableViewDataSource, UITableViewDelegate>
+{
+    // Private flags
+    BOOL _sectionsImplementHeightForRow;
+}
+
 @property (nonatomic, weak)   UITableView *tableView;
 @property (nonatomic, strong) NSArray     *sectionControllers;
 @end
@@ -57,11 +62,20 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     @strongify(self.delegate, delegate);
-    if (tableView == self.tableView)
+    @strongify(self.tableView, strongTableView);
+    if (tableView == strongTableView)
     {
         if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
         {
             self.sectionControllers = [delegate controllersForTableView:tableView];
+            
+            // Force caching of our flags and the table view's flags
+            [self p_updateFlags];
+            strongTableView.delegate = nil;
+            strongTableView.dataSource = nil;
+            strongTableView.delegate = self;
+            strongTableView.dataSource = self;
+            
             NSInteger sectionCount = self.sectionControllers.count;
             return sectionCount;
         }
@@ -133,6 +147,33 @@
     if ([delegate respondsToSelector:@selector(sectionController:dismissViewControllerAnimated:completion:)])
     {
         [delegate sectionController:self dismissViewControllerAnimated:animated completion:completion];
+    }
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector
+{
+    if (aSelector == @selector(tableView:heightForRowAtIndexPath:))
+    {
+        return _sectionsImplementHeightForRow;
+    }
+    return [super respondsToSelector:aSelector];
+}
+
+#pragma mark Private methods
+
+- (void)p_updateFlags
+{
+    _sectionsImplementHeightForRow = NO;
+    for (id<SDTableViewSectionDelegate>sectionController in self.sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionController:heightForRow:)])
+        {
+            _sectionsImplementHeightForRow = YES;
+        }
+        else
+        {
+            NSAssert(_sectionsImplementHeightForRow, @"If one section implements sectionController:heightForRow:, then all sections must");
+        }
     }
 }
 
