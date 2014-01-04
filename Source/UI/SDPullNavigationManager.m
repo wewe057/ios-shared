@@ -9,7 +9,7 @@
 #import "SDPullNavigationManager.h"
 
 #import "NSObject+SDExtensions.h"
-#import "SDPullNavigationBarView.h"
+#import "SDPullNavigationBarControlsView.h"
 #import "SDPullNavigationAutomation.h"
 
 @implementation SDPullNavigationManager
@@ -34,9 +34,9 @@
     self = [super init];
     if(self != nil)
     {
-        _leftBarItemsView = [[[SDPullNavigationBarView class] alloc] initWithEdge:UIRectEdgeLeft];
+        _leftBarItemsView = [[[SDPullNavigationBarControlsView class] alloc] initWithEdge:UIRectEdgeLeft];
         _leftBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftBarItemsView];
-        _rightBarItemsView = [[[SDPullNavigationBarView class] alloc] initWithEdge:UIRectEdgeRight];
+        _rightBarItemsView = [[[SDPullNavigationBarControlsView class] alloc] initWithEdge:UIRectEdgeRight];
         _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
 
         _showGlobalNavControls = YES;
@@ -126,7 +126,7 @@
 
 #pragma mark - Navigation Automation
 
-- (void)globalNavigationWithSteps:(NSArray*)steps
+- (void)navigateWithSteps:(NSArray*)steps
 {
     NSAssert(steps, @"Not gonna automate a lot with a nil steps array.");
     NSAssert(steps.count, @"Not gonna automate a lot with no steps in the array.");
@@ -141,16 +141,69 @@
 
     // Check to see if we can find the requested toplevel class somewhere in the list of containerViewControllers
 
-    UINavigationController* foundNavigationController = nil;
-    foundNavigationController = [self.globalPullNavController navigationControllerForViewControllerClass:topLevelController];
-    if(foundNavigationController == nil)
-        foundNavigationController = [self.globalPullNavController navigationControllerForViewController:topLevelController];
-
-    // We did not find the supplied controller in the list of top level view controllers in the globalPullNavControllers list.
-    // Now start looking through the things on the navigation bar.
+    UINavigationController* foundNavigationController = [self topLevelViewController:topLevelController];
     if(foundNavigationController)
     {
+        [self navigateTopLevelViewController:foundNavigationController withSteps:steps];
     }
+    else
+    {
+        // We did not find the supplied controller in the list of top level view controllers in the globalPullNavControllers list.
+        // Now start looking through the things on the navigation bar.
+
+        UIControl* foundControl = [self barItemController:topLevelController];
+        [self navigateBarItem:foundControl withSteps:steps];
+    }
+}
+
+- (void)navigateTopLevelViewController:(UINavigationController*)navigationController withSteps:(NSArray*)steps
+{
+}
+
+- (void)navigateBarItem:(UIControl*)control withSteps:(NSArray*)steps
+{
+    NSDictionary* firstLevelStep = steps[0];
+
+    control.pullNavigationAutomationCommand = firstLevelStep[SDPullNavigationCommandKey];
+    control.pullNavigationAutomationData = firstLevelStep[SDPullNavigationDataKey];
+
+    [control sendActionsForControlEvents:UIControlEventTouchUpInside | UIControlEventEditingDidBegin];
+}
+
+#pragma mark - Automation Utilities
+
+- (UINavigationController*)topLevelViewController:(id)controller
+{
+    UINavigationController* foundNavigationController = nil;
+    foundNavigationController = [self.globalPullNavController navigationControllerForViewControllerClass:controller];
+    if(foundNavigationController == nil)
+        foundNavigationController = [self.globalPullNavController navigationControllerForViewController:controller];
+
+    return foundNavigationController;
+}
+
+- (UIControl*)barItemController:(id)controller
+{
+    UIControl* foundControl = nil;
+
+    NSArray* barItems = [self.leftBarItemsView.barItems arrayByAddingObjectsFromArray:self.rightBarItemsView.barItems];
+    for(UIView* item in barItems)
+    {
+        Class pullNavigationAutomationClass = item.pullNavigationAutomationClass;
+        if(pullNavigationAutomationClass)
+        {
+            if(pullNavigationAutomationClass == controller || pullNavigationAutomationClass == [controller class])
+            {
+                // We found the barItem that we want to automate.
+
+                if([item isKindOfClass:[UIControl class]])
+                    foundControl = (UIControl*)item;
+                break;
+            }
+        }
+    }
+
+    return foundControl;
 }
 
 @end

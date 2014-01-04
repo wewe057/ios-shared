@@ -19,3 +19,15 @@ extern NSString* const SDPullNavigationDataKey;
 - (NSArray*)automationCommands;
 
 @end
+
+@interface UIView(SDPullNavigationAutomation)
+
+- (Class)pullNavigationAutomationClass;
+- (void)setPullNavigationAutomationClass:(Class)automationClass;
+- (NSString*)pullNavigationAutomationCommand;
+- (void)setPullNavigationAutomationCommand:(NSString*)automationCommand;
+- (NSString*)pullNavigationAutomationData;
+- (void)setPullNavigationAutomationData:(NSString*)automationData;
+- (void)resetPullNavigationAutomationCommand;
+
+@end

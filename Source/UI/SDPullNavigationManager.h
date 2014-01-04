@@ -10,7 +10,7 @@
 
 #import "SDPullNavigationBar.h"
 
-@class SDPullNavigationBarView;
+@class SDPullNavigationBarControlsView;
 
 @interface SDPullNavigationManager : NSObject<UINavigationControllerDelegate>
 
@@ -20,10 +20,10 @@
 @property (nonatomic, weak) id<SDPullNavigationSetupProtocol> delegate;
 @property (nonatomic, strong) SDContainerViewController* globalPullNavController;
 @property (nonatomic, assign) BOOL showGlobalNavControls;   // Turn this off and I won't take away your navigationItems
-@property (nonatomic, strong) SDPullNavigationBarView* leftBarItemsView;
-@property (nonatomic, strong) SDPullNavigationBarView* rightBarItemsView;
+@property (nonatomic, strong) SDPullNavigationBarControlsView* leftBarItemsView;
+@property (nonatomic, strong) SDPullNavigationBarControlsView* rightBarItemsView;
 
 + (instancetype)sharedInstance;
-- (void)globalNavigationWithSteps:(NSArray*)steps;
+- (void)navigateWithSteps:(NSArray*)steps;
 
 @end

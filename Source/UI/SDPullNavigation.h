@@ -23,6 +23,5 @@
 
 #import "SDContainerViewController.h"
 #import "SDPullNavigationAutomation.h"
-#import "SDPullNavigationBarView.h"
 #import "SDPullNavigationBarControlsView.h"
 #import "SDPullNavigationManager.h"
