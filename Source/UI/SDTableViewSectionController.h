@@ -77,7 +77,9 @@
 @optional
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
 
+@required
 // Variable height support
+// Required for now because of the current design
 - (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
 @end
 
