@@ -8,11 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+#import "SDContainerViewController.h"
+
 @class SDPullNavigationBar;
 
 @protocol SDPullNavigationSetupProtocol <NSObject, UITabBarControllerDelegate>
 @required
-- (void)setupNavigation;
+- (void)setupNavigationBar;
+- (void)setupNavigationBarItems;
+- (SDContainerViewController*)setupGlobalContainerViewController;
 @end
 
 @protocol SDPullNavigationBarDelegate <NSObject>
@@ -24,7 +28,6 @@
 @property (nonatomic, strong) IBOutlet UITableViewController<SDPullNavigationBarDelegate>* menuController;
 
 + (void)setupDefaults;
-+ (void)setMenuAdornmentImage:(UIImage*)image;
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController;
 
 - (IBAction)tapAction:(id)sender;

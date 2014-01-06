@@ -8,17 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-@class SDPullNavigationBarView;
+#import "SDPullNavigationBar.h"
+
+@class SDPullNavigationBarControlsView;
 
 @interface SDPullNavigationManager : NSObject<UINavigationControllerDelegate>
 
-+ (instancetype)sharedInstance;
-+ (void)setPullNavigationBarViewClass:(Class)overrideClass;
-+ (NSString*)globalMenuStoryboardId;
-+ (void)setGlobalMenuStoryboardId:(NSString*)storyboardId;
-
+@property (nonatomic, strong) Class pullNavigationBarViewClass;
+@property (nonatomic, strong) UIImage* menuAdornmentImage;
+@property (nonatomic, copy) NSString* globalMenuStoryboardId;
+@property (nonatomic, weak) id<SDPullNavigationSetupProtocol> delegate;
+@property (nonatomic, strong) SDContainerViewController* globalPullNavController;
 @property (nonatomic, assign) BOOL showGlobalNavControls;   // Turn this off and I won't take away your navigationItems
-@property (nonatomic, strong) SDPullNavigationBarView* leftBarItemsView;
-@property (nonatomic, strong) SDPullNavigationBarView* rightBarItemsView;
+@property (nonatomic, strong) SDPullNavigationBarControlsView* leftBarItemsView;
+@property (nonatomic, strong) SDPullNavigationBarControlsView* rightBarItemsView;
+
++ (instancetype)sharedInstance;
+- (void)navigateWithSteps:(NSArray*)steps;
 
 @end

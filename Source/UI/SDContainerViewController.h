@@ -19,6 +19,16 @@
 - (instancetype)initWithViewControllers:(NSArray *)viewControllers;
 
 /**
+ Given an instantiated view controller, find the navigationController in the list of navcontrollers.
+ */
+- (UINavigationController *)navigationControllerForViewController:(UIViewController *)viewController;
+
+/**
+ Given a view controller class, find a matching navigationController with conforming class in the list of navcontrollers.
+ */
+- (UINavigationController *)navigationControllerForViewControllerClass:(Class)viewControllerClass;
+
+/**
  Returns the selected view controller or sets it. read/write.
  */
 @property (nonatomic, assign) UIViewController *selectedViewController;

@@ -2,7 +2,7 @@
 //  ios-shared.h
 //  ios-shared
 //
-//  Created by Brandon Sneed on 3/15/13.
+//  Created by Brandon Sneed on 3/15/2013.
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 

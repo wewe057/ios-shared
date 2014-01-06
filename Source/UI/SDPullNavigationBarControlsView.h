@@ -2,7 +2,7 @@
 //  SDPullNavigationBarControlsView.h
 //  walmart
 //
-//  This is a version of the SDPullNavigationBarView that manages simple list of controls for you.
+//  This is a simple list of controls that live in the pullnav.
 //
 //  Created by Steven Woolgar on 12/06/2013.
 //  Copyright (c) 2013 Walmart. All rights reserved.
@@ -10,11 +10,13 @@
 
 #import <UIKit/UIKit.h>
 
-#import "SDPullNavigationBarView.h"
+@interface SDPullNavigationBarControlsView : UIView
 
-@interface SDPullNavigationBarControlsView : SDPullNavigationBarView
-
+@property (nonatomic, strong) UIBarButtonItem* owningBarButtonItem;
+@property (nonatomic, assign) UIRectEdge edge;
 @property (nonatomic, strong) NSArray* barItems;
+
+- (instancetype)initWithEdge:(UIRectEdge)edge;
 
 - (void)layoutWithBarItems:(NSArray*)barItems;
 
