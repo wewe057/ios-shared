@@ -150,6 +150,8 @@
     }
 }
 
+#pragma mark Private methods
+
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     if (aSelector == @selector(tableView:heightForRowAtIndexPath:))
@@ -159,7 +161,6 @@
     return [super respondsToSelector:aSelector];
 }
 
-#pragma mark Private methods
 
 - (void)p_updateFlags
 {
