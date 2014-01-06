@@ -29,41 +29,41 @@
 /**
  Returns `YES` if the date represented by the receiver occurred more than `numSeconds` seconds ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedMoreThanNSecondsAgo:(int)numSeconds;
+- (BOOL)happenedMoreThanNSecondsAgo:(NSInteger)numSeconds;
 
 /**
  Returns `YES` if the date represented by the receiver occurred more than `numMinutes` minutes ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedMoreThanNMinutesAgo:(int)numMinutes;
+- (BOOL)happenedMoreThanNMinutesAgo:(NSInteger)numMinutes;
 
 /**
  Returns `YES` if the date represented by the receiver occurred more than `numHours` hours ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedMoreThanNHoursAgo:(int)numHours;
+- (BOOL)happenedMoreThanNHoursAgo:(NSInteger)numHours;
 
 /**
  Returns `YES` if the date represented by the receiver occurred more than `numDays` days ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedMoreThanNDaysAgo:(int)numDays;
+- (BOOL)happenedMoreThanNDaysAgo:(NSInteger)numDays;
 
 /**
  Returns `YES` if the date represented by the receiver occurred less than `numSeconds` seconds ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedLessThanNSecondsAgo:(int)numSeconds;
+- (BOOL)happenedLessThanNSecondsAgo:(NSInteger)numSeconds;
 
 /**
  Returns `YES` if the date represented by the receiver occurred less than `numMinutes` minutes ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedLessThanNMinutesAgo:(int)numMinutes;
+- (BOOL)happenedLessThanNMinutesAgo:(NSInteger)numMinutes;
 
 /**
  Returns `YES` if the date represented by the receiver occurred less than `numHours` hours ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedLessThanNHoursAgo:(int)numHours;
+- (BOOL)happenedLessThanNHoursAgo:(NSInteger)numHours;
 
 /**
  Returns `YES` if the date represented by the receiver occurred less than `numDays` days ago. Returns `NO` otherwise.
  */
-- (BOOL)happenedLessThanNDaysAgo:(int)numDays;
+- (BOOL)happenedLessThanNDaysAgo:(NSInteger)numDays;
 
 @end

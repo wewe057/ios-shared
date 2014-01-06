@@ -37,6 +37,7 @@
 - (void)addStringToHistory:(NSString *)string;
 - (void)removeSearchItemFromHistory:(NSString*)string;
 - (NSUInteger)recentSearchesSectionNumber; /** Provides subclass customization if needed */
+- (void)updateSearchHistory;
 
 @end
 

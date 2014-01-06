@@ -108,7 +108,7 @@
     NSAssert([classType isSubclassOfClass:[SDModelObject class]], @"defaultJSONProcessingBlockForClass: works on concrete subclasses of SDModelObject");
 
     SDWebServiceDataCompletionBlock completionBlock = ^id (NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        SDLog(@"%@: %d:\n%@", response, (int)responseCode, [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+        SDLog(@"%@: %zd:\n%@", response, responseCode, [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
 
         id responseObject = [responseData JSONObject];
 
@@ -143,7 +143,7 @@
             NSArray *responseObjects = responseObject;
             NSMutableArray *modelObjects = [NSMutableArray array];
 
-            for (NSUInteger i = 0; i<[modelObjects count]; i++)
+            for (NSUInteger i = 0; i<[responseObjects count]; i++)
             {
                 NSDictionary *dataDictionary = [responseObjects objectAtIndex:i];
                 NSDictionary *subDictionary = [dataDictionary objectForKey:@"data"];

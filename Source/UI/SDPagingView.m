@@ -35,7 +35,7 @@
 
 - (void)_initialize
 {
-    _currentPage = INT_MAX;
+    _currentPage = NSIntegerMax;
     
     _scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
     _scrollView.delegate = self;
@@ -117,7 +117,7 @@
     if (!dataSource)
         return;
     
-    _currentPage = INT_MAX;
+    _currentPage = NSIntegerMax;
     
     _totalCount = [dataSource numberOfViewsInPagingView:self];
     _scrollView.contentSize = CGSizeMake(_scrollView.frame.size.width * _totalCount, _scrollView.frame.size.height);

@@ -76,7 +76,7 @@
 
 - (void)handleDoubleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-    float newScale = 1.0;
+    CGFloat newScale = 1.0;
     if (_scrollView.zoomScale == 1.0)
         newScale = _scrollView.maximumZoomScale;
     
@@ -93,7 +93,7 @@
 
 #pragma mark Utility methods
 
-- (CGRect)zoomRectForScale:(float)scale withCenter:(CGPoint)center
+- (CGRect)zoomRectForScale:(CGFloat)scale withCenter:(CGPoint)center
 {
     CGRect zoomRect;
     

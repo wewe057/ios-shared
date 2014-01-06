@@ -33,6 +33,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "SDDeckController.h"
+#include <tgmath.h>
 
 static char wmdeck_kvoContext;
 
@@ -486,7 +487,7 @@ static char wmdeck_kvoContext;
     {
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *) gestureRecognizer;
         CGPoint translate = [pan translationInView:self.centerDeckContainer];
-        BOOL possible = translate.x != 0 && ((fabsf(translate.y) / fabsf(translate.x)) < 1.0f);
+        BOOL possible = translate.x != 0 && ((fabs(translate.y) / fabs(translate.x)) < 1.0f);
         if (possible && ((translate.x > 0 && self.leftDeck) || (translate.x < 0 && self.rightDeck)))
             return YES;
     }
@@ -658,7 +659,7 @@ static char wmdeck_kvoContext;
 
 - (BOOL)_validateThreshold:(CGFloat)movement
 {
-    CGFloat minimum = floorf(self.view.bounds.size.width * self.minimumMovePercentage);
+    CGFloat minimum = floor(self.view.bounds.size.width * self.minimumMovePercentage);
     
     switch (self.state)
     {
@@ -666,7 +667,7 @@ static char wmdeck_kvoContext;
             return movement <= -minimum;
         }
         case SDDeckCenterVisible: {
-            return fabsf(movement) >= minimum;
+            return fabs(movement) >= minimum;
         }
         case SDDeckRightVisible: {
             return movement >= minimum;
@@ -750,7 +751,7 @@ static char wmdeck_kvoContext;
 - (CGFloat)_calculatedDuration
 {
     CGFloat remaining = fabsf(self.centerDeckContainer.frame.origin.x - _centerDeckRestingFrame.origin.x);
-    CGFloat max = _locationBeforePan.x == _centerDeckRestingFrame.origin.x ? remaining : fabsf(_locationBeforePan.x - _centerDeckRestingFrame.origin.x);
+    CGFloat max = _locationBeforePan.x == _centerDeckRestingFrame.origin.x ? remaining : fabs(_locationBeforePan.x - _centerDeckRestingFrame.origin.x);
     
     return max > 0.0f ? self.maximumAnimationDuration * (remaining / max) : self.maximumAnimationDuration;
 }
@@ -843,7 +844,7 @@ static char wmdeck_kvoContext;
     if (self.centerDeckHidden && self.shouldResizeRightDeck)
         return self.view.bounds.size.width;
     else
-        return self.rightFixedWidth ? self.rightFixedWidth : floorf(self.view.bounds.size.width * self.rightGapPercentage);
+        return self.rightFixedWidth ? self.rightFixedWidth : floor(self.view.bounds.size.width * self.rightGapPercentage);
 }
 
 #pragma mark - Showing Decks
