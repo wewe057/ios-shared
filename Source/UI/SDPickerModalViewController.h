@@ -49,6 +49,6 @@ typedef void (^SDPickerBlock)(void);
  @param row The row to pre-select on display.
  @param component The component to pre-select on display.
  */
-- (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel withSelectedRow:(int)row inComponent:(int)component;
+- (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel withSelectedRow:(NSInteger)row inComponent:(NSInteger)component;
 
 @end

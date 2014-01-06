@@ -12,10 +12,10 @@
 
 #ifndef SDLog
 #if defined(TESTFLIGHT)
-#define SDLog(__FORMAT__, ...) NSLog((@"%s [Line %d] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define SDLog(__FORMAT__, ...) NSLog((@"%s [Line %zd] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #elif defined(DEBUG) && !defined(TESTFLIGHT)
 #define SDLog NSLog
-#define SDTrace(__FORMAT__, ...) NSLog((@"Trace: %s [Line %d] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define SDTrace(__FORMAT__, ...) NSLog((@"Trace: %s [Line %zd] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #else
 #define SDLog(x...)
 #define SDTrace(x...)

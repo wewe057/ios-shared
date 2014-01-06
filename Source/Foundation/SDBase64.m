@@ -22,7 +22,7 @@
     
     char *encodedBuffer = malloc(encodedBufferLength);
     memset(encodedBuffer, 0, encodedBufferLength);
-    int encodedLength = b64_ntop(self.bytes, dataToEncodeLength, encodedBuffer, encodedBufferLength + 1);
+    NSInteger encodedLength = b64_ntop(self.bytes, dataToEncodeLength, encodedBuffer, encodedBufferLength + 1);
     
     if (encodedLength > 0)
         result = [NSData dataWithBytes:encodedBuffer length:(NSUInteger)encodedLength];
@@ -45,7 +45,7 @@
     memcpy(dataBytes, self.bytes, bytesLength);
     dataBytes[bytesLength] = 0;                     // Must be null terminated
 
-    int decodedLength = b64_pton((char const *)dataBytes, decodedBuffer, decodedBufferLength);
+    NSInteger decodedLength = b64_pton((char const *)dataBytes, decodedBuffer, decodedBufferLength);
     
     if (decodedLength >= 0)
         result = [NSData dataWithBytes:decodedBuffer length:(NSUInteger)decodedLength];

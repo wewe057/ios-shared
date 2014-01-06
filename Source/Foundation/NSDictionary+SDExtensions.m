@@ -60,10 +60,10 @@
 {
     id obj = [self objectForKey:key];
     if ([obj isKindOfClass:[NSString class]])
-        return [obj floatValue];
+        return [obj doubleValue];
     else
     if ([obj isKindOfClass:[NSNumber class]])
-        return [obj floatValue];
+        return [obj doubleValue];
     return 0;
 }
 
@@ -161,14 +161,14 @@
     return 0;
 }
 
-- (float)floatForKeyPath:(NSString *)keyPath
+- (CGFloat)floatForKeyPath:(NSString *)keyPath
 {
     id obj = [self valueForKeyPath:keyPath];
     if ([obj isKindOfClass:[NSString class]])
-        return [obj floatValue];
+        return [obj doubleValue];
     else
     if ([obj isKindOfClass:[NSNumber class]])
-        return [obj floatValue];
+        return [obj doubleValue];
     return 0;
 }
 

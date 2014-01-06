@@ -24,7 +24,7 @@
 		return nil;
 	
 	SDAnnotation *result = nil;
-	CLLocationDistance shortestDistance = INT_MAX;
+	CLLocationDistance shortestDistance = CLLocationDistanceMax;
 	
 	for (SDAnnotation* annotation in annotations)
 	{

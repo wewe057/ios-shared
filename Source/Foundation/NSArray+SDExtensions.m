@@ -55,7 +55,7 @@
     
     // it has more than 20 args???  Go smack the developer making methods w/ that many params.
     if (numberOfArguments >= kMaximumCallSelectorArguments)
-        [NSException raise:@"SDException" format:@"makeObjectsPerformSelector:argumentAddresses: cannot take more than %i arguments.", kMaximumCallSelectorArguments];
+        [NSException raise:@"SDException" format:@"makeObjectsPerformSelector:argumentAddresses: cannot take more than %zd arguments.", kMaximumCallSelectorArguments];
     
     // get our args in order and make sure we don't send bullshit parameters, so clear it out.
     void *arguments[kMaximumCallSelectorArguments];

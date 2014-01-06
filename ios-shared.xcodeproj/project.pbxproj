@@ -152,13 +152,13 @@
 		CAAB5A3718564CEE006737D4 /* RxPatientModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A3018564CEE006737D4 /* RxPatientModel.m */; };
 		CAAB5A3818564CEE006737D4 /* RxRefillsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */; };
 		CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */; };
+		E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */; };
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
 		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
 		E2C8A21C1853E660000DD265 /* SDPullNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2111853E660000DD265 /* SDPullNavigationBar.m */; };
 		E2C8A21D1853E660000DD265 /* SDPullNavigationBarBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2131853E660000DD265 /* SDPullNavigationBarBackground.m */; };
 		E2C8A21E1853E660000DD265 /* SDPullNavigationBarControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2151853E660000DD265 /* SDPullNavigationBarControlsView.m */; };
 		E2C8A21F1853E660000DD265 /* SDPullNavigationBarTabButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2171853E660000DD265 /* SDPullNavigationBarTabButton.m */; };
-		E2C8A2201853E660000DD265 /* SDPullNavigationBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2191853E660000DD265 /* SDPullNavigationBarView.m */; };
 		E2C8A2211853E660000DD265 /* SDPullNavigationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */; };
 		E2CADC74185649FF0018A704 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2CADC73185649FF0018A704 /* Accelerate.framework */; };
 /* End PBXBuildFile section */
@@ -343,6 +343,8 @@
 		CAAB5A3118564CEE006737D4 /* RxRefillsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RxRefillsModel.h; sourceTree = "<group>"; };
 		CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RxRefillsModel.m; sourceTree = "<group>"; };
 		CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		E21C0F43187B3F39001CA469 /* SDPullNavigationAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationAutomation.h; sourceTree = "<group>"; };
+		E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationAutomation.m; sourceTree = "<group>"; };
 		E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E2C8A20F1853E660000DD265 /* SDPullNavigation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigation.h; sourceTree = "<group>"; };
@@ -354,8 +356,6 @@
 		E2C8A2151853E660000DD265 /* SDPullNavigationBarControlsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBarControlsView.m; sourceTree = "<group>"; };
 		E2C8A2161853E660000DD265 /* SDPullNavigationBarTabButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationBarTabButton.h; sourceTree = "<group>"; };
 		E2C8A2171853E660000DD265 /* SDPullNavigationBarTabButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBarTabButton.m; sourceTree = "<group>"; };
-		E2C8A2181853E660000DD265 /* SDPullNavigationBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationBarView.h; sourceTree = "<group>"; };
-		E2C8A2191853E660000DD265 /* SDPullNavigationBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBarView.m; sourceTree = "<group>"; };
 		E2C8A21A1853E660000DD265 /* SDPullNavigationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationManager.h; sourceTree = "<group>"; };
 		E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationManager.m; sourceTree = "<group>"; };
 		E2CADC73185649FF0018A704 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -600,10 +600,10 @@
 				E2C8A2151853E660000DD265 /* SDPullNavigationBarControlsView.m */,
 				E2C8A2161853E660000DD265 /* SDPullNavigationBarTabButton.h */,
 				E2C8A2171853E660000DD265 /* SDPullNavigationBarTabButton.m */,
-				E2C8A2181853E660000DD265 /* SDPullNavigationBarView.h */,
-				E2C8A2191853E660000DD265 /* SDPullNavigationBarView.m */,
 				E2C8A21A1853E660000DD265 /* SDPullNavigationManager.h */,
 				E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */,
+				E21C0F43187B3F39001CA469 /* SDPullNavigationAutomation.h */,
+				E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -903,6 +903,7 @@
 				CA0E777918284DD600B4398F /* NSRunLoop+SDExtensions.m in Sources */,
 				CA0E779518284DD600B4398F /* NSObject+SDExtensions.m in Sources */,
 				CA0E779F18284DD600B4398F /* SDDragDropManager.m in Sources */,
+				E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */,
 				CA0E777D18284DD600B4398F /* NSUserDefaults+SDExtensions.m in Sources */,
 				CA0E777F18284DD600B4398F /* SDBase64.m in Sources */,
 				CA0E779118284DD600B4398F /* SDKeychain.m in Sources */,
@@ -917,7 +918,6 @@
 				CA0E77D018284DD600B4398F /* NSURLRequest+SDExtensions.m in Sources */,
 				E2C8A21C1853E660000DD265 /* SDPullNavigationBar.m in Sources */,
 				CA0E77AF18284DD600B4398F /* SDSearchBar.m in Sources */,
-				E2C8A2201853E660000DD265 /* SDPullNavigationBarView.m in Sources */,
 				CA0E77A318284DD600B4398F /* SDLabel.m in Sources */,
 				CA0E77C418284DD600B4398F /* UIScreen+SDExtensions.m in Sources */,
 				CA0E779718284DD600B4398F /* SDAlertView.m in Sources */,

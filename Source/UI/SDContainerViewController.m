@@ -151,4 +151,30 @@
     return result;
 }
 
+- (UINavigationController*)navigationControllerForViewController:(UIViewController*)viewController
+{
+    return [self navigationControllerForViewControllerClass: [viewController class]];
+}
+
+- (UINavigationController*)navigationControllerForViewControllerClass:(Class)viewControllerClass
+{
+    UINavigationController* foundNavController = nil;
+    for(UINavigationController* navController in self.viewControllers)
+    {
+        for(UIViewController* viewController in navController.viewControllers)
+        {
+            if([viewController isKindOfClass:viewControllerClass])
+            {
+                foundNavController = navController;
+                break;
+            }
+        }
+        
+        if(foundNavController)
+            break;
+    }
+    
+    return foundNavController;
+}
+
 @end
