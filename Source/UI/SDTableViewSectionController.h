@@ -56,6 +56,14 @@
  *  @param completion        A completion block to call when presentation is complete
  */
 - (void)sectionController:(SDTableViewSectionController *)sectionController dismissViewControllerAnimated: (BOOL)animated completion: (void (^)(void))completion;
+
+/**
+ *  A section controller is asking you to pop the current view controller
+ *
+ *  @param sectionController The section controller making the request
+ *  @param animated          YES if the section controller wants the pop animated
+ */
+- (void)sectionController:(SDTableViewSectionController *)sectionController popViewController: (BOOL)animated;
 @end
 
 //________________________________________________________________________________________
@@ -126,5 +134,13 @@
  *  @param completion completion block to call when done
  */
 - (void)dismissViewControllerAnimated: (BOOL)animated completion: (void (^)(void))completion;
+
+/**
+ *  Asks the section controller's delegate to dismiss the currently pushed view controller.  Use this method
+ *  instead of trying to present it yourself
+ *
+ *  @param animated YES if should be animated
+ */
+- (void)popViewControllerAnimated:(BOOL)animated;
 @end
 
