@@ -106,4 +106,11 @@ GENERICSABLE(NSString)
  */
 - (NSDictionary *)JSONDictionaryRepresentation;
 
+/**
+ *  Returns a string capitalized while preserving polar directions as well as numeric position abbreviations.
+ *  For example, capitalizeString would change: 1234 NE 11TH STREET to 1234 Ne 11Th Street. We want: 1234 NE 11th Street
+ *
+ */
+- (NSString *)capitalizedStreetAddressString;
+
 @end
