@@ -12,8 +12,12 @@
 + (instancetype)sharedApplication;
 
 - (void)addIdleTimeout:(NSTimeInterval)timeoutInterval controller:(UIViewController *)controller handlerBlock:(NSObjectPerformBlock)handlerBlock;
-- (void)removeIdleTimeoutForController:(UIViewController *)controller;
+- (void)removeIdleTimeoutsForController:(UIViewController *)controller;
 - (void)cleanupIdleTimers;
+
+/*- (void)addActionForNotification:(NSString *)notificationName controller:(UIViewController *)controller actionBlock:(NSObjectPerformBlock)actionBlock;
+- (void)removeActionForNotification:(NSString *)notificationName controller:(UIViewController *)controller;
+- (void)cleanupActions;*/
 
 @end
 

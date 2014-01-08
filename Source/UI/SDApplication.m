@@ -8,12 +8,34 @@
 #import "SDApplication.h"
 #import "SDTimer.h"
 
-#pragma mark - SDWindowTimeout 
+#pragma mark - SDWindowAction
 
-@interface SDWindowTimeout : NSObject
+@interface SDApplicationAction : NSObject
 
 @property (nonatomic, copy) NSObjectPerformBlock handlerBlock;
 @property (nonatomic, weak) UIViewController *controller;
+
+- (void)performActionBlock;
+
+@end
+
+@implementation SDApplicationAction
+
+- (void)performActionBlock
+{
+    if (self.handlerBlock && self.controller)
+    {
+        NSObjectPerformBlock tempHandlerBlock = [self.handlerBlock copy];
+        tempHandlerBlock();
+    }
+}
+
+@end
+
+#pragma mark - SDWindowTimeout
+
+@interface SDApplicationTimeoutAction : SDApplicationAction
+
 @property (nonatomic, assign) NSTimeInterval timeoutInterval;
 
 - (void)startTimeoutMonitor;
@@ -22,7 +44,7 @@
 @end
 
 
-@implementation SDWindowTimeout
+@implementation SDApplicationTimeoutAction
 {
     NSTimer *_internalTimer;
 }
@@ -36,7 +58,7 @@
             [self performTimeoutBlock];
     }];*/
     
-    _internalTimer = [NSTimer scheduledTimerWithTimeInterval:self.timeoutInterval target:self selector:@selector(performTimeoutBlock) userInfo:nil repeats:YES];
+    _internalTimer = [NSTimer scheduledTimerWithTimeInterval:self.timeoutInterval target:self selector:@selector(performActionBlock) userInfo:nil repeats:YES];
 }
 
 - (void)stopTimeoutMonitor
@@ -51,15 +73,6 @@
     [self startTimeoutMonitor];
 }
 
-- (void)performTimeoutBlock
-{
-    if (self.handlerBlock && self.controller)
-    {
-        NSObjectPerformBlock tempHandlerBlock = [self.handlerBlock copy];
-        tempHandlerBlock();
-    }
-}
-
 @end
 
 #pragma mark - SDWindow implementation
@@ -67,12 +80,29 @@
 @implementation SDApplication
 {
     NSMutableArray *_timeoutHandlers;
+    NSMutableArray *_backgroundHandlers;
 }
 
 + (instancetype)sharedApplication
 {
     return (SDApplication *)[super sharedApplication];
 }
+
+- (id)init
+{
+    self = [super init];
+    
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleEnteredBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+    return self;
+}
+
+- (void)dealloc
+{
+    // [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+}
+
+#pragma mark - Idle Timeout Methods
 
 - (void)addIdleTimeout:(NSTimeInterval)timeoutInterval controller:(UIViewController *)controller handlerBlock:(NSObjectPerformBlock)handlerBlock
 {
@@ -81,7 +111,7 @@
         if (!_timeoutHandlers)
             _timeoutHandlers = [NSMutableArray array];
         
-        SDWindowTimeout *timeoutHandler = [[SDWindowTimeout alloc] init];
+        SDApplicationTimeoutAction *timeoutHandler = [[SDApplicationTimeoutAction alloc] init];
         timeoutHandler.timeoutInterval = timeoutInterval;
         timeoutHandler.controller = controller;
         timeoutHandler.handlerBlock = handlerBlock;
@@ -106,7 +136,7 @@
     }
 }
 
-- (void)removeIdleTimeoutForController:(UIViewController *)controller
+- (void)removeIdleTimeoutsForController:(UIViewController *)controller
 {
     @synchronized(self)
     {
@@ -133,6 +163,46 @@
     [_timeoutHandlers makeObjectsPerformSelector:@selector(resetTimeoutMonitor)];
 }
 
+#pragma mark - Backgrounding Action methods
+
+/*- (void)addActionOnBackgroundingController:(UIViewController *)controller actionBlock:(NSObjectPerformBlock)actionBlock
+{
+    @synchronized(self)
+    {
+        if (!_backgroundHandlers)
+            _backgroundHandlers = [NSMutableArray array];
+        
+        SDApplicationAction *actionHandler = [[SDApplicationAction alloc] init];
+        actionHandler.controller = controller;
+        actionHandler.handlerBlock = actionBlock;
+        
+        [_backgroundHandlers addObject:actionHandler];
+    }
+}
+
+- (void)removeBackgroundingsActionFor:(UIViewController *)controller
+{
+    @synchronized(self)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"controller=%@", controller];
+        NSArray *itemsToRemove = [_backgroundHandlers filteredArrayUsingPredicate:predicate];
+        
+        if (itemsToRemove.count > 0)
+            [_backgroundHandlers removeObjectsInArray:itemsToRemove];
+    }
+}
+
+- (void)cleanupBackgroundingActions
+{
+    @synchronized(self)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"controller=nil"];
+        NSArray *itemsToRemove = [_backgroundHandlers filteredArrayUsingPredicate:predicate];
+        
+        if (itemsToRemove.count > 0)
+            [_backgroundHandlers removeObjectsInArray:itemsToRemove];
+    }
+}*/
 
 #pragma mark - Overrides
 
