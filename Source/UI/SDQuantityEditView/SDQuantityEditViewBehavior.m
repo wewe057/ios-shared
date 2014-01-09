@@ -209,7 +209,6 @@ static char kObserveQuantityContext;
     {
         self.priceFormatter = [[NSNumberFormatter alloc] init];
         
-        // Trolley Details Cell version
         [self.priceFormatter setNumberStyle: NSNumberFormatterCurrencyStyle];
         [self.priceFormatter setCurrencySymbol: @"£"];
         [self.priceFormatter setCurrencyGroupingSeparator: @","];
