@@ -75,6 +75,8 @@
 
 - (void)configureView
 {
+    [super configureView];
+    
     _pickerButton = [[SDTextFieldPickerView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     _pickerButton.owner = self;
 
