@@ -1,9 +1,8 @@
 //
-//  ASDATrolleyQuantityView.h
-//  asda
+//  SDQuantityView.h
 //
 //  Created by ricky cancro on 10/31/13.
-//  Copyright (c) 2013 Asda. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

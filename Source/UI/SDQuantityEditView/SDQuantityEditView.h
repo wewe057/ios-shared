@@ -1,9 +1,8 @@
 //
 //  SDQuantityEditView.h
-//  asda
 //
 //  Created by ricky cancro on 1/7/14.
-//  Copyright (c) 2014 Asda. All rights reserved.
+//  Copyright (c) 2014 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

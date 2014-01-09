@@ -1,9 +1,8 @@
 //
 //  SDAdjustableItem.h
-//  asda
 //
 //  Created by ricky cancro on 1/7/14.
-//  Copyright (c) 2014 Asda. All rights reserved.
+//  Copyright (c) 2014 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -29,9 +28,6 @@ typedef enum
      An example of this type of adjustment behavior would be buying produce.  You
      could purchase 3 bananas which will weight roughly .5lb each.  The Edit Quantity View
      will show the whole number 3, but also show that you will get "about 1.5lbs" of bananas.
-     
-     If that still doesn't make sense, check out the ASDA app.  Add bulk produce (like brocolli)
-     and see how the information is displayed.
      */
     kAdjustableItemQuantityMethod_Both
 } SDProductQuantityMethod;

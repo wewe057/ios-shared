@@ -1,9 +1,8 @@
 //
 //  SDQuantityEditViewBehavior.h
-//  asda
 //
 //  Created by Robb Albright on 17.4.12.
-//  Copyright (c) 2012 Wal-Mart Stores, Inc. All rights reserved.
+//  Copyright (c) 2012 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -88,9 +87,10 @@
 - (id)initWithAdjustableItem:(id<SDAdjustableItem>)adjustableItem delegate:(UIView<SDQuantityEditViewProtocol> *)delegate;
 
 /**
- NOTE: These should probably not be exposed.  We are using them in ASDA where we are reseting the original quantity of the
+ NOTE: These should probably not be exposed.  We are using them in a case where we are reseting the original quantity of the
  behavior.  Instead we should really either create a new behavior or add a new method to "reset" the behavior so
  that it doesn't need to access these methods.
+ TODO: Remove these when this behavior is updated.
  */
 - (void)updateTotalCost;
 - (void)updateTotalWeight;

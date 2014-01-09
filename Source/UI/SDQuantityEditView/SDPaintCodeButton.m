@@ -1,15 +1,12 @@
 //
 //  SDPaintCodeButton.m
-//  asda
 //
 //  Created by ricky cancro on 12/20/13.
-//  Copyright (c) 2013 Asda. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import "SDPaintCodeButton.h"
 #import "UIView+PaintCode.h"
-
-#pragma mark - ASDAPaintCodeButton
 
 @interface SDPaintCodeButton()
 @property (nonatomic, strong) UIImage* normalStateImage;

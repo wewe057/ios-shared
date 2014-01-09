@@ -1,9 +1,8 @@
 //
 //  SDQuantityEditViewBehavior.m
-//  asda
 //
 //  Created by Robb Albright on 17.4.12.
-//  Copyright (c) 2012 Wal-Mart Stores, Inc. All rights reserved.
+//  Copyright (c) 2012 SetDirection. All rights reserved.
 //
 
 #import "SDQuantityEditViewBehavior.h"
