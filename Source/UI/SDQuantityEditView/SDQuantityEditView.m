@@ -149,12 +149,6 @@
     [super updateConstraints];
 }
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-
-}
-
 - (void)updateDoneRemoveButtons:(BOOL)animated
 {
     if (animated)
