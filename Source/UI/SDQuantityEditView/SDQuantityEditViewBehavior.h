@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import "SDAdjustableItem.h"
 
+typedef void (^SDQuantityEditViewBehaviorWillChangeQuantityBlock)(BOOL increment);
+typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment);
 /**
  A protocol that a view that wants to use a SDQuantityEditViewBehavior must conform to.
  */
@@ -73,13 +75,13 @@
  A block called when the adjustableItem is about to change quantity.
  @param incremented YES if the value will be incremented.  NO if it will be decremented
  */
-@property (nonatomic, copy) void (^willChangeQuantity)(BOOL incremented);
+@property (nonatomic, copy) SDQuantityEditViewBehaviorWillChangeQuantityBlock willChangeQuantity;
 
 /**
  A block called when the adjustableItem changed quantity
  @param incremented YES if the value incremented.  NO if decremented
  */
-@property (nonatomic, copy) void (^didChangeQuantity)(BOOL incremented);
+@property (nonatomic, copy) SDQuantityEditViewBehaviorDidChangeQuantityBlock didChangeQuantity;
 
 /**
  Creates a new SDQuantityEditViewBehavior with the given adjustableItem and SDQuantityEditViewProtocol

@@ -10,6 +10,9 @@
 
 @class SDQuantityView;
 
+typedef void (^SDQuantityEditViewRemoveBlock)(NSDecimalNumber *originalQuantity);
+typedef void (^SDQuantityEditViewDoneEditingBlock)(NSDecimalNumber *originalQuantity, NSDecimalNumber *updatedQuantity);
+
 /**
  A UIView that uses a SDQuantityView to adjust the quantity of a SDAdjustableItem.  The class uses a SDQuantityEditViewBehavior
  to determine how the item is adjusted.  That is, if the item is sold by weight it will increment/decrement by .1kg when changed.
@@ -36,7 +39,7 @@
  @param originalQuantity The original quantity of the adjustable item before any quantity adjustments were made
  @param updatedQuantity The new quantity of the adjustable item.  If nil then the quantity was not changed.
  */
-@property (nonatomic, copy) void (^doneTappedBlock)(NSDecimalNumber *originalQuantity, NSDecimalNumber *updatedQuantity);
+@property (nonatomic, copy) SDQuantityEditViewDoneEditingBlock doneTappedBlock;
 
 /**
  The user of this view should define this block to define what happens when a user taps the remove button.
@@ -44,7 +47,7 @@
  
  Note: There is no updatedQuantity since it is assumed to be 0.
  */
-@property (nonatomic, copy) void (^removeTappedBlock)(NSDecimalNumber *originalQuantity);
+@property (nonatomic, copy) SDQuantityEditViewRemoveBlock removeTappedBlock;
 
 
 /**
