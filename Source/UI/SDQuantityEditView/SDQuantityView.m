@@ -121,15 +121,21 @@ static const CGFloat kCircularButtonHeight = 29.0f;
 
 - (void)setStrokeColor:(UIColor *)strokeColor
 {
-    _strokeColor = strokeColor;
-    [self createButtonStates];
+    if (_strokeColor != strokeColor)
+    {
+        _strokeColor = strokeColor;
+        [self createButtonStates];
+    }
 }
 
 
 - (void)setHighlightedColor:(UIColor *)highlightedColor
 {
-    _highlightedColor = highlightedColor;
-    [self createButtonStates];
+    if (_highlightedColor != highlightedColor)
+    {
+        _highlightedColor = highlightedColor;
+        [self createButtonStates];
+    }
 }
 
 - (void)drawButtonNormalWithColor:(UIColor *)strokeColor
@@ -262,10 +268,13 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)setFillColor:(UIColor *)fillColor
 {
-    _fillColor = fillColor;
-    
-    self.incrementButton.strokeColor = fillColor;
-    self.decrementButton.strokeColor = fillColor;
+    if (_fillColor != fillColor)
+    {
+        _fillColor = fillColor;
+        
+        self.incrementButton.strokeColor = fillColor;
+        self.decrementButton.strokeColor = fillColor;
+    }
 }
 
 - (void)updateConstraints
