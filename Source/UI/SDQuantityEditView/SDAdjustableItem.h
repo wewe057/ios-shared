@@ -10,7 +10,8 @@
 /**
  The currently supported types of Quantity Adjustment.
  */
-typedef enum
+
+typedef NS_ENUM(NSInteger, SDProductQuantityMethod)
 {
     /**
      Adjusts the item by weight in increments of .1
@@ -30,7 +31,7 @@ typedef enum
      will show the whole number 3, but also show that you will get "about 1.5lbs" of bananas.
      */
     kAdjustableItemQuantityMethod_Both
-} SDProductQuantityMethod;
+};
 
 @protocol SDAdjustableItem<NSObject>
 
