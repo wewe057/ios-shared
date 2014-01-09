@@ -26,7 +26,7 @@
     self.normalStateImage = [[self imageForSelector:@selector(drawButtonNormal)] resizableImageWithCapInsets:[self capInsets]];
     self.highlightedStateImage = [[self imageForSelector:@selector(drawButtonHighlighted)] resizableImageWithCapInsets:[self capInsets]];
     self.disabledStateImage = [[self imageForSelector:@selector(drawButtonDisabled)] resizableImageWithCapInsets:[self capInsets]];
-	
+
     [self setBackgroundImage:self.normalStateImage forState:UIControlStateNormal];
     [self setBackgroundImage:self.highlightedStateImage forState:UIControlStateHighlighted];
     [self setBackgroundImage:self.disabledStateImage forState:UIControlStateDisabled];

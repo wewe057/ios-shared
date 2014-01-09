@@ -12,12 +12,12 @@
 - (UIImage*)imageForSelector:(SEL)selector
 {
     UIGraphicsBeginImageContextWithOptions(self.size, NO, 0.0f);
-	
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [self performSelector:selector];
 #pragma clang diagnostic pop
-	
+
     UIImage* result = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
