@@ -276,17 +276,22 @@
 
 - (UILabel *)totalWeightLabel
 {
+    UILabel *weightLabel = nil;
     switch (self.adjustableItem.adjustQuantityMethod)
     {
         case kAdjustableItemQuantityMethod_Weighted:
-            return self.quantityView.quantityLabel;
+            weightLabel = self.quantityView.quantityLabel;
+            break;
             
         case kAdjustableItemQuantityMethod_Both:
-            return self.weightLabel;
+            weightLabel = self.weightLabel;
+            break;
             
-        default:
-            return nil;
+        case kAdjustableItemQuantityMethod_Counted:
+            NSAssert(0, @"Counted method should not have a weight label.");
+            break;
     }
+    return weightLabel;
 }
 
 

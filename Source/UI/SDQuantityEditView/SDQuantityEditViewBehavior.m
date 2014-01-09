@@ -224,11 +224,13 @@ static char kObserveQuantityContext;
             SDLog(@"WARNING - bad input to price per unit or current quantity");
             SDLog(@"price per unit: %f", [self.pricePerUnit doubleValue]);
             SDLog(@"current quantity: %f", [self.currentQuantity doubleValue]);
-            return;
+        }
+        else
+        {
+            NSDecimalNumber *total = [self.pricePerUnit decimalNumberByMultiplyingBy:self.currentQuantity];
+            self.quantityViewDelegate.totalPriceLabel.text = [self.priceFormatter stringFromNumber:total];
         }
         
-        NSDecimalNumber *total = [self.pricePerUnit decimalNumberByMultiplyingBy:self.currentQuantity];
-        self.quantityViewDelegate.totalPriceLabel.text = [self.priceFormatter stringFromNumber:total];
     }
 }
 
@@ -260,13 +262,12 @@ static char kObserveQuantityContext;
             NSDecimalNumber *newValue = (NSDecimalNumber*)[change objectForKey:NSKeyValueChangeNewKey];
             SDLog(@"Quantity Changed to %f", [newValue floatValue]);
             
-            @strongify(_quantityViewDelegate, viewDelegate);
-            if([self.quantitySuffix length]) {
-                viewDelegate.quantityLabel.text = [NSString stringWithFormat: @"%@ %@", [newValue stringValue], self.quantitySuffix];
+            NSString *quantityLabelString = [newValue stringValue];
+            if([self.quantitySuffix length])
+            {
+                quantityLabelString = [NSString stringWithFormat: @"%@ %@", [newValue stringValue], self.quantitySuffix];
             }
-            else {
-                viewDelegate.quantityLabel.text = [newValue stringValue];
-            }
+            self.quantityViewDelegate.quantityLabel.text = quantityLabelString;
         }
     }
 }
