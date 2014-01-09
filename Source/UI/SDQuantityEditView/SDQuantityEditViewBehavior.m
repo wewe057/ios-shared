@@ -32,7 +32,7 @@ static char kObserveQuantityContext;
 @property (nonatomic, strong) NSDecimalNumberHandler* roundingBehavior;
 @property (nonatomic, assign) SDProductQuantityMethod adjustQuantityMethod;
 @property (nonatomic, weak) UIView<SDQuantityEditViewProtocol> *quantityViewDelegate;
-@property (nonatomic, strong) NSDecimalNumber *avgWeight;
+@property (nonatomic, copy) NSDecimalNumber *avgWeight;
 
 @end
 
