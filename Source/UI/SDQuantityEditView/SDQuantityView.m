@@ -7,6 +7,9 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SDQuantityView.h"
 
+static const CGFloat kCircularButtonWidth = 29.0f;
+static const CGFloat kCircularButtonHeight = 29.0f;
+
 @interface SDCircularMinusButton()
 @end
 
@@ -14,7 +17,7 @@
 
 + (instancetype)circularMinusButtonWithStrokeColor:(UIColor *)strokeColor;
 {
-    SDCircularMinusButton *circularButton = [[SDCircularMinusButton alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
+    SDCircularMinusButton *circularButton = [[SDCircularMinusButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kCircularButtonWidth, kCircularButtonHeight)];
     circularButton.strokeColor = strokeColor;
     [circularButton createButtonStates];
     return circularButton;
@@ -110,7 +113,7 @@
 
 + (instancetype)circularPlusButtonWithStrokeColor:(UIColor *)strokeColor;
 {
-    SDCircularPlusButton *circularButton = [[SDCircularPlusButton alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
+    SDCircularPlusButton *circularButton = [[SDCircularPlusButton alloc] initWithFrame:CGRectMake(0.0f, 0.0f, kCircularButtonWidth, kCircularButtonHeight)];
     circularButton.strokeColor = strokeColor;
     [circularButton createButtonStates];
     return circularButton;
@@ -213,6 +216,8 @@
 
 @end
 
+static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
+
 @interface SDQuantityView()
 @property (nonatomic, assign) BOOL setupContrainst;
 @property (nonatomic, strong, readwrite) SDCircularPlusButton *incrementButton;
@@ -237,12 +242,10 @@
 {
     self.translatesAutoresizingMaskIntoConstraints = NO;
  
-    self.incrementButton = [[SDCircularPlusButton alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
-    self.incrementButton.strokeColor = self.fillColor;
+    self.incrementButton = [SDCircularPlusButton circularPlusButtonWithStrokeColor:self.fillColor];
     self.incrementButton.highlightedColor = [UIColor lightGrayColor];
     
-    self.decrementButton = [[SDCircularMinusButton alloc] initWithFrame:CGRectMake(0, 0, 29, 29)];
-    self.decrementButton.strokeColor = self.fillColor;
+    self.decrementButton = [SDCircularMinusButton circularMinusButtonWithStrokeColor:self.fillColor];
     self.decrementButton.highlightedColor = [UIColor lightGrayColor];
     
     self.incrementButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -293,7 +296,7 @@
 {
     CAShapeLayer *layer = (CAShapeLayer *)self.layer;
     CGRect bgRect = self.bounds;
-    bgRect = CGRectInset(self.bounds, 14, 0);
+    bgRect = CGRectInset(self.bounds, kSDQuantityViewBackgroundWidthInset, 0.0f);
     bgRect.origin.y += 0.5f;
     bgRect.size.height -= 1.0f;
     layer.path = CGPathCreateWithRect(bgRect, nil);

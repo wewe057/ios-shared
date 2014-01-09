@@ -21,12 +21,11 @@
 @property (nonatomic, strong, readwrite) UIActivityIndicatorView *activitingIndicator;
 @end
 
-
 @implementation SDQuantityEditView
 
 + (instancetype)quantityEditView
 {
-    SDQuantityEditView *editView = [[[self class] alloc] initWithFrame:CGRectMake(0, 0, 320, 90)];
+    SDQuantityEditView *editView = [[[self class] alloc] initWithFrame:CGRectZero];
     return editView;
 }
 
