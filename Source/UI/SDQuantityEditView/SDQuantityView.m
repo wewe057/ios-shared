@@ -248,22 +248,22 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 {
     self.translatesAutoresizingMaskIntoConstraints = NO;
  
-    self.incrementButton = [SDCircularPlusButton circularPlusButtonWithStrokeColor:self.fillColor];
-    self.incrementButton.highlightedColor = [UIColor lightGrayColor];
+    _incrementButton = [SDCircularPlusButton circularPlusButtonWithStrokeColor:_fillColor];
+    _incrementButton.highlightedColor = [UIColor lightGrayColor];
     
-    self.decrementButton = [SDCircularMinusButton circularMinusButtonWithStrokeColor:self.fillColor];
-    self.decrementButton.highlightedColor = [UIColor lightGrayColor];
+    _decrementButton = [SDCircularMinusButton circularMinusButtonWithStrokeColor:_fillColor];
+    _decrementButton.highlightedColor = [UIColor lightGrayColor];
     
-    self.incrementButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.decrementButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _incrementButton.translatesAutoresizingMaskIntoConstraints = NO;
+    _decrementButton.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addSubview:self.incrementButton];
-    [self addSubview:self.decrementButton];
+    [self addSubview:_incrementButton];
+    [self addSubview:_decrementButton];
     
-    self.quantityLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    self.quantityLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.quantityLabel setFont:[UIFont systemFontOfSize:14]];
-    [self addSubview:self.quantityLabel];
+    _quantityLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _quantityLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_quantityLabel setFont:[UIFont systemFontOfSize:14]];
+    [self addSubview:_quantityLabel];
 }
 
 - (void)setFillColor:(UIColor *)fillColor

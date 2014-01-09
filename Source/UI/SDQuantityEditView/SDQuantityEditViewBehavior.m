@@ -44,55 +44,55 @@ static char kObserveQuantityContext;
 	if (self)
     {
         
-        self.quantityViewDelegate = delegate;
+        _quantityViewDelegate = delegate;
         @strongify(_quantityViewDelegate, viewDelegate);
         
-		self.adjustQuantityMethod = [adjustableItem adjustQuantityMethod];
+		_adjustQuantityMethod = [adjustableItem adjustQuantityMethod];
         [viewDelegate.plusButton addTarget:self action:@selector(incrementAction:) forControlEvents:UIControlEventTouchUpInside];
         [viewDelegate.minusButton addTarget:self action:@selector(decrementAction:) forControlEvents:UIControlEventTouchUpInside];
         
         
-		if (self.adjustQuantityMethod == kAdjustableItemQuantityMethod_Weighted) {
-			self.quantitySuffix = @"kg";
-			self.stepAmount = [NSDecimalNumber decimalNumberWithString:@"0.1"];
+		if (_adjustQuantityMethod == kAdjustableItemQuantityMethod_Weighted) {
+			_quantitySuffix = @"kg";
+			_stepAmount = [NSDecimalNumber decimalNumberWithString:@"0.1"];
 		}
 		else {
-			self.quantitySuffix = @"";
-			self.stepAmount = [NSDecimalNumber decimalNumberWithString:@"1"];
+			_quantitySuffix = @"";
+			_stepAmount = [NSDecimalNumber decimalNumberWithString:@"1"];
 		}
 		
 		// We always start with one step unit if the product is not already in the trolley
 		if ([adjustableItem respondsToSelector:@selector(quantity)] && [adjustableItem quantity]) {
-			self.originalQuantity = self.currentQuantity = [NSDecimalNumber decimalNumberWithString:[adjustableItem quantity]];
+			_originalQuantity = _currentQuantity = [NSDecimalNumber decimalNumberWithString:[adjustableItem quantity]];
 		}
 		else {
-			self.originalQuantity = [NSDecimalNumber decimalNumberWithString:@"0"];
-			self.currentQuantity = [self.originalQuantity decimalNumberByAdding:self.stepAmount];
+			_originalQuantity = [NSDecimalNumber decimalNumberWithString:@"0"];
+			_currentQuantity = [_originalQuantity decimalNumberByAdding:_stepAmount];
 		}
         
         if ([adjustableItem maxQuantity]) {
-            self.maxQuantity = [NSDecimalNumber decimalNumberWithString:[adjustableItem maxQuantity]];
+            _maxQuantity = [NSDecimalNumber decimalNumberWithString:[adjustableItem maxQuantity]];
         }
         else {
-            self.maxQuantity = [NSDecimalNumber decimalNumberWithString:@"24"]; // 24 is the usual max quantity
+            _maxQuantity = [NSDecimalNumber decimalNumberWithString:@"24"]; // 24 is the usual max quantity
         }
 		
         if ([adjustableItem pricePerUnitOfMeasure]) {
-			self.pricePerUnit = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem pricePerUnitOfMeasure]];
+			_pricePerUnit = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem pricePerUnitOfMeasure]];
 		}
 		else {
 			SDLog(@"NO price per unit given!");
 			viewDelegate.totalPriceLabel.hidden = YES;
 		}
         
-        if(self.adjustQuantityMethod == kAdjustableItemQuantityMethod_Both && [adjustableItem respondsToSelector:@selector(averageWeight)])
+        if(_adjustQuantityMethod == kAdjustableItemQuantityMethod_Both && [adjustableItem respondsToSelector:@selector(averageWeight)])
         {
-            self.avgWeight = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem averageWeight]];
-            self.maxQuantity = [self.maxQuantity decimalNumberByDividingBy:self.avgWeight];
-            self.pricePerUnit = [self.pricePerUnit decimalNumberByMultiplyingBy:self.avgWeight];
+            _avgWeight = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem averageWeight]];
+            _maxQuantity = [_maxQuantity decimalNumberByDividingBy:_avgWeight];
+            _pricePerUnit = [_pricePerUnit decimalNumberByMultiplyingBy:_avgWeight];
         }
         
-        self.roundingBehavior =  [[NSDecimalNumberHandler alloc] initWithRoundingMode:NSRoundPlain scale:1 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
+        _roundingBehavior =  [[NSDecimalNumberHandler alloc] initWithRoundingMode:NSRoundPlain scale:1 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
         
 		[self updateTotalCost];
 		[self updateQuantityLabel];

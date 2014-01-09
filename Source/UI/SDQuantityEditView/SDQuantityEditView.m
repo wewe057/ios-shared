@@ -42,64 +42,62 @@
 
 - (void)createDoneAndRemoveButtons
 {
-    self.removeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.removeButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
+    _removeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_removeButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
     
-    self.doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.doneButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
-    
-    [self updateDoneRemoveButtons:NO];
+    _doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_doneButton setTitleColor:[UIColor darkTextColor] forState:UIControlStateNormal];
 }
 
 - (void)setup
 {
     self.translatesAutoresizingMaskIntoConstraints = NO;
     [self createDoneAndRemoveButtons];
-    self.activitingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _activitingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     
-    self.dropShadowImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-    self.dropShadowImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.dropShadowImageView.backgroundColor = [UIColor clearColor];
-    [self addSubview:self.dropShadowImageView];
+    _dropShadowImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    _dropShadowImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    _dropShadowImageView.backgroundColor = [UIColor clearColor];
+    [self addSubview:_dropShadowImageView];
     
-    self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-    self.backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.backgroundImageView.backgroundColor = [UIColor whiteColor];
-    [self addSubview:self.backgroundImageView];
+    _backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    _backgroundImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    _backgroundImageView.backgroundColor = [UIColor whiteColor];
+    [self addSubview:_backgroundImageView];
     
-    [self.removeButton setTitle:NSLocalizedString(@"Remove", @"Remove Button Title") forState:UIControlStateNormal];
-    self.removeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.removeButton];
+    [_removeButton setTitle:NSLocalizedString(@"Remove", @"Remove Button Title") forState:UIControlStateNormal];
+    _removeButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_removeButton];
     
-    [self.doneButton setTitle:NSLocalizedString(@"Done", @"Done Button Title") forState:UIControlStateNormal];
-    self.doneButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.doneButton];
+    [_doneButton setTitle:NSLocalizedString(@"Done", @"Done Button Title") forState:UIControlStateNormal];
+    _doneButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_doneButton];
     
-    self.activitingIndicator.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.activitingIndicator];
+    _activitingIndicator.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_activitingIndicator];
     
-    self.totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    self.totalPriceLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.totalPriceLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
-    [self addSubview:self.totalPriceLabel];
+    _totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _totalPriceLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_totalPriceLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
+    [self addSubview:_totalPriceLabel];
     
-    self.weightLabel = [[UILabel alloc] initWithFrame:CGRectZero];
-    self.weightLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.weightLabel setFont:[UIFont systemFontOfSize:12.0f]];
-    [self addSubview:self.weightLabel];
+    _weightLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    _weightLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    [_weightLabel setFont:[UIFont systemFontOfSize:12.0f]];
+    [self addSubview:_weightLabel];
     
-    self.quantityView = [SDQuantityView quantityView];
-    self.quantityView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.quantityView];
-    self.quantityView.fillColor = [UIColor lightGrayColor];
-    self.quantityView.quantityLabel.textColor = [UIColor darkTextColor];
+    _quantityView = [SDQuantityView quantityView];
+    _quantityView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_quantityView];
+    _quantityView.fillColor = [UIColor lightGrayColor];
+    _quantityView.quantityLabel.textColor = [UIColor darkTextColor];
     
-    self.removeButton.alpha = 0.0f;
-    self.activitingIndicator.hidesWhenStopped = YES;
-    [self.activitingIndicator stopAnimating];
+    _removeButton.alpha = 0.0f;
+    _activitingIndicator.hidesWhenStopped = YES;
+    [_activitingIndicator stopAnimating];
     
-    [self.doneButton addTarget:self action:@selector(doneTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.removeButton addTarget:self action:@selector(removeTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [_doneButton addTarget:self action:@selector(doneTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [_removeButton addTarget:self action:@selector(removeTapped:) forControlEvents:UIControlEventTouchUpInside];
     
 }
 
