@@ -25,14 +25,20 @@ static const CGFloat kCircularButtonHeight = 29.0f;
 
 - (void)setStrokeColor:(UIColor *)strokeColor
 {
-    _strokeColor = strokeColor;
-    [self createButtonStates];
+    if (_strokeColor != strokeColor)
+    {
+        _strokeColor = strokeColor;
+        [self createButtonStates];
+    }
 }
 
 - (void)setHighlightedColor:(UIColor *)highlightedColor
 {
-    _highlightedColor = highlightedColor;
-    [self createButtonStates];
+    if (_highlightedColor != highlightedColor)
+    {
+        _highlightedColor = highlightedColor;
+        [self createButtonStates];
+    }
 }
 
 - (void)drawButtonNormalWithColor:(UIColor *)strokeColor
@@ -192,7 +198,7 @@ static const CGFloat kCircularButtonHeight = 29.0f;
     //// Btn-IncPressed
     {
         //// Oval Drawing
-        UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, self.width, self.height)];
+        UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         [pressesGray setFill];
         [ovalPath fill];
         [white setStroke];
