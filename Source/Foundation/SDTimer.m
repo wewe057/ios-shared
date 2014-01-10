@@ -35,7 +35,7 @@
                     [blockSelf invalidate];
             });
             dispatch_source_set_cancel_handler(_timer, ^{
-                //_timer = nil; ???
+                _timer = nil;
             });
             dispatch_resume(_timer);
         }
@@ -55,7 +55,6 @@
     {
         dispatch_suspend(_timer);
         dispatch_source_cancel(_timer);
-        _timer = nil;
     }
 }
 
