@@ -11,7 +11,7 @@
  The currently supported types of Quantity Adjustment.
  */
 
-typedef NS_ENUM(NSInteger, SDProductQuantityMethod)
+typedef NS_ENUM(NSUInteger, SDProductQuantityMethod)
 {
     /**
      Adjusts the item by weight in increments of .1
