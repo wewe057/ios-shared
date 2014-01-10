@@ -19,21 +19,26 @@
 - (id)initWithInterval:(NSTimeInterval)interval repeats:(BOOL)repeats timerBlock:(SDTimerBlock)timerBlock
 {
     self = [super init];
-    
-    timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-    if (timer)
+    if(self != nil)
     {
-        __block SDTimer *blockSelf = self;
-        dispatch_source_set_timer(timer, dispatch_walltime(NULL, 0), interval * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
-        dispatch_source_set_event_handler(timer, ^{
-            timerBlock(blockSelf);
-            if (!repeats)
-                [blockSelf invalidate];
-        });
-        dispatch_source_set_cancel_handler(timer, ^{
-            //timer = nil; ???
-        });
-        dispatch_resume(timer);
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+        if (_timer)
+        {
+            __block SDTimer *blockSelf = self;
+            dispatch_source_set_timer(_timer,
+                                      dispatch_time(DISPATCH_TIME_NOW, interval * NSEC_PER_SEC),
+                                      DISPATCH_TIME_FOREVER, 0);
+            dispatch_source_set_event_handler(_timer, ^{
+                timerBlock(blockSelf);
+                if (!repeats)
+                    [blockSelf invalidate];
+            });
+            dispatch_source_set_cancel_handler(_timer, ^{
+                //_timer = nil; ???
+            });
+            dispatch_resume(_timer);
+        }
     }
     
     return self;
@@ -46,10 +51,11 @@
 
 - (void)invalidate
 {
-    if (timer)
+    if (_timer)
     {
-        dispatch_suspend(timer);
-        dispatch_source_cancel(timer);
+        dispatch_suspend(_timer);
+        dispatch_source_cancel(_timer);
+        _timer = nil;
     }
 }
 
