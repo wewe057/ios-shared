@@ -94,6 +94,17 @@ static char kObserveQuantityContext;
         
         _roundingBehavior =  [[NSDecimalNumberHandler alloc] initWithRoundingMode:NSRoundPlain scale:1 raiseOnExactness:NO raiseOnOverflow:NO raiseOnUnderflow:NO raiseOnDivideByZero:NO];
         
+        // set up the default price formatter here.  If the user set this property then the total
+        // we be recalculated using the new price formatter.
+        NSNumberFormatter *defaultFormatter = [[NSNumberFormatter alloc] init];
+        [defaultFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+        [defaultFormatter setCurrencySymbol:@"£"];
+        [defaultFormatter setCurrencyGroupingSeparator:@","];
+        [defaultFormatter setGroupingSize:3];
+        [defaultFormatter setCurrencyDecimalSeparator:@"."];
+        [defaultFormatter setGeneratesDecimalNumbers:YES];
+        _priceFormatter = defaultFormatter;
+        
         [self updateTotalCost];
         [self updateQuantityLabel];
         [self updateButtonState];
@@ -203,21 +214,18 @@ static char kObserveQuantityContext;
     }
 }
 
+- (void)setPriceFormatter:(NSNumberFormatter *)priceFormatter
+{
+    // if the user updates the priceformatter run updateTotalCost to get the newly formatted total cost
+    if (priceFormatter != _priceFormatter)
+    {
+        _priceFormatter = priceFormatter;
+        [self updateTotalCost];
+    }
+}
+
 -(void)updateTotalCost
 {
-    if (!self.priceFormatter)
-    {
-        self.priceFormatter = [[NSNumberFormatter alloc] init];
-        
-        [self.priceFormatter setNumberStyle: NSNumberFormatterCurrencyStyle];
-        [self.priceFormatter setCurrencySymbol: @"£"];
-        [self.priceFormatter setCurrencyGroupingSeparator: @","];
-        [self.priceFormatter setGroupingSize: 3];
-        [self.priceFormatter setCurrencyDecimalSeparator: @"."];
-        
-        [self.priceFormatter setGeneratesDecimalNumbers: YES];
-    }
-    
     if (self.pricePerUnit && self.currentQuantity) {
         // We may have empty(NaN) ppu, so guard against an exception in decimalNumberBy…
         if ([self.pricePerUnit isEqualToNumber:[NSDecimalNumber notANumber]] || [self.pricePerUnit isEqualToNumber:[NSDecimalNumber maximumDecimalNumber]] || [self.currentQuantity isEqualToNumber:[NSDecimalNumber notANumber]] || [self.currentQuantity isEqualToNumber:[NSDecimalNumber maximumDecimalNumber]]) {
