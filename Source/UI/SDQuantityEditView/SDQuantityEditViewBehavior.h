@@ -53,12 +53,12 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
 /**
  The quantity of the adjustableItem when this behavior was created.  This can be reset by a client if needed.
  */
-@property (nonatomic, copy) NSDecimalNumber *originalQuantity;
+@property (nonatomic, strong) NSDecimalNumber *originalQuantity;
 
 /**
  The new quantity of the adjustableItem.  Note this is nil if there is no change in quantity.
  */
-@property (nonatomic, copy, readonly) NSDecimalNumber *updatedQuantity;
+@property (nonatomic, strong, readonly) NSDecimalNumber *updatedQuantity;
 
 
 /**

@@ -23,16 +23,16 @@ static char kObserveQuantityContext;
 
 @interface SDQuantityEditViewBehavior ()
 
-@property (nonatomic, copy, readwrite) NSDecimalNumber *updatedQuantity; // nil if not different
-@property (nonatomic, copy, readwrite) NSDecimalNumber *currentQuantity;
+@property (nonatomic, strong, readwrite) NSDecimalNumber *updatedQuantity; // nil if not different
+@property (nonatomic, strong, readwrite) NSDecimalNumber *currentQuantity;
 
-@property (nonatomic, copy) NSDecimalNumber *stepAmount;
-@property (nonatomic, copy) NSDecimalNumber *maxQuantity;
-@property (nonatomic, copy) NSDecimalNumber *pricePerUnit;
+@property (nonatomic, strong) NSDecimalNumber *stepAmount;
+@property (nonatomic, strong) NSDecimalNumber *maxQuantity;
+@property (nonatomic, strong) NSDecimalNumber *pricePerUnit;
 @property (nonatomic, strong) NSDecimalNumberHandler* roundingBehavior;
 @property (nonatomic, assign) SDProductQuantityMethod adjustQuantityMethod;
 @property (nonatomic, weak) UIView<SDQuantityEditViewProtocol> *quantityViewDelegate;
-@property (nonatomic, copy) NSDecimalNumber *avgWeight;
+@property (nonatomic, strong) NSDecimalNumber *avgWeight;
 
 @end
 
@@ -118,7 +118,7 @@ static char kObserveQuantityContext;
 -(void)setOriginalQuantity:(NSDecimalNumber *)newOriginalQuantity
 {
     @strongify(_quantityViewDelegate, viewDelegate);
-    _originalQuantity = [newOriginalQuantity copy];
+    _originalQuantity = newOriginalQuantity;
     if ([self.quantitySuffix length]) {
         viewDelegate.quantityLabel.text = [NSString stringWithFormat: @"%@ %@", _originalQuantity.stringValue, self.quantitySuffix];
     }
