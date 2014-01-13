@@ -214,28 +214,31 @@
 
 - (void)setCommitting:(BOOL)committing
 {
-    _committing = committing;
-    if (committing)
+    if (committing != _committing)
     {
-        self.doneButton.hidden = YES;
-        self.removeButton.hidden = YES;
-        [self.activitingIndicator startAnimating];
-        self.quantityView.alpha = 0.4f;
-        
-        self.quantityView.userInteractionEnabled = NO;
-        self.totalPriceLabel.alpha = 0.4f;
-        self.weightLabel.alpha = 0.4;
-    }
-    else
-    {
-        self.doneButton.hidden = NO;
-        self.removeButton.hidden = YES;
-        [self.activitingIndicator stopAnimating];
-        
-        self.quantityView.alpha = 1.0f;
-        self.quantityView.userInteractionEnabled = YES;
-        self.totalPriceLabel.alpha = 1.0f;
-        self.weightLabel.alpha = 1.0;
+        _committing = committing;
+        if (committing)
+        {
+            self.doneButton.hidden = YES;
+            self.removeButton.hidden = YES;
+            [self.activitingIndicator startAnimating];
+            self.quantityView.alpha = 0.4f;
+            
+            self.quantityView.userInteractionEnabled = NO;
+            self.totalPriceLabel.alpha = 0.4f;
+            self.weightLabel.alpha = 0.4;
+        }
+        else
+        {
+            self.doneButton.hidden = NO;
+            self.removeButton.hidden = YES;
+            [self.activitingIndicator stopAnimating];
+            
+            self.quantityView.alpha = 1.0f;
+            self.quantityView.userInteractionEnabled = YES;
+            self.totalPriceLabel.alpha = 1.0f;
+            self.weightLabel.alpha = 1.0;
+        }
     }
 }
 
