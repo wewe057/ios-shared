@@ -40,7 +40,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *otherButton;
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
-@property (nonatomic, strong) SDContentAlertViewCompletionBlock completion;
+@property (nonatomic, copy) SDContentAlertViewCompletionBlock completion;
 
 @property (nonatomic, assign) BOOL visible;
 
@@ -185,7 +185,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     _alertView.bounds = CGRectMake(0, 0, kSDContentAlertViewWidth, 150);
     
     if (completion)
-        _completion = completion;
+        _completion = [completion copy];
     
     [self setupGestures];
     [self resizeViews];
@@ -376,6 +376,8 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
             self.mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
             [self.mainWindow tintColorDidChange];
         }
+        
+        self.alertWindow.hidden = YES;
 
         [UIView animateWithDuration:0.2 animations:^{
             self.backgroundView.alpha = 0;

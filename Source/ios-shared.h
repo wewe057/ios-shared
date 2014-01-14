@@ -22,6 +22,8 @@
 #import "NSDictionary+SDExtensions.h"
 #import "NSData+SDExtensions.h"
 
+#import "SDApplication.h"
+
 #import "UIAlertView+SDExtensions.h"
 #import "UIColor+SDExtensions.h"
 #import "UIScreen+SDExtensions.h"
