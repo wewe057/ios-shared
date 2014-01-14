@@ -64,7 +64,7 @@
     [self presentModallyFromViewController:controller onDone:done onCancel:cancel withSelectedRow:-1 inComponent:-1];
 }
 
-- (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel withSelectedRow:(NSUInteger)row inComponent:(NSInteger)component
+- (void)presentModallyFromViewController:(UIViewController *)controller onDone:(SDPickerBlock)done onCancel:(SDPickerBlock)cancel withSelectedRow:(NSInteger)row inComponent:(NSInteger)component
 {
     doneBlock = [done copy];
     cancelBlock = [cancel copy];
@@ -99,7 +99,7 @@
     
     // Default to a selected row in component
     if ( (row > -1) && (component > -1) ) {
-        [pickerView selectRow:row inComponent:component animated:NO];
+        [pickerView selectRow:(NSInteger)row inComponent:component animated:NO];
     }
 }
 

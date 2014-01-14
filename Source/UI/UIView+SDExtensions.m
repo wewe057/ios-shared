@@ -151,10 +151,24 @@
 {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
     // if we're on ios7, use the system's snapshoView.
-    if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(snapshotView)])
-        return [self snapshotView];
+    if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
+        return [self snapshotViewAfterScreenUpdates:NO];
 #endif
+    
+    // otherwise, we're doing backwards compatibility to 6.
+    UIView *view = [[UIView alloc] initWithFrame:self.frame];
+    view.layer.contents = (id)[self screenshot].CGImage;
+    return view;
+}
 
+- (UIView *)snapshotAfterScreenUpdates:(BOOL)applyUpdates
+{
+#if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
+    // if we're on ios7, use the system's snapshoView.
+    if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(snapshotViewAfterScreenUpdates:)])
+        return [self snapshotViewAfterScreenUpdates:applyUpdates];
+#endif
+    
     // otherwise, we're doing backwards compatibility to 6.
     UIView *view = [[UIView alloc] initWithFrame:self.frame];
     view.layer.contents = (id)[self screenshot].CGImage;

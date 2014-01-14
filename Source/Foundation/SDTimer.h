@@ -18,7 +18,7 @@ typedef void (^SDTimerBlock)(SDTimer *aTimer);
 
 @interface SDTimer : NSObject
 {
-    dispatch_source_t timer;
+    dispatch_source_t _timer;
 }
 
 /**

@@ -2,7 +2,7 @@
 //  SDPullNavigationBarControlsView.m
 //  walmart
 //
-//  This is a version of the SDPullNavigationBarView that manages simple list of controls for you.
+//  This is a simple list of controls that live in the pullnav.
 //
 //  Created by Steven Woolgar on 12/06/2013.
 //  Copyright (c) 2013 Walmart. All rights reserved.
@@ -11,6 +11,20 @@
 #import "SDPullNavigationBarControlsView.h"
 
 @implementation SDPullNavigationBarControlsView
+
+- (instancetype)initWithEdge:(UIRectEdge)edge
+{
+    NSAssert(edge == UIRectEdgeLeft || edge == UIRectEdgeRight, @"Only left or right edges are supported.");
+    
+    self = [super initWithFrame:(CGRect){CGPointZero, { 200.0f, 40.0f }}];
+    if( self != nil )
+    {
+        self.backgroundColor = [UIColor clearColor];
+        _edge = edge;
+    }
+    
+    return self;
+}
 
 - (void)layoutWithBarItems:(NSArray *)barItems
 {
