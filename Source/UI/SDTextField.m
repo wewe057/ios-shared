@@ -234,8 +234,8 @@
         else
         {
             // handle ios7.
-            _prevItem = [[UIBarButtonItem alloc] initWithTitle:@" ❮ " style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousTextField:)];
-            _nextItem = [[UIBarButtonItem alloc] initWithTitle:@" ❯ " style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextTextField:)];
+            _prevItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❮  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousTextField:)];
+            _nextItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❯  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextTextField:)];
             [_accessoryToolbar setItems:@[_prevItem, _nextItem, spaceItem, _doneItem]];
         }
     }
