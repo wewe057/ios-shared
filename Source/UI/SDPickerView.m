@@ -3,19 +3,18 @@
 //  walmart
 //
 //  Created by Douglas Pedley on 12/13/13.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
 #import "SDPickerView.h"
 #import "UIColor+SDExtensions.h"
-#import <UIKit/UIKit.h>
 
-typedef enum
+typedef NS_ENUM(NSUInteger, SDPickerViewMode)
 {
     SDPickerViewMode_DatePicker,
     SDPickerViewMode_ItemPicker,
     SDPickerViewMode_Uninitialized
-} SDPickerViewMode;
+};
 
 @interface SDPickerView () <UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -91,19 +90,19 @@ typedef enum
                     SDPickerViewDateCompletionBlock completion = [self.dateCompletion copy];
                     completion(NO, self.datePicker.date);
                 }
-            }
                 break;
-                
+            }
+
             case SDPickerViewMode_ItemPicker:
             {
                 if (self.itemCompletion)
                 {
                     SDPickerViewItemSelectionCompletionBlock completion = [self.itemCompletion copy];
                     NSInteger selectedItem = [self.itemPicker selectedRowInComponent:0];
-                    completion(NO, selectedItem, [self.items objectAtIndex:selectedItem]);
+                    completion(NO, selectedItem, self.items[(NSUInteger)selectedItem]);
                 }
-            }
                 break;
+            }
                 
             default:
                 break;
@@ -278,14 +277,14 @@ typedef enum
 // returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return [self.items count];
+    return (NSInteger)self.items.count;
 }
 
 #pragma mark - UIPickerViewDelegate
 
 - (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    return [self.items objectAtIndex:row];
+    return self.items[(NSUInteger)row];
 }
 
 @end
