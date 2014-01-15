@@ -64,6 +64,14 @@
  *  @param animated          YES if the section controller wants the pop animated
  */
 - (void)sectionController:(SDTableViewSectionController *)sectionController popViewController: (BOOL)animated;
+
+/**
+ *  A section controller is asking you to pop to the root view controller
+ *
+ *  @param sectionController The section controller making the request
+ *  @param animated          YES if the section controller wants the pop animated
+ */
+- (void)sectionController:(SDTableViewSectionController *)sectionController popToRootViewControllerAnimated:(BOOL)animated;
 @end
 
 //________________________________________________________________________________________
@@ -142,5 +150,13 @@
  *  @param animated YES if should be animated
  */
 - (void)popViewControllerAnimated:(BOOL)animated;
+
+/**
+ *  Asks the section controller's delegate to pop to the root view controller.  Use this method
+ *  instead of trying to present it yourself
+ *
+ *  @param animated YES if should be animated
+ */
+- (void)popToRootViewControllerAnimated:(BOOL)animated;
 @end
 

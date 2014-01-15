@@ -159,6 +159,15 @@
     }   
 }
 
+- (void)popToRootViewControllerAnimated:(BOOL)animated
+{
+    @strongify(self.delegate, delegate);
+    if ([delegate respondsToSelector:@selector(sectionController:popToRootViewControllerAnimated:)])
+    {
+        [delegate sectionController:self popToRootViewControllerAnimated:animated];
+    }
+}
+
 #pragma mark Private methods
 
 - (BOOL)respondsToSelector:(SEL)aSelector
