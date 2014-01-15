@@ -40,7 +40,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *otherButton;
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
-@property (nonatomic, strong) SDContentAlertViewCompletionBlock completion;
+@property (nonatomic, copy) SDContentAlertViewCompletionBlock completion;
 
 @property (nonatomic, assign) BOOL visible;
 
@@ -185,7 +185,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     _alertView.bounds = CGRectMake(0, 0, kSDContentAlertViewWidth, 150);
     
     if (completion)
-        _completion = completion;
+        _completion = [completion copy];
     
     [self setupGestures];
     [self resizeViews];
@@ -376,6 +376,8 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
             self.mainWindow.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
             [self.mainWindow tintColorDidChange];
         }
+        
+        self.alertWindow.hidden = YES;
 
         [UIView animateWithDuration:0.2 animations:^{
             self.backgroundView.alpha = 0;
@@ -432,7 +434,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         CGSize size = [label.text sizeWithFont:label.font
-#warning 64BIT: Inspect use of MAX/MIN constant; consider one of LONG_MAX/LONG_MIN/ULONG_MAX/DBL_MAX/DBL_MIN, or better yet, NSIntegerMax/Min, NSUIntegerMax, CGFLOAT_MAX/MIN
+//TODO 64BIT: Inspect use of MAX/MIN constant; consider one of LONG_MAX/LONG_MIN/ULONG_MAX/DBL_MAX/DBL_MIN, or better yet, NSIntegerMax/Min, NSUIntegerMax, CGFLOAT_MAX/MIN
                              constrainedToSize:CGSizeMake(label.frame.size.width, FLT_MAX)
                                  lineBreakMode:NSLineBreakByWordWrapping];
         
@@ -443,7 +445,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     {
         NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
         context.minimumScaleFactor = 1.0;
-#warning 64BIT: Inspect use of MAX/MIN constant; consider one of LONG_MAX/LONG_MIN/ULONG_MAX/DBL_MAX/DBL_MIN, or better yet, NSIntegerMax/Min, NSUIntegerMax, CGFLOAT_MAX/MIN
+//TODO 64BIT: Inspect use of MAX/MIN constant; consider one of LONG_MAX/LONG_MIN/ULONG_MAX/DBL_MAX/DBL_MIN, or better yet, NSIntegerMax/Min, NSUIntegerMax, CGFLOAT_MAX/MIN
         CGRect bounds = [label.text boundingRectWithSize:CGSizeMake(label.frame.size.width, FLT_MAX)
                                         options:NSStringDrawingUsesLineFragmentOrigin
                                      attributes:@{NSFontAttributeName:label.font}

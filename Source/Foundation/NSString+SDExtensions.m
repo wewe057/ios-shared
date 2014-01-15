@@ -8,6 +8,8 @@
 
 #import "NSString+SDExtensions.h"
 
+GENERICSABLE_IMPLEMENTATION(NSString)
+
 @implementation NSString(SDExtensions)
 
 - (NSString *)replaceHTMLWithUnformattedText {
@@ -339,6 +341,50 @@
     return [data JSONDictionary];
 }
 
+- (NSString *)capitalizedStreetAddressString
+{
+    NSString* capitalizedString = [self capitalizedString];
+
+    // Handle the simple polar directions.
+    capitalizedString = [capitalizedString stringByReplacingOccurrencesOfString:@" Ne " withString:@" NE "];
+    capitalizedString = [capitalizedString stringByReplacingOccurrencesOfString:@" Nw " withString:@" NW "];
+    capitalizedString = [capitalizedString stringByReplacingOccurrencesOfString:@" Se " withString:@" SE "];
+    capitalizedString = [capitalizedString stringByReplacingOccurrencesOfString:@" Sw " withString:@" SW "];
+
+    // Now go and first the appreviations after the street numbers.
+    NSError* error = nil;
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([0-9]|[ ])(St|Nd|Rd|Th)([ ])" options:0 error:&error];
+    if(error == nil && regex)
+    {
+        NSMutableString* mutableString = [capitalizedString mutableCopy];
+        NSUInteger offset = 0; // Keeps track of range changes in the string
+        for(NSTextCheckingResult *result in [regex matchesInString:capitalizedString
+                                                           options:0
+                                                             range:(NSRange){ 0, capitalizedString.length }])
+        {
+            NSRange resultRange = [result range];
+            resultRange.location += offset; // resultRange.location is updated based on the offset updated below
+
+            // Implement your own replace functionality using replacementStringForResult:inString:offset:template:
+            // note that in the template $0 is replaced by the match
+            NSString* match = [regex replacementStringForResult:result
+                                                       inString:mutableString
+                                                         offset:(NSInteger)offset
+                                                       template:@"$0"];
+            NSString* replacement = [match lowercaseString];
+
+            // make the replacement
+            [mutableString replaceCharactersInRange:resultRange withString:replacement];
+
+            // update the offset based on the replacement
+            offset += ([replacement length] - resultRange.length);
+        }
+
+        capitalizedString = [mutableString copy];
+    }
+
+    return capitalizedString;
+}
 
 @end
 

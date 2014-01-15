@@ -79,4 +79,12 @@
     XCTAssertTrue(_red == whiteRed && _green == whiteGreen && _blue == whiteBlue & _alpha == whiteAlpha, @"A valid white color should have been returned.");
 }
 
+- (void)testCapitalizedStreetAddressString
+{
+    NSString* source = @"2417 NE 11th Ave. 1234 SW 3rd Ave. 321 SE 1st Street. 234 NW 2nd Street.";
+    NSString* changed = [source capitalizedStreetAddressString];
+
+    XCTAssertTrue([source isEqualToString:changed], @"The capitalizeStreetAddress method did not properly capitalize.");
+}
+
 @end

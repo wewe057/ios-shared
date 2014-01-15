@@ -124,11 +124,17 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 {
     if (string && [string length] > 0)
     {
-        if ([searchHistory count] == 0)
+        if ([searchHistory count] == 0) {
             [searchHistory addObject:string];
-        else
-			if ([searchHistory indexOfObject:string] == NSNotFound)
+        } else {
+			if ([searchHistory indexOfObject:string] == NSNotFound) {
 				[searchHistory insertObject:string atIndex:0];
+            } else {
+                NSInteger itemIndex = [searchHistory indexOfObject:string];
+                [searchHistory removeObjectAtIndex:itemIndex];
+                [searchHistory insertObject:string atIndex:0];
+            }
+        }
     }
     
     if ([searchHistory count] >= self.maximumCount)

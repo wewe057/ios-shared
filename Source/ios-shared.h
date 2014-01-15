@@ -2,7 +2,7 @@
 //  ios-shared.h
 //  ios-shared
 //
-//  Created by Brandon Sneed on 3/15/13.
+//  Created by Brandon Sneed on 3/15/2013.
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
@@ -21,6 +21,8 @@
 #import "NSArray+SDExtensions.h"
 #import "NSDictionary+SDExtensions.h"
 #import "NSData+SDExtensions.h"
+
+#import "SDApplication.h"
 
 #import "UIAlertView+SDExtensions.h"
 #import "UIColor+SDExtensions.h"
