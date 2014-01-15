@@ -12,6 +12,8 @@
 {
     // Private flags
     BOOL _sectionsImplementHeightForRow;
+    BOOL _sectionsImplementTitleForHeader;
+    BOOL _sectionsImplementViewForHeader;
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -117,7 +119,7 @@
     {
         [sectionController sectionController:self didSelectRow:row];
     }
-}sdf
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -182,29 +184,49 @@
 
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
+    BOOL result;
     if (aSelector == @selector(tableView:heightForRowAtIndexPath:))
     {
-        return _sectionsImplementHeightForRow;
+        result = _sectionsImplementHeightForRow;
+    } else if (aSelector == @selector(tableView:titleForHeaderInSection:))
+    {
+        result = _sectionsImplementTitleForHeader;
+    } else if (aSelector == @selector(tableView:viewForHeaderInSection:))
+    {
+        result = _sectionsImplementViewForHeader;
     }
-    return [super respondsToSelector:aSelector];
+    else
+    {
+        result = [super respondsToSelector:aSelector];
+    }
+    return result;
 }
 
 
 - (void)p_updateFlags
 {
     _sectionsImplementHeightForRow = NO;
+    _sectionsImplementTitleForHeader = NO;
+    _sectionsImplementViewForHeader = NO;
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
         id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[controllerIndex];
         
-        BOOL implementsHeightForRow = [sectionController respondsToSelector:@selector(sectionController:heightForRow:)];
+        // OR (option) delegate methods
+        // We need to handle this delegate if ANY of the sections implement these delegate methods
+        _sectionsImplementTitleForHeader |= [sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)];
+        _sectionsImplementViewForHeader |= [sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)];
+        
+        // AND delegate methods
+        // If one of the sections implements these delegate methods, then all must
+        BOOL sectionsImplementHeightForRow = [sectionController respondsToSelector:@selector(sectionController:heightForRow:)];
         if (controllerIndex == 0)
         {
-            _sectionsImplementHeightForRow = implementsHeightForRow;
+            _sectionsImplementHeightForRow = sectionsImplementHeightForRow;
         }
         else
         {
-            NSAssert(_sectionsImplementHeightForRow == implementsHeightForRow, @"If one section implements sectionController:heightForRow:, then all sections must");
+            NSAssert(_sectionsImplementHeightForRow == sectionsImplementHeightForRow, @"If one section implements sectionController:heightForRow:, then all sections must");
         }
     }
 }
