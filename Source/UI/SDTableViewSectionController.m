@@ -95,6 +95,16 @@
     return nil;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *result;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
+    {
+        return [sectionController sectionControllerViewForHeader:self];
+    }    
+    return result;
+}
 
 #pragma mark - UITableView Delegate
 
@@ -107,7 +117,7 @@
     {
         [sectionController sectionController:self didSelectRow:row];
     }
-}
+}sdf
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {

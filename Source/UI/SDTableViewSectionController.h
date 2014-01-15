@@ -87,7 +87,23 @@
 
 @optional
 
+/**
+ *  Return a title for the header for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a title for the header for this section
+ */
 - (NSString *)sectionControllerTitleForHeader:(SDTableViewSectionController *)sectionController;
+
+/**
+ *  Return a view for the header for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a view for the header for this section
+ */
+- (UIView *)sectionControllerViewForHeader:(SDTableViewSectionController *)sectionController;
 
 // "Delegate" methods
 @optional
