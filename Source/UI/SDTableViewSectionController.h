@@ -82,6 +82,11 @@
 // "DataSource" methods
 @required
 
+/**
+ *  Your section must return a unique identifier per instance
+ */
+@property (nonatomic, copy, readonly) NSString *identifier;
+
 - (NSInteger)numberOfRowsForSectionController:(SDTableViewSectionController *)sectionController;
 - (UITableViewCell *)sectionController:(SDTableViewSectionController *)sectionController cellForRow:(NSInteger)row;
 
