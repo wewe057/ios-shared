@@ -105,6 +105,8 @@
  */
 - (UIView *)sectionControllerViewForHeader:(SDTableViewSectionController *)sectionController;
 
+- (CGFloat)sectionControllerHeightForHeader:(SDTableViewSectionController *)sectionController;
+
 // "Delegate" methods
 @optional
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;

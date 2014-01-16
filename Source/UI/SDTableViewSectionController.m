@@ -14,6 +14,7 @@
     BOOL _sectionsImplementHeightForRow;
     BOOL _sectionsImplementTitleForHeader;
     BOOL _sectionsImplementViewForHeader;
+    BOOL _sectionsImplementHeightForHeader;
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -39,25 +40,28 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    NSInteger numberOfRows = 0;
+    
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(numberOfRowsForSectionController:)])
     {
-        return [sectionController numberOfRowsForSectionController:self];
+        numberOfRows = [sectionController numberOfRowsForSectionController:self];
     }
-    return 0;
+    return numberOfRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSUInteger section = (NSUInteger)indexPath.section;
     NSInteger row = indexPath.row;
+    UITableViewCell *cell;
+    
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionController:cellForRow:)])
     {
-        UITableViewCell *cell = [sectionController sectionController:self cellForRow:row];
-        return cell;
+        cell = [sectionController sectionController:self cellForRow:row];
     }
-    return nil;
+    return cell;
 }
 
 // This is where we hook to ask our dataSource for the Array of controllers
@@ -65,6 +69,8 @@
 {
     @strongify(self.delegate, delegate);
     @strongify(self.tableView, strongTableView);
+    NSInteger sectionCount = 0;
+    
     if (tableView == strongTableView)
     {
         if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
@@ -78,23 +84,23 @@
             strongTableView.delegate = self;
             strongTableView.dataSource = self;
             
-            NSInteger sectionCount = (NSInteger)self.sectionControllers.count;
-            return sectionCount;
+            sectionCount = (NSInteger)self.sectionControllers.count;
         }
     }
     
-    return 0;
+    return sectionCount;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    NSString *title;
     if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
     {
-        return [sectionController sectionControllerTitleForHeader:self];
+        title = [sectionController sectionControllerTitleForHeader:self];
     }
     
-    return nil;
+    return title;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -103,7 +109,7 @@
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
     {
-        return [sectionController sectionControllerViewForHeader:self];
+        result = [sectionController sectionControllerViewForHeader:self];
     }    
     return result;
 }
@@ -126,11 +132,24 @@
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    CGFloat rowHeight = 44.0;
     if ([sectionController respondsToSelector:@selector(sectionController:heightForRow:)])
     {
-        return [sectionController sectionController:self heightForRow:row];
+        rowHeight = [sectionController sectionController:self heightForRow:row];
     }
-    return 44; // Some default size so engineer sees a broken cell
+    return rowHeight;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    CGFloat headerHeight = 0.0;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    if ([sectionController respondsToSelector:@selector(sectionControllerHeightForHeader:)])
+    {
+        headerHeight =[sectionController sectionControllerHeightForHeader:self];
+    }
+    return headerHeight;
+
 }
 
 #pragma mark - SectionController Methods
@@ -194,6 +213,9 @@
     } else if (aSelector == @selector(tableView:viewForHeaderInSection:))
     {
         result = _sectionsImplementViewForHeader;
+    } else if (aSelector == @selector(tableView:heightForHeaderInSection:))
+    {
+        result = _sectionsImplementHeightForHeader;
     }
     else
     {
@@ -208,6 +230,8 @@
     _sectionsImplementHeightForRow = NO;
     _sectionsImplementTitleForHeader = NO;
     _sectionsImplementViewForHeader = NO;
+    _sectionsImplementHeightForHeader = NO;
+    
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
         id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[controllerIndex];
@@ -216,6 +240,7 @@
         // We need to handle this delegate if ANY of the sections implement these delegate methods
         _sectionsImplementTitleForHeader |= [sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)];
         _sectionsImplementViewForHeader |= [sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)];
+        _sectionsImplementHeightForHeader |= [sectionController respondsToSelector:@selector(sectionControllerHeightForHeader:)];
         
         // AND delegate methods
         // If one of the sections implements these delegate methods, then all must
