@@ -20,7 +20,12 @@
 @end
 
 @protocol SDPullNavigationBarDelegate <NSObject>
+@required
 @property (nonatomic, weak) SDPullNavigationBar* pullNavigationBarDelegate;
+@property (nonatomic, assign, readonly) CGFloat pullNavigationMenuHeight;
+
+@optional
+@property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidth;    // Defaults to 320.0f
 @end
 
 @interface SDPullNavigationBar : UINavigationBar

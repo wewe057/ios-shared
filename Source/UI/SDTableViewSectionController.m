@@ -39,7 +39,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(numberOfRowsForSectionController:)])
     {
         return [sectionController numberOfRowsForSectionController:self];
@@ -49,7 +49,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSInteger section = indexPath.section;
+    NSUInteger section = (NSUInteger)indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionController:cellForRow:)])
@@ -78,7 +78,7 @@
             strongTableView.delegate = self;
             strongTableView.dataSource = self;
             
-            NSInteger sectionCount = self.sectionControllers.count;
+            NSInteger sectionCount = (NSInteger)self.sectionControllers.count;
             return sectionCount;
         }
     }
@@ -88,7 +88,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
     {
         return [sectionController sectionControllerTitleForHeader:self];
@@ -114,7 +114,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(sectionController:didSelectRow:)])
     {
         [sectionController sectionController:self didSelectRow:row];
@@ -125,7 +125,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(sectionController:heightForRow:)])
     {
         return [sectionController sectionController:self heightForRow:row];
