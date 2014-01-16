@@ -14,6 +14,8 @@
 #import "UIDevice+machine.h"
 #import "UIColor+SDExtensions.h"
 
+static const CGFloat kDefaultMenuWidth = 320.0f;
+
 @interface SDPullNavigationMenuContainer : UIView   // This custom class used for debugging purposes.
 @end
 
@@ -28,6 +30,7 @@
 @property (nonatomic, strong) UIImageView* menuBottomAdornmentView;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL tabOpen;
+@property (nonatomic, assign) CGFloat menuWidth;
 
 @end
 
@@ -144,6 +147,10 @@
         [_menuContainer addSubview:_menuBottomAdornmentView];
     }
 
+    _menuWidth = kDefaultMenuWidth;
+    if([_menuController respondsToSelector:@selector(pullNavigationMenuWidth)])
+        _menuWidth = _menuController.pullNavigationMenuWidth;
+
     // Setup the starting point for the first opening animation.
 
     CGRect menuFrame = _menuController.view.frame;
@@ -229,7 +236,7 @@
 
         if([UIDevice iPad] && !self.tabOpen)
         {
-            self.menuController.view.frame = (CGRect){{ self.frame.size.width * 0.5f - 160.0f, 64.0f }, { 320.0f, 0.0f } };
+            self.menuController.view.frame = (CGRect){{ self.frame.size.width * 0.5f - 160.0f, 64.0f }, { self.menuWidth, 0.0f } };
             self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height },
                                                            { self.menuController.view.frame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
         }
@@ -244,7 +251,7 @@
                 [self.tabButton setNeedsDisplay];
 
             CGFloat height = self.tabOpen ? 0.0f : MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            CGFloat width = [UIDevice iPad] ? 320.0f : self.menuController.view.frame.size.width;
+            CGFloat width = [UIDevice iPad] ? self.menuWidth : self.menuController.view.frame.size.width;
 
             self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, height } };
             self.menuBottomAdornmentView.frame = (CGRect){{self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height }, self.menuBottomAdornmentView.frame.size };
@@ -279,7 +286,7 @@
     self.menuContainer.hidden = YES;
 
     self.tabButton.tuckedTab = YES;
-    CGFloat width = [UIDevice iPad] ? 320.0f : self.menuController.view.frame.size.width;
+    CGFloat width = [UIDevice iPad] ? self.menuWidth : self.menuController.view.frame.size.width;
 
     self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, 0.0f } };
     self.menuBottomAdornmentView.frame = (CGRect){{self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height }, self.menuBottomAdornmentView.frame.size };
