@@ -16,9 +16,11 @@
 #elif defined(DEBUG) && !defined(TESTFLIGHT)
 #define SDLog NSLog
 #define SDTrace(__FORMAT__, ...) NSLog((@"Trace: %s [Line %zd] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define SDStack() NSLog(@"%@", [NSThread callStackSymbols])
 #else
 #define SDLog(x...)
 #define SDTrace(x...)
+#define SDStack()
 #endif
 #endif
 
