@@ -12,9 +12,16 @@
 
 @class SDTableViewSectionController;
 
-//__________________________________________________________________________
-// This protocol supplies section controllers to the SDTableViewSectionController
-// And handles delegate methods
+//____________________________________________________________________________________________
+// SDTableViewSectionControllerDelegate is typically implemented by a UIViewController
+// to provide the logic for how the table view should be laid out.
+
+// The implementor of this protocol is required to supply an array of section controllers
+// to the SDTableViewSectionController via the controllersForTableView: delegate method
+
+// Optional delete methods add navigation support.  You should implement these methods
+// If you want your view controller to support push/pop/modal navigation
+// (Proxy these methods to your navigationController)
 
 @protocol SDTableViewSectionControllerDelegate <NSObject>
 
