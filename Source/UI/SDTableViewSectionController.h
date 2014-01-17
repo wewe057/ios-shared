@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define SECTIONCONTROLLER_MAX_HEIGHT MAXFLOAT
+
 @class SDTableViewSectionController;
 
 //__________________________________________________________________________
@@ -23,7 +25,7 @@
  *
  *  @param tableView The table view the controller needs controllers for
  *
- *  @return An array of objects that conform to SDTableViewSectionProtocol
+ *  @return An array of objects that conform to SDTableViewSectionDelegate
  */
 - (NSArray *)controllersForTableView:(UITableView *)tableView;
 
@@ -181,5 +183,26 @@
  *  @param animated YES if should be animated
  */
 - (void)popToRootViewControllerAnimated:(BOOL)animated;
+
+/**
+ *  Returns the height of all sections above the given section
+ *
+ *  @param section   Calculate the height of sections above this section
+ *  @param maxHeight Maximum height to calculate. Pass SECTIONCONTROLLER_MAX_HEIGHT to calculate the total height of all sections above this section
+ *
+ *  @return <#return value description#>
+ */
+- (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight;
+
+/**
+ *  Returns the height of all sections below the given section
+ *
+ *  @param section   Calculate the height of sections below this section
+ *  @param maxHeight Maximum height to calculate. Pass SECTIONCONTROLLER_MAX_HEIGHT to calculate the total height of all sections below this section
+ *
+ *  @return <#return value description#>
+ */
+- (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight;
+
 @end
 

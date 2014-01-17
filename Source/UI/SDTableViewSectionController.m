@@ -199,6 +199,100 @@
     }
 }
 
+#pragma mark - Height Methods
+
+- (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
+{
+    CGFloat height = 0;
+    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    if (sectionIndex > 0 && sectionIndex != NSNotFound)
+    {
+        NSRange rangeOfIndexes = NSMakeRange(0, sectionIndex);
+        NSIndexSet *sectionIndexes = [[NSIndexSet alloc] initWithIndexesInRange:rangeOfIndexes];
+        NSArray *sections = [self.sectionControllers objectsAtIndexes:sectionIndexes];
+        height = [self p_heightForSections:sections maxHeight:maxHeight];
+    }
+    return height;
+}
+
+- (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
+{
+    CGFloat height = 0;
+    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    if ((sectionIndex < (self.sectionControllers.count - 1) && sectionIndex != NSNotFound))
+    {
+        NSRange rangeOfIndexes = NSMakeRange(sectionIndex + 1, self.sectionControllers.count - sectionIndex - 1);
+        NSIndexSet *sectionIndexes = [[NSIndexSet alloc] initWithIndexesInRange:rangeOfIndexes];
+        NSArray *sections = [self.sectionControllers objectsAtIndexes:sectionIndexes];
+        height = [self p_heightForSections:sections maxHeight:maxHeight];
+    }
+    return height;
+}
+
+- (CGFloat)p_heightForSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
+{
+    CGFloat sectionHeight = 0;
+
+    @strongify(self.tableView, strongTableView);
+    // Must check selector because section height is optional
+    if ([section respondsToSelector:@selector(sectionControllerHeightForHeader:)])
+    {
+        sectionHeight = [section sectionControllerHeightForHeader:self];
+    }
+    else
+    {
+        if ([section respondsToSelector:@selector(sectionControllerTitleForHeader:)] ||
+            [section respondsToSelector:@selector(sectionControllerViewForHeader:)])
+        {
+            sectionHeight = [strongTableView sectionHeaderHeight];
+        }
+    }
+    
+    // If we have not already exceeded maxHeight, let's look at the rows
+    if (sectionHeight < maxHeight)
+    {
+        NSInteger numberOfCells = [section numberOfRowsForSectionController:self];
+        for (NSInteger cellIndex = 0; cellIndex < numberOfCells; cellIndex++)
+        {
+            if ([section respondsToSelector:@selector(sectionController:heightForRow:)])
+            {
+                sectionHeight += [section sectionController:self heightForRow:cellIndex];
+            }
+            else
+            {
+                sectionHeight += [strongTableView rowHeight];
+            }
+            
+            if (sectionHeight > maxHeight)
+            {
+                sectionHeight = maxHeight;
+                break;
+            }
+        }
+    }
+    else
+    {
+        sectionHeight = maxHeight;
+    }
+
+    return sectionHeight;
+}
+
+- (CGFloat)p_heightForSections:(NSArray *)sections maxHeight:(CGFloat)maxHeight
+{
+    CGFloat height = 0;
+    for (id<SDTableViewSectionDelegate>section in sections)
+    {
+        height += [self p_heightForSection:section maxHeight:maxHeight];
+        if (height > maxHeight)
+        {
+            height = maxHeight;
+            break;
+        }
+    }
+    return height;
+}
+
 #pragma mark Private methods
 
 - (BOOL)respondsToSelector:(SEL)aSelector
