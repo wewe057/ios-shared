@@ -173,7 +173,7 @@ Returns a deepCopy of an array. It will recursively deepCopy contained arrays to
 {
     NSAssert(arrayOfArrays, @"Contract says provide valid array.");
 
-    NSMutableArray* collector = [NSMutableArray arrayWithCapacity:10];
+    NSMutableArray* collector = [NSMutableArray array];
     for(NSArray* array in arrayOfArrays)
     {
         NSAssert([array isKindOfClass:[NSArray class]], @"Contract (and Simon) says provide an array of arrays.");
