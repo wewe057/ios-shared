@@ -26,4 +26,15 @@
 + (instancetype)sharedInstance;
 - (void)navigateWithSteps:(NSArray*)steps;
 
+/**
+ Navigate to one of the top level view controllers defined in the 'globalPullNavController'.
+ */
+- (BOOL)navigateToTopLevelController:(Class)topLevelViewControllerClass;
+
+/**
+ Navigate to one of the top level view controllers defined in the 'globalPullNavController' and pop to the
+ root.
+ */
+- (void)navigateToTopLevelController:(Class)topLevelViewControllerClass andPopToRootWithAnimation:(BOOL)animate;
+
 @end

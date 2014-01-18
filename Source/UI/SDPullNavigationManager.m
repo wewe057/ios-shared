@@ -124,6 +124,24 @@
     // TODO: We will need to update the size of the left and right global nav controls areas.
 }
 
+#pragma mark - Navigation Helpers:
+
+- (BOOL)navigateToTopLevelController:(Class)topLevelViewControllerClass
+{
+    UINavigationController* foundNavController = [self.globalPullNavController navigationControllerForViewControllerClass:topLevelViewControllerClass];
+
+    if(foundNavController)
+        self.globalPullNavController.selectedViewController = foundNavController;
+
+    return foundNavController != nil;
+}
+
+- (void)navigateToTopLevelController:(Class)topLevelViewControllerClass andPopToRootWithAnimation:(BOOL)animate
+{
+    if([self navigateToTopLevelController:topLevelViewControllerClass])
+        [(UINavigationController*)self.globalPullNavController.selectedViewController popToRootViewControllerAnimated:animate];
+}
+
 #pragma mark - Navigation Automation
 
 - (void)navigateWithSteps:(NSArray*)steps
