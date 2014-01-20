@@ -106,7 +106,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *result;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
     {
         result = [sectionController sectionControllerViewForHeader:self];
@@ -143,7 +143,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     CGFloat headerHeight = 0.0;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(sectionControllerHeightForHeader:)])
     {
         headerHeight =[sectionController sectionControllerHeightForHeader:self];
@@ -204,7 +204,7 @@
 - (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
     if (sectionIndex > 0 && sectionIndex != NSNotFound)
     {
         NSRange rangeOfIndexes = NSMakeRange(0, sectionIndex);
@@ -218,7 +218,7 @@
 - (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
     if ((sectionIndex < (self.sectionControllers.count - 1) && sectionIndex != NSNotFound))
     {
         NSRange rangeOfIndexes = NSMakeRange(sectionIndex + 1, self.sectionControllers.count - sectionIndex - 1);
