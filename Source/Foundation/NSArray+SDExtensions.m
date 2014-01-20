@@ -142,6 +142,9 @@
     return mappedArray;
 }
 
+/**
+Returns a deepCopy of an array. It will recursively deepCopy contained arrays too.
+*/
 - (NSArray *)deepCopy
 {
     NSMutableArray *deepCopyArray = [[NSMutableArray alloc] initWithCapacity: self.count];
@@ -161,6 +164,23 @@
     }
 
     return [deepCopyArray copy];
+}
+
+/**
+ Returns an array with the contents of the provided array of arrays.
+ */
++ (NSArray *)arrayFromArrays:(NSArray*)arrayOfArrays
+{
+    NSAssert(arrayOfArrays, @"Contract says provide valid array.");
+
+    NSMutableArray* collector = [NSMutableArray array];
+    for(NSArray* array in arrayOfArrays)
+    {
+        NSAssert([array isKindOfClass:[NSArray class]], @"Contract (and Simon) says provide an array of arrays.");
+        [collector addObjectsFromArray:array];
+    }
+
+    return [collector copy];
 }
 
 @end

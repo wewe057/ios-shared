@@ -160,6 +160,7 @@
 		E205781E18872F2600A1BA81 /* UIView+PaintCode.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781418872F2600A1BA81 /* UIView+PaintCode.m */; };
 		E205781F18872F2600A1BA81 /* SDSectionedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781618872F2600A1BA81 /* SDSectionedTableView.m */; };
 		E205782018872F2600A1BA81 /* SDTableViewSectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781818872F2600A1BA81 /* SDTableViewSectionController.m */; };
+		E205784E1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */; };
 		E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */; };
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
 		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
@@ -368,6 +369,7 @@
 		E205781618872F2600A1BA81 /* SDSectionedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDSectionedTableView.m; sourceTree = "<group>"; };
 		E205781718872F2600A1BA81 /* SDTableViewSectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTableViewSectionController.h; sourceTree = "<group>"; };
 		E205781818872F2600A1BA81 /* SDTableViewSectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTableViewSectionController.m; sourceTree = "<group>"; };
+		E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E21C0F43187B3F39001CA469 /* SDPullNavigationAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationAutomation.h; sourceTree = "<group>"; };
 		E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationAutomation.m; sourceTree = "<group>"; };
 		E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SDExtensionsTests.m"; sourceTree = "<group>"; };
@@ -420,6 +422,7 @@
 				CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */,
 				CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */,
 				CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */,
+				E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */,
 				E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */,
 				E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */,
 				CAAB5A2518564B0E006737D4 /* SDDataMapTests.m */,
@@ -861,6 +864,7 @@
 				CA0E77B618284DD600B4398F /* SDWebViewCell.m in Sources */,
 				CA0E77BF18284DD600B4398F /* UIColor+SDExtensions.m in Sources */,
 				CAAB5A3618564CEE006737D4 /* RxOrderModel.m in Sources */,
+				E205784E1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m in Sources */,
 				CA0E77AD18284DD600B4398F /* SDPickerModalViewController.m in Sources */,
 				CA0E777018284DD600B4398F /* NSDate+SDExtensions.m in Sources */,
 				CA0E779818284DD600B4398F /* SDAlertView.m in Sources */,
