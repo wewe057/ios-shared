@@ -25,8 +25,7 @@ void const *SDImageViewURLAssociatedObjectKey = @"SDImageViewURLAssociatedObject
 
 - (void)setImageWithURL:(NSURL *)url
 {
-    if ( url == nil ) return;
-    
+    // Removed nil guard because setting nil is legitimate and needs to happen so we clear out the image and the associated url
     [self setImageWithURL:url placeholderImage:nil];
 }
 
@@ -53,17 +52,19 @@ void const *SDImageViewURLAssociatedObjectKey = @"SDImageViewURLAssociatedObject
 //    if (existingURL)
 //        [self cancelCurrentImageLoad];
     
-    self.image = placeholder;
     
     objc_setAssociatedObject(self, SDImageViewURLAssociatedObjectKey, url, OBJC_ASSOCIATION_RETAIN);
 
     // if the url is set to nil, assume it's intentional and don't send back an error.
     if (!url)
     {
+        self.image = nil;
         if (completionBlock)
             completionBlock(nil, nil);
         return;
     }
+    
+    self.image = placeholder;
 
     @weakify(self);
 
@@ -89,8 +90,8 @@ void const *SDImageViewURLAssociatedObjectKey = @"SDImageViewURLAssociatedObject
 
 - (void)cancelCurrentImageLoad
 {
-    NSURL *originalURL = objc_getAssociatedObject(self, @"imageUrl");
-    objc_setAssociatedObject(self, @"imageUrl", nil, OBJC_ASSOCIATION_RETAIN);
+    NSURL *originalURL = objc_getAssociatedObject(self, SDImageViewURLAssociatedObjectKey);
+    objc_setAssociatedObject(self, SDImageViewURLAssociatedObjectKey, nil, OBJC_ASSOCIATION_RETAIN);
     [[SDImageCache sharedInstance] cancelFetchForURL:originalURL];
 }
 
