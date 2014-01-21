@@ -13,11 +13,13 @@
 
 NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
 
+void const *SDImageViewURLAssociatedObjectKey = @"SDImageViewURLAssociatedObjectKey";
+
 @implementation UIImageView (SDExtensions)
 
 - (NSURL *)URL
 {
-    NSURL *existingURL = objc_getAssociatedObject(self, @"imageUrl");
+    NSURL *existingURL = objc_getAssociatedObject(self, SDImageViewURLAssociatedObjectKey);
     return existingURL;
 }
 
@@ -40,20 +42,20 @@ NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
 
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholder completionBlock:(UIImageViewURLCompletionBlock)completionBlock
 {
-    NSURL *existingURL = objc_getAssociatedObject(self, @"imageUrl");
+    NSURL *existingURL = objc_getAssociatedObject(self, SDImageViewURLAssociatedObjectKey);
     if (existingURL && [[url absoluteString] isEqualToString:[existingURL absoluteString]])
     {
         if (completionBlock)
             completionBlock(nil, [NSError errorWithDomain:SDImageViewErrorDomain code:SDImageViewErrorAlreadyBeingFetched]);
         return;
     }
-    else
-    if (existingURL)
-        [self cancelCurrentImageLoad];
+//    else
+//    if (existingURL)
+//        [self cancelCurrentImageLoad];
     
     self.image = placeholder;
     
-    objc_setAssociatedObject(self, @"imageUrl", url, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, SDImageViewURLAssociatedObjectKey, url, OBJC_ASSOCIATION_RETAIN);
 
     // if the url is set to nil, assume it's intentional and don't send back an error.
     if (!url)
@@ -67,7 +69,7 @@ NSString * const SDImageViewErrorDomain = @"SDImageViewErrorDomain";
 
     [[SDImageCache sharedInstance] fetchImageAtURL:url completionBlock:^(UIImage *image, NSError *error) {
         @strongify(self);
-        NSURL *originalURL = objc_getAssociatedObject(self, @"imageUrl");
+        NSURL *originalURL = objc_getAssociatedObject(self, SDImageViewURLAssociatedObjectKey);
 
         // if the url's match on both sides, lets set it and/or wrap any error that comes back.
         if ([[url absoluteString] isEqualToString:[originalURL absoluteString]])
