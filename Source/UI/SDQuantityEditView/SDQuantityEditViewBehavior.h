@@ -39,6 +39,13 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
  Returns the EditView's label that displays current weight
  */
 - (UILabel *)totalWeightLabel;
+
+@optional
+/**
+ Returns the EditView's UIImageView that displays the background image
+ */
+- (UIImageView *)backgroundImageView;
+
 @end
 
 /**
