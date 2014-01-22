@@ -72,8 +72,8 @@
 
 - (void)deleteBackward
 {
-    NSInteger decimalPosition = -1;
-    for (NSInteger i = (NSInteger)self.text.length - 1; i > 0; i--)
+    NSUInteger decimalPosition = NSUIntegerMax;
+    for (NSUInteger i = self.text.length - 1; i > 0; i--)
     {
         NSString *c = [self.text substringWithRange:NSMakeRange((NSUInteger)i - 1, 1)];
 
@@ -89,7 +89,7 @@
         }
     }
 
-    if (decimalPosition == -1)
+    if (decimalPosition == NSUIntegerMax)
         self.text = @"";
     else
         self.text = [self.text substringWithRange:NSMakeRange(0, decimalPosition)];
