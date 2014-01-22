@@ -288,4 +288,64 @@
     return outputImage;
 }
 
+/**
+ Given an image, composite them together to form a third image.
+ The resulting image will be as big as the biggest dimension of either of the images.
+ Given the options, you can choose to make the source's Y position be at the top or bottom of resulting image,
+ and the overlay at the top, bottom, right, left, or centerX, or centerY.
+ */
+- (UIImage *)compositeOverlayImage:(UIImage *)overlayImage withOptions:(SDImageCompositionOptions)options
+{
+    NSAssert(overlayImage, @"Provide an overlay image");
+
+    NSAssert(options & (SDImageCompositeOptionsPinSourceToTop | SDImageCompositeOptionsPinSourceToBottom), @"Either pin to top or bottom, not both");
+    NSAssert(options & (SDImageCompositeOptionsPinOverlayToTop | SDImageCompositeOptionsPinOverlayToBottom), @"Either pin to top or bottom, not both");
+    NSAssert(options & (SDImageCompositeOptionsPinOverlayToLeft | SDImageCompositeOptionsPinOverlayToRight), @"Either pin to left or right, not both");
+    NSAssert(options & (SDImageCompositeOptionsCenterXOverlay | SDImageCompositeOptionsPinOverlayToLeft), @"Either pin to left or centerX, not both");
+    NSAssert(options & (SDImageCompositeOptionsCenterXOverlay | SDImageCompositeOptionsPinOverlayToRight), @"Either pin to right or centerX, not both");
+    NSAssert(options & (SDImageCompositeOptionsCenterYOverlay | SDImageCompositeOptionsPinOverlayToTop), @"Either pin to top or centerY, not both");
+    NSAssert(options & (SDImageCompositeOptionsCenterYOverlay | SDImageCompositeOptionsPinOverlayToBottom), @"Either pin to bottom or centerY, not both");
+
+    CGSize destinationSize = (CGSize){ MAX(self.size.width, overlayImage.size.width),
+                                       MAX(self.size.height, overlayImage.size.height) };
+
+    // Given the options, calculate where we position the source.
+
+    CGPoint sourcePoint = CGPointZero;
+    if(options & SDImageCompositeOptionsPinSourceToBottom)
+        sourcePoint = (CGPoint){ sourcePoint.x, destinationSize.height - self.size.height };
+
+    // Given the options, calculate where we position the overlay.
+
+    CGPoint overlayPoint = CGPointZero;
+    if(options & SDImageCompositeOptionsPinOverlayToBottom)
+        overlayPoint = (CGPoint){ overlayPoint.x, destinationSize.height - overlayImage.size.height };
+    if(options & SDImageCompositeOptionsPinOverlayToLeft)
+        overlayPoint = (CGPoint){ 0.0f, overlayPoint.y };
+    if(options & SDImageCompositeOptionsCenterYOverlay)
+        overlayPoint = (CGPoint){ overlayPoint.x, (destinationSize.height * 0.5f) - (overlayImage.size.height * 0.5f) };
+    if(options & SDImageCompositeOptionsPinOverlayToRight)
+        overlayPoint = (CGPoint){ destinationSize.width - overlayImage.size.width, overlayPoint.y };
+    if(options & SDImageCompositeOptionsCenterXOverlay)
+        overlayPoint = (CGPoint){ (destinationSize.width * 0.5f) - (overlayImage.size.width * 0.5f), overlayPoint.y };
+
+    // Now composite them together.
+
+    UIImage *compositedImage = nil;
+
+    UIGraphicsBeginImageContextWithOptions(destinationSize, NO, [[UIScreen mainScreen] scale]);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextRetain( context );
+    {
+        [self drawAtPoint:sourcePoint];
+        [overlayImage drawAtPoint:overlayPoint];
+
+        compositedImage = UIGraphicsGetImageFromCurrentImageContext();
+    }
+    CGContextRelease( context );
+    UIGraphicsEndImageContext();
+
+    return compositedImage;
+}
+
 @end
