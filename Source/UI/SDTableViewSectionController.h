@@ -129,6 +129,11 @@
 // Variable height support
 // Required for now because of the current design
 - (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
+
+@optional
+// Editing support
+- (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
 @end
 
 //__________________________________________________________________________
