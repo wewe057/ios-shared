@@ -60,6 +60,7 @@
     strongOwner.inputView = self.itemPicker;
     strongOwner.inputAccessoryView = self.pickerBar;
     [strongOwner reloadInputViews];
+    [strongOwner becomeFirstResponder];
 }
 
 @end
@@ -81,8 +82,11 @@
     _pickerButton.owner = self;
 
     self.rightView = _pickerButton;
-    self.rightViewMode = UITextFieldViewModeWhileEditing;
-    self.pickerButtonColor = self.tintColor;//[UIColor blueColor];
+    self.rightViewMode = UITextFieldViewModeAlways;
+    if ([UIDevice systemMajorVersion] < 7)
+        self.pickerButtonColor = [UIColor blueColor];
+    else
+        self.pickerButtonColor = self.tintColor;
 }
 
 - (void)setPickerItems:(NSArray<NSString> *)pickerItems
