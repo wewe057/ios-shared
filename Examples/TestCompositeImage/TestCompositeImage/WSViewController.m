@@ -45,9 +45,6 @@
                                       withOptions:SDImageCompositeOptionsPinSourceToBottom |
                                                   SDImageCompositeOptionsPinOverlayToLeft |
                                                   SDImageCompositeOptionsPinOverlayToTop];
-    
-    NSData* imageData = UIImagePNGRepresentation(self.testImage3.image);
-    [imageData writeToFile:@"/Users/woolie/Desktop/source-image3.png" atomically:YES];
 }
 
 @end
