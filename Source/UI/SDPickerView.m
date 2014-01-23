@@ -1,6 +1,7 @@
 //
 //  SDPickerView.m
-//  walmart
+//  ios-shared
+
 //
 //  Created by Douglas Pedley on 12/13/13.
 //  Copyright (c) 2013 SetDirection. All rights reserved.

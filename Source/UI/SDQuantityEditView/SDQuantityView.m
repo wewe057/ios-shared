@@ -310,11 +310,13 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 - (void)setupLayer
 {
     CAShapeLayer *layer = (CAShapeLayer *)self.layer;
-    CGRect bgRect = self.bounds;
-    bgRect = CGRectInset(self.bounds, kSDQuantityViewBackgroundWidthInset, 0.0f);
+    CGRect bgRect = CGRectInset(self.bounds, kSDQuantityViewBackgroundWidthInset, 0.0f);
     bgRect.origin.y += 0.5f;
     bgRect.size.height -= 1.0f;
-    layer.path = CGPathCreateWithRect(bgRect, nil);
+
+    CGPathRef path = CGPathCreateWithRect(bgRect, NULL);
+    layer.path = path;
+    CGPathRelease(path);
     
     layer.fillColor = self.fillColor.CGColor;
     layer.strokeColor = self.fillColor.CGColor;
