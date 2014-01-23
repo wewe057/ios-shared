@@ -49,7 +49,7 @@ typedef NS_OPTIONS(NSUInteger, SDImageCompositionOptions)
 - (UIImage *)compositeWith:(UIImage *)overlayImage toPoint:(CGPoint)overlayPoint;
 
 /**
- Given an image, composite them together to form a third image.
+ Given an image and the size to stretch it to and an image to overlay on top of it, composite them together to form a third image.
  The resulting image will be as big as the biggest dimension of either of the images.
  Given the options, you can choose to make the source's Y position be at the top or bottom of resulting image,
  and the overlay at the top, bottom, right, left, or centerX, or centerY.

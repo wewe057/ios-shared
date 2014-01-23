@@ -308,8 +308,8 @@
     NSAssert(!(options & SDImageCompositeOptionsCenterYOverlay   && options & SDImageCompositeOptionsPinOverlayToTop), @"Either pin to top or centerY, not both");
     NSAssert(!(options & SDImageCompositeOptionsCenterYOverlay   && options & SDImageCompositeOptionsPinOverlayToBottom), @"Either pin to bottom or centerY, not both");
 
-    CGSize destinationSize = (CGSize){ floor(MAX(size.width, overlayImage.size.width)),
-                                       floor(MAX(size.height, overlayImage.size.height)) };
+    CGSize destinationSize = (CGSize){ MAX(size.width, overlayImage.size.width),
+                                       MAX(size.height, overlayImage.size.height) };
 
     // Given the options, calculate where we position the source.
 
@@ -321,15 +321,15 @@
 
     CGPoint overlayPoint = CGPointZero;
     if(options & SDImageCompositeOptionsPinOverlayToBottom)
-        overlayPoint = (CGPoint){ overlayPoint.x, floor(destinationSize.height - overlayImage.size.height) };
+        overlayPoint = (CGPoint){ overlayPoint.x, destinationSize.height - overlayImage.size.height };
     if(options & SDImageCompositeOptionsPinOverlayToLeft)
         overlayPoint = (CGPoint){ 0.0f, overlayPoint.y };
     if(options & SDImageCompositeOptionsCenterYOverlay)
-        overlayPoint = (CGPoint){ overlayPoint.x, floor((destinationSize.height * 0.5f) - (overlayImage.size.height * 0.5f)) };
+        overlayPoint = (CGPoint){ overlayPoint.x, (destinationSize.height * 0.5f) - (overlayImage.size.height * 0.5f) };
     if(options & SDImageCompositeOptionsPinOverlayToRight)
         overlayPoint = (CGPoint){ destinationSize.width - overlayImage.size.width, overlayPoint.y };
     if(options & SDImageCompositeOptionsCenterXOverlay)
-        overlayPoint = (CGPoint){ floor((destinationSize.width * 0.5f) - (overlayImage.size.width * 0.5f)), overlayPoint.y };
+        overlayPoint = (CGPoint){ (destinationSize.width * 0.5f) - (overlayImage.size.width * 0.5f), overlayPoint.y };
 
     // Now composite them together.
 
