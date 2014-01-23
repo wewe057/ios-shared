@@ -29,12 +29,15 @@
     return self;
 }
 
-- (void)awakeFromNib
+- (id)initWithCoder:(NSCoder *)aDecoder
 {
-    [super awakeFromNib];
-    self.keyboardType = UIKeyboardTypeNumberPad;
-    self.format = @"#";
-    [self addTarget:self action:@selector(formatInput:) forControlEvents:UIControlEventEditingChanged];
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.keyboardType = UIKeyboardTypeNumberPad;
+        self.format = @"#";
+        [self addTarget:self action:@selector(formatInput:) forControlEvents:UIControlEventEditingChanged];
+    }
+    return self;
 }
 
 - (void)configureView
