@@ -3,7 +3,7 @@
 //  walmart
 //
 //  Created by Steve Riggins & Woolie on 1/2/14.
-//  Copyright (c) 2014 Walmart. All rights reserved.
+//  Copyright (c) 2014 SetDirection. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -129,6 +129,11 @@
 // Variable height support
 // Required for now because of the current design
 - (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
+
+@optional
+// Editing support
+- (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
 @end
 
 //__________________________________________________________________________

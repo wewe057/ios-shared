@@ -3,7 +3,7 @@
 //  walmart
 //
 //  Created by Steve Riggins & Woolie on 1/2/14.
-//  Copyright (c) 2014 Walmart. All rights reserved.
+//  Copyright (c) 2014 SetDirection. All rights reserved.
 //
 
 #import "SDTableViewSectionController.h"
@@ -15,6 +15,8 @@
     BOOL _sectionsImplementTitleForHeader;
     BOOL _sectionsImplementViewForHeader;
     BOOL _sectionsImplementHeightForHeader;
+    BOOL _sectionsImplementEditingStyleForRow;
+    BOOL _sectionsImplementCommitEditingStyleForRow;
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -150,6 +152,32 @@
     }
     return headerHeight;
 
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCellEditingStyle editingStyle = UITableViewCellEditingStyleNone;
+ 
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionController:editingStyleForRow:)])
+    {
+        editingStyle =[sectionController sectionController:self editingStyleForRow:row];
+    }
+   
+    return editingStyle;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)])
+    {
+        [sectionController sectionController:self commitEditingStyle:editingStyle forRow:row];
+    }
 }
 
 #pragma mark - SectionController Methods
@@ -295,6 +323,9 @@
 
 #pragma mark Private methods
 
+// Based on the results of calling p_updateFlags, let table view know if we do or do not have
+// sections that implement our proxy delegat methods
+// This allows table view behavior to remain the same as if the we had never implemented those methods
 - (BOOL)respondsToSelector:(SEL)aSelector
 {
     BOOL result;
@@ -310,6 +341,12 @@
     } else if (aSelector == @selector(tableView:heightForHeaderInSection:))
     {
         result = _sectionsImplementHeightForHeader;
+    } else if (aSelector == @selector(tableView:editingStyleForRowAtIndexPath:))
+    {
+        result = _sectionsImplementEditingStyleForRow;
+    } else if (aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:))
+    {
+        result = _sectionsImplementCommitEditingStyleForRow;
     }
     else
     {
@@ -318,13 +355,16 @@
     return result;
 }
 
-
+// For every table view delegate/datasource method we proxy, keep a flag
+// That we can use to lie to table view about whether we "implement" that
+// API or not via respondsToSelector
 - (void)p_updateFlags
 {
     _sectionsImplementHeightForRow = NO;
     _sectionsImplementTitleForHeader = NO;
     _sectionsImplementViewForHeader = NO;
     _sectionsImplementHeightForHeader = NO;
+    _sectionsImplementEditingStyleForRow = NO;
     
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
@@ -335,6 +375,8 @@
         _sectionsImplementTitleForHeader |= [sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)];
         _sectionsImplementViewForHeader |= [sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)];
         _sectionsImplementHeightForHeader |= [sectionController respondsToSelector:@selector(sectionControllerHeightForHeader:)];
+        _sectionsImplementEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:editingStyleForRow:)];
+        _sectionsImplementCommitEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)];
         
         // AND delegate methods
         // If one of the sections implements these delegate methods, then all must
