@@ -3,7 +3,7 @@
 //  walmart
 //
 //  Created by Steve Riggins & Woolie on 1/2/14.
-//  Copyright (c) 2014 Walmart. All rights reserved.
+//  Copyright (c) 2014 SetDirection. All rights reserved.
 //
 
 #import "SDTableViewSectionController.h"
