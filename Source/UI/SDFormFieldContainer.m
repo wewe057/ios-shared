@@ -1,0 +1,46 @@
+//
+//  SDFormFieldContainer.m
+//  walmart
+//
+//  Created by Brandon Sneed on 1/16/14.
+//  Copyright (c) 2014 Walmart. All rights reserved.
+//
+
+#import "SDFormFieldContainer.h"
+
+@implementation SDFormFieldContainer
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    [self configureView];
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    [self configureView];
+    return self;
+}
+
+- (void)configureView
+{
+    self.separatorColor = [UIColor lightGrayColor];
+    self.separatorInset = 0;
+    self.backgroundColor = [UIColor clearColor];
+}
+
+- (void)drawRect:(CGRect)rect
+{
+    [self.separatorColor set];
+
+    CGContextRef currentContext = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(currentContext, 1.0);
+    CGContextMoveToPoint(currentContext, self.separatorInset, self.bounds.size.height);
+    CGContextAddLineToPoint(currentContext, self.bounds.size.width, self.bounds.size.height);
+    CGContextStrokePath(currentContext);
+}
+
+
+@end
