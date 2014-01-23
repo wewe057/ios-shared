@@ -1,9 +1,10 @@
 //
 //  SDPullNavigationBar.m
-//  walmart
+//  ios-shared
+
 //
 //  Created by Brandon Sneed on 08/06/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import "SDPullNavigationBar.h"

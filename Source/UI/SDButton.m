@@ -1,9 +1,9 @@
 //
 //  SDButton.m
-//  walmart
+//  ios-shared
 //
 //  Created by Peter Marks on 1/20/14.
-//  Copyright (c) 2014 Walmart. All rights reserved.
+//  Copyright 2014 SetDirection. All rights reserved.
 //
 
 #import "SDButton.h"

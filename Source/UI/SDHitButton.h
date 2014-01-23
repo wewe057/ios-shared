@@ -1,9 +1,10 @@
 //
 //  SDHitButton.h
-//  walmart
+//  ios-shared
+
 //
 //  Created by Steve Riggins on 1/22/14.
-//  Copyright (c) 2014 Walmart. All rights reserved.
+//  Copyright 2014 SetDirection. All rights reserved.
 //
 //  Poorly named class on purpose until we come to agreement on what "SDButton" should do by default
 //

@@ -1,6 +1,7 @@
 //
 //  SDTableViewSectionController.h
-//  walmart
+//  ios-shared
+
 //
 //  Created by Steve Riggins & Woolie on 1/2/14.
 //  Copyright (c) 2014 SetDirection. All rights reserved.

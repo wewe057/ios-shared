@@ -1,6 +1,6 @@
 //
 //  NSNumber+SDExtensions.h
-//  SamsClub
+//  ios-shared
 //
 //  Created by Sam Grover on 6/28/13.
 //  Copyright (c) 2013 Wal-mart Stores, Inc. All rights reserved.

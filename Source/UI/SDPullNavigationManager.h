@@ -1,9 +1,10 @@
 //
 //  SDPullNavigationManager.h
-//  walmart
+//  ios-shared
+
 //
 //  Created by Steven Woolgar on 12/05/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

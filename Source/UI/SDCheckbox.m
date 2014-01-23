@@ -1,9 +1,10 @@
 //
 //  SDCheckbox.m
-//  walmart
+//  ios-shared
+
 //
 //  Created by Brandon Sneed on 1/15/14.
-//  Copyright (c) 2014 Walmart. All rights reserved.
+//  Copyright 2014 SetDirection. All rights reserved.
 //
 
 #import "SDCheckbox.h"
