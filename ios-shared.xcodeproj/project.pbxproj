@@ -165,6 +165,8 @@
 		E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */; };
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
 		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
+		E2B31BA2189342BF0006970E /* SDSpanParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E2B31B9E189342BF0006970E /* SDSpanParser.m */; };
+		E2B31BA3189342BF0006970E /* SDTextFieldPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = E2B31BA0189342BF0006970E /* SDTextFieldPicker.m */; };
 		E2C8A21C1853E660000DD265 /* SDPullNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2111853E660000DD265 /* SDPullNavigationBar.m */; };
 		E2C8A21D1853E660000DD265 /* SDPullNavigationBarBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2131853E660000DD265 /* SDPullNavigationBarBackground.m */; };
 		E2C8A21E1853E660000DD265 /* SDPullNavigationBarControlsView.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2151853E660000DD265 /* SDPullNavigationBarControlsView.m */; };
@@ -381,6 +383,11 @@
 		E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationAutomation.m; sourceTree = "<group>"; };
 		E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SDExtensionsTests.m"; sourceTree = "<group>"; };
+		E2B31B9D189342BF0006970E /* SDSpanParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDSpanParser.h; sourceTree = "<group>"; };
+		E2B31B9E189342BF0006970E /* SDSpanParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDSpanParser.m; sourceTree = "<group>"; };
+		E2B31B9F189342BF0006970E /* SDTextFieldPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTextFieldPicker.h; sourceTree = "<group>"; };
+		E2B31BA0189342BF0006970E /* SDTextFieldPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTextFieldPicker.m; sourceTree = "<group>"; };
+		E2B31BA1189342BF0006970E /* UIButton+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+SDExtensions.h"; sourceTree = "<group>"; };
 		E2C8A20F1853E660000DD265 /* SDPullNavigation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigation.h; sourceTree = "<group>"; };
 		E2C8A2101853E660000DD265 /* SDPullNavigationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationBar.h; sourceTree = "<group>"; };
 		E2C8A2111853E660000DD265 /* SDPullNavigationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBar.m; sourceTree = "<group>"; };
@@ -635,6 +642,8 @@
 				CA0E773818284DD600B4398F /* SDSearchDisplayController.m */,
 				E205781518872F2600A1BA81 /* SDSectionedTableView.h */,
 				E205781618872F2600A1BA81 /* SDSectionedTableView.m */,
+				E2B31B9D189342BF0006970E /* SDSpanParser.h */,
+				E2B31B9E189342BF0006970E /* SDSpanParser.m */,
 				CA0E773918284DD600B4398F /* SDStackView.h */,
 				CA0E773A18284DD600B4398F /* SDStackView.m */,
 				CAA3E93C182D516E00602210 /* SDSwitch.h */,
@@ -643,6 +652,8 @@
 				E205781818872F2600A1BA81 /* SDTableViewSectionController.m */,
 				CAA3E933182C15F500602210 /* SDTextField.h */,
 				CAA3E934182C15F500602210 /* SDTextField.m */,
+				E2B31B9F189342BF0006970E /* SDTextFieldPicker.h */,
+				E2B31BA0189342BF0006970E /* SDTextFieldPicker.m */,
 				CA0E773B18284DD600B4398F /* SDWebViewCell.h */,
 				CA0E773C18284DD600B4398F /* SDWebViewCell.m */,
 				CA0E773D18284DD600B4398F /* SDWebViewCell.xib */,
@@ -652,6 +663,7 @@
 				CA0E774118284DD600B4398F /* UIAlertView+SDExtensions.m */,
 				CA0E774218284DD600B4398F /* UIApplication+SDExtensions.h */,
 				CA0E774318284DD600B4398F /* UIApplication+SDExtensions.m */,
+				E2B31BA1189342BF0006970E /* UIButton+SDExtensions.h */,
 				CA0E774418284DD600B4398F /* UIColor+SDExtensions.h */,
 				CA0E774518284DD600B4398F /* UIColor+SDExtensions.m */,
 				CA0E774618284DD600B4398F /* UIImage+SDExtensions.h */,
@@ -989,6 +1001,7 @@
 				CA0E779518284DD600B4398F /* NSObject+SDExtensions.m in Sources */,
 				CA0E779F18284DD600B4398F /* SDDragDropManager.m in Sources */,
 				E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */,
+				E2B31BA3189342BF0006970E /* SDTextFieldPicker.m in Sources */,
 				CA0E777D18284DD600B4398F /* NSUserDefaults+SDExtensions.m in Sources */,
 				CA0E777F18284DD600B4398F /* SDBase64.m in Sources */,
 				CA0E779118284DD600B4398F /* SDKeychain.m in Sources */,
@@ -1001,6 +1014,7 @@
 				CA0E779B18284DD600B4398F /* SDDeckController.m in Sources */,
 				CA0E777718284DD600B4398F /* NSNumber+SDExtensions.m in Sources */,
 				CA0E77A118284DD600B4398F /* SDImageButton.m in Sources */,
+				E2B31BA2189342BF0006970E /* SDSpanParser.m in Sources */,
 				CA0E77D018284DD600B4398F /* NSURLRequest+SDExtensions.m in Sources */,
 				E2C8A21C1853E660000DD265 /* SDPullNavigationBar.m in Sources */,
 				CA0E77AF18284DD600B4398F /* SDSearchBar.m in Sources */,
