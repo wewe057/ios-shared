@@ -1,5 +1,5 @@
 //
-//  SWIGlobalNavMenuController.h
+//  SDGlobalNavMenuController.h
 //  SamsClub
 //
 //  Created by Steven Woolgar on 12/07/2013.
@@ -10,5 +10,5 @@
 
 #import "SDPullNavigationBar.h"
 
-@interface SWIGlobalNavMenuController : UITableViewController<SDPullNavigationBarDelegate>
+@interface SDGlobalNavMenuController : UITableViewController<SDPullNavigationBarDelegate>
 @end

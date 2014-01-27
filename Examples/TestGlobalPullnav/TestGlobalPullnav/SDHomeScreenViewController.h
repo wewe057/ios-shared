@@ -1,5 +1,5 @@
 //
-//  SDViewController.h
+//  SDHomeScreenViewController.h
 //  TestGlobalPullnav
 //
 //  Created by Steven Woolgar on 01/27/2014.
@@ -8,6 +8,5 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SDViewController : UIViewController
-
+@interface SDHomeScreenViewController : UIViewController
 @end

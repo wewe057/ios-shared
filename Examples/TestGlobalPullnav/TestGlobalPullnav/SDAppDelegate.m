@@ -3,44 +3,75 @@
 //  TestGlobalPullnav
 //
 //  Created by Steven Woolgar on 01/27/2014.
-//  Copyright (c) 2014 Wal-mart Stores, Inc. All rights reserved.
+//  Copyright (c) 2014 SetDirection, Inc. All rights reserved.
 //
 
 #import "SDAppDelegate.h"
+
+#import "SDHomeScreenViewController.h"
+#import "SDOrderHistoryViewController.h"
+
+#import "SDPullNavigation.h"
+#import "UIImage+SDExtensions.h"
+
+@interface SDAppDelegate()<SDPullNavigationSetupProtocol>
+@property (nonatomic, strong) SDHomeScreenViewController* homeScreenViewController;
+@property (nonatomic, strong) SDOrderHistoryViewController* orderHistoryController;
+@end
 
 @implementation SDAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    // Apply global appearance
+    [SDPullNavigationBar setupDefaults];    // Apply SDPullNavBar style.
+
+    [[NSBundle bundleForClass:[self class]] loadNibNamed:@"MainWindow" owner:self options:nil];
+    [SDPullNavigationManager sharedInstance].delegate = self;
+
+    self.window.rootViewController = [SDPullNavigationManager sharedInstance].globalPullNavController;
+    [self.window addSubview:[SDPullNavigationManager sharedInstance].globalPullNavController.view];
+    [self.window makeKeyAndVisible];
+
     return YES;
 }
 							
-- (void)applicationWillResignActive:(UIApplication *)application
+#pragma mark - SDPullNavigationManager
+
+- (void)setupNavigationBar
 {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    // Todo, chop this asset up and make it stretchable so that we can have variable sized adornments.
+    UIImage* stretchImage = [[UIImage imageNamed:@"global-menu-adornment-shelf"] resizableImageWithCapInsets:UIEdgeInsetsMake(0,9,0,9)];
+    UIImage* tabImage = [UIImage imageNamed:@"global-menu-adornment-tab"];
+    UIImage* globalMenuAdornment = [UIImage stretchImage:stretchImage
+                                                  toSize:(CGSize){ 320.0f, stretchImage.size.height }
+                                         andOverlayImage:tabImage
+                                             withOptions:SDImageCompositeOptionsPinSourceToTop |
+                                    SDImageCompositeOptionsCenterXOverlay |
+                                    SDImageCompositeOptionsPinOverlayToBottom];
+    
+    [SDPullNavigationManager sharedInstance].pullNavigationBarViewClass = [SDPullNavigationBarControlsView class];
+    [SDPullNavigationManager sharedInstance].globalMenuStoryboardId = @"SDGlobalNavMenu";
+    [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
+- (void)setupNavigationBarItems
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+//    SDPullNavigationBarControlsView* leftBar = (SDPullNavigationBarControlsView*)[[SDPullNavigationManager sharedInstance] leftBarItemsView];
+//    SDPullNavigationBarControlsView* rightBar = (SDPullNavigationBarControlsView*)[[SDPullNavigationManager sharedInstance] rightBarItemsView];
 }
 
-- (void)applicationWillEnterForeground:(UIApplication *)application
+- (SDContainerViewController*)setupGlobalContainerViewController
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-}
+    SDContainerViewController* globalPullNavController = [[SDContainerViewController alloc] initWithNibName:nil bundle:nil];
+    
+    self.homeScreenViewController  = [SDHomeScreenViewController loadFromStoryboardNamed:@"HomeScreen" identifier:@"SDHomeScreenViewController"];
+	self.orderHistoryController = [SDOrderHistoryViewController loadFromStoryboardNamed:@"OrderHistory" identifier:@"SDOrderHistoryViewController"];
 
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-}
+    globalPullNavController.viewControllers = @[ [SDPullNavigationBar navControllerWithViewController:self.homeScreenViewController],
+												 [SDPullNavigationBar navControllerWithViewController:self.orderHistoryController]];
 
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    return globalPullNavController;
 }
 
 @end

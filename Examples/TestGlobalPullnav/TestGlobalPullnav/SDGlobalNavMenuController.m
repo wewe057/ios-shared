@@ -1,95 +1,69 @@
 //
-//  SWIGlobalNavMenuController.m
+//  SDGlobalNavMenuController.m
 //  SamsClub
 //
 //  Created by Steven Woolgar on 12/07/2013.
 //  Copyright (c) 2013 Wal-mart Stores, Inc. All rights reserved.
 //
 
-#import "SWIGlobalNavMenuController.h"
+#import "SDGlobalNavMenuController.h"
 
-#import "AppDelegate.h"
-#import "DemoHomeViewController.h"
-#import "RFIWebService.h"
-#import "SDMacros.h"
+#import "SDAppDelegate.h"
 #import "SDPullNavigationManager.h"
-#import "SWIHomeScreenViewController.h"
-#import "SWISignInViewController.h"
-#import "SWIClubDetails.h"
-#import "SWIClubLocatorViewController.h"
-#import "SWIUserSession.h"
-#import "SWIOrderHistorySplitViewController.h"
-#import "SWIPharmacyRefillsViewController.h"
-#import "SWIMyMembershipViewController.h"
-#import "SWIInstantSavingsViewController.h"
-#import "SWIAboutViewController.h"
-#import "SWIMembershipBenefitsViewController.h"
+#import "SDHomeScreenViewController.h"
+#import "SDOrderHistoryViewController.h"
 
-NSString* const SWIGlobalNavMenuCell = @"SWIGlobalNavMenuCell";
-NSString* const SWIGlobalNavMenuSignInCell = @"SWIGlobalNavMenuSignInCell";
+NSString* const SDGlobalNavMenuCell = @"SDGlobalNavMenuCell";
+NSString* const SDGlobalNavMenuSignInCell = @"SDGlobalNavMenuSignInCell";
 
-typedef NS_ENUM(NSUInteger, SWIGlobalNavMenuSections)
+typedef NS_ENUM(NSUInteger, SDGlobalNavMenuSections)
 {
-    SWIGlobalNavMenuSectionShop,
-    SWIGlobalNavMenuSectionMyAccount,
-    SWIGlobalNavMenuSectionToolsAndServices,
-    SWIGlobalNavMenuSectionMore,
-    SWIGlobalNavMenuSectionCount
+    SDGlobalNavMenuSectionShop,
+    SDGlobalNavMenuSectionMyAccount,
+    SDGlobalNavMenuSectionToolsAndServices,
+    SDGlobalNavMenuSectionMore,
+    SDGlobalNavMenuSectionCount
 };
 
-typedef NS_ENUM(NSUInteger, SWIGlobalNavShop)
+typedef NS_ENUM(NSUInteger, SDGlobalNavShop)
 {
-    SWIGlobalNavMenuHome,
-    SWIGlobalNavMenuInstantSavings,
-    SWIGlobalNavMenuLists,
-    SWIGlobalNavMenuShopCount
+    SDGlobalNavMenuHome,
+    SDGlobalNavMenuInstantSavings,
+    SDGlobalNavMenuLists,
+    SDGlobalNavMenuShopCount
 };
 
-typedef NS_ENUM(NSUInteger, SWIGlobalNavMyAccountSignedOut)
+typedef NS_ENUM(NSUInteger, SDGlobalNavMyAccount)
 {
-    SWIGlobalNavMenuBecomeMemberSignedOut,
-    SWIGlobalNavMenuMyAccountCountSignedOut
+    SDGlobalNavMenuHomeYourMembership,
+    SDGlobalNavMenuMembershipCard,
+    SDGlobalNavMenuYourOrders,
+    SDGlobalNavMenuYourExpressCheckoutSettings,
+    SDGlobalNavMenuMyAccountCount
 };
 
-typedef NS_ENUM(NSUInteger, SWIGlobalNavMyAccountSignedIn)
+typedef NS_ENUM(NSUInteger, SDGlobalNavToolsAndServices)
 {
-    SWIGlobalNavMenuHomeYourMembershipSignedIn,
-    SWIGlobalNavMenuMembershipCardSignedIn,
-    SWIGlobalNavMenuYourOrdersSignedIn,
-    SWIGlobalNavMenuYourExpressCheckoutSettingsSignedIn,
-    SWIGlobalNavMenuMyAccountCountSignedIn
+    SDGlobalNavMenuClubLocator,
+    SDGlobalNavMenuPharmacyRefills,
+    SDGlobalNavMenuToolsAndServicesCount
 };
 
-typedef NS_ENUM(NSUInteger, SWIGlobalNavToolsAndServices)
+typedef NS_ENUM(NSUInteger, SDGlobalNavMore)
 {
-    SWIGlobalNavMenuClubLocator,
-    SWIGlobalNavMenuPharmacyRefills,
-    SWIGlobalNavMenuToolsAndServicesCount
+    SDGlobalNavMenuAbout,
+    SDGlobalNavMenuProvideFeedback,
+    SDGlobalNavMenuMessages,
+    SDGlobalNavMenuSignOut,
+    SDGlobalNavMenuMoreCount
 };
 
-typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedIn)
-{
-    SWIGlobalNavMenuAbout,
-    SWIGlobalNavMenuProvideFeedback,
-    SWIGlobalNavMenuMessages,
-    SWIGlobalNavMenuSignOut,
-    SWIGlobalNavMenuMoreCount
-};
-
-typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
-{
-    SWIGlobalNavMenuAboutSignedOut,
-    SWIGlobalNavMenuProvideFeedbackSignedOut,
-    SWIGlobalNavMenuMessagesSignedOut,
-    SWIGlobalNavMenuMoreCountSignedOut
-};
-
-@interface NSString(SWIGlobalNavMenu_Extensions)
-+ (NSString*)stringWithSectionGlobalNavMenu:(SWIGlobalNavMenuSections)section andRow:(NSUInteger)row signedIn:(BOOL)signedIn;
-+ (NSString*)stringWithSectionGlobalNavMenu:(SWIGlobalNavMenuSections)section;
+@interface NSString(SDGlobalNavMenu_Extensions)
++ (NSString*)stringWithSectionGlobalNavMenu:(SDGlobalNavMenuSections)section andRow:(NSUInteger)row signedIn:(BOOL)signedIn;
++ (NSString*)stringWithSectionGlobalNavMenu:(SDGlobalNavMenuSections)section;
 @end
 
-@interface SWIGlobalNavMenuController()
+@interface SDGlobalNavMenuController()
 @property (nonatomic, strong) IBOutlet UITableViewHeaderFooterView* tableViewHeader;
 @property (nonatomic, strong) IBOutlet UIView* signedInModeView;
 @property (nonatomic, strong) IBOutlet UILabel* clubNameLabel;
@@ -98,7 +72,7 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
 @property (nonatomic, copy) NSString* clubNameString;
 @end
 
-@implementation SWIGlobalNavMenuController
+@implementation SDGlobalNavMenuController
 
 @synthesize pullNavigationBarDelegate = _pullNavigationBarDelegate;
 
@@ -111,9 +85,6 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
 {
     [super viewDidLoad];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedIn:) name:kSWIUserSessionNotificationLogin object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userSignedOut:) name:kSWIUserSessionNotificationLogout object:nil];
-
     self.tableViewHeader.backgroundView.backgroundColor = [@"#efeff4" uicolor];
     self.clubNameLabel.font = [UIFont fontWithName:@"Kulturista" size:22.0f];
     self.clubNameLabel.textColor = [@"#545454" uicolor];
@@ -123,24 +94,19 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
 
     self.signedInModeView.hidden = NO;
     self.signedOutModeView.hidden = YES;
-
-    // Figure out the name of the home club.
-    [self determineHomeClubName];
 }
 
 - (void)viewWillLayoutSubviews
 {
-    BOOL signedIn = [[SWIUserSession userSession] loggedIn];
-
-    self.signedInModeView.hidden = !signedIn;
-    self.signedOutModeView.hidden = signedIn;
+    self.signedInModeView.hidden = YES;
+    self.signedOutModeView.hidden = NO;
 }
 
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return SWIGlobalNavMenuSectionCount;
+    return SDGlobalNavMenuSectionCount;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -148,17 +114,17 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
     NSInteger rowCount = 0;
     switch(section)
     {
-        case SWIGlobalNavMenuSectionShop:
-            rowCount = SWIGlobalNavMenuShopCount;
+        case SDGlobalNavMenuSectionShop:
+            rowCount = SDGlobalNavMenuShopCount;
             break;
-        case SWIGlobalNavMenuSectionMyAccount:
-            rowCount = [[SWIUserSession userSession] loggedIn] ? SWIGlobalNavMenuMyAccountCountSignedIn : SWIGlobalNavMenuMyAccountCountSignedOut;
+        case SDGlobalNavMenuSectionMyAccount:
+            rowCount = SDGlobalNavMenuMyAccountCount;
             break;
-        case SWIGlobalNavMenuSectionToolsAndServices:
-            rowCount = SWIGlobalNavMenuToolsAndServicesCount;
+        case SDGlobalNavMenuSectionToolsAndServices:
+            rowCount = SDGlobalNavMenuToolsAndServicesCount;
             break;
-        case SWIGlobalNavMenuSectionMore:
-            rowCount = [[SWIUserSession userSession] loggedIn] ? SWIGlobalNavMenuMoreCount : SWIGlobalNavMenuMoreCountSignedOut;
+        case SDGlobalNavMenuSectionMore:
+            rowCount = SDGlobalNavMenuMoreCount;
             break;
         default:
             NSAssert(NO, @"Invalid section");
@@ -174,31 +140,23 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
     UITableViewCell* cell = nil;
-    if(indexPath.section == SWIGlobalNavMenuSectionShop && indexPath.row == SWIGlobalNavMenuHome)
+    if(indexPath.section == SDGlobalNavMenuSectionShop && indexPath.row == SDGlobalNavMenuHome)
     {
-        cell = [tableView dequeueReusableCellWithIdentifier:SWIGlobalNavMenuSignInCell];
+        cell = [tableView dequeueReusableCellWithIdentifier:SDGlobalNavMenuSignInCell];
         UIButton* signInButton = (UIButton*)[cell viewWithTag:2];
-        if([[SWIUserSession userSession] loggedIn])
-        {
-            signInButton.hidden = YES;
-        }
-        else
-        {
-            [signInButton setBackgroundImage:[[UIImage imageNamed:@"button-small-gray"] resizableImageWithCapInsets:UIEdgeInsetsMake(13, 3, 13, 3)] forState:UIControlStateNormal];
-            [signInButton setBackgroundImage:[[UIImage imageNamed:@"button-small-gray-highlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(13, 3, 13, 3)] forState:UIControlStateHighlighted];
-            [signInButton addTarget:self action:@selector(signInTapped:) forControlEvents:UIControlEventTouchUpInside];
-            signInButton.hidden = NO;
-        }
+        [signInButton setBackgroundImage:[[UIImage imageNamed:@"button-small-gray"] resizableImageWithCapInsets:UIEdgeInsetsMake(13, 3, 13, 3)] forState:UIControlStateNormal];
+        [signInButton setBackgroundImage:[[UIImage imageNamed:@"button-small-gray-highlighted"] resizableImageWithCapInsets:UIEdgeInsetsMake(13, 3, 13, 3)] forState:UIControlStateHighlighted];
+        signInButton.hidden = NO;
     }
     else
     {
-        cell = [tableView dequeueReusableCellWithIdentifier:SWIGlobalNavMenuCell];
+        cell = [tableView dequeueReusableCellWithIdentifier:SDGlobalNavMenuCell];
     }
 
     UILabel* cellLabel = (UILabel*)[cell viewWithTag:1];
-    cellLabel.text = [NSString stringWithSectionGlobalNavMenu:(SWIGlobalNavMenuSections)indexPath.section
+    cellLabel.text = [NSString stringWithSectionGlobalNavMenu:(SDGlobalNavMenuSections)indexPath.section
                                                        andRow:(NSUInteger)indexPath.row
-                                                     signedIn:[[SWIUserSession userSession] loggedIn]];
+                                                     signedIn:NO];
 
     return cell;
 }
@@ -207,102 +165,20 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
 // They are different and so you need to include the [[SWIUserSession userSession] loggedIn] boolean into the comparison.
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    SDContainerViewController* globalNav = [SDPullNavigationManager sharedInstance].globalPullNavController;
-    BOOL signedIn = [[SWIUserSession userSession] loggedIn];
-
     @strongify(self.pullNavigationBarDelegate, pullNavigationBarDelegate);
-    if(indexPath.section == SWIGlobalNavMenuSectionShop && indexPath.row == SWIGlobalNavMenuHome)
+    if(indexPath.section == SDGlobalNavMenuSectionShop && indexPath.row == SDGlobalNavMenuHome)
     {
-        [[SDPullNavigationManager sharedInstance] navigateToTopLevelController:[SWIHomeScreenViewController class] andPopToRootWithAnimation:NO];
+        [[SDPullNavigationManager sharedInstance] navigateToTopLevelController:[SDHomeScreenViewController class] andPopToRootWithAnimation:NO];
         [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
     }
 
-    if (indexPath.section == SWIGlobalNavMenuSectionShop && indexPath.row == SWIGlobalNavMenuInstantSavings)
+    else if(indexPath.section == SDGlobalNavMenuSectionMyAccount && indexPath.row == SDGlobalNavMenuYourOrders)
     {
-        [[SDPullNavigationManager sharedInstance] navigateToTopLevelController:[SWIInstantSavingsViewController class] andPopToRootWithAnimation:NO];
-        [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-    }
-    
-    else if(indexPath.section == SWIGlobalNavMenuSectionToolsAndServices && indexPath.row == SWIGlobalNavMenuClubLocator)
-    {
-        [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:^
-        {
-            SWIClubLocatorViewController* clubLocatorViewController = [SWIClubLocatorViewController loadFromStoryboardNamed:@"SWIClubLocator"];
-            [globalNav.selectedViewController presentViewController:clubLocatorViewController animated:YES completion:nil];
-            [tableView deselectRowAtIndexPath: indexPath animated: NO];
-        }];
-    }
-
-    else if(indexPath.section == SWIGlobalNavMenuSectionMore && indexPath.row == SWIGlobalNavMenuSignOut)
-    {
-        [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-        [[SWIUserSession userSession] logout];
-    }
-
-	else if(signedIn && indexPath.section == SWIGlobalNavMenuSectionMyAccount && indexPath.row == SWIGlobalNavMenuYourOrdersSignedIn)
-    {
-        [[SDPullNavigationManager sharedInstance] navigateToTopLevelController:[SWIOrderHistorySplitViewController class]];
-		[pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-	}
-
-    else if(signedIn && indexPath.section == SWIGlobalNavMenuSectionMyAccount && indexPath.row == SWIGlobalNavMenuHomeYourMembershipSignedIn)
-    {
-        [[SDPullNavigationManager sharedInstance] navigateToTopLevelController:[SWIMyMembershipViewController class]];
-        [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-    }
-
-	else if(!signedIn && indexPath.section == SWIGlobalNavMenuSectionMyAccount && indexPath.row == SWIGlobalNavMenuBecomeMemberSignedOut)
-    {
-        SWIMembershipBenefitsViewController *benefitsViewController = [[SWIMembershipBenefitsViewController alloc] initWithMembership:[[SWIUserSession userSession] membership]];
-        UINavigationController* benefitsNavController = [[UINavigationController alloc] initWithRootViewController:benefitsViewController];
-        [self presentViewController:benefitsNavController animated:YES completion:NULL];
-        [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-	}
-
-    else if(indexPath.section == SWIGlobalNavMenuSectionToolsAndServices && indexPath.row == SWIGlobalNavMenuPharmacyRefills)
-    {
-        [[SDPullNavigationManager sharedInstance] navigateToTopLevelController:[SWIPharmacyRefillsViewController class] andPopToRootWithAnimation:YES];
-        [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-    }
-    
-    else if(indexPath.section == SWIGlobalNavMenuSectionMore && indexPath.row == SWIGlobalNavMenuAbout)
-    {
-        SWIAboutViewController* aboutViewController = [SWIAboutViewController loadFromStoryboardNamed:@"SWISettings"];
-        [globalNav.selectedViewController presentViewController:aboutViewController animated:YES completion:nil];
+        [[SDPullNavigationManager sharedInstance] navigateToTopLevelController:[SDOrderHistoryViewController class] andPopToRootWithAnimation:NO];
         [pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
     }
 
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-}
-
-- (IBAction)chooseClubTapped:(id)sender
-{
-    SDContainerViewController* globalNav = [SDPullNavigationManager sharedInstance].globalPullNavController;
-
-    [self.pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-    SWIClubLocatorViewController* clubLocatorViewController = [[UIStoryboard storyboardWithName:@"SWIClubLocator" bundle:nil] instantiateInitialViewController];
-    [globalNav.selectedViewController presentViewController:clubLocatorViewController animated:YES completion:nil];
-}
-
-- (IBAction)signInTapped:(id)sender
-{
-    SWISignInViewController* signInViewController = [[SWISignInViewController alloc] initWithNibName:nil bundle:nil];
-
-    @weakify(self);
-    signInViewController.doneBlock = ^(BOOL apply)
-    {
-        @strongify(self);
-        [self dismissViewControllerAnimated:YES completion:nil];
-    };
-
-    // Dismiss the menu before showing the signin.
-    [self.pullNavigationBarDelegate dismissPullMenuWithCompletionBlock:nil];
-
-    // Now show it.
-    UINavigationController* navController = [[UINavigationController alloc] initWithRootViewController:signInViewController];
-    navController.modalPresentationStyle = UIModalPresentationFormSheet;
-    [self presentViewController:navController animated:YES completion:nil];
-    [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDelegate
@@ -317,42 +193,9 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
     sectionLabel.backgroundColor = [UIColor clearColor];
     sectionLabel.textColor = [@"#545454" uicolor];
     sectionLabel.font = [UIFont boldSystemFontOfSize:12.0f];
-    sectionLabel.text = [NSString stringWithSectionGlobalNavMenu:(SWIGlobalNavMenuSections)section];
+    sectionLabel.text = [NSString stringWithSectionGlobalNavMenu:(SDGlobalNavMenuSections)section];
 
     return sectionView;
-}
-
-#pragma mark - Utility Methods
-
-- (void)userSignedIn:(NSNotification*)notification
-{
-    [self determineHomeClubName];
-    [self.tableView reloadData];
-}
-
-- (void)userSignedOut:(NSNotification*)notification
-{
-    [self.tableView reloadData];
-}
-
-- (void)determineHomeClubName
-{
-    self.clubNameString = @"";
-
-    if([[SWIUserSession userSession] loggedIn])
-    {
-        [[RFIWebService sharedInstance] clubDetails:[[[SWIUserSession userSession] membership] homeClubNumber]
-                                  uiCompletionBlock:^(id dataObject, NSError *error)
-        {
-            if(dataObject && error == nil)
-            {
-                SWIClubDetails* club = [SWIClubDetails clubDetailsWithDictionary:[dataObject dictionaryForKey:@"club"]];
-                self.clubNameString = club.name;
-                self.clubNameLabel.text = club.name;
-                [self.clubNameLabel setNeedsDisplay];
-            }
-        }];
-    }
 }
 
 #pragma mark - SDPullNavigationBarDelegate
@@ -374,26 +217,26 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
 
 @end
 
-@implementation NSString(SWIGlobalNavMenu_Extensions)
+@implementation NSString(SDGlobalNavMenu_Extensions)
 
-+ (NSString*)stringWithSectionGlobalNavMenu:(SWIGlobalNavMenuSections)section andRow:(NSUInteger)row signedIn:(BOOL)signedIn
++ (NSString*)stringWithSectionGlobalNavMenu:(SDGlobalNavMenuSections)section andRow:(NSUInteger)row signedIn:(BOOL)signedIn
 {
     NSString* result = @"";
 
     switch(section)
     {
-        case SWIGlobalNavMenuSectionShop:
+        case SDGlobalNavMenuSectionShop:
         {
             switch(row)
             {
-                case SWIGlobalNavMenuHome:
-                    result = NSLocalizedString( @"Home", @"SWIGlobalNavMenuHome" );
+                case SDGlobalNavMenuHome:
+                    result = NSLocalizedString( @"Home", @"SDGlobalNavMenuHome" );
                     break;
-                case SWIGlobalNavMenuInstantSavings:
-                    result = NSLocalizedString( @"Instant Savings", @"SWIGlobalNavMenuInstantSavings" );
+                case SDGlobalNavMenuInstantSavings:
+                    result = NSLocalizedString( @"Instant Savings", @"SDGlobalNavMenuInstantSavings" );
                     break;
-                case SWIGlobalNavMenuLists:
-                    result = NSLocalizedString( @"Lists", @"SWIGlobalNavMenuLists" );
+                case SDGlobalNavMenuLists:
+                    result = NSLocalizedString( @"Lists", @"SDGlobalNavMenuLists" );
                     break;
                 default:
                     NSAssert(NO, @"Invalid section");
@@ -401,53 +244,21 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
             }
             break;
         }
-        case SWIGlobalNavMenuSectionMyAccount:
-        {
-            if(signedIn)
-            {
-                switch(row)
-                {
-                    case SWIGlobalNavMenuHomeYourMembershipSignedIn:
-                        result = NSLocalizedString( @"Your Membership", @"SWIGlobalNavMenuHomeYourMembership" );
-                        break;
-                    case SWIGlobalNavMenuMembershipCardSignedIn:
-                        result = NSLocalizedString( @"Membership Card", @"SWIGlobalNavMenuMembershipCard" );
-                        break;
-                    case SWIGlobalNavMenuYourOrdersSignedIn:
-                        result = NSLocalizedString( @"Your Orders", @"SWIGlobalNavMenuYourOrders" );
-                        break;
-                    case SWIGlobalNavMenuYourExpressCheckoutSettingsSignedIn:
-                        result = NSLocalizedString( @"Express Checkout Settings", @"SWIGlobalNavMenuYourExpressCheckoutSettings" );
-                        break;
-                    default:
-                        NSAssert(NO, @"Invalid section");
-                        break;
-                }
-                break;
-            }
-            else
-            {
-                switch(row)
-                {
-                    case SWIGlobalNavMenuBecomeMemberSignedOut:
-                        result = NSLocalizedString( @"Become a Member", @"SWIGlobalNavMenuBecomeMemberSignedOut" );
-                        break;
-                    default:
-                        NSAssert(NO, @"Invalid section");
-                        break;
-                }
-                break;
-            }
-        }
-        case SWIGlobalNavMenuSectionToolsAndServices:
+        case SDGlobalNavMenuSectionMyAccount:
         {
             switch(row)
             {
-                case SWIGlobalNavMenuClubLocator:
-                    result = NSLocalizedString( @"Club Locator", @"SWIGlobalNavMenuClubLocator" );
+                case SDGlobalNavMenuHomeYourMembership:
+                    result = NSLocalizedString( @"Your Membership", @"SDGlobalNavMenuHomeYourMembership" );
                     break;
-                case SWIGlobalNavMenuPharmacyRefills:
-                    result = NSLocalizedString( @"Pharmacy Refills", @"SWIGlobalNavMenuPharmacyRefills" );
+                case SDGlobalNavMenuMembershipCard:
+                    result = NSLocalizedString( @"Membership Card", @"SDGlobalNavMenuMembershipCard" );
+                    break;
+                case SDGlobalNavMenuYourOrders:
+                    result = NSLocalizedString( @"Your Orders", @"SDGlobalNavMenuYourOrders" );
+                    break;
+                case SDGlobalNavMenuYourExpressCheckoutSettings:
+                    result = NSLocalizedString( @"Express Checkout Settings", @"SDGlobalNavMenuYourExpressCheckoutSettings" );
                     break;
                 default:
                     NSAssert(NO, @"Invalid section");
@@ -455,49 +266,43 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
             }
             break;
         }
-        case SWIGlobalNavMenuSectionMore:
+        case SDGlobalNavMenuSectionToolsAndServices:
         {
-            if(signedIn)
+            switch(row)
             {
-                switch(row)
-                {
-                    case SWIGlobalNavMenuAbout:
-                        result = NSLocalizedString( @"About", @"SWIGlobalNavMenuAbout" );
-                        break;
-                    case SWIGlobalNavMenuProvideFeedback:
-                        result = NSLocalizedString( @"Provide Feedback", @"SWIGlobalNavMenuProvideFeedback" );
-                        break;
-                    case SWIGlobalNavMenuMessages:
-                        result = NSLocalizedString( @"Messages", @"SWIGlobalNavMenuMessages" );
-                        break;
-                    case SWIGlobalNavMenuSignOut:
-                        result = NSLocalizedString( @"Sign Out", @"SWIGlobalNavMenuSignOut" );
-                        break;
-                    default:
-                        NSAssert(NO, @"Invalid section");
-                        break;
-                }
-                break;
+                case SDGlobalNavMenuClubLocator:
+                    result = NSLocalizedString( @"Club Locator", @"SDGlobalNavMenuClubLocator" );
+                    break;
+                case SDGlobalNavMenuPharmacyRefills:
+                    result = NSLocalizedString( @"Pharmacy Refills", @"SDGlobalNavMenuPharmacyRefills" );
+                    break;
+                default:
+                    NSAssert(NO, @"Invalid section");
+                    break;
             }
-            else
+            break;
+        }
+        case SDGlobalNavMenuSectionMore:
+        {
+            switch(row)
             {
-                switch(row)
-                {
-                    case SWIGlobalNavMenuAboutSignedOut:
-                        result = NSLocalizedString( @"About", @"SWIGlobalNavMenuAbout" );
-                        break;
-                    case SWIGlobalNavMenuProvideFeedbackSignedOut:
-                        result = NSLocalizedString( @"Provide Feedback", @"SWIGlobalNavMenuProvideFeedback" );
-                        break;
-                    case SWIGlobalNavMenuMessagesSignedOut:
-                        result = NSLocalizedString( @"Messages", @"SWIGlobalNavMenuMessages" );
-                        break;
-                    default:
-                        NSAssert(NO, @"Invalid section");
-                        break;
-                }
-                break;
+                case SDGlobalNavMenuAbout:
+                    result = NSLocalizedString( @"About", @"SDGlobalNavMenuAbout" );
+                    break;
+                case SDGlobalNavMenuProvideFeedback:
+                    result = NSLocalizedString( @"Provide Feedback", @"SDGlobalNavMenuProvideFeedback" );
+                    break;
+                case SDGlobalNavMenuMessages:
+                    result = NSLocalizedString( @"Messages", @"SDGlobalNavMenuMessages" );
+                    break;
+                case SDGlobalNavMenuSignOut:
+                    result = NSLocalizedString( @"Sign Out", @"SDGlobalNavMenuSignOut" );
+                    break;
+                default:
+                    NSAssert(NO, @"Invalid section");
+                    break;
             }
+            break;
         }
         default:
         {
@@ -509,30 +314,30 @@ typedef NS_ENUM(NSUInteger, SWIGlobalNavMoreSignedOut)
     return result;
 }
 
-+ (NSString*)stringWithSectionGlobalNavMenu:(SWIGlobalNavMenuSections)section
++ (NSString*)stringWithSectionGlobalNavMenu:(SDGlobalNavMenuSections)section
 {
     NSString* result = @"";
     
     switch(section)
     {
-        case SWIGlobalNavMenuSectionShop:
+        case SDGlobalNavMenuSectionShop:
         {
-            result = NSLocalizedString( @"SHOP", @"SWIGlobalNavMenuSectionShop" );
+            result = NSLocalizedString( @"SHOP", @"SDGlobalNavMenuSectionShop" );
             break;
         }
-        case SWIGlobalNavMenuSectionMyAccount:
+        case SDGlobalNavMenuSectionMyAccount:
         {
-            result = NSLocalizedString( @"MY ACCOUNT", @"SWIGlobalNavMenuSectionMyAccount" );
+            result = NSLocalizedString( @"MY ACCOUNT", @"SDGlobalNavMenuSectionMyAccount" );
             break;
         }
-        case SWIGlobalNavMenuSectionToolsAndServices:
+        case SDGlobalNavMenuSectionToolsAndServices:
         {
-            result = NSLocalizedString( @"TOOLS & SERVICES", @"SWIGlobalNavMenuSectionToolsAndServices" );
+            result = NSLocalizedString( @"TOOLS & SERVICES", @"SDGlobalNavMenuSectionToolsAndServices" );
             break;
         }
-        case SWIGlobalNavMenuSectionMore:
+        case SDGlobalNavMenuSectionMore:
         {
-            result = NSLocalizedString( @"MORE", @"SWIGlobalNavMenuSectionMore" );
+            result = NSLocalizedString( @"MORE", @"SDGlobalNavMenuSectionMore" );
             break;
         }
         default:

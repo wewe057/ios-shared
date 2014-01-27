@@ -1,17 +1,17 @@
 //
-//  SDHomeScreenViewController.m
+//  SDOrderHistoryViewController.m
 //  TestGlobalPullnav
 //
 //  Created by Steven Woolgar on 01/27/2014.
 //  Copyright (c) 2014 Wal-mart Stores, Inc. All rights reserved.
 //
 
-#import "SDHomeScreenViewController.h"
+#import "SDOrderHistoryViewController.h"
 
-@interface SDHomeScreenViewController ()
+@interface SDOrderHistoryViewController ()
 @end
 
-@implementation SDHomeScreenViewController
+@implementation SDOrderHistoryViewController
 
 - (void)viewDidLoad
 {
