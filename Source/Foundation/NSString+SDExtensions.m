@@ -244,7 +244,7 @@ GENERICSABLE_IMPLEMENTATION(NSString)
 
     NSMutableArray *expressions = [[NSMutableArray alloc] init];
 
-    for (NSInteger i = 0; i < patterns.count; i++)
+    for (NSUInteger i = 0; i < patterns.count; i++)
     {
         NSString *currentMatch = [match stringByAppendingString:@"(\\d+)"];
         match = [match stringByAppendingString:[NSString stringWithFormat:@"(\\d{%zd})", ((NSNumber *)[patterns objectAtIndex:i]).integerValue]];

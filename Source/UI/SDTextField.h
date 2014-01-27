@@ -35,6 +35,11 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 @interface SDTextField : UITextField
 
 /**
+ *  Always show the toolbar
+ */
+@property (nonatomic, assign) BOOL alwaysShowToolbar;
+
+/**
  *  Disable the floating label aspect of the text field.
  */
 @property (nonatomic, assign) BOOL disableFloatingLabels;
@@ -80,5 +85,10 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
  * any return FALSE, validateFields will return FALSE as well.  Otherwise, this returns TRUE.
  */
 - (BOOL)validateFields;
+
+/**
+ * Useful for subclasses that wish to do view configuration after instantiating the view.
+ */
+- (void)configureView;
 
 @end
