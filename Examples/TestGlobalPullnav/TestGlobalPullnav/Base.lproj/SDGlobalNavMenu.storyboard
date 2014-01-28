@@ -21,56 +21,6 @@
                             <rect key="frame" x="0.0" y="0.0" width="320" height="94"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SXa-pk-8m9" userLabel="SignedIn Mode">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="94"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="club-logo" translatesAutoresizingMaskIntoConstraints="NO" id="VZK-YP-eJh">
-                                            <rect key="frame" x="15" y="24" width="49" height="48"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="48" id="HDX-1w-4LO"/>
-                                                <constraint firstAttribute="width" constant="49" id="MUh-1s-rLZ"/>
-                                            </constraints>
-                                        </imageView>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7xn-Im-GCj" userLabel="ClubName Container">
-                                            <rect key="frame" x="64" y="22" width="256" height="50"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Your Club" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jwl-H7-ltM">
-                                                    <rect key="frame" x="18" y="0.0" width="68" height="18"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="15"/>
-                                                    <color key="textColor" red="0.3294117647" green="0.3294117647" blue="0.3294117647" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Club Name, OR" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="234" translatesAutoresizingMaskIntoConstraints="NO" id="Rvj-XS-No8">
-                                                    <rect key="frame" x="18" y="22" width="234" height="27"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="22"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstItem="jwl-H7-ltM" firstAttribute="leading" secondItem="7xn-Im-GCj" secondAttribute="leading" constant="18" id="SOp-af-7Fs"/>
-                                                <constraint firstItem="Rvj-XS-No8" firstAttribute="top" secondItem="jwl-H7-ltM" secondAttribute="bottom" constant="4" id="YLz-a3-H2i"/>
-                                                <constraint firstAttribute="bottom" secondItem="Rvj-XS-No8" secondAttribute="bottom" constant="1" id="jS4-pg-2CA"/>
-                                                <constraint firstItem="jwl-H7-ltM" firstAttribute="top" secondItem="7xn-Im-GCj" secondAttribute="top" id="puz-Kp-673"/>
-                                                <constraint firstItem="Rvj-XS-No8" firstAttribute="leading" secondItem="jwl-H7-ltM" secondAttribute="leading" id="wqy-ip-VA4"/>
-                                                <constraint firstAttribute="trailing" secondItem="Rvj-XS-No8" secondAttribute="trailing" constant="4" id="xV7-5h-3ys"/>
-                                            </constraints>
-                                        </view>
-                                    </subviews>
-                                    <color key="backgroundColor" red="0.94509803920000002" green="0.94509803920000002" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
-                                    <constraints>
-                                        <constraint firstItem="7xn-Im-GCj" firstAttribute="leading" secondItem="VZK-YP-eJh" secondAttribute="trailing" id="L5U-mB-8iM"/>
-                                        <constraint firstAttribute="trailing" secondItem="7xn-Im-GCj" secondAttribute="trailing" id="NEf-kz-046"/>
-                                        <constraint firstItem="VZK-YP-eJh" firstAttribute="top" secondItem="SXa-pk-8m9" secondAttribute="top" constant="24" id="QVZ-MW-3Sg"/>
-                                        <constraint firstItem="VZK-YP-eJh" firstAttribute="leading" secondItem="SXa-pk-8m9" secondAttribute="leading" constant="15" id="jIq-4W-CUT"/>
-                                        <constraint firstAttribute="centerY" secondItem="7xn-Im-GCj" secondAttribute="centerY" id="mS1-yV-ItL"/>
-                                    </constraints>
-                                </view>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r0e-Fy-Gua" userLabel="SignOut Mode">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="94"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -105,11 +55,7 @@
                                 </view>
                             </subviews>
                             <constraints>
-                                <constraint firstItem="SXa-pk-8m9" firstAttribute="top" secondItem="Lhh-oA-EMI" secondAttribute="top" id="5ZR-Qc-mfK"/>
                                 <constraint firstAttribute="trailing" secondItem="r0e-Fy-Gua" secondAttribute="trailing" id="IVA-zP-Z43"/>
-                                <constraint firstItem="SXa-pk-8m9" firstAttribute="leading" secondItem="Lhh-oA-EMI" secondAttribute="leading" id="IoL-sd-uUO"/>
-                                <constraint firstAttribute="bottom" secondItem="SXa-pk-8m9" secondAttribute="bottom" id="a0Z-Gx-X2E"/>
-                                <constraint firstAttribute="trailing" secondItem="SXa-pk-8m9" secondAttribute="trailing" id="a0k-M5-yyt"/>
                                 <constraint firstAttribute="bottom" secondItem="r0e-Fy-Gua" secondAttribute="bottom" id="cRR-jQ-tVq"/>
                                 <constraint firstItem="r0e-Fy-Gua" firstAttribute="leading" secondItem="Lhh-oA-EMI" secondAttribute="leading" id="iJH-g1-3bj"/>
                                 <constraint firstItem="r0e-Fy-Gua" firstAttribute="top" secondItem="Lhh-oA-EMI" secondAttribute="top" id="vjt-UX-Xsr"/>
@@ -185,8 +131,6 @@
                     <nil key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
-                        <outlet property="clubNameLabel" destination="Rvj-XS-No8" id="v9Y-S6-5iy"/>
-                        <outlet property="signedInModeView" destination="SXa-pk-8m9" id="w32-N5-sS4"/>
                         <outlet property="signedOutModeView" destination="r0e-Fy-Gua" id="Bye-kW-4Qc"/>
                         <outlet property="tableViewHeader" destination="Lhh-oA-EMI" id="q6r-CI-SoD"/>
                         <outlet property="yourClubLabel" destination="OsF-33-fUU" id="7dm-sn-EXl"/>
@@ -197,9 +141,6 @@
             <point key="canvasLocation" x="134" y="45"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="club-logo" width="49" height="48"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
