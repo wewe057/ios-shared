@@ -13,7 +13,6 @@
 
 @interface SDPullNavigationBarTabButton : UIView
 
-@property (nonatomic, strong) UIImage* tabImage;
 @property (nonatomic, assign) BOOL tuckedTab;
 
 - (id)initWithNavigationBar:(SDPullNavigationBar*)navigationBar;

@@ -174,16 +174,19 @@ typedef struct
         [_menuContainer addSubview:_menuController.view];
     }
 
-    UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
-    if(menuAdornmentImage)
+    if([UIDevice iPad])
     {
-        _menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:(CGRect){CGPointZero, { _menuController.view.bounds.size.width, menuAdornmentImage.size.height }}];
-        _menuBottomAdornmentView.clipsToBounds = YES;
-        _menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
-        _menuBottomAdornmentView.opaque = YES;
-        _menuBottomAdornmentView.image = menuAdornmentImage;
-        _menuBottomAdornmentView.tag = 6;
-        [_menuContainer addSubview:_menuBottomAdornmentView];
+        UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
+        if(menuAdornmentImage)
+        {
+            _menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:(CGRect){CGPointZero, { _menuController.view.bounds.size.width, menuAdornmentImage.size.height }}];
+            _menuBottomAdornmentView.clipsToBounds = YES;
+            _menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
+            _menuBottomAdornmentView.opaque = YES;
+            _menuBottomAdornmentView.image = menuAdornmentImage;
+            _menuBottomAdornmentView.tag = 6;
+            [_menuContainer addSubview:_menuBottomAdornmentView];
+        }
     }
 
     _menuWidth = kDefaultMenuWidth;
@@ -207,13 +210,17 @@ typedef struct
 
 - (void)setupGestureRecognizers
 {
+    UITapGestureRecognizer* openTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+    [_tabButton addGestureRecognizer:openTapGesture];
+
+    self.revealPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizePanGesture:)];
+    self.revealPanGestureRecognizer.maximumNumberOfTouches = 1;
+    [_tabButton addGestureRecognizer:self.revealPanGestureRecognizer];
+
     UITapGestureRecognizer* dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)];
     dismissTapGesture.delegate = self;
     [_menuContainer addGestureRecognizer:dismissTapGesture];
 
-    self.revealPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizePanGesture:)];
-    self.revealPanGestureRecognizer.maximumNumberOfTouches = 1;
-    [_menuContainer addGestureRecognizer:self.revealPanGestureRecognizer];
 }
 
 - (void)layoutSubviews

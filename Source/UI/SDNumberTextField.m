@@ -94,7 +94,7 @@
     if (decimalPosition == NSIntegerMax)
         self.text = @"";
     else
-        self.text = [self.text substringWithRange:NSMakeRange(0, decimalPosition)];
+        self.text = [self.text substringWithRange:NSMakeRange(0, (NSUInteger)decimalPosition)];
     
     self.currentFormattedText = self.text;
     [self sendActionsForControlEvents:UIControlEventEditingChanged];

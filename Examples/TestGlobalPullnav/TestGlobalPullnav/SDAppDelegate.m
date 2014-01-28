@@ -23,8 +23,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Apply global appearance
-    [SDPullNavigationBar setupDefaults];    // Apply SDPullNavBar style.
+    // Apply global menu appearance
+
+    [SDPullNavigationBar setupDefaults];
 
     [[NSBundle bundleForClass:[self class]] loadNibNamed:@"MainWindow" owner:self options:nil];
     [SDPullNavigationManager sharedInstance].delegate = self;
@@ -35,12 +36,13 @@
 
     return YES;
 }
-							
+
 #pragma mark - SDPullNavigationManager
 
 - (void)setupNavigationBar
 {
     // Todo, chop this asset up and make it stretchable so that we can have variable sized adornments.
+
     UIImage* stretchImage = [[UIImage imageNamed:@"global-menu-adornment-shelf"] resizableImageWithCapInsets:UIEdgeInsetsMake(0,9,0,9)];
     UIImage* tabImage = [UIImage imageNamed:@"global-menu-adornment-tab"];
     UIImage* globalMenuAdornment = [UIImage stretchImage:stretchImage
@@ -57,8 +59,16 @@
 
 - (void)setupNavigationBarItems
 {
-//    SDPullNavigationBarControlsView* leftBar = (SDPullNavigationBarControlsView*)[[SDPullNavigationManager sharedInstance] leftBarItemsView];
-//    SDPullNavigationBarControlsView* rightBar = (SDPullNavigationBarControlsView*)[[SDPullNavigationManager sharedInstance] rightBarItemsView];
+    SDPullNavigationBarControlsView* leftBar = (SDPullNavigationBarControlsView*)[[SDPullNavigationManager sharedInstance] leftBarItemsView];
+    SDPullNavigationBarControlsView* rightBar = (SDPullNavigationBarControlsView*)[[SDPullNavigationManager sharedInstance] rightBarItemsView];
+
+    UIButton* leftTestButton = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    [leftTestButton addTarget:self action:@selector(leftTestPressed:) forControlEvents:UIControlEventTouchUpInside];
+    UIButton* rightTestButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    [rightTestButton addTarget:self action:@selector(rightTestPressed:) forControlEvents:UIControlEventTouchUpInside];
+
+    [leftBar addBarItem:leftTestButton];
+    [rightBar addBarItem:rightTestButton];
 }
 
 - (SDContainerViewController*)setupGlobalContainerViewController
@@ -72,6 +82,16 @@
 												 [SDPullNavigationBar navControllerWithViewController:self.orderHistoryController]];
 
     return globalPullNavController;
+}
+
+- (void)leftTestPressed:(id)sender
+{
+    SDLog(@"Hit left nav button");
+}
+
+- (void)rightTestPressed:(id)sender
+{
+    SDLog(@"Hit right nav button");
 }
 
 @end
