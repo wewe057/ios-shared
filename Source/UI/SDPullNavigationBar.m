@@ -119,7 +119,7 @@ typedef struct
 }
 
 // Superview is known, start setting up our subviews.
-- (void)willMoveToSuperview:(UIView *)newSuperview
+- (void)willMoveToSuperview:(UIView*)newSuperview
 {
     if(newSuperview)
     {
@@ -150,7 +150,7 @@ typedef struct
             self.menuController = [menuStoryBoard instantiateInitialViewController];
             self.menuController.view.clipsToBounds = YES;
             self.menuController.view.opaque = YES;
-            self.menuController.view.tag = 5;
+            self.menuController.view.tag = 3;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuController.pullNavigationBarDelegate = self;
             
@@ -172,10 +172,10 @@ typedef struct
             self.menuContainer.opaque = NO;
 
             self.menuContainer.layer.shadowColor = [UIColor blackColor].CGColor;
-            self.menuContainer.layer.shadowOffset = CGSizeMake(0, -3.0);
+            self.menuContainer.layer.shadowOffset = (CGSize){ 0.0f, -3.0f };
             self.menuContainer.layer.shadowRadius = 3.0f;
             self.menuContainer.layer.shadowOpacity = 1.0;
-            self.menuContainer.tag = 3;
+            self.menuContainer.tag = 4;
         }
 
         // View that darkens the views behind and to the side of the menu.
@@ -185,7 +185,7 @@ typedef struct
             self.menuBackgroundEffectsView.clipsToBounds = YES;
             self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
             self.menuBackgroundEffectsView.opaque = NO;
-            self.menuBackgroundEffectsView.tag = 4;
+            self.menuBackgroundEffectsView.tag = 5;
         }
 
         // This is the little nubbin' at the bottom of the menu. Don't show this on iPhone, don't show this if client has not set it.
@@ -194,16 +194,14 @@ typedef struct
             UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
             if(menuAdornmentImage)
             {
-                _showBottomAdornment = YES;
+                self.showBottomAdornment = YES;
+
                 self.menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:(CGRect){CGPointZero, { self.menuController.view.bounds.size.width, menuAdornmentImage.size.height }}];
                 self.menuBottomAdornmentView.clipsToBounds = YES;
                 self.menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
                 self.menuBottomAdornmentView.opaque = YES;
                 self.menuBottomAdornmentView.image = menuAdornmentImage;
                 self.menuBottomAdornmentView.tag = 6;
-
-                CGRect menuFrame = self.menuContainer.frame;
-                self.menuBottomAdornmentView.frame = (CGRect){{menuFrame.origin.x, menuFrame.origin.y + menuFrame.size.height}, self.menuBottomAdornmentView.frame.size};
             }
         }
 
