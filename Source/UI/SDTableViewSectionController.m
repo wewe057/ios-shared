@@ -38,6 +38,22 @@
     return self;
 }
 
+- (void)reloadWithSectionControllers:(NSArray *)sectionControllers
+{
+    @strongify(self.tableView, strongTableView);
+
+    self.sectionControllers = sectionControllers;
+    
+      // Force caching of our flags and the table view's flags
+    [self p_updateFlags];
+    strongTableView.delegate = nil;
+    strongTableView.dataSource = nil;
+    strongTableView.delegate = self;
+    strongTableView.dataSource = self;
+    
+    [strongTableView reloadData];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -69,27 +85,10 @@
 // This is where we hook to ask our dataSource for the Array of controllers
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    @strongify(self.delegate, delegate);
-    @strongify(self.tableView, strongTableView);
-    NSInteger sectionCount = 0;
+    NSInteger sectionCount;
     
-    if (tableView == strongTableView)
-    {
-        if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
-        {
-            self.sectionControllers = [delegate controllersForTableView:tableView];
-            
-            // Force caching of our flags and the table view's flags
-            [self p_updateFlags];
-            strongTableView.delegate = nil;
-            strongTableView.dataSource = nil;
-            strongTableView.delegate = self;
-            strongTableView.dataSource = self;
-            
-            sectionCount = (NSInteger)self.sectionControllers.count;
-        }
-    }
-    
+    sectionCount = (NSInteger)self.sectionControllers.count;
+
     return sectionCount;
 }
 
@@ -390,6 +389,26 @@
             NSAssert(_sectionsImplementHeightForRow == sectionsImplementHeightForRow, @"If one section implements sectionController:heightForRow:, then all sections must");
         }
     }
+}
+
+- (void)removeSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger index = [self.sectionControllers indexOfObject:section];
+    if (index > 0)
+    {
+        // First change the model of section controllers
+        NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];
+        [newSectionControllers removeObjectAtIndex:index];
+        self.sectionControllers = [newSectionControllers copy];
+
+        // Now nuke the section from the tableview
+        @strongify(self.tableView, tableView);
+        NSIndexSet *setOfSectionsToDelete = [[NSIndexSet alloc] initWithIndex:index];
+        [tableView beginUpdates];
+        [tableView deleteSections:setOfSectionsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [tableView endUpdates];
+        
+     }
 }
 
 @end
