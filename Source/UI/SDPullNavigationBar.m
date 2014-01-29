@@ -396,7 +396,7 @@ typedef struct
     {
         if(self.showBottomAdornment)
         {
-            self.menuController.view.frame = (CGRect){{ self.superview.frame.size.width * 0.5f - self.menuWidth * 0.5f, self.navigationHeight }, { self.menuWidth, 0.0f } };
+            self.menuController.view.frame = (CGRect){{ self.superview.frame.size.width * 0.5f - self.menuWidth * 0.5f, self.navigationBarHeight }, { self.menuWidth, 0.0f } };
             self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height },
                                                            { self.menuController.view.frame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
         }
@@ -436,7 +436,7 @@ typedef struct
     CGSize topMostWindowSize = topMostWindow.bounds.size;
     CGFloat height = UIInterfaceOrientationIsPortrait(orientation) ? MAX(topMostWindowSize.height, topMostWindowSize.width) : MIN(topMostWindowSize.height, topMostWindowSize.width);
 
-    CGFloat navHeight = self.navigationHeight;
+    CGFloat navHeight = self.navigationBarHeight;
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
     navHeight += _menuBottomAdornmentView.frame.size.height + (_menuBottomAdornmentView ? 2.0f : 0.0f);
@@ -444,7 +444,7 @@ typedef struct
     return height - navHeight;
 }
 
-- (CGFloat)navigationHeight
+- (CGFloat)navigationBarHeight
 {
     CGFloat navHeight = self.frame.size.height;
     
