@@ -14,7 +14,13 @@
 - (void)didAddSubview:(UIView *)subview
 {
     [super didAddSubview:subview];
-    [self updateConstraints];
+    [self setNeedsUpdateConstraints];
+}
+
+- (void)willRemoveSubview:(UIView *)subview
+{
+    [super willRemoveSubview:subview];
+    [self setNeedsUpdateConstraints];
 }
 
 - (void)updateConstraints

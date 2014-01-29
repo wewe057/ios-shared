@@ -65,6 +65,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Vertical Stacks" id="G3B-m3-cXI">
+                        <barButtonItem key="leftBarButtonItem" title="Remove Item" id="1nI-z3-NfJ">
+                            <connections>
+                                <action selector="removeItemTapped:" destination="o34-1U-wOM" id="NYQ-6j-4EK"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Add Item" id="mBd-p7-8hA">
                             <connections>
                                 <action selector="addItemTapped:" destination="o34-1U-wOM" id="yvF-oD-3n0"/>

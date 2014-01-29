@@ -25,9 +25,4 @@
  */
 @property (nonatomic, assign) CGFloat gap;
 
-/**
- updateConstraints must be called when removing subviews.
- */
-- (void)updateConstraints;
-
 @end

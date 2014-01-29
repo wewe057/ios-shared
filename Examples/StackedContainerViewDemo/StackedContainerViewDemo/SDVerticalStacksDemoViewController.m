@@ -15,6 +15,7 @@
 @interface SDVerticalStacksDemoViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, strong) SDAutolayoutStackView *stackView;
+@property (nonatomic, strong) NSArray *views;
 @end
 
 @implementation SDVerticalStacksDemoViewController
@@ -35,9 +36,11 @@
     self.stackView = [[SDAutolayoutStackView alloc] init];
     self.stackView.translatesAutoresizingMaskIntoConstraints = NO;
     self.stackView.edgeInsets = UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
-    self.stackView.space = 50.0f;
+    self.stackView.gap = 50.0f;
     self.stackView.backgroundColor = @"#dddddd".uicolor;
     [self.scrollView addSubview:self.stackView];
+    
+    self.views = @[];
 }
 
 - (void)updateViewConstraints
@@ -71,6 +74,8 @@
     view.translatesAutoresizingMaskIntoConstraints = NO;
     view.backgroundColor = [self getColor];
     view.boxLabel.text = [NSString stringWithFormat:@"Box: %d", count];
+    
+    self.views = [self.views arrayByAddingObject:view];
     count++;
     
     [self.stackView addSubview:view];
@@ -83,6 +88,19 @@
                                                     multiplier:1.0
                                                       constant:40.0]];
     
+}
+
+- (IBAction)removeItemTapped:(id)sender {
+    SDDemoBoxView *view = [self.views firstObject];
+    [view removeFromSuperview];
+    
+    if (self.views.count > 1)
+    {
+        self.views = [self.views subarrayWithRange:NSMakeRange(1, self.views.count - 1)];
+    }
+    else {
+        self.views = @[];
+    }
 }
 
 - (UIColor *)getColor
