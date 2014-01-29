@@ -3,7 +3,7 @@
 //  ios-shared
 //
 //  Created by Sam Grover on 6/28/13.
-//  Copyright (c) 2013 Wal-mart Stores, Inc. All rights reserved.
+//  Copyright (c) 2013 SetDirection All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
