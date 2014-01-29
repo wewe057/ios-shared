@@ -10,7 +10,6 @@
 
 @implementation SDAutolayoutStackView
 
-// When a view has been added to this container, call updateConstraints.
 - (void)didAddSubview:(UIView *)subview
 {
     [super didAddSubview:subview];
