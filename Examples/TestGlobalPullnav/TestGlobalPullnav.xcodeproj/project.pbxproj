@@ -20,8 +20,6 @@
 		E21F09AF189708EA009A4014 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F09AE189708EA009A4014 /* XCTest.framework */; };
 		E21F09B0189708EA009A4014 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F098C189708EA009A4014 /* Foundation.framework */; };
 		E21F09B1189708EA009A4014 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F0990189708EA009A4014 /* UIKit.framework */; };
-		E21F09B9189708EA009A4014 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E21F09B7189708EA009A4014 /* InfoPlist.strings */; };
-		E21F09BB189708EA009A4014 /* TestGlobalPullnavTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F09BA189708EA009A4014 /* TestGlobalPullnavTests.m */; };
 		E21F0A8D1897091D009A4014 /* Global-iOS.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E21F09C61897091C009A4014 /* Global-iOS.xcconfig */; };
 		E21F0A8E1897091D009A4014 /* Project-iOS-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E21F09C71897091C009A4014 /* Project-iOS-Debug.xcconfig */; };
 		E21F0A8F1897091D009A4014 /* Project-iOS-Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = E21F09C81897091C009A4014 /* Project-iOS-Release.xcconfig */; };
@@ -159,9 +157,6 @@
 		E21F09A7189708EA009A4014 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		E21F09AD189708EA009A4014 /* TestGlobalPullnavTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestGlobalPullnavTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E21F09AE189708EA009A4014 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		E21F09B6189708EA009A4014 /* TestGlobalPullnavTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TestGlobalPullnavTests-Info.plist"; sourceTree = "<group>"; };
-		E21F09B8189708EA009A4014 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		E21F09BA189708EA009A4014 /* TestGlobalPullnavTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestGlobalPullnavTests.m; sourceTree = "<group>"; };
 		E21F09C61897091C009A4014 /* Global-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Global-iOS.xcconfig"; sourceTree = "<group>"; };
 		E21F09C71897091C009A4014 /* Project-iOS-Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Debug.xcconfig"; sourceTree = "<group>"; };
 		E21F09C81897091C009A4014 /* Project-iOS-Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Project-iOS-Release.xcconfig"; sourceTree = "<group>"; };
@@ -404,7 +399,6 @@
 			children = (
 				E21F09C418970909009A4014 /* ios-shared */,
 				E21F0992189708EA009A4014 /* TestGlobalPullnav */,
-				E21F09B4189708EA009A4014 /* TestGlobalPullnavTests */,
 				E21F098B189708EA009A4014 /* Frameworks */,
 				E21F098A189708EA009A4014 /* Products */,
 			);
@@ -467,24 +461,6 @@
 				E21F0995189708EA009A4014 /* InfoPlist.strings */,
 				E21F0998189708EA009A4014 /* main.m */,
 				E21F099A189708EA009A4014 /* TestGlobalPullnav-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		E21F09B4189708EA009A4014 /* TestGlobalPullnavTests */ = {
-			isa = PBXGroup;
-			children = (
-				E21F09BA189708EA009A4014 /* TestGlobalPullnavTests.m */,
-				E21F09B5189708EA009A4014 /* Supporting Files */,
-			);
-			path = TestGlobalPullnavTests;
-			sourceTree = "<group>";
-		};
-		E21F09B5189708EA009A4014 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				E21F09B6189708EA009A4014 /* TestGlobalPullnavTests-Info.plist */,
-				E21F09B7189708EA009A4014 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -881,7 +857,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E21F09B9189708EA009A4014 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -991,7 +966,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E21F09BB189708EA009A4014 /* TestGlobalPullnavTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1028,14 +1002,6 @@
 				E21F09A2189708EA009A4014 /* Base */,
 			);
 			name = HomeScreen_iPad.storyboard;
-			sourceTree = "<group>";
-		};
-		E21F09B7189708EA009A4014 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E21F09B8189708EA009A4014 /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 		E21F0AF918970C59009A4014 /* MainWindow.xib */ = {
