@@ -226,12 +226,18 @@
     }
 }
 
+- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    return sectionIndex;
+}
+
 #pragma mark - Height Methods
 
 - (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self indexOfSection:section];
     if (sectionIndex > 0 && sectionIndex != NSNotFound)
     {
         NSRange rangeOfIndexes = NSMakeRange(0, sectionIndex);
@@ -245,7 +251,7 @@
 - (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self indexOfSection:section];
     if ((sectionIndex < (self.sectionControllers.count - 1) && sectionIndex != NSNotFound))
     {
         NSRange rangeOfIndexes = NSMakeRange(sectionIndex + 1, self.sectionControllers.count - sectionIndex - 1);

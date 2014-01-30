@@ -193,6 +193,15 @@
 - (void)popToRootViewControllerAnimated:(BOOL)animated;
 
 /**
+ *  Returns the index of the given section controller
+ *
+ *  @param id<SDTableViewSectionDelegate> object
+ *
+ *  @return NSUInteger
+ */
+- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
  *  Returns the height of all sections above the given section
  *
  *  @param section   Calculate the height of sections above this section
