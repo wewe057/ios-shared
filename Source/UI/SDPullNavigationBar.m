@@ -329,7 +329,7 @@ typedef struct
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         self.menuContainer.hidden = NO;
 
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
             self.tabButton.tuckedTab = !self.menuOpen;
             if(!self.menuOpen)
