@@ -8,6 +8,7 @@
 
 #import "SDTextFieldPicker.h"
 #import "SDPickerView.h"
+#import "UIDevice+machine.h"
 
 @interface SDPickerView()
 @property (nonatomic, readonly) UIToolbar *pickerBar;
@@ -82,7 +83,10 @@
 
     self.rightView = _pickerButton;
     self.rightViewMode = UITextFieldViewModeWhileEditing;
-    self.pickerButtonColor = self.tintColor;//[UIColor blueColor];
+    if ([UIDevice systemMajorVersion] < 7)
+        self.pickerButtonColor = [UIColor blueColor];
+    else
+        self.pickerButtonColor = self.tintColor;
 }
 
 - (void)setPickerItems:(NSArray<NSString> *)pickerItems
