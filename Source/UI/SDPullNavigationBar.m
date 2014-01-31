@@ -146,14 +146,13 @@ typedef struct
                 self.menuWidth = self.menuController.pullNavigationMenuWidth;
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
 
-            self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidth * 0.5f, self.navigationBarHeight }, { self.menuWidth, menuHeight } };
+            self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                                       { self.menuWidth, menuHeight } };
             self.menuController.view.clipsToBounds = YES;
             self.menuController.view.opaque = YES;
             self.menuController.view.tag = 3;
             self.menuController.view.autoresizingMask = 0;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
-            self.menuController.view.layer.anchorPoint = (CGPoint){ 0.5f, 0.0f };
-            self.menuController.view.layer.position = (CGPoint){ self.menuController.view.layer.position.x, -menuHeight };
 
             self.menuController.pullNavigationBarDelegate = self;
         }
@@ -187,9 +186,16 @@ typedef struct
                 self.menuBottomAdornmentView.image = menuAdornmentImage;
                 self.menuBottomAdornmentView.tag = 6;
                 self.menuBottomAdornmentView.layer.anchorPoint = (CGPoint){ 0.5f, 0.0f };
-                self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, self.navigationBarHeight - self.menuAdornmentImageOverlapHeight };
+                self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, self.navigationBarHeight };
+
+                // If we are actually using a bottom adornment, adjust where the menu starts animating from so that the two are in sync.
+
+//                CGRect menuFrame = self.menuController.view.frame;
+//                self.menuController.view.frame = (CGRect){ { menuFrame.origin.x, menuFrame.origin.y - self.menuAdornmentImageOverlapHeight }, menuFrame.size };
             }
         }
+
+        SDLog(@"self.menuController.view.frame = %@", NSStringFromCGRect(self.menuController.view.frame));
 
         [self insertSubview:self.navbarBackgroundView atIndex:1];
         [self addSubview:self.tabButton];
@@ -337,16 +343,12 @@ typedef struct
                 [self.tabButton setNeedsDisplay];
 
             CGFloat height = self.menuOpen ? 0.0f : MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            CGFloat width = [UIDevice iPad] ? self.menuWidth : self.menuController.view.frame.size.width;
             CGFloat adornmentPositionY = self.menuOpen ? height + self.navigationBarHeight - self.menuAdornmentImageOverlapHeight : height + self.navigationBarHeight;
+            CGFloat menuPositionY = self.menuOpen ? -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight)
+                                                  : self.navigationBarHeight;
 
             self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, adornmentPositionY };
-            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.frame.size.height + 20.0f }, { width, height } };
-
-            SDTrace(@"self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
-            SDTrace(@"self.menuBottomAdornmentView.layer.position = %@", NSStringFromCGPoint(self.menuBottomAdornmentView.layer.position));
-            SDTrace(@"self.menuController.view.frame = %@", NSStringFromCGRect(self.menuController.view.frame));
-            SDTrace(@"self.menuController.view.layer.position = %@", NSStringFromCGPoint(self.menuController.view.layer.position));
+            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
 
             self.menuOpen = !self.menuOpen;
          }
