@@ -76,6 +76,10 @@
 - (void)deleteBackward
 {
     NSUInteger decimalPosition = NSUIntegerMax;
+    
+    if (self.text.length==0)
+        return;
+    
     for (NSUInteger i = self.text.length - 1; i > 0; i--)
     {
         NSString *c = [self.text substringWithRange:NSMakeRange((NSUInteger)i - 1, 1)];
