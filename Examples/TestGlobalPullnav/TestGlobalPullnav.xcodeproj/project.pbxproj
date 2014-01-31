@@ -45,12 +45,6 @@
 		E21F0AA31897091D009A4014 /* SDLocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F09F71897091C009A4014 /* SDLocationManager.m */; };
 		E21F0AA41897091D009A4014 /* SDKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F09FA1897091C009A4014 /* SDKeychain.m */; };
 		E21F0AA51897091D009A4014 /* SDABTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F09FD1897091C009A4014 /* SDABTesting.m */; };
-		E21F0AA61897091D009A4014 /* CAAnimation+SDIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A011897091C009A4014 /* CAAnimation+SDIdentifier.m */; };
-		E21F0AA71897091D009A4014 /* CALayer+SDConvenienceAnimations.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A031897091C009A4014 /* CALayer+SDConvenienceAnimations.m */; };
-		E21F0AA81897091D009A4014 /* NSObject+SDBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A051897091C009A4014 /* NSObject+SDBlocks.m */; };
-		E21F0AA91897091D009A4014 /* SDAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A081897091C009A4014 /* SDAnimation.m */; };
-		E21F0AAA1897091D009A4014 /* SDLayerAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A0A1897091C009A4014 /* SDLayerAnimator.m */; };
-		E21F0AAB1897091D009A4014 /* SDSequentialAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A0C1897091C009A4014 /* SDSequentialAnimation.m */; };
 		E21F0AAC1897091D009A4014 /* NSObject+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A0E1897091C009A4014 /* NSObject+SDExtensions.m */; };
 		E21F0AAD1897091D009A4014 /* SDAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A101897091C009A4014 /* SDAlertView.m */; };
 		E21F0AAE1897091D009A4014 /* SDApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0A121897091C009A4014 /* SDApplication.m */; };
@@ -207,19 +201,6 @@
 		E21F09FA1897091C009A4014 /* SDKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDKeychain.m; sourceTree = "<group>"; };
 		E21F09FC1897091C009A4014 /* SDABTesting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDABTesting.h; sourceTree = "<group>"; };
 		E21F09FD1897091C009A4014 /* SDABTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDABTesting.m; sourceTree = "<group>"; };
-		E21F0A001897091C009A4014 /* CAAnimation+SDIdentifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CAAnimation+SDIdentifier.h"; sourceTree = "<group>"; };
-		E21F0A011897091C009A4014 /* CAAnimation+SDIdentifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAAnimation+SDIdentifier.m"; sourceTree = "<group>"; };
-		E21F0A021897091C009A4014 /* CALayer+SDConvenienceAnimations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CALayer+SDConvenienceAnimations.h"; sourceTree = "<group>"; };
-		E21F0A031897091C009A4014 /* CALayer+SDConvenienceAnimations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+SDConvenienceAnimations.m"; sourceTree = "<group>"; };
-		E21F0A041897091C009A4014 /* NSObject+SDBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SDBlocks.h"; sourceTree = "<group>"; };
-		E21F0A051897091C009A4014 /* NSObject+SDBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SDBlocks.m"; sourceTree = "<group>"; };
-		E21F0A061897091C009A4014 /* SDAnimating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAnimating.h; sourceTree = "<group>"; };
-		E21F0A071897091C009A4014 /* SDAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAnimation.h; sourceTree = "<group>"; };
-		E21F0A081897091C009A4014 /* SDAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAnimation.m; sourceTree = "<group>"; };
-		E21F0A091897091C009A4014 /* SDLayerAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLayerAnimator.h; sourceTree = "<group>"; };
-		E21F0A0A1897091C009A4014 /* SDLayerAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLayerAnimator.m; sourceTree = "<group>"; };
-		E21F0A0B1897091C009A4014 /* SDSequentialAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDSequentialAnimation.h; sourceTree = "<group>"; };
-		E21F0A0C1897091C009A4014 /* SDSequentialAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDSequentialAnimation.m; sourceTree = "<group>"; };
 		E21F0A0D1897091C009A4014 /* NSObject+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SDExtensions.h"; sourceTree = "<group>"; };
 		E21F0A0E1897091C009A4014 /* NSObject+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SDExtensions.m"; sourceTree = "<group>"; };
 		E21F0A0F1897091C009A4014 /* SDAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAlertView.h; sourceTree = "<group>"; };
@@ -590,7 +571,6 @@
 		E21F09FE1897091C009A4014 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				E21F09FF1897091C009A4014 /* Animation */,
 				E21F0A0D1897091C009A4014 /* NSObject+SDExtensions.h */,
 				E21F0A0E1897091C009A4014 /* NSObject+SDExtensions.m */,
 				E21F0A0F1897091C009A4014 /* SDAlertView.h */,
@@ -688,26 +668,6 @@
 			);
 			name = UI;
 			path = ../../Source/UI;
-			sourceTree = "<group>";
-		};
-		E21F09FF1897091C009A4014 /* Animation */ = {
-			isa = PBXGroup;
-			children = (
-				E21F0A001897091C009A4014 /* CAAnimation+SDIdentifier.h */,
-				E21F0A011897091C009A4014 /* CAAnimation+SDIdentifier.m */,
-				E21F0A021897091C009A4014 /* CALayer+SDConvenienceAnimations.h */,
-				E21F0A031897091C009A4014 /* CALayer+SDConvenienceAnimations.m */,
-				E21F0A041897091C009A4014 /* NSObject+SDBlocks.h */,
-				E21F0A051897091C009A4014 /* NSObject+SDBlocks.m */,
-				E21F0A061897091C009A4014 /* SDAnimating.h */,
-				E21F0A071897091C009A4014 /* SDAnimation.h */,
-				E21F0A081897091C009A4014 /* SDAnimation.m */,
-				E21F0A091897091C009A4014 /* SDLayerAnimator.h */,
-				E21F0A0A1897091C009A4014 /* SDLayerAnimator.m */,
-				E21F0A0B1897091C009A4014 /* SDSequentialAnimation.h */,
-				E21F0A0C1897091C009A4014 /* SDSequentialAnimation.m */,
-			);
-			path = Animation;
 			sourceTree = "<group>";
 		};
 		E21F0A421897091D009A4014 /* SDQuantityEditView */ = {
@@ -868,7 +828,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E21F0ADC1897091D009A4014 /* UINavigationController+SDExtensions.m in Sources */,
-				E21F0AAB1897091D009A4014 /* SDSequentialAnimation.m in Sources */,
 				E21F0ABC1897091D009A4014 /* SDPhotoImageView.m in Sources */,
 				E21F0AC11897091D009A4014 /* SDPullNavigationAutomation.m in Sources */,
 				E21F0999189708EA009A4014 /* main.m in Sources */,
@@ -882,7 +841,6 @@
 				E21F0ADB1897091D009A4014 /* UIImage+SDExtensions.m in Sources */,
 				E21F0AE81897091D009A4014 /* SDWebService+SDProcessingBlocks.m in Sources */,
 				E21F0ACB1897091D009A4014 /* UIView+PaintCode.m in Sources */,
-				E21F0AA91897091D009A4014 /* SDAnimation.m in Sources */,
 				E21F0AD21897091D009A4014 /* SDTableViewSectionController.m in Sources */,
 				E21F0A971897091D009A4014 /* NSNumber+SDExtensions.m in Sources */,
 				E21F0AFE18971419009A4014 /* SDGlobalNavMenuController.m in Sources */,
@@ -892,7 +850,6 @@
 				E21F0ABE1897091D009A4014 /* SDPickerModalViewController.m in Sources */,
 				E21F0AB11897091D009A4014 /* SDContainerViewController.m in Sources */,
 				E21F0ACD1897091D009A4014 /* SDSearchDisplayController.m in Sources */,
-				E21F0AA71897091D009A4014 /* CALayer+SDConvenienceAnimations.m in Sources */,
 				E21F0A961897091D009A4014 /* NSMutableAttributedString+SDExtensions.m in Sources */,
 				E21F0A911897091D009A4014 /* NSArray+SDExtensions.m in Sources */,
 				E21F0AB21897091D009A4014 /* SDContentAlertView.m in Sources */,
@@ -942,8 +899,6 @@
 				E21F0AE11897091D009A4014 /* NSURL+SDExtensions.m in Sources */,
 				E21F0ABB1897091D009A4014 /* SDPagingView.m in Sources */,
 				E21F0AB41897091D009A4014 /* SDDragDropGestureRecognizer.m in Sources */,
-				E21F0AA61897091D009A4014 /* CAAnimation+SDIdentifier.m in Sources */,
-				E21F0AA81897091D009A4014 /* NSObject+SDBlocks.m in Sources */,
 				E21F0AE01897091D009A4014 /* NSCachedURLResponse+LeakFix.m in Sources */,
 				E21F0AC61897091D009A4014 /* SDPullNavigationManager.m in Sources */,
 				E21F0A9A1897091D009A4014 /* NSUserDefaults+SDExtensions.m in Sources */,
@@ -951,7 +906,6 @@
 				E21F0AA11897091D009A4014 /* CLLocation+SDExtensions.m in Sources */,
 				E21F0AD01897091D009A4014 /* SDStackView.m in Sources */,
 				E21F0AAF1897091D009A4014 /* SDButton.m in Sources */,
-				E21F0AAA1897091D009A4014 /* SDLayerAnimator.m in Sources */,
 				E21F0B04189718FA009A4014 /* SDOrderHistoryViewController.m in Sources */,
 				E21F0ADD1897091D009A4014 /* UIScreen+SDExtensions.m in Sources */,
 				E21F0AA21897091D009A4014 /* MKMapView+SDExtensions.m in Sources */,
