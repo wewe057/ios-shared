@@ -14,7 +14,6 @@
 #import "SDPullNavigationManager.h"
 #import "UIDevice+machine.h"
 #import "UIColor+SDExtensions.h"
-#import "SDLayerAnimator.h"
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
 
@@ -46,7 +45,6 @@ typedef struct
 @property (nonatomic, assign) BOOL menuOpen;
 @property (nonatomic, assign) CGFloat menuWidth;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
-@property (nonatomic, strong, readwrite) SDLayerAnimator* animator;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
 @property (nonatomic, assign) BOOL showBottomAdornment;
 
@@ -271,8 +269,6 @@ typedef struct
     {
         case UIGestureRecognizerStateBegan:
         {
-            [self.animator stopAnimationForKey:kSDRevealControllerFrontViewTranslationAnimationKey];
-            
             [self.superview insertSubview:self.menuContainer belowSubview:self];
 
             _menuInteraction.initialTouchPoint = [recognizer translationInView:self];
@@ -338,26 +334,16 @@ typedef struct
 
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-            self.tabButton.tuckedTab = !self.menuOpen;
-            if(!self.menuOpen)
-                [self.tabButton setNeedsDisplay];
-
-            CGFloat height = self.menuOpen ? 0.0f : MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            CGFloat adornmentPositionY = self.menuOpen ? height + self.navigationBarHeight - self.menuAdornmentImageOverlapHeight : height + self.navigationBarHeight;
-            CGFloat menuPositionY = self.menuOpen ? -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight)
-                                                  : self.navigationBarHeight;
-
-            self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, adornmentPositionY };
-            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
-
-            self.menuOpen = !self.menuOpen;
+            if(self.menuOpen)
+                [self collapseMenu];
+            else
+                [self expandMenu];
          }
          completion:^(BOOL finished)
          {
              self.animating = NO;
 
-             if(self.menuOpen == NO)
-                 [self.tabButton setNeedsDisplay];
+             [self.tabButton setNeedsDisplay];
              self.menuContainer.hidden = !self.menuOpen;
 
              if(completion)
@@ -370,6 +356,33 @@ typedef struct
         if(completion)
             completion();
     }
+}
+
+- (void)expandMenu
+{
+    self.tabButton.tuckedTab = YES;
+    [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
+
+    CGFloat adornmentPositionY = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) + self.navigationBarHeight;
+    CGFloat menuPositionY = self.navigationBarHeight;
+    
+    self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, adornmentPositionY };
+    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+
+    self.menuOpen = YES;
+}
+
+- (void)collapseMenu
+{
+    self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
+
+    CGFloat adornmentPositionY = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
+    CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
+    
+    self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, adornmentPositionY };
+    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+    
+    self.menuOpen = NO;
 }
 
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
