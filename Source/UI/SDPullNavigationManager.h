@@ -17,6 +17,7 @@
 
 @property (nonatomic, strong) Class pullNavigationBarViewClass;
 @property (nonatomic, strong) UIImage* menuAdornmentImage;
+@property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
 @property (nonatomic, copy) NSString* globalMenuStoryboardId;
 @property (nonatomic, weak) id<SDPullNavigationSetupProtocol> delegate;
 @property (nonatomic, strong) SDContainerViewController* globalPullNavController;

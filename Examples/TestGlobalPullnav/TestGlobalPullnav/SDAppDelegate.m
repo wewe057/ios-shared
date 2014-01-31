@@ -55,6 +55,7 @@
     [SDPullNavigationManager sharedInstance].pullNavigationBarViewClass = [SDPullNavigationBarControlsView class];
     [SDPullNavigationManager sharedInstance].globalMenuStoryboardId = @"SDGlobalNavMenu";
     [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
+    [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight = stretchImage.size.height;
 }
 
 - (void)setupNavigationBarItems

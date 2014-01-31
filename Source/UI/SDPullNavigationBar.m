@@ -41,6 +41,7 @@ typedef struct
 @property (nonatomic, strong) SDPullNavigationMenuContainer* menuContainer;
 @property (nonatomic, strong) UIView* menuBackgroundEffectsView;
 @property (nonatomic, strong) UIImageView* menuBottomAdornmentView;
+@property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL menuOpen;
 @property (nonatomic, assign) CGFloat menuWidth;
@@ -139,18 +140,22 @@ typedef struct
         {
             UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
             self.menuController = [menuStoryBoard instantiateInitialViewController];
-            self.menuController.view.clipsToBounds = YES;
-            self.menuController.view.opaque = YES;
-            self.menuController.view.tag = 3;
-            self.menuContainer.autoresizingMask = 0;
-            self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
-            self.menuController.pullNavigationBarDelegate = self;
-            
+
             self.menuWidth = kDefaultMenuWidth;
             if([self.menuController respondsToSelector:@selector(pullNavigationMenuWidth)])
                 self.menuWidth = self.menuController.pullNavigationMenuWidth;
-            
-            self.menuController.view.frame = (CGRect){{ newSuperview.frame.size.width * 0.5f - self.menuWidth * 0.5f, self.navigationBarHeight }, { self.menuWidth, 0.0f } };
+            CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+
+            self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidth * 0.5f, self.navigationBarHeight }, { self.menuWidth, menuHeight } };
+            self.menuController.view.clipsToBounds = YES;
+            self.menuController.view.opaque = YES;
+            self.menuController.view.tag = 3;
+            self.menuController.view.autoresizingMask = 0;
+            self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
+            self.menuController.view.layer.anchorPoint = (CGPoint){ 0.5f, 0.0f };
+            self.menuController.view.layer.position = (CGPoint){ self.menuController.view.layer.position.x, -menuHeight };
+
+            self.menuController.pullNavigationBarDelegate = self;
         }
         
         // View that darkens the views behind and to the side of the menu.
@@ -171,6 +176,7 @@ typedef struct
             {
                 self.showBottomAdornment = YES;
 
+                self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
                 CGRect clientMenuFrame = self.menuController.view.frame;
                 CGRect frame = (CGRect){ { clientMenuFrame.origin.x, clientMenuFrame.origin.y },
                                          { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
@@ -181,6 +187,7 @@ typedef struct
                 self.menuBottomAdornmentView.image = menuAdornmentImage;
                 self.menuBottomAdornmentView.tag = 6;
                 self.menuBottomAdornmentView.layer.anchorPoint = (CGPoint){ 0.5f, 0.0f };
+                self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, self.navigationBarHeight - self.menuAdornmentImageOverlapHeight };
             }
         }
 
@@ -281,6 +288,7 @@ typedef struct
         case UIGestureRecognizerStateChanged:
         {
             _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
+
             CGFloat newY = _menuInteraction.initialFrontViewPosition.y + (_menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y);
             newY = MIN(newY, MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight));
             self.menuBottomAdornmentView.layer.position = (CGPoint){ _menuInteraction.initialFrontViewPosition.x, newY };
@@ -291,6 +299,12 @@ typedef struct
         }
 
         case UIGestureRecognizerStateEnded:
+        {
+            _menuInteraction.velocity = [recognizer velocityInView:self].y;
+
+            // Falling through on purpose...
+        }
+
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateFailed:
         default:
@@ -306,19 +320,6 @@ typedef struct
 }
 
 #pragma mark - Helpers
-
-+ (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
-{
-    UINavigationController* navController = [[UINavigationController alloc] initWithNavigationBarClass:[self class] toolbarClass:nil];
-    [navController setViewControllers:@[viewController]];
-    navController.delegate = [SDPullNavigationManager sharedInstance];
-    return navController;
-}
-
-- (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
-{
-    [self dismissPullMenuWithoutAnimation];
-}
 
 - (void)togglePullMenuWithCompletionBlock:(void (^)(void))completion
 {
@@ -337,17 +338,24 @@ typedef struct
 
             CGFloat height = self.menuOpen ? 0.0f : MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
             CGFloat width = [UIDevice iPad] ? self.menuWidth : self.menuController.view.frame.size.width;
+            CGFloat adornmentPositionY = self.menuOpen ? height + self.navigationBarHeight - self.menuAdornmentImageOverlapHeight : height + self.navigationBarHeight;
 
-            self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, height + self.navigationBarHeight };
-            self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, height } };
+            self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, adornmentPositionY };
+            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.frame.size.height + 20.0f }, { width, height } };
+
+            SDTrace(@"self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
+            SDTrace(@"self.menuBottomAdornmentView.layer.position = %@", NSStringFromCGPoint(self.menuBottomAdornmentView.layer.position));
+            SDTrace(@"self.menuController.view.frame = %@", NSStringFromCGRect(self.menuController.view.frame));
+            SDTrace(@"self.menuController.view.layer.position = %@", NSStringFromCGPoint(self.menuController.view.layer.position));
 
             self.menuOpen = !self.menuOpen;
          }
          completion:^(BOOL finished)
          {
+             self.animating = NO;
+
              if(self.menuOpen == NO)
                  [self.tabButton setNeedsDisplay];
-             self.animating = NO;
              self.menuContainer.hidden = !self.menuOpen;
 
              if(completion)
@@ -360,6 +368,19 @@ typedef struct
         if(completion)
             completion();
     }
+}
+
++ (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
+{
+    UINavigationController* navController = [[UINavigationController alloc] initWithNavigationBarClass:[self class] toolbarClass:nil];
+    [navController setViewControllers:@[viewController]];
+    navController.delegate = [SDPullNavigationManager sharedInstance];
+    return navController;
+}
+
+- (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
+{
+    [self dismissPullMenuWithoutAnimation];
 }
 
 - (void)dismissPullMenuWithoutAnimation
