@@ -23,7 +23,10 @@ typedef struct
 {
     CGPoint initialTouchPoint;
     CGPoint currentTouchPoint;
-    CGPoint initialFrontViewPosition;
+    CGFloat maxMenuHeight;
+    CGFloat minMenuHeight;
+    CGFloat maxAdornmentHeight;
+    CGFloat minAdornmentHeight;
     CGFloat velocity;
     BOOL    isInteracting;
 } SDMenuControllerInteractionFlags;
@@ -39,12 +42,13 @@ typedef struct
 @property (nonatomic, strong) SDPullNavigationBarTabButton* tabButton;
 @property (nonatomic, strong) SDPullNavigationMenuContainer* menuContainer;
 @property (nonatomic, strong) UIView* menuBackgroundEffectsView;
-@property (nonatomic, strong) UIImageView* menuBottomAdornmentView;
+@property (nonatomic, strong) SDPullNavigationBarAdornmentView* menuBottomAdornmentView;
 @property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL menuOpen;
 @property (nonatomic, assign) CGFloat menuWidth;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
+@property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
 @property (nonatomic, assign) BOOL showBottomAdornment;
 
@@ -172,28 +176,22 @@ typedef struct
             if(menuAdornmentImage)
             {
                 self.showBottomAdornment = YES;
-
                 self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
+
                 CGRect clientMenuFrame = self.menuController.view.frame;
-                CGRect frame = (CGRect){ { clientMenuFrame.origin.x, clientMenuFrame.origin.y },
+                CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight/* - self.menuAdornmentImageOverlapHeight*/ },
                                          { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
-                self.menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:frame];
+
+                self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
                 self.menuBottomAdornmentView.clipsToBounds = YES;
                 self.menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
                 self.menuBottomAdornmentView.opaque = YES;
                 self.menuBottomAdornmentView.image = menuAdornmentImage;
                 self.menuBottomAdornmentView.tag = 6;
-                self.menuBottomAdornmentView.layer.anchorPoint = (CGPoint){ 0.5f, 0.0f };
-                self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, self.navigationBarHeight };
-
-                // If we are actually using a bottom adornment, adjust where the menu starts animating from so that the two are in sync.
-
-//                CGRect menuFrame = self.menuController.view.frame;
-//                self.menuController.view.frame = (CGRect){ { menuFrame.origin.x, menuFrame.origin.y - self.menuAdornmentImageOverlapHeight }, menuFrame.size };
             }
         }
 
-        SDLog(@"self.menuController.view.frame = %@", NSStringFromCGRect(self.menuController.view.frame));
+        SDLog(@"collapsed self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
 
         [self insertSubview:self.navbarBackgroundView atIndex:1];
         [self addSubview:self.tabButton];
@@ -236,9 +234,13 @@ typedef struct
     UITapGestureRecognizer* openTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
     [self.tabButton addGestureRecognizer:openTapGesture];
 
-    self.revealPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizePanGesture:)];
+    self.revealPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeRevealPanGesture:)];
     self.revealPanGestureRecognizer.maximumNumberOfTouches = 1;
     [self.tabButton addGestureRecognizer:self.revealPanGestureRecognizer];
+
+    self.dismissPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeDismissPanGesture:)];
+    self.revealPanGestureRecognizer.maximumNumberOfTouches = 1;
+    [self.menuBottomAdornmentView addGestureRecognizer:self.dismissPanGestureRecognizer];
 
     UITapGestureRecognizer* dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)];
     dismissTapGesture.delegate = self;
@@ -263,27 +265,28 @@ typedef struct
         [self dismissPullMenuWithCompletionBlock:nil];
 }
 
-- (void)didRecognizePanGesture:(UIPanGestureRecognizer*)recognizer
+- (void)didRecognizeRevealPanGesture:(UIPanGestureRecognizer*)recognizer
 {
     switch(recognizer.state)
     {
         case UIGestureRecognizerStateBegan:
         {
+            self.tabButton.tuckedTab = !self.menuOpen;
+            [self.tabButton setNeedsDisplay];
+
             [self.superview insertSubview:self.menuContainer belowSubview:self];
 
             _menuInteraction.initialTouchPoint = [recognizer translationInView:self];
-            _menuInteraction.initialFrontViewPosition = self.menuController.view.layer.position;
             _menuInteraction.isInteracting = YES;
             _menuInteraction.velocity = 0.0f;
+            _menuInteraction.minMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
+            _menuInteraction.maxMenuHeight = self.navigationBarHeight;
+            _menuInteraction.minAdornmentHeight = 54;
+            _menuInteraction.maxAdornmentHeight = 818;
 
             [recognizer setTranslation:CGPointZero inView:self];
 
-            self.tabButton.hidden = YES;
             self.menuContainer.hidden = NO;
-            self.menuController.view.hidden = NO;
-            self.menuBottomAdornmentView.hidden = NO;
-            self.menuOpen = YES;
-
             break;
         }
 
@@ -291,18 +294,47 @@ typedef struct
         {
             _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
 
-            CGFloat newY = _menuInteraction.initialFrontViewPosition.y + (_menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y);
-            newY = MIN(newY, MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight));
-            self.menuBottomAdornmentView.layer.position = (CGPoint){ _menuInteraction.initialFrontViewPosition.x, newY };
+            CGFloat newY = MIN(_menuInteraction.minMenuHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
+            CGFloat newAdornmentY = MIN(_menuInteraction.minAdornmentHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxAdornmentHeight);
 
-            CGRect frame = self.menuController.view.frame;
-            self.menuController.view.frame = (CGRect){ frame.origin, { frame.size.width, newY } };
+            self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, newAdornmentY }, self.menuBottomAdornmentView.frame.size };
+            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, newY }, self.menuController.view.frame.size };
             break;
         }
 
         case UIGestureRecognizerStateEnded:
         {
             _menuInteraction.velocity = [recognizer velocityInView:self].y;
+
+            if(fabs(_menuInteraction.velocity) < 100.0f)
+            {
+                // Slow drag
+
+                CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                if(_menuInteraction.velocity < 0)
+                {
+                    if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                        [self expandMenu];
+                    else
+                        [self collapseMenu];
+                }
+                else
+                {
+                    if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                        [self expandMenu];
+                    else
+                        [self collapseMenu];
+                }
+            }
+            else
+            {
+                // Fast drag
+
+                if(_menuInteraction.velocity < 0)
+                    [self collapseMenu];
+                else
+                    [self expandMenu];
+            }
 
             // Falling through on purpose...
         }
@@ -313,9 +345,97 @@ typedef struct
         {
             _menuInteraction.initialTouchPoint = CGPointZero;
             _menuInteraction.currentTouchPoint = CGPointZero;
-            _menuInteraction.initialFrontViewPosition = CGPointZero;
             _menuInteraction.isInteracting = NO;
             _menuInteraction.velocity = 0.0f;
+            _menuInteraction.minMenuHeight = 0.0f;
+            _menuInteraction.maxMenuHeight = 0.0f;
+            _menuInteraction.minAdornmentHeight = 0.0f;
+            _menuInteraction.maxAdornmentHeight = 0.0f;
+            break;
+        }
+    }
+}
+
+- (void)didRecognizeDismissPanGesture:(UIPanGestureRecognizer*)recognizer
+{
+    switch(recognizer.state)
+    {
+        case UIGestureRecognizerStateBegan:
+        {
+            _menuInteraction.initialTouchPoint = [recognizer translationInView:self];
+            _menuInteraction.isInteracting = YES;
+            _menuInteraction.velocity = 0.0f;
+            _menuInteraction.minMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
+            _menuInteraction.maxMenuHeight = self.navigationBarHeight;
+            _menuInteraction.minAdornmentHeight = 54;
+            _menuInteraction.maxAdornmentHeight = 818;
+
+            [recognizer setTranslation:CGPointZero inView:self];
+            break;
+        }
+            
+        case UIGestureRecognizerStateChanged:
+        {
+            _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
+            
+            CGFloat newY = MIN(_menuInteraction.maxMenuHeight - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
+            CGFloat newAdornmentY = MIN(_menuInteraction.maxAdornmentHeight - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxAdornmentHeight);
+            
+            self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, newAdornmentY }, self.menuBottomAdornmentView.frame.size };
+            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, newY }, self.menuController.view.frame.size };
+            break;
+        }
+            
+        case UIGestureRecognizerStateEnded:
+        {
+            break;
+            _menuInteraction.velocity = [recognizer velocityInView:self].y;
+            
+            if(fabs(_menuInteraction.velocity) < 100.0f)
+            {
+                // Slow drag
+                
+                CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                if(_menuInteraction.velocity < 0)
+                {
+                    if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                        [self expandMenu];
+                    else
+                        [self collapseMenu];
+                }
+                else
+                {
+                    if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                        [self expandMenu];
+                    else
+                        [self collapseMenu];
+                }
+            }
+            else
+            {
+                // Fast drag
+                
+                if(_menuInteraction.velocity < 0)
+                    [self collapseMenu];
+                else
+                    [self expandMenu];
+            }
+            
+            // Falling through on purpose...
+        }
+            
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateFailed:
+        default:
+        {
+            _menuInteraction.initialTouchPoint = CGPointZero;
+            _menuInteraction.currentTouchPoint = CGPointZero;
+            _menuInteraction.isInteracting = NO;
+            _menuInteraction.velocity = 0.0f;
+            _menuInteraction.minMenuHeight = 0.0f;
+            _menuInteraction.maxMenuHeight = 0.0f;
+            _menuInteraction.minAdornmentHeight = 0.0f;
+            _menuInteraction.maxAdornmentHeight = 0.0f;
             break;
         }
     }
@@ -360,29 +480,39 @@ typedef struct
 
 - (void)expandMenu
 {
-    self.tabButton.tuckedTab = YES;
-    [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
+    if(self.menuOpen == NO)
+    {
+        self.tabButton.tuckedTab = YES;
+        [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
 
-    CGFloat adornmentPositionY = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) + self.navigationBarHeight;
-    CGFloat menuPositionY = self.navigationBarHeight;
-    
-    self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, adornmentPositionY };
-    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+        CGFloat adornmentPositionY = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) + self.navigationBarHeight;
+        CGFloat menuPositionY = self.navigationBarHeight;
 
-    self.menuOpen = YES;
+        self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
+        self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+
+        SDLog(@"collapsed self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
+
+        self.menuOpen = YES;
+    }
 }
 
 - (void)collapseMenu
 {
-    self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
+    if(self.menuOpen)
+    {
+        self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
 
-    CGFloat adornmentPositionY = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
-    CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
-    
-    self.menuBottomAdornmentView.layer.position = (CGPoint){ self.menuBottomAdornmentView.layer.position.x, adornmentPositionY };
-    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
-    
-    self.menuOpen = NO;
+        CGFloat adornmentPositionY = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
+        CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
+
+        self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
+        self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+        
+        SDLog(@"collapsed self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
+        
+        self.menuOpen = NO;
+    }
 }
 
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
@@ -401,19 +531,7 @@ typedef struct
 - (void)dismissPullMenuWithoutAnimation
 {
     self.menuContainer.hidden = YES;
-
-    self.tabButton.tuckedTab = YES;
-    CGFloat width = [UIDevice iPad] ? self.menuWidth : self.menuController.view.frame.size.width;
-
-    self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, 0.0f } };
-    if(self.showBottomAdornment)
-    {
-        self.menuBottomAdornmentView.frame = (CGRect){{self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height }, self.menuBottomAdornmentView.frame.size };
-        self.menuBottomAdornmentView.hidden = YES;
-    }
-    self.menuOpen = NO;
-
-    [self.menuContainer removeFromSuperview];
+    [self collapseMenu];
 }
 
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion

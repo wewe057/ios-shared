@@ -15,13 +15,9 @@ static const CGFloat kDefaultPadBarTabButtonWidth = 153.0f;
 static const CGFloat kDefaultPhoneBarTabButtonWidth = 103.0f;
 static const CGFloat kBarTabAdornmentWidth = 53.0f;
 
-@interface SDPullNavigationBarTabButton()
-@property (nonatomic, strong) UITapGestureRecognizer* tapGesture;
-@end
-
 @implementation SDPullNavigationBarTabButton
 
-- (id)initWithNavigationBar:(SDPullNavigationBar*)navigationBar
+- (instancetype)initWithNavigationBar:(SDPullNavigationBar*)navigationBar
 {
     self = [super initWithFrame:CGRectZero];
     if(self != nil)
@@ -100,6 +96,21 @@ static const CGFloat kBarTabAdornmentWidth = 53.0f;
             CGContextRestoreGState(context);
         }
     }
+}
+
+@end
+
+@implementation SDPullNavigationBarAdornmentView
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if(self != nil)
+    {
+        self.userInteractionEnabled = YES;
+    }
+
+    return self;
 }
 
 @end
