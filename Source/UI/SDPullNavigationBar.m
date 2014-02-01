@@ -135,7 +135,7 @@ typedef struct
             self.menuContainer.layer.shadowOffset = (CGSize){ 0.0f, -3.0f };
             self.menuContainer.layer.shadowRadius = 3.0f;
             self.menuContainer.layer.shadowOpacity = 1.0;
-            self.menuContainer.tag = 4;
+            self.menuContainer.tag = 3;
         }
 
         // This is the client's controller for the menu.
@@ -152,7 +152,7 @@ typedef struct
                                                        { self.menuWidth, menuHeight } };
             self.menuController.view.clipsToBounds = YES;
             self.menuController.view.opaque = YES;
-            self.menuController.view.tag = 3;
+            self.menuController.view.tag = 4;
             self.menuController.view.autoresizingMask = 0;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
 
@@ -190,8 +190,6 @@ typedef struct
                 self.menuBottomAdornmentView.tag = 6;
             }
         }
-
-        SDLog(@"collapsed self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
 
         [self insertSubview:self.navbarBackgroundView atIndex:1];
         [self addSubview:self.tabButton];
@@ -491,8 +489,6 @@ typedef struct
         self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
         self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
 
-        SDLog(@"collapsed self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
-
         self.menuOpen = YES;
     }
 }
@@ -509,8 +505,6 @@ typedef struct
         self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
         self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
         
-        SDLog(@"collapsed self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
-        
         self.menuOpen = NO;
     }
 }
@@ -525,12 +519,6 @@ typedef struct
 
 - (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
 {
-    [self dismissPullMenuWithoutAnimation];
-}
-
-- (void)dismissPullMenuWithoutAnimation
-{
-    self.menuContainer.hidden = YES;
     [self collapseMenu];
 }
 
