@@ -179,7 +179,7 @@ typedef struct
                 self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
 
                 CGRect clientMenuFrame = self.menuController.view.frame;
-                CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight/* - self.menuAdornmentImageOverlapHeight*/ },
+                CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
                                          { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
 
                 self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
@@ -219,6 +219,20 @@ typedef struct
     self.tabButton.frame = CGRectIntegral(tabFrame);
     
     [self addSubview:self.tabButton];
+}
+
+- (void)centerViewsToOrientation
+{
+    CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+    self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                               { self.menuWidth, menuHeight } };
+    if(self.showBottomAdornment)
+    {
+        CGRect clientMenuFrame = self.menuController.view.frame;
+        CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
+                                 { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
+        self.menuBottomAdornmentView.frame = frame;
+    }
 }
 
 - (void)setFrame:(CGRect)frame
@@ -279,8 +293,8 @@ typedef struct
             _menuInteraction.velocity = 0.0f;
             _menuInteraction.minMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
             _menuInteraction.maxMenuHeight = self.navigationBarHeight;
-            _menuInteraction.minAdornmentHeight = 54;
-            _menuInteraction.maxAdornmentHeight = 818;
+            _menuInteraction.minAdornmentHeight = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
+            _menuInteraction.maxAdornmentHeight = MIN(self.menuController.pullNavigationMenuHeight + self.navigationBarHeight, self.availableHeight);
 
             [recognizer setTranslation:CGPointZero inView:self];
 
@@ -480,6 +494,8 @@ typedef struct
 {
     if(self.menuOpen == NO)
     {
+        [self centerViewsToOrientation];
+
         self.tabButton.tuckedTab = YES;
         [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
 
