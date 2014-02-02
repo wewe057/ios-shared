@@ -535,7 +535,9 @@ typedef struct
 
 - (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
 {
+    self.menuContainer.hidden = YES;
     [self collapseMenu];
+    [self.tabButton setNeedsDisplay];
 }
 
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion
