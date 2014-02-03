@@ -41,8 +41,12 @@
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers
 {
     @strongify(self.tableView, strongTableView);
+    
+    [self p_sendSectionDidUnload:self.sectionControllers];
 
     self.sectionControllers = sectionControllers;
+    
+    [self p_sendSectionDidLoad:self.sectionControllers];
     
       // Force caching of our flags and the table view's flags
     [self p_updateFlags];
@@ -416,5 +420,29 @@
         
      }
 }
+
+- (void)p_sendSectionDidLoad:(NSArray *)sectionControllers
+{
+    for (id sectionController in sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionDidLoad)])
+        {
+            [sectionController sectionDidLoad];
+        }
+    }
+}
+
+- (void)p_sendSectionDidUnload:(NSArray *)sectionControllers
+{
+    for (id sectionController in sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionDidUnload)])
+        {
+            [sectionController sectionDidUnload];
+        }
+    }
+}
+
+
 
 @end

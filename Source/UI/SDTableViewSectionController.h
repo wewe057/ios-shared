@@ -123,6 +123,11 @@
 // Editing support
 - (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
 - (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
+
+@optional
+// Section Lifecycle support
+- (void)sectionDidLoad;
+- (void)sectionDidUnload;
 @end
 
 //__________________________________________________________________________
