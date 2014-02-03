@@ -164,7 +164,7 @@ typedef struct
             self.menuBackgroundEffectsView = [[UIView alloc] initWithFrame:self.menuContainer.bounds];
             self.menuBackgroundEffectsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuBackgroundEffectsView.clipsToBounds = YES;
-            self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+            self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
             self.menuBackgroundEffectsView.opaque = NO;
             self.menuBackgroundEffectsView.tag = 5;
         }
@@ -300,7 +300,8 @@ typedef struct
 
             [recognizer setTranslation:CGPointZero inView:self];
 
-            self.menuContainer.hidden = NO;
+            [self showMenuContainer];
+            [self showBackgroundEffectWithAnimation:YES completion:nil];
             break;
         }
 
@@ -419,16 +420,24 @@ typedef struct
                 if(_menuInteraction.velocity < 0)
                 {
                     if(self.menuController.view.frame.origin.y < panArea * 0.66f)
-                        [self collapseMenu];
+                    {
+                        [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                    }
                     else
+                    {
                         [self expandMenu];
+                    }
                 }
                 else
                 {
                     if(self.menuController.view.frame.origin.y < panArea * 0.33f)
-                        [self collapseMenu];
+                    {
+                        [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                    }
                     else
+                    {
                         [self expandMenu];
+                    }
                 }
             }
             else
@@ -436,9 +445,13 @@ typedef struct
                 // Fast drag
                 
                 if(_menuInteraction.velocity < 0)
-                    [self collapseMenu];
+                {
+                    [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                }
                 else
+                {
                     [self expandMenu];
+                }
             }
             
             // Falling through on purpose...
@@ -461,7 +474,6 @@ typedef struct
             {
                 self.tabButton.tuckedTab = NO;
                 [self.tabButton setNeedsDisplay];
-                self.menuContainer.hidden = YES;
             }
             break;
         }
@@ -477,7 +489,7 @@ typedef struct
         self.animating = YES;
 
         [self.superview insertSubview:self.menuContainer belowSubview:self];
-        self.menuContainer.hidden = NO;
+        [self showMenuContainer];
 
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
@@ -485,17 +497,17 @@ typedef struct
                 [self collapseMenu];
             else
                 [self expandMenu];
-         }
-         completion:^(BOOL finished)
-         {
-             self.animating = NO;
+        }
+        completion:^(BOOL finished)
+        {
+            self.animating = NO;
 
-             [self.tabButton setNeedsDisplay];
-             self.menuContainer.hidden = !self.menuOpen;
+            [self.tabButton setNeedsDisplay];
+            self.menuContainer.hidden = !self.menuOpen;
 
-             if(completion)
-                 completion();
-         }];
+            if(completion)
+                completion();
+        }];
     }
     else
     {
@@ -508,6 +520,8 @@ typedef struct
 - (void)expandMenu
 {
     [self centerViewsToOrientation];
+
+    [self showBackgroundEffectWithAnimation:NO completion:nil];
 
     self.tabButton.tuckedTab = YES;
     [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
@@ -523,15 +537,72 @@ typedef struct
 
 - (void)collapseMenu
 {
-    self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
+    [self collapseMenuWithCompletion:nil];
+}
 
+- (void)collapseMenuWithCompletion:(void (^)(void))completion
+{
+    [self hideBackgroundEffectWithAnimation:!self.animating completion:completion];
+    
+    self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
+    
     CGFloat adornmentPositionY = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
     CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
-
+    
     self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
     self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
     
     self.menuOpen = NO;
+}
+
+- (void)showMenuContainer
+{
+    self.menuContainer.hidden = NO;
+}
+
+- (void)hideMenuContainer
+{
+    self.menuContainer.hidden = YES;
+}
+
+- (void)showBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
+{
+    if(animate)
+    {
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        {
+            self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        }
+        completion:^(BOOL finished)
+        {
+            if(completion)
+                completion();
+        }];
+    }
+    else
+    {
+        self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+    }
+}
+
+- (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
+{
+    if(animate)
+    {
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        {
+             self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+        }
+        completion:^(BOOL finished)
+        {
+            if(completion)
+                completion();
+        }];
+    }
+    else
+    {
+        self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+    }
 }
 
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
@@ -544,7 +615,7 @@ typedef struct
 
 - (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
 {
-    self.menuContainer.hidden = YES;
+    [self hideMenuContainer];
     [self collapseMenu];
     [self.tabButton setNeedsDisplay];
 }
