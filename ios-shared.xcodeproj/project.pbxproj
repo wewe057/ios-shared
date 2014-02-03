@@ -163,12 +163,6 @@
 		E205782018872F2600A1BA81 /* SDTableViewSectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781818872F2600A1BA81 /* SDTableViewSectionController.m */; };
 		E205784E1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */; };
 		E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */; };
-		E21F097A189704A2009A4014 /* CAAnimation+SDIdentifier.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F096E189704A2009A4014 /* CAAnimation+SDIdentifier.m */; };
-		E21F097B189704A2009A4014 /* CALayer+SDConvenienceAnimations.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0970189704A2009A4014 /* CALayer+SDConvenienceAnimations.m */; };
-		E21F097C189704A2009A4014 /* NSObject+SDBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0972189704A2009A4014 /* NSObject+SDBlocks.m */; };
-		E21F097D189704A2009A4014 /* SDAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0975189704A2009A4014 /* SDAnimation.m */; };
-		E21F097E189704A2009A4014 /* SDLayerAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0977189704A2009A4014 /* SDLayerAnimator.m */; };
-		E21F097F189704A2009A4014 /* SDSequentialAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0979189704A2009A4014 /* SDSequentialAnimation.m */; };
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
 		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
 		E28923B4189970CB009C78CA /* SDAutolayoutStackView.m in Sources */ = {isa = PBXBuildFile; fileRef = E28923B3189970CB009C78CA /* SDAutolayoutStackView.m */; };
@@ -388,19 +382,6 @@
 		E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E21C0F43187B3F39001CA469 /* SDPullNavigationAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationAutomation.h; sourceTree = "<group>"; };
 		E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationAutomation.m; sourceTree = "<group>"; };
-		E21F096D189704A2009A4014 /* CAAnimation+SDIdentifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CAAnimation+SDIdentifier.h"; sourceTree = "<group>"; };
-		E21F096E189704A2009A4014 /* CAAnimation+SDIdentifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CAAnimation+SDIdentifier.m"; sourceTree = "<group>"; };
-		E21F096F189704A2009A4014 /* CALayer+SDConvenienceAnimations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CALayer+SDConvenienceAnimations.h"; sourceTree = "<group>"; };
-		E21F0970189704A2009A4014 /* CALayer+SDConvenienceAnimations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CALayer+SDConvenienceAnimations.m"; sourceTree = "<group>"; };
-		E21F0971189704A2009A4014 /* NSObject+SDBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SDBlocks.h"; sourceTree = "<group>"; };
-		E21F0972189704A2009A4014 /* NSObject+SDBlocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SDBlocks.m"; sourceTree = "<group>"; };
-		E21F0973189704A2009A4014 /* SDAnimating.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAnimating.h; sourceTree = "<group>"; };
-		E21F0974189704A2009A4014 /* SDAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAnimation.h; sourceTree = "<group>"; };
-		E21F0975189704A2009A4014 /* SDAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAnimation.m; sourceTree = "<group>"; };
-		E21F0976189704A2009A4014 /* SDLayerAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLayerAnimator.h; sourceTree = "<group>"; };
-		E21F0977189704A2009A4014 /* SDLayerAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLayerAnimator.m; sourceTree = "<group>"; };
-		E21F0978189704A2009A4014 /* SDSequentialAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDSequentialAnimation.h; sourceTree = "<group>"; };
-		E21F0979189704A2009A4014 /* SDSequentialAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDSequentialAnimation.m; sourceTree = "<group>"; };
 		E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E28923B2189970CB009C78CA /* SDAutolayoutStackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAutolayoutStackView.h; sourceTree = "<group>"; };
@@ -604,7 +585,6 @@
 		CA0E771A18284DD500B4398F /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				E21F096C189704A2009A4014 /* Animation */,
 				CA0E771B18284DD500B4398F /* NSObject+SDExtensions.h */,
 				CA0E771C18284DD500B4398F /* NSObject+SDExtensions.m */,
 				CA0E771D18284DD500B4398F /* SDAlertView.h */,
@@ -802,26 +782,6 @@
 			path = SDQuantityEditView;
 			sourceTree = "<group>";
 		};
-		E21F096C189704A2009A4014 /* Animation */ = {
-			isa = PBXGroup;
-			children = (
-				E21F096D189704A2009A4014 /* CAAnimation+SDIdentifier.h */,
-				E21F096E189704A2009A4014 /* CAAnimation+SDIdentifier.m */,
-				E21F096F189704A2009A4014 /* CALayer+SDConvenienceAnimations.h */,
-				E21F0970189704A2009A4014 /* CALayer+SDConvenienceAnimations.m */,
-				E21F0971189704A2009A4014 /* NSObject+SDBlocks.h */,
-				E21F0972189704A2009A4014 /* NSObject+SDBlocks.m */,
-				E21F0973189704A2009A4014 /* SDAnimating.h */,
-				E21F0974189704A2009A4014 /* SDAnimation.h */,
-				E21F0975189704A2009A4014 /* SDAnimation.m */,
-				E21F0976189704A2009A4014 /* SDLayerAnimator.h */,
-				E21F0977189704A2009A4014 /* SDLayerAnimator.m */,
-				E21F0978189704A2009A4014 /* SDSequentialAnimation.h */,
-				E21F0979189704A2009A4014 /* SDSequentialAnimation.m */,
-			);
-			path = Animation;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -998,7 +958,6 @@
 				CA0E77D818284DD600B4398F /* SDURLConnection.m in Sources */,
 				CA0E77D618284DD600B4398F /* SDMockService.m in Sources */,
 				CA0E778318284DD600B4398F /* SDModelObject.m in Sources */,
-				E21F097E189704A2009A4014 /* SDLayerAnimator.m in Sources */,
 				CA0E776B18284DD600B4398F /* NSArray+SDExtensions.m in Sources */,
 				CA0E77B818284DD600B4398F /* UIActivityIndicatorView+SDExtensions.m in Sources */,
 				CA0E778118284DD600B4398F /* SDDataMap.m in Sources */,
@@ -1038,13 +997,11 @@
 				E205781C18872F2600A1BA81 /* SDQuantityEditViewBehavior.m in Sources */,
 				E2DF06921891A1A900BA7021 /* SDFormFieldContainer.m in Sources */,
 				E2C8A2211853E660000DD265 /* SDPullNavigationManager.m in Sources */,
-				E21F097D189704A2009A4014 /* SDAnimation.m in Sources */,
 				CA0E77C218284DD600B4398F /* UINavigationController+SDExtensions.m in Sources */,
 				E205781D18872F2600A1BA81 /* SDQuantityView.m in Sources */,
 				CA0E77A518284DD600B4398F /* SDNumberTextField.m in Sources */,
 				E2C8A21F1853E660000DD265 /* SDPullNavigationBarTabButton.m in Sources */,
 				CA0E77CE18284DD600B4398F /* NSURLCache+SDExtensions.m in Sources */,
-				E21F097C189704A2009A4014 /* NSObject+SDBlocks.m in Sources */,
 				CA0E77CA18284DD600B4398F /* NSCachedURLResponse+LeakFix.m in Sources */,
 				CA0E777918284DD600B4398F /* NSRunLoop+SDExtensions.m in Sources */,
 				CA0E779518284DD600B4398F /* NSObject+SDExtensions.m in Sources */,
@@ -1057,7 +1014,6 @@
 				CA0E778918284DD600B4398F /* UIDevice+machine.m in Sources */,
 				E2C8A21D1853E660000DD265 /* SDPullNavigationBarBackground.m in Sources */,
 				CA0E777118284DD600B4398F /* NSDictionary+SDExtensions.m in Sources */,
-				E21F097A189704A2009A4014 /* CAAnimation+SDIdentifier.m in Sources */,
 				CA0E778718284DD600B4398F /* SDTimer.m in Sources */,
 				CA0E77DE18284DD600B4398F /* UIImageView+SDExtensions.m in Sources */,
 				E205781E18872F2600A1BA81 /* UIView+PaintCode.m in Sources */,
@@ -1071,10 +1027,8 @@
 				2008D37A188DAA9700255BC4 /* SDApplication.m in Sources */,
 				CA0E77A318284DD600B4398F /* SDLabel.m in Sources */,
 				CA0E77C418284DD600B4398F /* UIScreen+SDExtensions.m in Sources */,
-				E21F097B189704A2009A4014 /* CALayer+SDConvenienceAnimations.m in Sources */,
 				CA0E779718284DD600B4398F /* SDAlertView.m in Sources */,
 				CA0E779318284DD600B4398F /* SDABTesting.m in Sources */,
-				E21F097F189704A2009A4014 /* SDSequentialAnimation.m in Sources */,
 				CA0E77A718284DD600B4398F /* SDPagingView.m in Sources */,
 				E2DF06931891A1A900BA7021 /* SDHitButton.m in Sources */,
 				E205781A18872F2600A1BA81 /* SDPaintCodeButton.m in Sources */,
