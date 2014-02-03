@@ -321,35 +321,39 @@ typedef struct
         {
             _menuInteraction.velocity = [recognizer velocityInView:self].y;
 
-            if(fabs(_menuInteraction.velocity) < 100.0f)
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
             {
-                // Slow drag
-
-                CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
-                if(_menuInteraction.velocity < 0)
+                if(fabs(_menuInteraction.velocity) < 100.0f)
                 {
-                    if(self.menuController.view.frame.origin.y < panArea * 0.66f)
-                        [self expandMenu];
+                    // Slow drag
+
+                    CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                    if(_menuInteraction.velocity < 0)
+                    {
+                        if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                            [self expandMenu];
+                        else
+                            [self collapseMenu];
+                    }
                     else
-                        [self collapseMenu];
+                    {
+                        if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                            [self expandMenu];
+                        else
+                            [self collapseMenu];
+                    }
                 }
                 else
                 {
-                    if(self.menuController.view.frame.origin.y < panArea * 0.33f)
-                        [self expandMenu];
-                    else
+                    // Fast drag
+
+                    if(_menuInteraction.velocity < 0)
                         [self collapseMenu];
+                    else
+                        [self expandMenu];
                 }
             }
-            else
-            {
-                // Fast drag
-
-                if(_menuInteraction.velocity < 0)
-                    [self collapseMenu];
-                else
-                    [self expandMenu];
-            }
+            completion:^(BOOL finished) {}];
 
             // Falling through on purpose...
         }
@@ -358,14 +362,7 @@ typedef struct
         case UIGestureRecognizerStateFailed:
         default:
         {
-            _menuInteraction.initialTouchPoint = CGPointZero;
-            _menuInteraction.currentTouchPoint = CGPointZero;
             _menuInteraction.isInteracting = NO;
-            _menuInteraction.velocity = 0.0f;
-            _menuInteraction.minMenuHeight = 0.0f;
-            _menuInteraction.maxMenuHeight = 0.0f;
-            _menuInteraction.minAdornmentHeight = 0.0f;
-            _menuInteraction.maxAdornmentHeight = 0.0f;
             break;
         }
     }
@@ -411,26 +408,42 @@ typedef struct
         case UIGestureRecognizerStateEnded:
         {
             _menuInteraction.velocity = [recognizer velocityInView:self].y;
-            
-            if(fabs(_menuInteraction.velocity) < 100.0f)
+
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
             {
-                // Slow drag
-                
-                CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
-                if(_menuInteraction.velocity < 0)
+                if(fabs(_menuInteraction.velocity) < 100.0f)
                 {
-                    if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                    // Slow drag
+                    
+                    CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                    if(_menuInteraction.velocity < 0)
                     {
-                        [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                        if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                        {
+                            [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                        }
+                        else
+                        {
+                            [self expandMenu];
+                        }
                     }
                     else
                     {
-                        [self expandMenu];
+                        if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                        {
+                            [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                        }
+                        else
+                        {
+                            [self expandMenu];
+                        }
                     }
                 }
                 else
                 {
-                    if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                    // Fast drag
+                    
+                    if(_menuInteraction.velocity < 0)
                     {
                         [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
                     }
@@ -440,20 +453,15 @@ typedef struct
                     }
                 }
             }
-            else
+            completion:^(BOOL finished)
             {
-                // Fast drag
-                
-                if(_menuInteraction.velocity < 0)
+                if(self.menuOpen == NO)
                 {
-                    [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                    self.tabButton.tuckedTab = NO;
+                    [self.tabButton setNeedsDisplay];
                 }
-                else
-                {
-                    [self expandMenu];
-                }
-            }
-            
+            }];
+
             // Falling through on purpose...
         }
             
@@ -461,20 +469,7 @@ typedef struct
         case UIGestureRecognizerStateFailed:
         default:
         {
-            _menuInteraction.initialTouchPoint = CGPointZero;
-            _menuInteraction.currentTouchPoint = CGPointZero;
             _menuInteraction.isInteracting = NO;
-            _menuInteraction.velocity = 0.0f;
-            _menuInteraction.minMenuHeight = 0.0f;
-            _menuInteraction.maxMenuHeight = 0.0f;
-            _menuInteraction.minAdornmentHeight = 0.0f;
-            _menuInteraction.maxAdornmentHeight = 0.0f;
-
-            if(self.menuOpen == NO)
-            {
-                self.tabButton.tuckedTab = NO;
-                [self.tabButton setNeedsDisplay];
-            }
             break;
         }
     }
@@ -491,7 +486,7 @@ typedef struct
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         [self showMenuContainer];
 
-        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
             if(self.menuOpen)
                 [self collapseMenu];
@@ -548,10 +543,10 @@ typedef struct
     
     CGFloat adornmentPositionY = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
     CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
-    
+
     self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
     self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
-    
+
     self.menuOpen = NO;
 }
 
