@@ -29,12 +29,15 @@
     return self;
 }
 
-- (void)awakeFromNib
+- (id)initWithCoder:(NSCoder *)aDecoder
 {
-    [super awakeFromNib];
-    self.keyboardType = UIKeyboardTypeNumberPad;
-    self.format = @"#";
-    [self addTarget:self action:@selector(formatInput:) forControlEvents:UIControlEventEditingChanged];
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.keyboardType = UIKeyboardTypeNumberPad;
+        self.format = @"#";
+        [self addTarget:self action:@selector(formatInput:) forControlEvents:UIControlEventEditingChanged];
+    }
+    return self;
 }
 
 - (void)configureView
@@ -72,28 +75,27 @@
 
 - (void)deleteBackward
 {
-    NSInteger decimalPosition = -1;
+    NSInteger decimalPosition = NSIntegerMax;
     for (NSInteger i = (NSInteger)self.text.length - 1; i > 0; i--)
     {
         NSString *c = [self.text substringWithRange:NSMakeRange((NSUInteger)i - 1, 1)];
-
-        BOOL valid;
+        
         NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
         NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:c];
-        valid = [alphaNums isSupersetOfSet:inStringSet];
-
+        BOOL valid = [alphaNums isSupersetOfSet:inStringSet];
+        
         if (valid)
         {
             decimalPosition = i;
             break;
         }
     }
-
-    if (decimalPosition == -1)
+    
+    if (decimalPosition == NSIntegerMax)
         self.text = @"";
     else
-        self.text = [self.text substringWithRange:NSMakeRange(0, decimalPosition)];
-
+        self.text = [self.text substringWithRange:NSMakeRange(0, (NSUInteger)decimalPosition)];
+    
     self.currentFormattedText = self.text;
     [self sendActionsForControlEvents:UIControlEventEditingChanged];
 }

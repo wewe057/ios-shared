@@ -1,9 +1,10 @@
 //
 //  SDPullNavigationBarTabButton.h
-//  walmart
+//  ios-shared
+
 //
 //  Created by Brandon Sneed on 11/06/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,9 +13,13 @@
 
 @interface SDPullNavigationBarTabButton : UIView
 
-@property (nonatomic, strong) UIImage* tabImage;
 @property (nonatomic, assign) BOOL tuckedTab;
 
 - (id)initWithNavigationBar:(SDPullNavigationBar*)navigationBar;
 
+@end
+
+#pragma mark - Adornment view (derived for ease of debugging and gesture handling)
+
+@interface SDPullNavigationBarAdornmentView : UIImageView
 @end

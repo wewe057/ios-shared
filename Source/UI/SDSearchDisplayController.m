@@ -124,11 +124,17 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 {
     if (string && [string length] > 0)
     {
-        if ([searchHistory count] == 0)
+        if ([searchHistory count] == 0) {
             [searchHistory addObject:string];
-        else
-			if ([searchHistory indexOfObject:string] == NSNotFound)
+        } else {
+			if ([searchHistory indexOfObject:string] == NSNotFound) {
 				[searchHistory insertObject:string atIndex:0];
+            } else {
+                NSUInteger itemIndex = [searchHistory indexOfObject:string];
+                [searchHistory removeObjectAtIndex:itemIndex];
+                [searchHistory insertObject:string atIndex:0];
+            }
+        }
     }
     
     if ([searchHistory count] >= self.maximumCount)
@@ -224,8 +230,8 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         // set the searchbar text here.
         if (indexPath.row < [searchHistory count])
 		{
-            self.searchBar.text = [searchHistory objectAtIndex:indexPath.row];
-            self.selectedSearchItem = [searchHistory objectAtIndex:indexPath.row];
+            self.searchBar.text = [searchHistory objectAtIndex:(NSUInteger)indexPath.row];
+            self.selectedSearchItem = [searchHistory objectAtIndex:(NSUInteger)indexPath.row];
         }
 		else
 		{
@@ -305,7 +311,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
         
         if (indexPath.row < [searchHistory count])
-			cell.textLabel.text = [searchHistory objectAtIndex:indexPath.row];
+			cell.textLabel.text = [searchHistory objectAtIndex:(NSUInteger)indexPath.row];
 		else if(showsClearRecentSearchResultsRow)
 			cell.textLabel.text = @"Clear All Recent Searches";
 		else

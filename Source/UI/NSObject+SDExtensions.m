@@ -73,6 +73,10 @@
             if (i == components.count - 1)
                 exists = YES;
         }
+        else if ([self isKindOfClass:[NSDictionary class]])
+        {
+            exists = [self valueForKeyPath:keyPath] != nil;
+        }
         else
             break;
     }

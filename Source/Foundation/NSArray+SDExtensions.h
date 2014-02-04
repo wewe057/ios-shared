@@ -64,4 +64,9 @@
  */
 - (NSArray *)deepCopy;
 
+/**
+ Returns an array with the contents of the provided array of arrays.
+ */
++ (NSArray *)arrayFromArrays:(NSArray*)arrayOfArrays;
+
 @end

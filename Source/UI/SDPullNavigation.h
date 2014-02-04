@@ -1,6 +1,6 @@
 //
 //  SDPullNavigation.h
-//  walmart
+//  ios-shared
 //
 //  Purpose:
 //      - One navigation look functionality for all platforms with ability to customize branding.
@@ -12,7 +12,7 @@
 //      - Handles a nav override for the back button that limits the button to <
 //
 //  Created by Steven Woolgar on 11/26/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

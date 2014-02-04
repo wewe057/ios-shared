@@ -1,9 +1,10 @@
 //
 //  SDPullNavigationManager.m
-//  walmart
+//  ios-shared
+
 //
 //  Created by Steven Woolgar on 12/05/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import "SDPullNavigationManager.h"
@@ -115,13 +116,31 @@
        didShowViewController:(UIViewController*)viewController
                     animated:(BOOL)animated
 {
-    SDLog(@"navigationController:didShowViewController:animated:");
-    SDLog(@"   viewController = %@", viewController);
+//    SDLog(@"navigationController:didShowViewController:animated:");
+//    SDLog(@"   viewController = %@", viewController);
 }
 
 - (void)statusBarDidChangeRotationNotification:(NSNotification*)notification
 {
     // TODO: We will need to update the size of the left and right global nav controls areas.
+}
+
+#pragma mark - Navigation Helpers:
+
+- (BOOL)navigateToTopLevelController:(Class)topLevelViewControllerClass
+{
+    UINavigationController* foundNavController = [self.globalPullNavController navigationControllerForViewControllerClass:topLevelViewControllerClass];
+
+    if(foundNavController)
+        self.globalPullNavController.selectedViewController = foundNavController;
+
+    return foundNavController != nil;
+}
+
+- (void)navigateToTopLevelController:(Class)topLevelViewControllerClass andPopToRootWithAnimation:(BOOL)animate
+{
+    if([self navigateToTopLevelController:topLevelViewControllerClass])
+        [(UINavigationController*)self.globalPullNavController.selectedViewController popToRootViewControllerAnimated:animate];
 }
 
 #pragma mark - Navigation Automation
