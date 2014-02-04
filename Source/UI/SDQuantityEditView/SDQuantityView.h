@@ -32,7 +32,7 @@
  */
 @interface SDQuantityView : UIView
 
-@property (nonatomic, strong) UILabel *quantityLabel;
+@property (nonatomic, strong, readonly) UILabel *quantityLabel;
 @property (nonatomic, strong, readonly) SDCircularPlusButton *incrementButton;
 @property (nonatomic, strong, readonly) SDCircularMinusButton *decrementButton;
 
@@ -41,6 +41,12 @@
  not called "backgroundColor" since that already exists in UIView.
  */
 @property (nonatomic, strong) UIColor *fillColor;
+
+/**
+  Adds and image to the right of the qty label.
+ Calling this method will cause the contraints to be updated
+ */
+- (void)setRightImage:(UIImage *)image;
 
 + (instancetype)quantityView;
 
