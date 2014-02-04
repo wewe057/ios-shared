@@ -231,7 +231,7 @@ static const CGFloat kCircularButtonHeight = 29.0f;
 static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 @interface SDQuantityView()
-@property (nonatomic, assign) BOOL setupContraints;
+@property (nonatomic, assign) BOOL hasSetupConstraints;
 @property (nonatomic, strong, readwrite) SDCircularPlusButton *incrementButton;
 @property (nonatomic, strong, readwrite) SDCircularMinusButton *decrementButton;
 @property (nonatomic, strong, readwrite) UIImageView *rightImageView;
@@ -286,7 +286,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 - (void)setRightImage:(UIImage *)image
 {
     self.rightImageView.image = image;
-    self.setupContraints = NO;
+    self.hasSetupConstraints = NO;
     [self setNeedsUpdateConstraints];
 }
 
@@ -303,7 +303,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)updateConstraints
 {
-    if (self.setupContraints == NO)
+    if (self.hasSetupConstraints == NO)
     {
         [self removeConstraints:[self constraints]];
         
@@ -322,7 +322,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.quantityLabel attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:1.0f]];
         
-        self.setupContraints = YES;
+        self.hasSetupConstraints = YES;
     }
     [super updateConstraints];
 }
