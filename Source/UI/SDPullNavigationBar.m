@@ -17,8 +17,6 @@
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
 
-static NSString* kSDRevealControllerFrontViewTranslationAnimationKey = @"frontViewTranslation";
-
 typedef struct
 {
     CGPoint initialTouchPoint;
