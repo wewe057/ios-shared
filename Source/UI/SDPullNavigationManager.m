@@ -116,8 +116,8 @@
        didShowViewController:(UIViewController*)viewController
                     animated:(BOOL)animated
 {
-    SDLog(@"navigationController:didShowViewController:animated:");
-    SDLog(@"   viewController = %@", viewController);
+//    SDLog(@"navigationController:didShowViewController:animated:");
+//    SDLog(@"   viewController = %@", viewController);
 }
 
 - (void)statusBarDidChangeRotationNotification:(NSNotification*)notification
