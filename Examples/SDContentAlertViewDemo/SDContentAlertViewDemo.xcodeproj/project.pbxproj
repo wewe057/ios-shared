@@ -212,7 +212,7 @@
 		CA0E78F218285F6200B4398F /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		CA0E78F518285FBA00B4398F /* NSCachedURLResponse+LeakFix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCachedURLResponse+LeakFix.h"; sourceTree = "<group>"; };
 		CA0E78F618285FBA00B4398F /* NSCachedURLResponse+LeakFix.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCachedURLResponse+LeakFix.m"; sourceTree = "<group>"; };
-		CA0E78F718285FBA00B4398F /* NSURL+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+SDExtensions.h"; sourceTree = "<group>"; };
+		CA0E78F718285FBA00B4398F /* NSURL+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+SDExtensions.h"; path = "../../Source/WebServices/NSURL+SDExtensions.h"; sourceTree = SOURCE_ROOT; };
 		CA0E78F818285FBA00B4398F /* NSURL+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+SDExtensions.m"; sourceTree = "<group>"; };
 		CA0E78F918285FBA00B4398F /* NSURLCache+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLCache+SDExtensions.h"; sourceTree = "<group>"; };
 		CA0E78FA18285FBA00B4398F /* NSURLCache+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURLCache+SDExtensions.m"; sourceTree = "<group>"; };

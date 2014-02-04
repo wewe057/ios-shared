@@ -1,9 +1,9 @@
 //
 //  SDPullNavigationBar.h
-//  walmart
+//  ios-shared
 //
 //  Created by Brandon Sneed on 08/06/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -20,7 +20,12 @@
 @end
 
 @protocol SDPullNavigationBarDelegate <NSObject>
+@required
 @property (nonatomic, weak) SDPullNavigationBar* pullNavigationBarDelegate;
+@property (nonatomic, assign, readonly) CGFloat pullNavigationMenuHeight;
+
+@optional
+@property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidth;    // Defaults to 320.0f
 @end
 
 @interface SDPullNavigationBar : UINavigationBar

@@ -8,7 +8,7 @@
 #import <UIKit/UIKit.h>
 
 typedef void(^SDPickerViewDateCompletionBlock)(BOOL canceled, NSDate *selectedDate);
-typedef void(^SDPickerViewItemSelectionCompletionBlock)(BOOL canceled, int selectedItemIndex, NSString *selectedItem);
+typedef void(^SDPickerViewItemSelectionCompletionBlock)(BOOL canceled, NSInteger selectedItemIndex, NSString *selectedItem);
 
 @interface SDPickerView : UIButton
 

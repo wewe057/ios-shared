@@ -7,7 +7,7 @@
 //  Based on PXAlertView by Alex Jarvis under the MIT license.
 //  Copyright (c) 2013 Panaxiom Ltd. All rights reserved.
 
-@import UIKit;
+#import <UIKit/UIKit.h>
 
 typedef void (^SDContentAlertViewCompletionBlock)(BOOL cancelled);
 

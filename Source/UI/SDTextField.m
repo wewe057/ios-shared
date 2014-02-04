@@ -234,9 +234,18 @@
         else
         {
             // handle ios7.
-            _prevItem = [[UIBarButtonItem alloc] initWithTitle:@"❮" style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousTextField:)];
-            _nextItem = [[UIBarButtonItem alloc] initWithTitle:@"❯" style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextTextField:)];
-            [_accessoryToolbar setItems:@[_prevItem, _nextItem, spaceItem, _doneItem]];
+            _prevItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❮  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousTextField:)];
+            _nextItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❯  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextTextField:)];
+            NSArray *toolbarItems;
+            if (self.previousTextField || self.nextTextField)
+            {
+                toolbarItems = @[_prevItem, _nextItem, spaceItem, _doneItem];
+            }
+            else
+            {
+                toolbarItems = @[spaceItem,_doneItem];
+            }
+            [_accessoryToolbar setItems:toolbarItems];
         }
     }
 
@@ -366,6 +375,18 @@
     @strongify(_nextTextField, localTextField);
     if (localTextField)
         self.inputAccessoryView = [self accessoryToolbar];
+}
+
+- (void)setAlwaysShowToolbar:(BOOL)alwaysShowToolbar
+{
+    if (_alwaysShowToolbar != alwaysShowToolbar)
+    {
+        _alwaysShowToolbar = alwaysShowToolbar;
+        if (_alwaysShowToolbar)
+        {
+            self.inputAccessoryView = [self accessoryToolbar];
+        }
+    }
 }
 
 #pragma mark - Field validation
