@@ -126,7 +126,6 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
         UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
         _menuController = [menuStoryBoard instantiateInitialViewController];
         _menuController.view.clipsToBounds = YES;
-        _menuController.view.opaque = YES;
         _menuController.view.tag = 5;
         _menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
         _menuController.pullNavigationBarDelegate = self;
