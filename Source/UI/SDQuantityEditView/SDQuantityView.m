@@ -280,11 +280,18 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     _rightImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [_rightImageView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [_rightImageView setContentCompressionResistancePriority:0 forAxis:UILayoutConstraintAxisHorizontal];
-    [self addSubview:_rightImageView];
 }
 
 - (void)setRightImage:(UIImage *)image
 {
+    if (image && [self.rightImageView superview] == nil)
+    {
+        [self addSubview:self.rightImageView];
+    }
+    else if (image == nil && [self.rightImageView superview] != nil)
+    {
+        [self.rightImageView removeFromSuperview];
+    }
     self.rightImageView.image = image;
     self.hasSetupConstraints = NO;
     [self setNeedsUpdateConstraints];
