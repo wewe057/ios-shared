@@ -39,6 +39,26 @@
     return self;
 }
 
+- (void)reloadWithSectionControllers:(NSArray *)sectionControllers
+{
+    @strongify(self.tableView, strongTableView);
+    
+    [self p_sendSectionDidUnload:self.sectionControllers];
+
+    self.sectionControllers = sectionControllers;
+    
+    [self p_sendSectionDidLoad:self.sectionControllers];
+    
+      // Force caching of our flags and the table view's flags
+    [self p_updateFlags];
+    strongTableView.delegate = nil;
+    strongTableView.dataSource = nil;
+    strongTableView.delegate = self;
+    strongTableView.dataSource = self;
+    
+    [strongTableView reloadData];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -70,27 +90,10 @@
 // This is where we hook to ask our dataSource for the Array of controllers
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    @strongify(self.delegate, delegate);
-    @strongify(self.tableView, strongTableView);
-    NSInteger sectionCount = 0;
+    NSInteger sectionCount;
     
-    if (tableView == strongTableView)
-    {
-        if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
-        {
-            self.sectionControllers = [delegate controllersForTableView:tableView];
-            
-            // Force caching of our flags and the table view's flags
-            [self p_updateFlags];
-            strongTableView.delegate = nil;
-            strongTableView.dataSource = nil;
-            strongTableView.delegate = self;
-            strongTableView.dataSource = self;
-            
-            sectionCount = (NSInteger)self.sectionControllers.count;
-        }
-    }
-    
+    sectionCount = (NSInteger)self.sectionControllers.count;
+
     return sectionCount;
 }
 
@@ -228,12 +231,18 @@
     }
 }
 
+- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    return sectionIndex;
+}
+
 #pragma mark - Height Methods
 
 - (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self indexOfSection:section];
     if (sectionIndex > 0 && sectionIndex != NSNotFound)
     {
         NSRange rangeOfIndexes = NSMakeRange(0, sectionIndex);
@@ -247,7 +256,7 @@
 - (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self indexOfSection:section];
     if ((sectionIndex < (self.sectionControllers.count - 1) && sectionIndex != NSNotFound))
     {
         NSRange rangeOfIndexes = NSMakeRange(sectionIndex + 1, self.sectionControllers.count - sectionIndex - 1);
@@ -392,5 +401,49 @@
         }
     }
 }
+
+- (void)removeSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger index = [self.sectionControllers indexOfObject:section];
+    if (index > 0)
+    {
+        // First change the model of section controllers
+        NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];
+        [newSectionControllers removeObjectAtIndex:index];
+        self.sectionControllers = [newSectionControllers copy];
+
+        // Now nuke the section from the tableview
+        @strongify(self.tableView, tableView);
+        NSIndexSet *setOfSectionsToDelete = [[NSIndexSet alloc] initWithIndex:index];
+        [tableView beginUpdates];
+        [tableView deleteSections:setOfSectionsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [tableView endUpdates];
+        
+     }
+}
+
+- (void)p_sendSectionDidLoad:(NSArray *)sectionControllers
+{
+    for (id sectionController in sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionDidLoad)])
+        {
+            [sectionController sectionDidLoad];
+        }
+    }
+}
+
+- (void)p_sendSectionDidUnload:(NSArray *)sectionControllers
+{
+    for (id sectionController in sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionDidUnload)])
+        {
+            [sectionController sectionDidUnload];
+        }
+    }
+}
+
+
 
 @end
