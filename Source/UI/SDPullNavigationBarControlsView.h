@@ -1,7 +1,6 @@
 //
 //  SDPullNavigationBarControlsView.h
 //  ios-shared
-
 //
 //  This is a simple list of controls that live in the pullnav.
 //

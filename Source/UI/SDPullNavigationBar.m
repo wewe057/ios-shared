@@ -17,8 +17,6 @@
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
 
-static NSString* kSDRevealControllerFrontViewTranslationAnimationKey = @"frontViewTranslation";
-
 typedef struct
 {
     CGPoint initialTouchPoint;
@@ -151,7 +149,6 @@ typedef struct
             self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
                                                        { self.menuWidth, menuHeight } };
             self.menuController.view.clipsToBounds = YES;
-            self.menuController.view.opaque = YES;
             self.menuController.view.tag = 4;
             self.menuController.view.autoresizingMask = 0;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
