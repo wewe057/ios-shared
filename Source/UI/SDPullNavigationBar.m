@@ -206,10 +206,6 @@ typedef struct
 {
     [super layoutSubviews];
 
-    NSInteger index = 0;
-    if(self.subviews.count > 0)
-        index = 1;
-
     CGFloat tabOffset = 8.0f;
 
     CGPoint navBarCenter = self.center;
