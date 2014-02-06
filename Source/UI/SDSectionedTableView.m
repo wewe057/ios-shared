@@ -1,9 +1,10 @@
 //
 //  SDSectionedTableView.m
-//  walmart
+//  ios-shared
+
 //
 //  Created by Steve Riggins & Woolie on 12/31/13.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import "SDSectionedTableView.h"

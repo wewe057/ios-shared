@@ -1,9 +1,10 @@
 //
 //  SDPullNavigationBar.m
-//  walmart
+//  ios-shared
+
 //
 //  Created by Brandon Sneed on 08/06/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import "SDPullNavigationBar.h"
@@ -16,6 +17,18 @@
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
 
+typedef struct
+{
+    CGPoint initialTouchPoint;
+    CGPoint currentTouchPoint;
+    CGFloat maxMenuHeight;
+    CGFloat minMenuHeight;
+    CGFloat maxAdornmentHeight;
+    CGFloat minAdornmentHeight;
+    CGFloat velocity;
+    BOOL    isInteracting;
+} SDMenuControllerInteractionFlags;
+
 @interface SDPullNavigationMenuContainer : UIView   // This custom class used for debugging purposes.
 @end
 
@@ -23,14 +36,19 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
 
 @interface SDPullNavigationBar()<UIGestureRecognizerDelegate>
 
-@property (nonatomic, strong) SDPullNavigationBarBackground* pullBackgroundView;
+@property (nonatomic, strong) SDPullNavigationBarBackground* navbarBackgroundView;
 @property (nonatomic, strong) SDPullNavigationBarTabButton* tabButton;
 @property (nonatomic, strong) SDPullNavigationMenuContainer* menuContainer;
-@property (nonatomic, strong) UIImageView* menuBackgroundEffectsView;
-@property (nonatomic, strong) UIImageView* menuBottomAdornmentView;
+@property (nonatomic, strong) UIView* menuBackgroundEffectsView;
+@property (nonatomic, strong) SDPullNavigationBarAdornmentView* menuBottomAdornmentView;
+@property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
 @property (nonatomic, assign) BOOL animating;
-@property (nonatomic, assign) BOOL tabOpen;
+@property (nonatomic, assign) BOOL menuOpen;
 @property (nonatomic, assign) CGFloat menuWidth;
+@property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
+@property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
+@property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
+@property (nonatomic, assign) BOOL showBottomAdornment;
 
 @end
 
@@ -60,7 +78,11 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
     self = [super initWithFrame:frame];
     if(self != nil)
     {
-        [self commonInit];
+        self.translucent = NO;
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(statusBarWillChangeRotationNotification:)
+                                                     name:UIApplicationWillChangeStatusBarOrientationNotification
+                                                   object:nil];
     }
 
     return self;
@@ -71,106 +93,115 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)commonInit
+// Superview is known, start setting up our subviews.
+- (void)willMoveToSuperview:(UIView*)newSuperview
 {
-    self.translucent = NO;
-
-    // I tagged all of the view to be able to find them quickly when I am viewing the hierarchy in Spark Inspector or Reveal.
+    if(newSuperview)
     {
-        _pullBackgroundView = [[SDPullNavigationBarBackground alloc] init];
-        _pullBackgroundView.autoresizesSubviews = YES;
-        _pullBackgroundView.userInteractionEnabled = NO;
-        _pullBackgroundView.opaque = NO;
-        _pullBackgroundView.backgroundColor = [UIColor clearColor];
-        _pullBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _pullBackgroundView.delegate = (id<SDPullNavigationBarOverlayProtocol>)self;
-        _pullBackgroundView.frame = self.bounds;
-        _pullBackgroundView.tag = 1;
+        // I tagged all of the view to be able to find them quickly when I am viewing the hierarchy in Spark Inspector or Reveal.
+
+        // This is a navBar overlay which we can use to change navBar visuals.
+        {
+            self.navbarBackgroundView = [[SDPullNavigationBarBackground alloc] init];
+            self.navbarBackgroundView.autoresizesSubviews = YES;
+            self.navbarBackgroundView.userInteractionEnabled = NO;
+            self.navbarBackgroundView.opaque = NO;
+            self.navbarBackgroundView.backgroundColor = [UIColor clearColor];
+            self.navbarBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            self.navbarBackgroundView.delegate = (id<SDPullNavigationBarOverlayProtocol>)self;
+            self.navbarBackgroundView.frame = self.bounds;
+            self.navbarBackgroundView.tag = 1;
+        }
+
+        // This is the hit area for showing the pulldown menu, as well as the area (at the bottom) where the nipple is shown.
+        {
+            self.tabButton = [[SDPullNavigationBarTabButton alloc] initWithNavigationBar:self];
+            self.tabButton.tag = 2;
+        }
+
+        // The view that the client's menu lives in.
+        {
+            self.menuContainer = [[SDPullNavigationMenuContainer alloc] initWithFrame:newSuperview.bounds];
+            self.menuContainer.clipsToBounds = YES;
+            self.menuContainer.backgroundColor = [UIColor clearColor];
+            self.menuContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            self.menuContainer.translatesAutoresizingMaskIntoConstraints = YES;
+            self.menuContainer.opaque = NO;
+            self.menuContainer.hidden = NO;
+
+            self.menuContainer.layer.shadowColor = [UIColor blackColor].CGColor;
+            self.menuContainer.layer.shadowOffset = (CGSize){ 0.0f, -3.0f };
+            self.menuContainer.layer.shadowRadius = 3.0f;
+            self.menuContainer.layer.shadowOpacity = 1.0;
+            self.menuContainer.tag = 3;
+        }
+
+        // This is the client's controller for the menu.
+        {
+            UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
+            self.menuController = [menuStoryBoard instantiateInitialViewController];
+
+            self.menuWidth = kDefaultMenuWidth;
+            if([self.menuController respondsToSelector:@selector(pullNavigationMenuWidth)])
+                self.menuWidth = self.menuController.pullNavigationMenuWidth;
+            CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+
+            self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                                       { self.menuWidth, menuHeight } };
+            self.menuController.view.clipsToBounds = YES;
+            self.menuController.view.tag = 4;
+            self.menuController.view.autoresizingMask = 0;
+            self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
+
+            self.menuController.pullNavigationBarDelegate = self;
+        }
+        
+        // View that darkens the views behind and to the side of the menu.
+        {
+            self.menuBackgroundEffectsView = [[UIView alloc] initWithFrame:self.menuContainer.bounds];
+            self.menuBackgroundEffectsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            self.menuBackgroundEffectsView.clipsToBounds = YES;
+            self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+            self.menuBackgroundEffectsView.opaque = NO;
+            self.menuBackgroundEffectsView.tag = 5;
+        }
+
+        // This is the little nubbin' at the bottom of the menu. Don't show this on iPhone, don't show this if client has not set it.
+        if([UIDevice iPad])
+        {
+            UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
+            if(menuAdornmentImage)
+            {
+                self.showBottomAdornment = YES;
+                self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
+
+                CGRect clientMenuFrame = self.menuController.view.frame;
+                CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
+                                         { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
+
+                self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
+                self.menuBottomAdornmentView.clipsToBounds = YES;
+                self.menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
+                self.menuBottomAdornmentView.opaque = YES;
+                self.menuBottomAdornmentView.image = menuAdornmentImage;
+                self.menuBottomAdornmentView.tag = 6;
+            }
+        }
+
+        [self insertSubview:self.navbarBackgroundView atIndex:1];
+        [self addSubview:self.tabButton];
+        [self.menuContainer addSubview:self.menuBackgroundEffectsView];
+        [self.menuContainer addSubview:self.menuController.view];
+        [self.menuContainer addSubview:self.menuBottomAdornmentView];
+        [newSuperview insertSubview:self.menuContainer belowSubview:self];
+
+        [self setupGestureRecognizers];
     }
-
-    {
-        _tabButton = [[SDPullNavigationBarTabButton alloc] initWithNavigationBar:self];
-        _tabButton.tag = 2;
-    }
-
-    [self insertSubview:_pullBackgroundView atIndex:1];
-    [self addSubview:_tabButton];
-
-    {
-        _menuContainer = [[SDPullNavigationMenuContainer alloc] initWithFrame:self.superview.bounds];
-        _menuContainer.clipsToBounds = YES;
-        _menuContainer.backgroundColor = [UIColor clearColor];
-        _menuContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _menuContainer.translatesAutoresizingMaskIntoConstraints = YES;
-        _menuContainer.opaque = NO;
-
-        _menuContainer.layer.shadowColor = [UIColor blackColor].CGColor;
-        _menuContainer.layer.shadowOffset = CGSizeMake(0, -3.0);
-        _menuContainer.layer.shadowRadius = 3.0f;
-        _menuContainer.layer.shadowOpacity = 1.0;
-        _menuContainer.tag = 3;
-    }
-
-    {
-        _menuBackgroundEffectsView = [[UIImageView alloc] initWithFrame:_menuContainer.bounds];
-        _menuBackgroundEffectsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _menuBackgroundEffectsView.clipsToBounds = YES;
-        _menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
-        _menuBackgroundEffectsView.opaque = NO;
-        _menuBackgroundEffectsView.tag = 4;
-        [_menuContainer addSubview:_menuBackgroundEffectsView];
-    }
-
-    {
-        UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
-        _menuController = [menuStoryBoard instantiateInitialViewController];
-        _menuController.view.clipsToBounds = YES;
-        _menuController.view.opaque = YES;
-        _menuController.view.tag = 5;
-        _menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
-        _menuController.pullNavigationBarDelegate = self;
-        [_menuContainer addSubview:_menuController.view];
-        UITapGestureRecognizer* dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)];
-        dismissTapGesture.delegate = self;
-        [_menuContainer addGestureRecognizer:dismissTapGesture];
-    }
-
-    UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
-    if(menuAdornmentImage)
-    {
-        _menuBottomAdornmentView = [[UIImageView alloc] initWithFrame:(CGRect){CGPointZero, { _menuController.view.bounds.size.width, menuAdornmentImage.size.height }}];
-        _menuBottomAdornmentView.clipsToBounds = YES;
-        _menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
-        _menuBottomAdornmentView.opaque = YES;
-        _menuBottomAdornmentView.image = menuAdornmentImage;
-        _menuBottomAdornmentView.tag = 6;
-        [_menuContainer addSubview:_menuBottomAdornmentView];
-    }
-
-    _menuWidth = kDefaultMenuWidth;
-    if([_menuController respondsToSelector:@selector(pullNavigationMenuWidth)])
-        _menuWidth = _menuController.pullNavigationMenuWidth;
-
-    // Setup the starting point for the first opening animation.
-
-    CGRect menuFrame = _menuController.view.frame;
-    menuFrame.size.height = MIN(_menuController.pullNavigationMenuHeight, self.availableHeight);
-    _menuController.view.frame = menuFrame;
-    _menuBottomAdornmentView.frame = (CGRect){{menuFrame.origin.x, menuFrame.origin.y + menuFrame.size.height}, _menuBottomAdornmentView.frame.size};
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(statusBarWillChangeRotationNotification:)
-                                                 name:UIApplicationWillChangeStatusBarOrientationNotification
-                                               object:nil];
 }
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-
-    NSInteger index = 0;
-    if(self.subviews.count > 0)
-        index = 1;
 
     CGFloat tabOffset = 8.0f;
 
@@ -179,28 +210,54 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
     tabFrame.origin.x = (navBarCenter.x - (tabFrame.size.width * 0.5f));
     tabFrame.origin.y = self.bounds.size.height - (tabFrame.size.height - tabOffset);
     self.tabButton.frame = CGRectIntegral(tabFrame);
-
-    [self insertSubview:self.pullBackgroundView atIndex:index];
+    
     [self addSubview:self.tabButton];
+}
 
-    self.menuContainer.frame = self.superview.frame;
+- (void)centerViewsToOrientation
+{
+    CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+    self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                               { self.menuWidth, menuHeight } };
+    if(self.showBottomAdornment)
+    {
+        CGRect clientMenuFrame = self.menuController.view.frame;
+        CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
+                                 { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
+        self.menuBottomAdornmentView.frame = frame;
+    }
 }
 
 - (void)setFrame:(CGRect)frame
 {
     [super setFrame:frame];
-    self.pullBackgroundView.frame = self.bounds;
+    self.navbarBackgroundView.frame = self.bounds;
 }
 
-- (void)drawOverlayRect:(CGRect)rect
+- (void)setupGestureRecognizers
 {
-    // default implementation does nothing.
+    UITapGestureRecognizer* openTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+    [self.tabButton addGestureRecognizer:openTapGesture];
+
+    self.revealPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeRevealPanGesture:)];
+    self.revealPanGestureRecognizer.maximumNumberOfTouches = 1;
+    [self.tabButton addGestureRecognizer:self.revealPanGestureRecognizer];
+
+    self.dismissPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didRecognizeDismissPanGesture:)];
+    self.revealPanGestureRecognizer.maximumNumberOfTouches = 1;
+    [self.menuBottomAdornmentView addGestureRecognizer:self.dismissPanGestureRecognizer];
+
+    UITapGestureRecognizer* dismissTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissTapAction:)];
+    dismissTapGesture.delegate = self;
+    [self.menuContainer addGestureRecognizer:dismissTapGesture];
 }
 
 - (void)tapAction:(id)sender
 {
     [self togglePullMenuWithCompletionBlock:nil];
 }
+
+#pragma mark - Gesture Handling
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch
 {
@@ -209,24 +266,209 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
 
 - (void)dismissTapAction:(UITapGestureRecognizer*)sender
 {
-    if(self.tabOpen)
+    if(self.menuOpen)
         [self dismissPullMenuWithCompletionBlock:nil];
 }
 
+- (void)didRecognizeRevealPanGesture:(UIPanGestureRecognizer*)recognizer
+{
+    switch(recognizer.state)
+    {
+        case UIGestureRecognizerStateBegan:
+        {
+            [self centerViewsToOrientation];
+            
+            self.tabButton.tuckedTab = !self.menuOpen;
+            [self.tabButton setNeedsDisplay];
+
+            [self.superview insertSubview:self.menuContainer belowSubview:self];
+
+            _menuInteraction.initialTouchPoint = [recognizer translationInView:self];
+            _menuInteraction.isInteracting = YES;
+            _menuInteraction.velocity = 0.0f;
+            _menuInteraction.minMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
+            _menuInteraction.maxMenuHeight = self.navigationBarHeight;
+            _menuInteraction.minAdornmentHeight = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
+            _menuInteraction.maxAdornmentHeight = MIN(self.menuController.pullNavigationMenuHeight + self.navigationBarHeight, self.availableHeight);
+
+            [recognizer setTranslation:CGPointZero inView:self];
+
+            [self showMenuContainer];
+            [self showBackgroundEffectWithAnimation:YES completion:nil];
+            break;
+        }
+
+        case UIGestureRecognizerStateChanged:
+        {
+            _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
+
+            CGFloat newY = MIN(_menuInteraction.minMenuHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
+            CGFloat newAdornmentY = MIN(_menuInteraction.minAdornmentHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxAdornmentHeight);
+
+            self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, newAdornmentY }, self.menuBottomAdornmentView.frame.size };
+            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, newY }, self.menuController.view.frame.size };
+            break;
+        }
+
+        case UIGestureRecognizerStateEnded:
+        {
+            _menuInteraction.velocity = [recognizer velocityInView:self].y;
+
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
+            {
+                if(fabs(_menuInteraction.velocity) < 100.0f)
+                {
+                    // Slow drag
+
+                    CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                    if(_menuInteraction.velocity < 0)
+                    {
+                        if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                            [self expandMenu];
+                        else
+                            [self collapseMenu];
+                    }
+                    else
+                    {
+                        if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                            [self expandMenu];
+                        else
+                            [self collapseMenu];
+                    }
+                }
+                else
+                {
+                    // Fast drag
+
+                    if(_menuInteraction.velocity < 0)
+                        [self collapseMenu];
+                    else
+                        [self expandMenu];
+                }
+            }
+            completion:^(BOOL finished) {}];
+
+            // Falling through on purpose...
+        }
+
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateFailed:
+        default:
+        {
+            _menuInteraction.isInteracting = NO;
+            break;
+        }
+    }
+}
+
+- (void)didRecognizeDismissPanGesture:(UIPanGestureRecognizer*)recognizer
+{
+    switch(recognizer.state)
+    {
+        case UIGestureRecognizerStateBegan:
+        {
+            [self centerViewsToOrientation];
+            
+            _menuInteraction.initialTouchPoint = [recognizer translationInView:self];
+            _menuInteraction.isInteracting = YES;
+            _menuInteraction.velocity = 0.0f;
+            _menuInteraction.minMenuHeight = self.navigationBarHeight;
+            _menuInteraction.maxMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - (self.navigationBarHeight/* - self.menuAdornmentImageOverlapHeight*/));
+            _menuInteraction.minAdornmentHeight = MIN(self.menuController.pullNavigationMenuHeight + self.navigationBarHeight, self.availableHeight);
+            _menuInteraction.maxAdornmentHeight = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
+
+            [recognizer setTranslation:CGPointZero inView:self];
+            break;
+        }
+            
+        case UIGestureRecognizerStateChanged:
+        {
+            _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
+
+            // Peg to the top value
+            CGFloat newY = MAX(_menuInteraction.minMenuHeight - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
+            CGFloat newAdornmentY = MAX(_menuInteraction.minAdornmentHeight - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxAdornmentHeight);
+
+            // Peg to the bottom value.
+            newY = MIN(newY, _menuInteraction.minMenuHeight);
+            newAdornmentY = MIN(newAdornmentY, _menuInteraction.minAdornmentHeight);
+
+            self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, newAdornmentY }, self.menuBottomAdornmentView.frame.size };
+            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, newY }, self.menuController.view.frame.size };
+            break;
+        }
+            
+        case UIGestureRecognizerStateEnded:
+        {
+            _menuInteraction.velocity = [recognizer velocityInView:self].y;
+
+            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
+            {
+                if(fabs(_menuInteraction.velocity) < 100.0f)
+                {
+                    // Slow drag
+                    
+                    CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                    if(_menuInteraction.velocity < 0)
+                    {
+                        if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                        {
+                            [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                        }
+                        else
+                        {
+                            [self expandMenu];
+                        }
+                    }
+                    else
+                    {
+                        if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                        {
+                            [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                        }
+                        else
+                        {
+                            [self expandMenu];
+                        }
+                    }
+                }
+                else
+                {
+                    // Fast drag
+                    
+                    if(_menuInteraction.velocity < 0)
+                    {
+                        [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
+                    }
+                    else
+                    {
+                        [self expandMenu];
+                    }
+                }
+            }
+            completion:^(BOOL finished)
+            {
+                if(self.menuOpen == NO)
+                {
+                    self.tabButton.tuckedTab = NO;
+                    [self.tabButton setNeedsDisplay];
+                }
+            }];
+
+            // Falling through on purpose...
+        }
+            
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateFailed:
+        default:
+        {
+            _menuInteraction.isInteracting = NO;
+            break;
+        }
+    }
+}
+
 #pragma mark - Helpers
-
-+ (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
-{
-    UINavigationController *navController = [[UINavigationController alloc] initWithNavigationBarClass:[self class] toolbarClass:nil];
-    [navController setViewControllers:@[viewController]];
-    navController.delegate = [SDPullNavigationManager sharedInstance];
-    return navController;
-}
-
-- (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
-{
-    [self dismissPullMenuWithoutAnimation];
-}
 
 - (void)togglePullMenuWithCompletionBlock:(void (^)(void))completion
 {
@@ -234,44 +476,26 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
     {
         self.animating = YES;
 
-        if([UIDevice iPad] && !self.tabOpen)
-        {
-            self.menuController.view.frame = (CGRect){{ self.frame.size.width * 0.5f - 160.0f, 64.0f }, { self.menuWidth, 0.0f } };
-            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height },
-                                                           { self.menuController.view.frame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
-        }
-
         [self.superview insertSubview:self.menuContainer belowSubview:self];
-        self.menuContainer.hidden = NO;
+        [self showMenuContainer];
 
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-            self.tabButton.tuckedTab = !self.tabOpen;
-            if(!self.tabOpen)
-                [self.tabButton setNeedsDisplay];
+            if(self.menuOpen)
+                [self collapseMenu];
+            else
+                [self expandMenu];
+        }
+        completion:^(BOOL finished)
+        {
+            self.animating = NO;
 
-            CGFloat height = self.tabOpen ? 0.0f : MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            CGFloat width = [UIDevice iPad] ? self.menuWidth : self.menuController.view.frame.size.width;
+            [self.tabButton setNeedsDisplay];
+            self.menuContainer.hidden = !self.menuOpen;
 
-            self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, height } };
-            self.menuBottomAdornmentView.frame = (CGRect){{self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height }, self.menuBottomAdornmentView.frame.size };
-
-            self.tabOpen = !self.tabOpen;
-         }
-         completion:^(BOOL finished)
-         {
-             if(self.tabOpen == NO)
-                 [self.tabButton setNeedsDisplay];
-             self.animating = NO;
-             self.menuContainer.hidden = !self.tabOpen;
-             self.menuBottomAdornmentView.hidden = !self.tabOpen;
-
-             if(self.tabOpen == NO)
-                 [self.menuContainer removeFromSuperview];
-
-             if(completion)
-                 completion();
-         }];
+            if(completion)
+                completion();
+        }];
     }
     else
     {
@@ -281,25 +505,112 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
     }
 }
 
-- (void)dismissPullMenuWithoutAnimation
+- (void)expandMenu
 {
-    self.menuContainer.hidden = YES;
+    [self centerViewsToOrientation];
+
+    [self showBackgroundEffectWithAnimation:NO completion:nil];
 
     self.tabButton.tuckedTab = YES;
-    CGFloat width = [UIDevice iPad] ? self.menuWidth : self.menuController.view.frame.size.width;
+    [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
 
-    self.menuController.view.frame = (CGRect){ { self.frame.size.width * 0.5f - self.menuController.view.bounds.size.width * 0.5f, self.frame.size.height + 20.0f }, { width, 0.0f } };
-    self.menuBottomAdornmentView.frame = (CGRect){{self.menuController.view.frame.origin.x, self.menuController.view.frame.origin.y + self.menuController.view.frame.size.height }, self.menuBottomAdornmentView.frame.size };
+    CGFloat adornmentPositionY = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) + self.navigationBarHeight;
+    CGFloat menuPositionY = self.navigationBarHeight;
 
-    self.tabOpen = NO;
-    self.menuBottomAdornmentView.hidden = YES;
+    self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
+    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
 
-    [self.menuContainer removeFromSuperview];
+    self.menuOpen = YES;
+}
+
+- (void)collapseMenu
+{
+    [self collapseMenuWithCompletion:nil];
+}
+
+- (void)collapseMenuWithCompletion:(void (^)(void))completion
+{
+    [self hideBackgroundEffectWithAnimation:!self.animating completion:completion];
+    
+    self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
+    
+    CGFloat adornmentPositionY = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
+    CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
+
+    self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
+    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+
+    self.menuOpen = NO;
+}
+
+- (void)showMenuContainer
+{
+    self.menuContainer.hidden = NO;
+}
+
+- (void)hideMenuContainer
+{
+    self.menuContainer.hidden = YES;
+}
+
+- (void)showBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
+{
+    if(animate)
+    {
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        {
+            self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        }
+        completion:^(BOOL finished)
+        {
+            if(completion)
+                completion();
+        }];
+    }
+    else
+    {
+        self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+    }
+}
+
+- (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
+{
+    if(animate)
+    {
+        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        {
+             self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+        }
+        completion:^(BOOL finished)
+        {
+            if(completion)
+                completion();
+        }];
+    }
+    else
+    {
+        self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+    }
+}
+
++ (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController
+{
+    UINavigationController* navController = [[UINavigationController alloc] initWithNavigationBarClass:[self class] toolbarClass:nil];
+    [navController setViewControllers:@[viewController]];
+    navController.delegate = [SDPullNavigationManager sharedInstance];
+    return navController;
+}
+
+- (void)statusBarWillChangeRotationNotification:(NSNotification*)notification
+{
+    [self hideMenuContainer];
+    [self collapseMenu];
+    [self.tabButton setNeedsDisplay];
 }
 
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion
 {
-    if(self.tabOpen)
+    if(self.menuOpen)
     {
         [self togglePullMenuWithCompletionBlock:completion];
     }
@@ -312,16 +623,23 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
     CGSize topMostWindowSize = topMostWindow.bounds.size;
     CGFloat height = UIInterfaceOrientationIsPortrait(orientation) ? MAX(topMostWindowSize.height, topMostWindowSize.width) : MIN(topMostWindowSize.height, topMostWindowSize.width);
 
-    CGFloat navHeight = self.frame.size.height;
-
-    if(navHeight == 0.0f)
-        navHeight += 44.0f;
-    navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
+    CGFloat navHeight = self.navigationBarHeight;
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
     navHeight += _menuBottomAdornmentView.frame.size.height + (_menuBottomAdornmentView ? 2.0f : 0.0f);
 
     return height - navHeight;
+}
+
+- (CGFloat)navigationBarHeight
+{
+    CGFloat navHeight = self.frame.size.height;
+    
+    if(navHeight == 0.0f)
+        navHeight += 44.0f;
+    navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
+
+    return navHeight;
 }
 
 @end
@@ -334,6 +652,11 @@ static const CGFloat kDefaultMenuWidth = 320.0f;
 {
     [super layoutSubviews];
 
+}
+
+- (void)setFrame:(CGRect)frame
+{
+    [super setFrame:frame];
 }
 
 #endif

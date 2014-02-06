@@ -1,11 +1,11 @@
 //
 //  SDPullNavigationBarControlsView.m
-//  walmart
+//  ios-shared
 //
 //  This is a simple list of controls that live in the pullnav.
 //
 //  Created by Steven Woolgar on 12/06/2013.
-//  Copyright (c) 2013 Walmart. All rights reserved.
+//  Copyright 2013-2014 SetDirection. All rights reserved.
 //
 
 #import "SDPullNavigationBarControlsView.h"
@@ -47,7 +47,7 @@
         if(self.edge == UIRectEdgeRight)
             currentX -= control.size.width;
 
-        control.frame = (CGRect){{ currentX, self.size.height * 0.5f - control.size.height * 0.5f }, control.size };
+        control.frame = (CGRect){ { currentX, self.size.height * 0.5f - control.size.height * 0.5f }, control.size };
         [self addSubview:control];
 
         if(self.edge == UIRectEdgeLeft)

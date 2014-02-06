@@ -585,21 +585,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 #pragma mark - Service execution
 
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock
-{
-    return [self performRequestWithMethod:requestName routeReplacements:replacements completion:completionBlock shouldRetry:YES];
-}
-
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements completion:(SDWebServiceCompletionBlock)completionBlock shouldRetry:(BOOL)shouldRetry
-{
-    SDWebServiceDataCompletionBlock combinedBlock = ^id (NSURLResponse *response, NSInteger statusCode, NSData *responseData, NSError *error) {
-        NSString *responseString = [self responseFromData:responseData];
-        completionBlock(statusCode, responseString, &error);
-        return nil;
-    };
-    return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:combinedBlock uiUpdateBlock:nil shouldRetry:shouldRetry].result;
-}
-
 - (SDRequestResult *)performRequestWithMethod:(NSString *)requestName routeReplacements:(NSDictionary *)replacements dataProcessingBlock:(SDWebServiceDataCompletionBlock)dataProcessingBlock uiUpdateBlock:(SDWebServiceUICompletionBlock)uiUpdateBlock
 {
     return [self performRequestWithMethod:requestName headers:nil routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:YES];
@@ -643,14 +628,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     {
         // we ain't got no connection Lt. Dan
         NSError *error = [NSError errorWithDomain:SDWebServiceError code:SDWebServiceErrorNoConnection userInfo:nil];
-		if (uiUpdateBlock == nil)
-			dataProcessingBlock(nil, 0, nil, error); // This mimicks SDWebService 1.0
-        else
-        {
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            if (uiUpdateBlock)
                 uiUpdateBlock(nil, error);
-            }];
-        }
+        }];
 
         return [SDRequestResult objectForResult:SDWebServiceResultFailed identifier:nil request:request];
     }
@@ -734,24 +715,19 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             [self will302RedirectToUrl:httpResponse.URL];
         }
 
-        if (uiUpdateBlock == nil)
-        {
-            NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
-            [mainQueue addOperationWithBlock:^{
-                dataProcessingBlock(response, code, responseData, error);
-            }];
-        }
-        else
-        {
-            [_dataProcessingQueue addOperationWithBlock:^{
-                id dataObject = nil;
-                if (code != NSURLErrorCancelled)
+        [_dataProcessingQueue addOperationWithBlock:^{
+            id dataObject = nil;
+            if (code != NSURLErrorCancelled)
+            {
+                if (dataProcessingBlock)
                     dataObject = dataProcessingBlock(response, code, responseData, error);
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            }
+            
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                if (uiUpdateBlock)
                     uiUpdateBlock(dataObject, error);
-                }];
             }];
-        }
+        }];
 
         [self decrementRequests];
 	};
@@ -823,9 +799,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         // attempt to recreate the path as best we can.
 
         [_dataProcessingQueue addOperationWithBlock:^{
-            id dataObject = dataProcessingBlock(nil, 200, mockData, nil);
+            id dataObject = nil;
+            if (dataProcessingBlock)
+                dataObject = dataProcessingBlock(nil, 200, mockData, nil);
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                uiUpdateBlock(dataObject, nil);
+                if (uiUpdateBlock)
+                    uiUpdateBlock(dataObject, nil);
             }];
         }];
     }
