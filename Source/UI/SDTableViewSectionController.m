@@ -467,7 +467,9 @@
     if (section) {
         NSUInteger *sectionIndex = [self indexOfSection:section];
         NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sectionIndex];
+        [tableView beginUpdates];
         [self.tableView reloadSections:indexSet withRowAnimation:animation];
+        [tableView endUpdates];
     }
 }
 
