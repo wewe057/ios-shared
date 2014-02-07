@@ -164,6 +164,7 @@
 		E205784E1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */; };
 		E2136B3318A4387200000D1B /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2136B3218A4387200000D1B /* SDLog.m */; };
 		E2136B4B18A4573A00000D1B /* SDMultilineLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = E2136B4A18A4573A00000D1B /* SDMultilineLabel.m */; };
+		E2136B5E18A466F700000D1B /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2136B3218A4387200000D1B /* SDLog.m */; };
 		E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */; };
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
 		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
@@ -936,6 +937,7 @@
 				CA0E77C118284DD600B4398F /* UIImage+SDExtensions.m in Sources */,
 				CAAB5A2618564B0E006737D4 /* SDDataMapTests.m in Sources */,
 				CAAB5A3718564CEE006737D4 /* RxPatientModel.m in Sources */,
+				E2136B5E18A466F700000D1B /* SDLog.m in Sources */,
 				CA0E77C518284DD600B4398F /* UIScreen+SDExtensions.m in Sources */,
 				CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */,
 				CA0E77D118284DD600B4398F /* NSURLRequest+SDExtensions.m in Sources */,
