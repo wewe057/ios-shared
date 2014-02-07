@@ -237,6 +237,24 @@
     return sectionIndex;
 }
 
+- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier
+{
+    id<SDTableViewSectionDelegate>section = nil;
+    
+    NSUInteger indexOfSection = [self.sectionControllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
+        BOOL sectionAlreadyInArray = [obj.identifier isEqualToString: identifier];
+        *stop = sectionAlreadyInArray;
+        return sectionAlreadyInArray;
+    }];
+    
+    if (indexOfSection != NSNotFound)
+    {
+        section = [self.sectionControllers objectAtIndex:indexOfSection];
+    }
+    
+    return section;
+}
+
 #pragma mark - Height Methods
 
 - (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
@@ -406,13 +424,10 @@
 {
     NSUInteger index = [self.sectionControllers count];
     
-    NSUInteger indexOfNewSection = [self.sectionControllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
-        BOOL sectionAlreadyInArray = [obj.identifier isEqualToString: section.identifier];
-        *stop = sectionAlreadyInArray;
-        return sectionAlreadyInArray;
-    }];
-    
-    NSAssert(indexOfNewSection == NSNotFound, @"Adding section of identifier: %@ that already exists", section.identifier);
+    // make sure we are not adding the same section twice
+    id<SDTableViewSectionDelegate>sectionWithSameIdentifier;
+    sectionWithSameIdentifier = [self sectionWithIdentifier:section.identifier];
+    NSAssert(sectionWithSameIdentifier == nil, @"Adding section of identifier: %@ that already exists", section.identifier);
     
     // First change the model of section controllers
     NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];

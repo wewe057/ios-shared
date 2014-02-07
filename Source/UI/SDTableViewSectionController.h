@@ -208,6 +208,15 @@
 - (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section;
 
 /**
+ *  Returns a section controller for the given identifier
+ *
+ *  @param identifier Unique identifier for a section
+ *
+ *  @return Object confirming to SDTableViewSectionDelegate
+ */
+- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier;
+
+/**
  *  Returns the height of all sections above the given section
  *
  *  @param section   Calculate the height of sections above this section
