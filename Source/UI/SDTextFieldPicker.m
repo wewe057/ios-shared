@@ -60,6 +60,7 @@
     strongOwner.inputView = self.itemPicker;
     strongOwner.inputAccessoryView = self.pickerBar;
     [strongOwner reloadInputViews];
+    [strongOwner becomeFirstResponder];
 }
 
 @end
@@ -81,13 +82,16 @@
     _pickerButton.owner = self;
 
     self.rightView = _pickerButton;
-    self.rightViewMode = UITextFieldViewModeWhileEditing;
-    self.pickerButtonColor = self.tintColor;//[UIColor blueColor];
+    self.rightViewMode = UITextFieldViewModeAlways;
+    if ([UIDevice systemMajorVersion] < 7)
+        self.pickerButtonColor = [UIColor blueColor];
+    else
+        self.pickerButtonColor = self.tintColor;
 }
 
 - (void)setPickerItems:(NSArray<NSString> *)pickerItems
 {
-    [_pickerButton configureAsItemPicker:pickerItems completion:^(BOOL canceled, int selectedItemIndex, NSString *selectedItem) {
+    [_pickerButton configureAsItemPicker:pickerItems completion:^(BOOL canceled, NSInteger selectedItemIndex, NSString *selectedItem) {
         NSString *otherString = [selectedItem lowercaseString];
         
         // if they selected "Other" or hit cancel, then go back to the text field.

@@ -11,6 +11,19 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_OPTIONS(NSUInteger, SDImageCompositionOptions)
+{
+    SDImageCompositeOptionsPinOverlayToTop      = 1 << 0,
+    SDImageCompositeOptionsPinOverlayToBottom   = 1 << 1,
+    SDImageCompositeOptionsPinOverlayToLeft     = 1 << 2,
+    SDImageCompositeOptionsPinOverlayToRight    = 1 << 3,
+    SDImageCompositeOptionsCenterXOverlay       = 1 << 4,
+    SDImageCompositeOptionsCenterYOverlay       = 1 << 5,
+
+    SDImageCompositeOptionsPinSourceToTop       = 1 << 6,
+    SDImageCompositeOptionsPinSourceToBottom    = 1 << 7
+};
+
 @interface UIImage (SDExtensions)
 
 /**
@@ -22,7 +35,7 @@
 /**
  Returns a UIColor approximating the averaged color of an image.
  */
-- (UIColor*) averageColor;
+- (UIColor *)averageColor;
 
 /**
  Returns a UIImage filled with the supplied color of the request size.
@@ -34,6 +47,14 @@
  You also tell it where to draw inside of the rect of the image you are overlaying.
  */
 - (UIImage *)compositeWith:(UIImage *)overlayImage toPoint:(CGPoint)overlayPoint;
+
+/**
+ Given an image, composite them together to form a third image.
+ The resulting image will be as big as the biggest dimension of either of the images.
+ Given the options, you can choose to make the source's Y position be at the top or bottom of resulting image,
+ and the overlay at the top, bottom, right, left, or centerX, or centerY.
+ */
++ (UIImage *)stretchImage:(UIImage *)image toSize:(CGSize)size andOverlayImage:(UIImage *)overlayImage withOptions:(SDImageCompositionOptions)options;
 
 - (UIImage *)applyLightEffect;
 - (UIImage *)applyExtraLightEffect;

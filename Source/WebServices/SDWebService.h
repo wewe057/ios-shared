@@ -9,7 +9,6 @@
 #import "SDURLConnection.h"
 #import "Reachability.h"
 
-typedef void (^SDWebServiceCompletionBlock)(NSInteger responseCode, NSString *response, NSError **error);
 typedef id (^SDWebServiceDataCompletionBlock)(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error);
 typedef void (^SDWebServiceUICompletionBlock)(id dataObject, NSError *error);
 
@@ -66,9 +65,6 @@ typedef enum
          All replacement markers must be substituted with appropriate values using one or both or the above mechanisms when a request is being created.
 
  ### Blocks in use are defined as:
-    // Defined for old-style block callbacks.  Data and UI processing occur in this block and it is run on the main thread.
-    typedef void (^SDWebServiceCompletionBlock)(int responseCode, NSString *response, NSError **error);
-
     // Handles data processing for a given connection.  `response` will be an NSHTTPURLResponse 99% of the time.  
     // The return/result is the dataObject that will eventually be passed to SDWebServiceUICompletionBlock.
     // This block is run on a separate GCD thread.
@@ -164,28 +160,6 @@ typedef enum
  Removes all cached responses.
  */
 - (void)clearCache;
-
-/**
- Calls performRequestWithMethod:routeReplacements:completion:shouldRetry: with `shouldRetry` set to `YES`.
- @warning DEPRECATED. Use performRequestWithMethod:routeReplacements:dataProcessingBlock:uiUpdateBlock: instead
- */
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName
-                             routeReplacements:(NSDictionary *)replacements
-                                    completion:(SDWebServiceCompletionBlock)completionBlock __deprecated__("Use the data/ui block versions of this method instead.");
-
-/**
- Creates and initiates a request to the web service.
- @return An enum to indicate the success, or failure of the method (not the call) and also to indicate if the response is cached.
- @param requestName The name of the request as specified in the plist.
- @param replacements Route replacements if any for the routeFormat as well as the postFormat in the request spec.
- @param completionBlock The block to execute after the request completes.
- @param shouldRetry Set to `YES` to retry the request once after a time out.
- @warning DEPRECATED. Use performRequestWithMethod:routeReplacements:dataProcessingBlock:uiUpdateBlock:shouldRetry: instead
- */
-- (SDWebServiceResult)performRequestWithMethod:(NSString *)requestName
-                             routeReplacements:(NSDictionary *)replacements
-                                    completion:(SDWebServiceCompletionBlock)completionBlock
-                                   shouldRetry:(BOOL)shouldRetry __deprecated__("Use the data/ui block versions of this method instead.");
 
 /**
  Calls performRequestWithMethod:routeReplacements:dataProcessingBlock:uiUpdateBlock:shouldRetry: with `shouldRetry` set to `YES`.

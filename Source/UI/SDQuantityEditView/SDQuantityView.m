@@ -231,9 +231,11 @@ static const CGFloat kCircularButtonHeight = 29.0f;
 static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 @interface SDQuantityView()
-@property (nonatomic, assign) BOOL setupContrainst;
+@property (nonatomic, assign) BOOL hasSetupConstraints;
 @property (nonatomic, strong, readwrite) SDCircularPlusButton *incrementButton;
 @property (nonatomic, strong, readwrite) SDCircularMinusButton *decrementButton;
+@property (nonatomic, strong, readwrite) UIImageView *rightImageView;
+@property (nonatomic, strong, readwrite) UILabel *quantityLabel;
 @end
 
 @implementation SDQuantityView
@@ -268,8 +270,25 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     
     _quantityLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _quantityLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _quantityLabel.textAlignment = NSTextAlignmentCenter;
+    [_quantityLabel setContentHuggingPriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
+    [_quantityLabel setContentCompressionResistancePriority:1000 forAxis:UILayoutConstraintAxisHorizontal];
     [_quantityLabel setFont:[UIFont systemFontOfSize:14]];
     [self addSubview:_quantityLabel];
+    
+    _rightImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    _rightImageView.translatesAutoresizingMaskIntoConstraints = NO;
+    [_rightImageView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    [_rightImageView setContentCompressionResistancePriority:0 forAxis:UILayoutConstraintAxisHorizontal];
+    [self addSubview:_rightImageView];
+}
+
+- (void)setRightImage:(UIImage *)image
+{
+    self.rightImageView.image = image;
+    self.rightImageView.contentMode = UIViewContentModeScaleAspectFit;
+    self.hasSetupConstraints = NO;
+    [self setNeedsUpdateConstraints];
 }
 
 - (void)setFillColor:(UIColor *)fillColor
@@ -285,18 +304,26 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)updateConstraints
 {
-    if (self.setupContrainst == NO)
+    if (self.hasSetupConstraints == NO)
     {
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[incrementButton(29)]|" options:0 metrics:nil views:@{@"incrementButton":self.incrementButton}]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[decrementButton(29)]|" options:0 metrics:nil views:@{@"decrementButton":self.decrementButton}]];
+        [self removeConstraints:[self constraints]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[decrementButton(29)]" options:0 metrics:nil views:@{@"decrementButton":self.decrementButton}]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[incrementButton(29)]|" options:0 metrics:nil views:@{@"incrementButton":self.incrementButton}]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_incrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_incrementButton)]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_decrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton)]];
+        
+        if (self.rightImageView.image)
+        {
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_rightImageView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_rightImageView)]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_decrementButton(29)][_quantityLabel][_rightImageView][_incrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton, _quantityLabel, _rightImageView, _incrementButton)]];
+        }
+        else
+        {
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_decrementButton(29)][_quantityLabel][_incrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton, _quantityLabel, _incrementButton)]];
+        }
         
         [self addConstraint:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.quantityLabel attribute:NSLayoutAttributeCenterY multiplier:1.0f constant:1.0f]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.quantityLabel attribute:NSLayoutAttributeCenterX multiplier:1.0f constant:1.0f]];
         
-        self.setupContrainst = YES;
+        self.hasSetupConstraints = YES;
     }
     [super updateConstraints];
 }
@@ -310,11 +337,13 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 - (void)setupLayer
 {
     CAShapeLayer *layer = (CAShapeLayer *)self.layer;
-    CGRect bgRect = self.bounds;
-    bgRect = CGRectInset(self.bounds, kSDQuantityViewBackgroundWidthInset, 0.0f);
+    CGRect bgRect = CGRectInset(self.bounds, kSDQuantityViewBackgroundWidthInset, 0.0f);
     bgRect.origin.y += 0.5f;
     bgRect.size.height -= 1.0f;
-    layer.path = CGPathCreateWithRect(bgRect, nil);
+
+    CGPathRef path = CGPathCreateWithRect(bgRect, NULL);
+    layer.path = path;
+    CGPathRelease(path);
     
     layer.fillColor = self.fillColor.CGColor;
     layer.strokeColor = self.fillColor.CGColor;
