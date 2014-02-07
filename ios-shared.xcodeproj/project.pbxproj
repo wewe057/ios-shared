@@ -181,6 +181,7 @@
 		E2DF06911891A1A900BA7021 /* SDCheckbox.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF068B1891A1A900BA7021 /* SDCheckbox.m */; };
 		E2DF06921891A1A900BA7021 /* SDFormFieldContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF068D1891A1A900BA7021 /* SDFormFieldContainer.m */; };
 		E2DF06931891A1A900BA7021 /* SDHitButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF068F1891A1A900BA7021 /* SDHitButton.m */; };
+		E2EDC79218A59D4F00E7E416 /* NSShadow+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -417,6 +418,8 @@
 		E2DF068D1891A1A900BA7021 /* SDFormFieldContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDFormFieldContainer.m; sourceTree = "<group>"; };
 		E2DF068E1891A1A900BA7021 /* SDHitButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDHitButton.h; sourceTree = "<group>"; };
 		E2DF068F1891A1A900BA7021 /* SDHitButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDHitButton.m; sourceTree = "<group>"; };
+		E2EDC79018A59D4F00E7E416 /* NSShadow+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSShadow+SDExtensions.h"; sourceTree = "<group>"; };
+		E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSShadow+SDExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -594,6 +597,8 @@
 			children = (
 				CA0E771B18284DD500B4398F /* NSObject+SDExtensions.h */,
 				CA0E771C18284DD500B4398F /* NSObject+SDExtensions.m */,
+				E2EDC79018A59D4F00E7E416 /* NSShadow+SDExtensions.h */,
+				E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */,
 				CA0E771D18284DD500B4398F /* SDAlertView.h */,
 				CA0E771E18284DD500B4398F /* SDAlertView.m */,
 				2008D378188DAA9700255BC4 /* SDApplication.h */,
@@ -999,6 +1004,7 @@
 				CA0E778518284DD600B4398F /* SDPoser.m in Sources */,
 				CA0E778F18284DD600B4398F /* SDLocationManager.m in Sources */,
 				CA0E777318284DD600B4398F /* NSError+SDExtensions.m in Sources */,
+				E2EDC79218A59D4F00E7E416 /* NSShadow+SDExtensions.m in Sources */,
 				CAA3E935182C15F500602210 /* SDTextField.m in Sources */,
 				CA0E77C018284DD600B4398F /* UIImage+SDExtensions.m in Sources */,
 				CA0E77D418284DD600B4398F /* SDImageCache.m in Sources */,
