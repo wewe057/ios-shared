@@ -64,7 +64,7 @@ typedef struct
     if ([UIDevice bcdSystemVersion] >= 0x070000)
     {
         pullBarAppearance.barTintColor = [UIColor colorWith8BitRed:29 green:106 blue:166 alpha:1.0f];
-        pullBarAppearance.titleTextAttributes = @{ UITextAttributeTextColor : [UIColor whiteColor] };
+        pullBarAppearance.titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor whiteColor] };
         pullBarAppearance.tintColor = [UIColor whiteColor];
     }
     else
