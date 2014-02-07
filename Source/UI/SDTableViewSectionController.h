@@ -227,6 +227,13 @@
 - (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight;
 
 /**
+ *  Add the section to the table view section controller's list of sections and to the table view
+ *
+ *  @param section The section object to add
+ */
+- (void)addSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
  *  Removes the section from the table view section controller's list of sections and from the table view
  *
  *  @param section The section object to remove

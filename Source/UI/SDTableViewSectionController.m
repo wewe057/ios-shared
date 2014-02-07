@@ -401,6 +401,23 @@
     }
 }
 
+- (void)addSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger index = [self.sectionControllers count];
+    
+    // First change the model of section controllers
+    NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];
+    [newSectionControllers addObject:section];
+    self.sectionControllers = [newSectionControllers copy];
+    
+    // Now add the section to the tableview
+    @strongify(self.tableView, tableView);
+    NSIndexSet *setOfSectionsToAdd = [[NSIndexSet alloc] initWithIndex:index];
+    [tableView beginUpdates];
+    [tableView insertSections:setOfSectionsToAdd withRowAnimation:UITableViewRowAnimationFade];
+    [tableView endUpdates];
+}
+
 - (void)removeSection:(id<SDTableViewSectionDelegate>)section
 {
     NSUInteger index = [self.sectionControllers indexOfObject:section];
