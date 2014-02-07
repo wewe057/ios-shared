@@ -458,8 +458,17 @@
         [tableView beginUpdates];
         [tableView deleteSections:setOfSectionsToDelete withRowAnimation:UITableViewRowAnimationFade];
         [tableView endUpdates];
-        
      }
+}
+
+- (void)reloadSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation
+{
+    id<SDTableViewSectionDelegate> section = [self sectionWithIdentifier:identifier];
+    if (section) {
+        NSUInteger *sectionIndex = [self indexOfSection:section];
+        NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sectionIndex];
+        [self.tableView reloadSections:indexSet withRowAnimation:animation];
+    }
 }
 
 - (void)p_sendSectionDidLoad:(NSArray *)sectionControllers

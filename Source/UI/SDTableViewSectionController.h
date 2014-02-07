@@ -249,5 +249,13 @@
  *  @param section The section object to remove
  */
 - (void)removeSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
+ *  Reloads a section controller for the given identifier
+ *
+ *  @param identifier Unique identifier for a section
+ *  @param animation  UITableViewRowAnimation for a section's row(s)
+ */
+- (void)reloadSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation;
 @end
 
