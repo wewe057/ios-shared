@@ -406,6 +406,14 @@
 {
     NSUInteger index = [self.sectionControllers count];
     
+    NSUInteger indexOfNewSection = [self.sectionControllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
+        BOOL sectionAlreadyInArray = [obj.identifier isEqualToString: section.identifier];
+        *stop = sectionAlreadyInArray;
+        return sectionAlreadyInArray;
+    }];
+    
+    NSAssert(indexOfNewSection == NSNotFound, @"Adding section of identifier: %@ that already exists", section.identifier);
+    
     // First change the model of section controllers
     NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];
     [newSectionControllers addObject:section];
