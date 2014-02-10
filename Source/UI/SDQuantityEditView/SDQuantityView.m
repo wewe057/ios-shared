@@ -293,6 +293,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         [self.rightImageView removeFromSuperview];
     }
     self.rightImageView.image = image;
+    self.rightImageView.contentMode = UIViewContentModeScaleAspectFit;
     self.hasSetupConstraints = NO;
     [self setNeedsUpdateConstraints];
 }

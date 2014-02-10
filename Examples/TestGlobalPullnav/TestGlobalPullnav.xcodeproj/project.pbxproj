@@ -121,6 +121,7 @@
 		E21F0B04189718FA009A4014 /* SDOrderHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0B03189718FA009A4014 /* SDOrderHistoryViewController.m */; };
 		E21F0B0A18971952009A4014 /* OrderHistory_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E21F0B0718971952009A4014 /* OrderHistory_iPhone.storyboard */; };
 		E28A7C6318971EE500B46990 /* OrderHistory_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E28A7C6118971EE500B46990 /* OrderHistory_iPad.storyboard */; };
+		E2A1D43D18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -342,6 +343,8 @@
 		E21F0B03189718FA009A4014 /* SDOrderHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDOrderHistoryViewController.m; sourceTree = "<group>"; };
 		E21F0B0818971952009A4014 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OrderHistory_iPhone.storyboard; sourceTree = "<group>"; };
 		E28A7C6218971EE500B46990 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OrderHistory_iPad.storyboard; sourceTree = "<group>"; };
+		E2A1D43B18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPullNavigationBarTabButton.h; sourceTree = "<group>"; };
+		E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPullNavigationBarTabButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -417,6 +420,8 @@
 			children = (
 				E21F099B189708EA009A4014 /* SDAppDelegate.h */,
 				E21F099C189708EA009A4014 /* SDAppDelegate.m */,
+				E2A1D43B18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.h */,
+				E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */,
 				E21F0AF918970C59009A4014 /* MainWindow.xib */,
 				E21F0AFC18971419009A4014 /* SDGlobalNavMenuController.h */,
 				E21F0AFD18971419009A4014 /* SDGlobalNavMenuController.m */,
@@ -906,6 +911,7 @@
 				E21F0AA11897091D009A4014 /* CLLocation+SDExtensions.m in Sources */,
 				E21F0AD01897091D009A4014 /* SDStackView.m in Sources */,
 				E21F0AAF1897091D009A4014 /* SDButton.m in Sources */,
+				E2A1D43D18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m in Sources */,
 				E21F0B04189718FA009A4014 /* SDOrderHistoryViewController.m in Sources */,
 				E21F0ADD1897091D009A4014 /* UIScreen+SDExtensions.m in Sources */,
 				E21F0AA21897091D009A4014 /* MKMapView+SDExtensions.m in Sources */,

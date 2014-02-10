@@ -1,7 +1,6 @@
 //
 //  SDPullNavigationBarControlsView.m
 //  ios-shared
-
 //
 //  This is a simple list of controls that live in the pullnav.
 //
@@ -48,7 +47,7 @@
         if(self.edge == UIRectEdgeRight)
             currentX -= control.size.width;
 
-        control.frame = (CGRect){{ currentX, self.size.height * 0.5f - control.size.height * 0.5f }, control.size };
+        control.frame = (CGRect){ { currentX, self.size.height * 0.5f - control.size.height * 0.5f }, control.size };
         [self addSubview:control];
 
         if(self.edge == UIRectEdgeLeft)

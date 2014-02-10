@@ -69,4 +69,9 @@
  */
 + (NSArray *)arrayFromArrays:(NSArray*)arrayOfArrays;
 
+/**
+ Returns a copy of the array but with the supplied object removed.
+ */
+- (NSArray *)arrayByRemovingObject:(id)anObject;
+
 @end
