@@ -10,6 +10,7 @@
 
 #import "SDHomeScreenViewController.h"
 #import "SDOrderHistoryViewController.h"
+#import "CustomPullNavigationBarTabButton.h"
 
 #import "SDPullNavigation.h"
 #import "UIImage+SDExtensions.h"
@@ -51,8 +52,9 @@
                                              withOptions:SDImageCompositeOptionsPinSourceToTop |
                                     SDImageCompositeOptionsCenterXOverlay |
                                     SDImageCompositeOptionsPinOverlayToBottom];
-    
+
     [SDPullNavigationManager sharedInstance].pullNavigationBarViewClass = [SDPullNavigationBarControlsView class];
+    [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass = [CustomPullNavigationBarTabButton class];
     [SDPullNavigationManager sharedInstance].globalMenuStoryboardId = @"SDGlobalNavMenu";
     [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
     [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight = stretchImage.size.height;
