@@ -18,6 +18,8 @@
     BOOL _sectionsImplementHeightForHeader;
     BOOL _sectionsImplementEditingStyleForRow;
     BOOL _sectionsImplementCommitEditingStyleForRow;
+    BOOL _sectionsImplementWillDisplayCellForRow;
+    BOOL _sectionsImplementDidEndDisplayingCellForRow;
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -39,7 +41,7 @@
     return self;
 }
 
-- (void)reloadWithSectionControllers:(NSArray *)sectionControllers
+- (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
 {
     @strongify(self.tableView, strongTableView);
     
@@ -56,10 +58,51 @@
     strongTableView.delegate = self;
     strongTableView.dataSource = self;
     
-    [strongTableView reloadData];
+    if (animated)
+    {
+        // Placeholder for future animated work
+        // Currently allows for people to call reload without a tableView reloadData, but can still get the flags updated
+    }
+    else
+    {
+        [strongTableView reloadData];
+    }
 }
 
-#pragma mark - UITableViewDataSource
+#pragma mark - UITableView DataSource
+
+// This is where we hook to ask our dataSource for the Array of controllers
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    NSInteger sectionCount;
+    
+    sectionCount = (NSInteger)self.sectionControllers.count;
+    
+    return sectionCount;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)])
+    {
+        [sectionController sectionController:self commitEditingStyle:editingStyle forRow:row];
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    NSString *title;
+    if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
+    {
+        title = [sectionController sectionControllerTitleForHeader:self];
+    }
+    
+    return title;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -87,40 +130,9 @@
     return cell;
 }
 
-// This is where we hook to ask our dataSource for the Array of controllers
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    NSInteger sectionCount;
-    
-    sectionCount = (NSInteger)self.sectionControllers.count;
-
-    return sectionCount;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
-    NSString *title;
-    if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
-    {
-        title = [sectionController sectionControllerTitleForHeader:self];
-    }
-    
-    return title;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView *result;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
-    if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
-    {
-        result = [sectionController sectionControllerViewForHeader:self];
-    }    
-    return result;
-}
-
 #pragma mark - UITableView Delegate
+
+#pragma mark Managing Selections
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -132,6 +144,9 @@
         [sectionController sectionController:self didSelectRow:row];
     }
 }
+
+
+#pragma mark Configuring Rows for the Table View
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -146,6 +161,19 @@
     return rowHeight;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)])
+    {
+        [sectionController sectionController:self willDisplayCell:cell forRow:row];
+    }
+}
+
+#pragma mark Modifying the Header and Footer of Sections
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     CGFloat headerHeight = 0.0;
@@ -155,8 +183,21 @@
         headerHeight =[sectionController sectionControllerHeightForHeader:self];
     }
     return headerHeight;
-
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *result;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
+    {
+        result = [sectionController sectionControllerViewForHeader:self];
+    }
+    return result;
+}
+
+
+#pragma mark Editing Table Rows
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -173,15 +214,18 @@
     return editingStyle;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark Tracking the Removal of Views
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
-    if ([sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)])
+    if ([sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)])
     {
-        [sectionController sectionController:self commitEditingStyle:editingStyle forRow:row];
+        [sectionController sectionController:self didEndDisplayingCell:cell forRow:row];
     }
+
 }
 
 #pragma mark - SectionController Methods
@@ -375,6 +419,12 @@
     } else if (aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:))
     {
         result = _sectionsImplementCommitEditingStyleForRow;
+    } else if (aSelector == @selector(tableView:willDisplayCell:forRowAtIndexPath:))
+    {
+        result = _sectionsImplementWillDisplayCellForRow;
+    } else if (aSelector == @selector(tableView:didEndDisplayingCell:forRowAtIndexPath:))
+    {
+        result = _sectionsImplementDidEndDisplayingCellForRow;
     }
     else
     {
@@ -393,6 +443,8 @@
     _sectionsImplementViewForHeader = NO;
     _sectionsImplementHeightForHeader = NO;
     _sectionsImplementEditingStyleForRow = NO;
+    _sectionsImplementWillDisplayCellForRow = NO;
+    _sectionsImplementDidEndDisplayingCellForRow = NO;
     
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
@@ -405,6 +457,8 @@
         _sectionsImplementHeightForHeader |= [sectionController respondsToSelector:@selector(sectionControllerHeightForHeader:)];
         _sectionsImplementEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:editingStyleForRow:)];
         _sectionsImplementCommitEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)];
+        _sectionsImplementWillDisplayCellForRow |= [sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)];
+        _sectionsImplementDidEndDisplayingCellForRow |= [sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)];
         
         // AND delegate methods
         // If one of the sections implements these delegate methods, then all must

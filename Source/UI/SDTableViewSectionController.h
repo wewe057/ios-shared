@@ -116,14 +116,18 @@
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
 
 @optional
-// Variable height support
-// Required for now because of the current design
+// Configuring Rows for the Table View
 - (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController willDisplayCell:(UITableViewCell *)cell forRow:(NSInteger)row;
 
 @optional
 // Editing support
 - (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
 - (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
+
+@optional
+// Tracking the Removal of Views
+- (void)sectionController:(SDTableViewSectionController *)sectionController didEndDisplayingCell:(UITableViewCell *)cell forRow:(NSInteger)row;
 
 @optional
 // Section Lifecycle support
@@ -151,8 +155,9 @@
  *  Call this method instead of reloadData on the tableView.  Pass it an array of objects that conform to SDTableViewSectionDelegate
  *
  *  @param sectionControllers Array of SDTableViewSectionDelegates
+ *  @param animated YES if the table should reload with animations (currently unimplemented) or NO if a standard reloadData should occur (implemented)
  */
-- (void)reloadWithSectionControllers:(NSArray *)sectionControllers;
+- (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated;
 
 /**
  *  Asks the section controller's delegate to push this view controller.  Use this method
