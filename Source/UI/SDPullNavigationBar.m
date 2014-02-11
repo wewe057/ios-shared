@@ -64,7 +64,7 @@ typedef struct
     if ([UIDevice bcdSystemVersion] >= 0x070000)
     {
         pullBarAppearance.barTintColor = [UIColor colorWith8BitRed:29 green:106 blue:166 alpha:1.0f];
-        pullBarAppearance.titleTextAttributes = @{ UITextAttributeTextColor : [UIColor whiteColor] };
+        pullBarAppearance.titleTextAttributes = @{ NSForegroundColorAttributeName : [UIColor whiteColor] };
         pullBarAppearance.tintColor = [UIColor whiteColor];
     }
     else
@@ -115,8 +115,14 @@ typedef struct
 
         // This is the hit area for showing the pulldown menu, as well as the area (at the bottom) where the nipple is shown.
         {
-            self.tabButton = [[SDPullNavigationBarTabButton alloc] initWithNavigationBar:self];
+            Class tabBarButtonClass = [SDPullNavigationBarTabButton class];
+            if([SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass)
+                tabBarButtonClass = [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass;
+
+            self.tabButton = [[tabBarButtonClass alloc] initWithNavigationBar:self];
             self.tabButton.tag = 2;
+
+            NSAssert([self.tabButton isKindOfClass:[SDPullNavigationBarTabButton class]], @"TabBarButton class must be derived from SDPullNavigationBarTabButton");
         }
 
         // The view that the client's menu lives in.
