@@ -143,6 +143,12 @@
 
 - (void)navigateToTopLevelController:(Class)topLevelViewControllerClass andPopToRootWithAnimation:(BOOL)animate
 {
+    // Dismiss any modals that might be currently visible.
+    UINavigationController* selectedNavController = (UINavigationController*)self.globalPullNavController.selectedViewController;
+    if(selectedNavController.visibleViewController.presentingViewController)
+        [selectedNavController.visibleViewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+
+    // Now navigate.
     if([self navigateToTopLevelController:topLevelViewControllerClass])
         [(UINavigationController*)self.globalPullNavController.selectedViewController popToRootViewControllerAnimated:animate];
 }
@@ -151,6 +157,12 @@
 
 - (void)navigateWithSteps:(NSArray*)steps
 {
+    // Dismiss any modals that might be currently visible.
+    
+    UINavigationController* selectedNavController = (UINavigationController*)self.globalPullNavController.selectedViewController;
+    if(selectedNavController.visibleViewController.presentingViewController)
+        [selectedNavController.visibleViewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+
     NSAssert(steps, @"Not gonna automate a lot with a nil steps array.");
     NSAssert(steps.count, @"Not gonna automate a lot with no steps in the array.");
 
