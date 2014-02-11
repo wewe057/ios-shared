@@ -25,6 +25,8 @@
  POSSIBILITY OF SUCH DAMAGE. 
  */
 
+@import SystemConfiguration;
+
 #import "Reachability.h"
 
 

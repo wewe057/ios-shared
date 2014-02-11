@@ -9,9 +9,8 @@
 #ifdef __OBJC__
 
 // Required frameworks
-@import Foundation;
-@import UIKit;
-@import SystemConfiguration;
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 // Low level bits
 #import "SDMacros.h"

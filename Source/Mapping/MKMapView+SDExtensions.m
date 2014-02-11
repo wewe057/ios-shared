@@ -6,6 +6,9 @@
 //  Copyright 2011 SetDirection. All rights reserved.
 //
 
+@import CoreLocation;
+@import MapKit;
+
 #import "MKMapView+SDExtensions.h"
 #import "CLLocation+SDExtensions.h"
 

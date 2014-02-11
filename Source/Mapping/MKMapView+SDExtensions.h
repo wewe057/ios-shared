@@ -6,8 +6,8 @@
 //  Copyright 2011 SetDirection. All rights reserved.
 //
 
-@import CoreLocation;
-@import MapKit;
+#import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
 
 typedef NSObject<MKAnnotation> SDAnnotation;
 
