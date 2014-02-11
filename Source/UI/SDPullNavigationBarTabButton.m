@@ -1,7 +1,6 @@
 //
 //  SDPullNavigationBarTabButton.m
 //  ios-shared
-
 //
 //  Created by Brandon Sneed on 11/06/2013.
 //  Copyright 2013-2014 SetDirection. All rights reserved.
@@ -10,23 +9,22 @@
 #import "SDPullNavigationBarTabButton.h"
 
 #import "SDPullNavigationBar.h"
+#import "UIDevice+machine.h"
 
-@interface SDPullNavigationBarTabButton()
-@property (nonatomic, strong) UITapGestureRecognizer* tapGesture;
-@end
+static const CGFloat kDefaultPadBarTabButtonWidth = 153.0f;
+static const CGFloat kDefaultPhoneBarTabButtonWidth = 103.0f;
+static const CGFloat kBarTabAdornmentWidth = 53.0f;
 
 @implementation SDPullNavigationBarTabButton
 
-- (id)initWithNavigationBar:(SDPullNavigationBar*)navigationBar
+- (instancetype)initWithNavigationBar:(SDPullNavigationBar*)navigationBar
 {
     self = [super initWithFrame:CGRectZero];
     if(self != nil)
     {
-        self.frame = (CGRect){ self.frame.origin, { 53.0f, 55.0f } };
-        _tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:navigationBar action:@selector(tapAction:)];
+        self.frame = (CGRect){ self.frame.origin, { [UIDevice iPad] ? kDefaultPadBarTabButtonWidth : kDefaultPhoneBarTabButtonWidth, 55.0f } };
         self.backgroundColor = [UIColor clearColor];
         self.opaque = NO;
-        [self addGestureRecognizer:_tapGesture];
     }
 
     return self;
@@ -36,6 +34,8 @@
 {
     if(!self.tuckedTab)
     {
+        CGFloat adornmentCenteringOffset = self.frame.size.width * 0.5f - kBarTabAdornmentWidth * 0.5f;
+
         //// General Declarations
         CGContextRef context = UIGraphicsGetCurrentContext();
 
@@ -55,15 +55,15 @@
         {
             //// tabBezier Drawing
             UIBezierPath* tabBezierPath = [UIBezierPath bezierPath];
-            [tabBezierPath moveToPoint: CGPointMake(10.95, 53)];
-            [tabBezierPath addLineToPoint: CGPointMake(42.05, 53)];
-            [tabBezierPath addLineToPoint: CGPointMake(44.24, 52.26)];
-            [tabBezierPath addLineToPoint: CGPointMake(46.43, 51.16)];
-            [tabBezierPath addLineToPoint: CGPointMake(53, 46)];
-            [tabBezierPath addLineToPoint: CGPointMake(0, 46)];
-            [tabBezierPath addLineToPoint: CGPointMake(6.57, 51.16)];
-            [tabBezierPath addLineToPoint: CGPointMake(8.76, 52.26)];
-            [tabBezierPath addLineToPoint: CGPointMake(10.95, 53)];
+            [tabBezierPath moveToPoint: CGPointMake(adornmentCenteringOffset + 10.95, 53)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 42.05, 53)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 44.24, 52.26)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 46.43, 51.16)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 53, 46)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 0, 46)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 6.57, 51.16)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 8.76, 52.26)];
+            [tabBezierPath addLineToPoint: CGPointMake(adornmentCenteringOffset + 10.95, 53)];
             [tabBezierPath closePath];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, backgroundShadowOffset, backgroundShadowBlurRadius, backgroundShadow.CGColor);
@@ -72,7 +72,7 @@
             CGContextRestoreGState(context);
 
             //// dot1Rectangle Drawing
-            UIBezierPath* dot1RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(20, 48, 2, 2)];
+            UIBezierPath* dot1RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(adornmentCenteringOffset + 20, 48, 2, 2)];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, dotShadowOffset, dotShadowBlurRadius, dotShadow.CGColor);
             [[UIColor whiteColor] setFill];
@@ -80,7 +80,7 @@
             CGContextRestoreGState(context);
 
             //// dot2Rectangle Drawing
-            UIBezierPath* dot2RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(25, 48, 2, 2)];
+            UIBezierPath* dot2RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(adornmentCenteringOffset + 25, 48, 2, 2)];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, dotShadowOffset, dotShadowBlurRadius, dotShadow.CGColor);
             [[UIColor whiteColor] setFill];
@@ -88,7 +88,7 @@
             CGContextRestoreGState(context);
 
             //// dot3Rectangle Drawing
-            UIBezierPath* dot3RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(30, 48, 2, 2)];
+            UIBezierPath* dot3RectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(adornmentCenteringOffset + 30, 48, 2, 2)];
             CGContextSaveGState(context);
             CGContextSetShadowWithColor(context, dotShadowOffset, dotShadowBlurRadius, dotShadow.CGColor);
             [[UIColor whiteColor] setFill];
@@ -96,6 +96,21 @@
             CGContextRestoreGState(context);
         }
     }
+}
+
+@end
+
+@implementation SDPullNavigationBarAdornmentView
+
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if(self != nil)
+    {
+        self.userInteractionEnabled = YES;
+    }
+
+    return self;
 }
 
 @end

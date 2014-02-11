@@ -233,7 +233,7 @@
 
 - (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
 {
-    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
     return sectionIndex;
 }
 

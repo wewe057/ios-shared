@@ -108,9 +108,7 @@
     NSAssert([classType isSubclassOfClass:[SDModelObject class]], @"defaultJSONProcessingBlockForClass: works on concrete subclasses of SDModelObject");
 
     SDWebServiceDataCompletionBlock completionBlock = ^id (NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
-        // Disabling this log for services reasons until I really figure out what is going on
-        // Thanks to Scott for finding this as the cause to hung up unit tests
-        //SDLog(@"%@: %zd:\n%@", response, responseCode, [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+        SDLog(@"%@: %zd:\n%@", response, responseCode, [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
 
         id responseObject = [responseData JSONObject];
 

@@ -90,15 +90,19 @@
 
     if(self.showGlobalNavControls)
     {
-        if(viewController.navigationItem.leftBarButtonItems)
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
         {
-            viewController.navigationItem.leftBarButtonItems = nil;
+            if(viewController.navigationItem.leftBarButtonItems)
+            {
+                viewController.navigationItem.leftBarButtonItems = nil;
+            }
+            if(viewController.navigationItem.leftBarButtonItems == nil)
+            {
+                [self.leftBarItemsView removeFromSuperview];
+                viewController.navigationItem.leftBarButtonItems = @[self.leftBarItemsView.owningBarButtonItem];
+            }
         }
-        if(viewController.navigationItem.leftBarButtonItems == nil)
-        {
-            [self.leftBarItemsView removeFromSuperview];
-            viewController.navigationItem.leftBarButtonItems = @[self.leftBarItemsView.owningBarButtonItem];
-        }
+        completion:^(BOOL finished) {}];
 
         if(viewController.navigationItem.rightBarButtonItems)
         {
@@ -116,8 +120,8 @@
        didShowViewController:(UIViewController*)viewController
                     animated:(BOOL)animated
 {
-    SDLog(@"navigationController:didShowViewController:animated:");
-    SDLog(@"   viewController = %@", viewController);
+//    SDLog(@"navigationController:didShowViewController:animated:");
+//    SDLog(@"   viewController = %@", viewController);
 }
 
 - (void)statusBarDidChangeRotationNotification:(NSNotification*)notification

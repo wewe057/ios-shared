@@ -1,7 +1,6 @@
 //
 //  SDPullNavigationBar.h
 //  ios-shared
-
 //
 //  Created by Brandon Sneed on 08/06/2013.
 //  Copyright 2013-2014 SetDirection. All rights reserved.

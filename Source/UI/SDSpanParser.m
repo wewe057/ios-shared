@@ -84,7 +84,7 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
     {
         for (SRSpanMatch *match in rawMatches)
         {
-            NSInteger spanLocation = match.spanRange.location;
+            NSUInteger spanLocation = match.spanRange.location;
             if (spanLocation > currentIndex)
             {
                 NSRange subRange = NSMakeRange(currentIndex, spanLocation - currentIndex);
