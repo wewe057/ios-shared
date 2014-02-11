@@ -149,6 +149,8 @@
 		CAAB5A3618564CEE006737D4 /* RxOrderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A2E18564CEE006737D4 /* RxOrderModel.m */; };
 		CAAB5A3718564CEE006737D4 /* RxPatientModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A3018564CEE006737D4 /* RxPatientModel.m */; };
 		CAAB5A3818564CEE006737D4 /* RxRefillsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */; };
+		CABD745018AAB4180083A097 /* SDBase64Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CABD744F18AAB4180083A097 /* SDBase64Tests.m */; };
+		CABD745218AAB5420083A097 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CABD745118AAB5420083A097 /* SystemConfiguration.framework */; };
 		E205781918872F2600A1BA81 /* SDPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780818872F2600A1BA81 /* SDPickerView.m */; };
 		E205781A18872F2600A1BA81 /* SDPaintCodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780C18872F2600A1BA81 /* SDPaintCodeButton.m */; };
 		E205781B18872F2600A1BA81 /* SDQuantityEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780E18872F2600A1BA81 /* SDQuantityEditView.m */; };
@@ -360,6 +362,8 @@
 		CAAB5A3018564CEE006737D4 /* RxPatientModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RxPatientModel.m; sourceTree = "<group>"; };
 		CAAB5A3118564CEE006737D4 /* RxRefillsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RxRefillsModel.h; sourceTree = "<group>"; };
 		CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RxRefillsModel.m; sourceTree = "<group>"; };
+		CABD744F18AAB4180083A097 /* SDBase64Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64Tests.m; sourceTree = "<group>"; };
+		CABD745118AAB5420083A097 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E205780718872F2600A1BA81 /* SDPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPickerView.h; sourceTree = "<group>"; };
 		E205780818872F2600A1BA81 /* SDPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPickerView.m; sourceTree = "<group>"; };
 		E205780A18872F2600A1BA81 /* SDAdjustableItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAdjustableItem.h; sourceTree = "<group>"; };
@@ -421,6 +425,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CABD745218AAB5420083A097 /* SystemConfiguration.framework in Frameworks */,
 				CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */,
 				CA0E77E5182850D500B4398F /* UIKit.framework in Frameworks */,
 			);
@@ -446,6 +451,7 @@
 				CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */,
 				CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */,
 				CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */,
+				CABD744F18AAB4180083A097 /* SDBase64Tests.m */,
 				E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */,
 				E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */,
 				E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */,
@@ -740,6 +746,7 @@
 		CA80792B17C94199009574BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CABD745118AAB5420083A097 /* SystemConfiguration.framework */,
 				E2CADC73185649FF0018A704 /* Accelerate.framework */,
 				CA80792C17C94199009574BB /* Foundation.framework */,
 				CA0E77E3182850CB00B4398F /* UIKit.framework */,
@@ -949,6 +956,7 @@
 				CA01F1BA17D7A6F000E7C553 /* ios_shared_Tests.m in Sources */,
 				CA0E77AA18284DD600B4398F /* SDPhotoImageView.m in Sources */,
 				CA0E777218284DD600B4398F /* NSDictionary+SDExtensions.m in Sources */,
+				CABD745018AAB4180083A097 /* SDBase64Tests.m in Sources */,
 				CA0E778A18284DD600B4398F /* UIDevice+machine.m in Sources */,
 				CA0E77D518284DD600B4398F /* SDImageCache.m in Sources */,
 			);
