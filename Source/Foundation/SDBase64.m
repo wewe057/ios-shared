@@ -38,6 +38,11 @@ t_b64_pton p_b64_pton = nil;
             }
         }
     });
+    
+    if (!p_b64_ntop || !p_b64_pton)
+    {
+        NSAssert((p_b64_pton && p_b64_ntop), @"Unable to load libResolv.dylib!");
+    }
 }
 
 - (NSData *)encodeToBase64Data
