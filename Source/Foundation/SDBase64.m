@@ -10,11 +10,23 @@
 
 #import "SDBase64.h"
 #import <resolv.h>
+#import <dlfcn.h>
 
 @implementation NSData(SDBase64)
 
+- (void)loadLibResolv
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // we have no way of unloading it, so no need to keep the handle.
+        dlopen("libResolve.dylib", RTLD_NOW);
+    });
+}
+
 - (NSData *)encodeToBase64Data
 {
+    [self loadLibResolv];
+    
     NSData *result = nil;
     
     NSUInteger dataToEncodeLength = self.length;
@@ -34,6 +46,8 @@
 
 - (NSData *)decodeBase64ToData
 {
+    [self loadLibResolv];
+
     NSData *result = nil;
     
     NSUInteger decodedBufferLength = (self.length * 3 / 4) + 1;
