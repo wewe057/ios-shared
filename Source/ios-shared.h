@@ -9,6 +9,7 @@
 #ifdef __OBJC__
 
 // Required frameworks
+@import Foundation;
 @import UIKit;
 @import SystemConfiguration;
 

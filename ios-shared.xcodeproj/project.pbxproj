@@ -134,11 +134,8 @@
 		CA0E77DD18284DD600B4398F /* SDWebService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776418284DD600B4398F /* SDWebService.m */; };
 		CA0E77DE18284DD600B4398F /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776618284DD600B4398F /* UIImageView+SDExtensions.m */; };
 		CA0E77DF18284DD600B4398F /* UIImageView+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776618284DD600B4398F /* UIImageView+SDExtensions.m */; };
-		CA0E77E11828509700B4398F /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0E77E01828509700B4398F /* libresolv.dylib */; };
-		CA0E77E21828509C00B4398F /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0E77E01828509700B4398F /* libresolv.dylib */; };
 		CA0E77E4182850CB00B4398F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0E77E3182850CB00B4398F /* UIKit.framework */; };
 		CA0E77E5182850D500B4398F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0E77E3182850CB00B4398F /* UIKit.framework */; };
-		CA0E77E6182850D700B4398F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */; };
 		CA0E791B1829B7A700B4398F /* SDContentAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E791A1829B7A700B4398F /* SDContentAlertView.m */; };
 		CA80792D17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
 		CAA3E935182C15F500602210 /* SDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E934182C15F500602210 /* SDTextField.m */; };
@@ -152,7 +149,6 @@
 		CAAB5A3618564CEE006737D4 /* RxOrderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A2E18564CEE006737D4 /* RxOrderModel.m */; };
 		CAAB5A3718564CEE006737D4 /* RxPatientModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A3018564CEE006737D4 /* RxPatientModel.m */; };
 		CAAB5A3818564CEE006737D4 /* RxRefillsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */; };
-		CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */; };
 		E205781918872F2600A1BA81 /* SDPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780818872F2600A1BA81 /* SDPickerView.m */; };
 		E205781A18872F2600A1BA81 /* SDPaintCodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780C18872F2600A1BA81 /* SDPaintCodeButton.m */; };
 		E205781B18872F2600A1BA81 /* SDQuantityEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780E18872F2600A1BA81 /* SDQuantityEditView.m */; };
@@ -342,7 +338,6 @@
 		CA0E776418284DD600B4398F /* SDWebService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebService.m; sourceTree = "<group>"; };
 		CA0E776518284DD600B4398F /* UIImageView+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+SDExtensions.h"; sourceTree = "<group>"; };
 		CA0E776618284DD600B4398F /* UIImageView+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+SDExtensions.m"; sourceTree = "<group>"; };
-		CA0E77E01828509700B4398F /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		CA0E77E3182850CB00B4398F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		CA0E79191829B7A700B4398F /* SDContentAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDContentAlertView.h; sourceTree = "<group>"; };
 		CA0E791A1829B7A700B4398F /* SDContentAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDContentAlertView.m; sourceTree = "<group>"; };
@@ -365,7 +360,6 @@
 		CAAB5A3018564CEE006737D4 /* RxPatientModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RxPatientModel.m; sourceTree = "<group>"; };
 		CAAB5A3118564CEE006737D4 /* RxRefillsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RxRefillsModel.h; sourceTree = "<group>"; };
 		CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RxRefillsModel.m; sourceTree = "<group>"; };
-		CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		E205780718872F2600A1BA81 /* SDPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPickerView.h; sourceTree = "<group>"; };
 		E205780818872F2600A1BA81 /* SDPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPickerView.m; sourceTree = "<group>"; };
 		E205780A18872F2600A1BA81 /* SDAdjustableItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAdjustableItem.h; sourceTree = "<group>"; };
@@ -427,9 +421,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CAFD1F52180F52A0003669B3 /* SystemConfiguration.framework in Frameworks */,
 				CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */,
-				CA0E77E21828509C00B4398F /* libresolv.dylib in Frameworks */,
 				CA0E77E5182850D500B4398F /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -440,8 +432,6 @@
 			files = (
 				E2CADC74185649FF0018A704 /* Accelerate.framework in Frameworks */,
 				CA0E77E4182850CB00B4398F /* UIKit.framework in Frameworks */,
-				CA0E77E11828509700B4398F /* libresolv.dylib in Frameworks */,
-				CA0E77E6182850D700B4398F /* SystemConfiguration.framework in Frameworks */,
 				CA80792D17C94199009574BB /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -750,11 +740,9 @@
 		CA80792B17C94199009574BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CA0E77E01828509700B4398F /* libresolv.dylib */,
 				E2CADC73185649FF0018A704 /* Accelerate.framework */,
 				CA80792C17C94199009574BB /* Foundation.framework */,
 				CA0E77E3182850CB00B4398F /* UIKit.framework */,
-				CAFD1F51180F52A0003669B3 /* SystemConfiguration.framework */,
 				CA80793A17C94199009574BB /* XCTest.framework */,
 			);
 			name = Frameworks;
