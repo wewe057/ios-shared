@@ -90,6 +90,9 @@
     [roundedRectanglePath stroke];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -106,6 +109,8 @@
     
     self.textLabel.frame = CGRectIntegral(CGRectMake(textLabelOriginX, (CGRectGetHeight(self.bounds) - textLabelSize.height) / 2.0, textLabelSize.width, textLabelSize.height));
 }
+
+#pragma clang diagnostic pop
 
 #pragma mark - Touch handling
 

@@ -8,11 +8,16 @@
 
 #ifdef __OBJC__
 
+// Required frameworks
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+// Low level bits
 #import "SDMacros.h"
 #import "ObjectiveCGenerics.h"
-
 #import "SDLog.h"
 
+// Foundation Extensions
 #import "NSError+SDExtensions.h"
 #import "NSObject+SDExtensions.h"
 #import "NSString+SDExtensions.h"
@@ -22,8 +27,7 @@
 #import "NSDictionary+SDExtensions.h"
 #import "NSData+SDExtensions.h"
 
-#import "SDApplication.h"
-
+// UIKit Extensions
 #import "UIAlertView+SDExtensions.h"
 #import "UIColor+SDExtensions.h"
 #import "UIScreen+SDExtensions.h"
@@ -32,6 +36,10 @@
 #import "UIViewController+SDExtensions.h"
 #import "SDAlertView.h"
 
+// Application Additions
+#import "SDApplication.h"
+
+// Services
 #import "SDURLConnection.h"
 #import "SDWebService.h"
 #import "SDWebService+SDProcessingBlocks.h"

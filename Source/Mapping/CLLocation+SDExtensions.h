@@ -6,9 +6,7 @@
 //  Copyright 2011 SetDirection. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
-
 
 @interface CLLocation(SDExtensions)
 
