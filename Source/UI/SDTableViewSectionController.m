@@ -120,7 +120,7 @@
 {
     NSUInteger section = (NSUInteger)indexPath.section;
     NSInteger row = indexPath.row;
-    UITableViewCell *cell;
+    UITableViewCell *cell = nil;
     
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionController:cellForRow:)])
@@ -187,7 +187,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *result;
+    UIView *result = nil;
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
     if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
     {
