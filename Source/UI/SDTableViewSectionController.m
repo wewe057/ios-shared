@@ -442,6 +442,7 @@
     _sectionsImplementTitleForHeader = NO;
     _sectionsImplementViewForHeader = NO;
     _sectionsImplementHeightForHeader = NO;
+    _sectionsImplementCommitEditingStyleForRow = NO;
     _sectionsImplementEditingStyleForRow = NO;
     _sectionsImplementWillDisplayCellForRow = NO;
     _sectionsImplementDidEndDisplayingCellForRow = NO;
