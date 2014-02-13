@@ -193,7 +193,7 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
         // if we're on iOS 7, use the fast, system version.
         if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)])
-            [self drawViewHierarchyInRect:self.frame afterScrenUpdates:YES];
+            [self drawViewHierarchyInRect:self.frame afterScreenUpdates:YES];
         else
 #endif
             [self.layer renderInContext:context];
