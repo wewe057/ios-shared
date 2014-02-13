@@ -9,11 +9,6 @@
 #import "UIView+SDExtensions.h"
 #import "UIDevice+machine.h"
 
-@interface UIView()
-- (UIView *) snapshotView;
-- (void) drawViewHierarchyInRect: (CGRect) rect;
-@end
-
 @implementation UIView (SDExtensions)
 
 - (void)positionBelowView:(UIView *)argView offset:(CGFloat)argOffset
@@ -43,7 +38,7 @@
 - (CGPoint)integralCenter
 {
 	CGRect integralFrame = CGRectIntegral(self.frame);
-    CGPoint centerPoint = CGPointMake(integralFrame.size.width / 2, integralFrame.size.height / 2);
+    CGPoint centerPoint = CGPointMake(integralFrame.size.width * 0.5, integralFrame.size.height * 0.5);
 	return centerPoint;
 }
 
@@ -197,8 +192,8 @@
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED > __IPHONE_6_1
         // if we're on iOS 7, use the fast, system version.
-        if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(drawViewHierarchyInRect:)])
-            [self drawViewHierarchyInRect:self.frame];
+        if ([UIDevice bcdSystemVersion] >= 0x070000 && [self respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)])
+            [self drawViewHierarchyInRect:self.frame afterScrenUpdates:YES];
         else
 #endif
             [self.layer renderInContext:context];
