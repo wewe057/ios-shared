@@ -29,6 +29,7 @@
 
 // UIKit Extensions
 #import "UIAlertView+SDExtensions.h"
+#import "UIApplication+SDExtensions.h"
 #import "UIColor+SDExtensions.h"
 #import "UIScreen+SDExtensions.h"
 #import "UIView+SDExtensions.h"
