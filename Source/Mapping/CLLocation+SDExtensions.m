@@ -6,6 +6,8 @@
 //  Copyright 2011 SetDirection. All rights reserved.
 //
 
+@import CoreLocation;
+
 #import "CLLocation+SDExtensions.h"
 
 

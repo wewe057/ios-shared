@@ -120,8 +120,14 @@ typedef struct
 
         // This is the hit area for showing the pulldown menu, as well as the area (at the bottom) where the nipple is shown.
         {
-            self.tabButton = [[SDPullNavigationBarTabButton alloc] initWithNavigationBar:self];
+            Class tabBarButtonClass = [SDPullNavigationBarTabButton class];
+            if([SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass)
+                tabBarButtonClass = [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass;
+
+            self.tabButton = [[tabBarButtonClass alloc] initWithNavigationBar:self];
             self.tabButton.tag = 2;
+
+            NSAssert([self.tabButton isKindOfClass:[SDPullNavigationBarTabButton class]], @"TabBarButton class must be derived from SDPullNavigationBarTabButton");
         }
 
         // The view that the client's menu lives in.

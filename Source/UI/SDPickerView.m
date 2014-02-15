@@ -261,6 +261,7 @@ typedef NS_ENUM(NSUInteger, SDPickerViewMode)
     self.items = items;
     itemPicker.delegate = self;
     itemPicker.dataSource = self;
+    itemPicker.showsSelectionIndicator = YES;
     self.itemPicker = itemPicker;
     self.initialItem = selectedItem;
     self.itemCompletion = completion;

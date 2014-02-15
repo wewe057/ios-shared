@@ -75,6 +75,9 @@
 
 - (void)deleteBackward
 {
+    if (self.text.length == 0)
+        return;
+    
     NSInteger decimalPosition = NSIntegerMax;
     for (NSInteger i = (NSInteger)self.text.length - 1; i > 0; i--)
     {

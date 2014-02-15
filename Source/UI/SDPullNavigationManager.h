@@ -15,6 +15,13 @@
 
 @interface SDPullNavigationManager : NSObject<UINavigationControllerDelegate>
 
+/**
+ Override to draw the tab button. Defaults to SDPullNavigationBarTabButton.
+ @optional
+ */
+
+@property (nonatomic, strong) Class pullNavigationBarTabButtonClass;
+
 @property (nonatomic, strong) Class pullNavigationBarViewClass;
 
 /**
