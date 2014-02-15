@@ -122,6 +122,7 @@
 		E21F0B0A18971952009A4014 /* OrderHistory_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E21F0B0718971952009A4014 /* OrderHistory_iPhone.storyboard */; };
 		E28A7C6318971EE500B46990 /* OrderHistory_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E28A7C6118971EE500B46990 /* OrderHistory_iPad.storyboard */; };
 		E2A1D43D18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */; };
+		E2FA030A18B0116C00326E9E /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2FA030918B0116C00326E9E /* SDLog.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -345,6 +346,7 @@
 		E28A7C6218971EE500B46990 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OrderHistory_iPad.storyboard; sourceTree = "<group>"; };
 		E2A1D43B18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPullNavigationBarTabButton.h; sourceTree = "<group>"; };
 		E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPullNavigationBarTabButton.m; sourceTree = "<group>"; };
+		E2FA030918B0116C00326E9E /* SDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLog.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -523,6 +525,7 @@
 		E21F09EC1897091C009A4014 /* Logging */ = {
 			isa = PBXGroup;
 			children = (
+				E2FA030918B0116C00326E9E /* SDLog.m */,
 				E21F09ED1897091C009A4014 /* SDLog.h */,
 			);
 			name = Logging;
@@ -899,6 +902,7 @@
 				E21F0ADA1897091D009A4014 /* UIColor+SDExtensions.m in Sources */,
 				E21F0AE31897091D009A4014 /* NSURLRequest+SDExtensions.m in Sources */,
 				E21F0AE71897091D009A4014 /* SDURLConnection.m in Sources */,
+				E2FA030A18B0116C00326E9E /* SDLog.m in Sources */,
 				E21F0A941897091D009A4014 /* NSDictionary+SDExtensions.m in Sources */,
 				E21F0AE91897091D009A4014 /* SDWebService.m in Sources */,
 				E21F0AE11897091D009A4014 /* NSURL+SDExtensions.m in Sources */,
