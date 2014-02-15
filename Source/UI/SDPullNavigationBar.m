@@ -548,12 +548,12 @@ typedef struct
 
 - (void)collapseMenu
 {
-    if(self.implementsWillAppear)
+    if(self.implementsWillDisappear)
         [self.menuController pullNavMenuWillDisappear];
 
     [self collapseMenuWithCompletion:^
     {
-        if(self.implementsDidAppear)
+        if(self.implementsDidDisappear)
             [self.menuController pullNavMenuDidDisappear];
     }];
 }
