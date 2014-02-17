@@ -75,6 +75,9 @@
 
 - (void)deleteBackward
 {
+    if (self.text.length == 0)
+        return;
+    
     NSInteger decimalPosition = NSIntegerMax;
     for (NSInteger i = (NSInteger)self.text.length - 1; i > 0; i--)
     {
@@ -94,7 +97,7 @@
     if (decimalPosition == NSIntegerMax)
         self.text = @"";
     else
-        self.text = [self.text substringWithRange:NSMakeRange(0, decimalPosition)];
+        self.text = [self.text substringWithRange:NSMakeRange(0, (NSUInteger)decimalPosition)];
     
     self.currentFormattedText = self.text;
     [self sendActionsForControlEvents:UIControlEventEditingChanged];

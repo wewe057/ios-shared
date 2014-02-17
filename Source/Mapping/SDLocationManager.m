@@ -5,6 +5,8 @@
 //  Copyright 2011 SetDirection. All rights reserved.
 //
 
+@import CoreLocation;
+
 #import "SDLocationManager.h"
 #import "NSArray+SDExtensions.h"
 

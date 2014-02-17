@@ -1,7 +1,6 @@
 //
 //  SDPullNavigationBar.h
 //  ios-shared
-
 //
 //  Created by Brandon Sneed on 08/06/2013.
 //  Copyright 2013-2014 SetDirection. All rights reserved.
@@ -27,6 +26,13 @@
 
 @optional
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidth;    // Defaults to 320.0f
+
+- (void)pullNavMenuWillAppear;
+- (void)pullNavMenuDidAppear;
+
+- (void)pullNavMenuWillDisappear;
+- (void)pullNavMenuDidDisappear;
+
 @end
 
 @interface SDPullNavigationBar : UINavigationBar

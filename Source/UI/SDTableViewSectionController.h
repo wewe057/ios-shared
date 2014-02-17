@@ -11,31 +11,20 @@
 
 #define SECTIONCONTROLLER_MAX_HEIGHT MAXFLOAT
 
+// New to this class?  Start with reloadWithSectionControllers:
+
 @class SDTableViewSectionController;
 
 //____________________________________________________________________________________________
 // SDTableViewSectionControllerDelegate is typically implemented by a UIViewController
-// to provide the logic for how the table view should be laid out.
-
-// The implementor of this protocol is required to supply an array of section controllers
-// to the SDTableViewSectionController via the controllersForTableView: delegate method
+// to provide the logic for how the table view should respond to requests by the
+// table view section controller.
 
 // Optional delete methods add navigation support.  You should implement these methods
 // If you want your view controller to support push/pop/modal navigation
 // (Proxy these methods to your navigationController)
 
 @protocol SDTableViewSectionControllerDelegate <NSObject>
-
-@required
-
-/**
- *  Return the array of controllers for the sections of the given table view
- *
- *  @param tableView The table view the controller needs controllers for
- *
- *  @return An array of objects that conform to SDTableViewSectionDelegate
- */
-- (NSArray *)controllersForTableView:(UITableView *)tableView;
 
 @optional
 
@@ -127,14 +116,23 @@
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
 
 @optional
-// Variable height support
-// Required for now because of the current design
+// Configuring Rows for the Table View
 - (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController willDisplayCell:(UITableViewCell *)cell forRow:(NSInteger)row;
 
 @optional
 // Editing support
 - (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
 - (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
+
+@optional
+// Tracking the Removal of Views
+- (void)sectionController:(SDTableViewSectionController *)sectionController didEndDisplayingCell:(UITableViewCell *)cell forRow:(NSInteger)row;
+
+@optional
+// Section Lifecycle support
+- (void)sectionDidLoad;
+- (void)sectionDidUnload;
 @end
 
 //__________________________________________________________________________
@@ -152,6 +150,14 @@
  *  Array of objects conforming to SDTableViewSectionProtocol
  */
 @property (nonatomic, strong, readonly) NSArray                                     *sectionControllers;
+
+/**
+ *  Call this method instead of reloadData on the tableView.  Pass it an array of objects that conform to SDTableViewSectionDelegate
+ *
+ *  @param sectionControllers Array of SDTableViewSectionDelegates
+ *  @param animated YES if the table should reload with animations (currently unimplemented) or NO if a standard reloadData should occur (implemented)
+ */
+- (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated;
 
 /**
  *  Asks the section controller's delegate to push this view controller.  Use this method
@@ -198,12 +204,30 @@
 - (void)popToRootViewControllerAnimated:(BOOL)animated;
 
 /**
+ *  Returns the index of the given section controller
+ *
+ *  @param id<SDTableViewSectionDelegate> object
+ *
+ *  @return NSUInteger
+ */
+- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
+ *  Returns a section controller for the given identifier
+ *
+ *  @param identifier Unique identifier for a section
+ *
+ *  @return Object confirming to SDTableViewSectionDelegate
+ */
+- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier;
+
+/**
  *  Returns the height of all sections above the given section
  *
  *  @param section   Calculate the height of sections above this section
  *  @param maxHeight Maximum height to calculate. Pass SECTIONCONTROLLER_MAX_HEIGHT to calculate the total height of all sections above this section
  *
- *  @return <#return value description#>
+ *  @return The height of the sections above the given section
  */
 - (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight;
 
@@ -213,9 +237,30 @@
  *  @param section   Calculate the height of sections below this section
  *  @param maxHeight Maximum height to calculate. Pass SECTIONCONTROLLER_MAX_HEIGHT to calculate the total height of all sections below this section
  *
- *  @return <#return value description#>
+ *  @return The height of the sections below the given section
  */
 - (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight;
 
+/**
+ *  Add the section to the table view section controller's list of sections and to the table view
+ *
+ *  @param section The section object to add
+ */
+- (void)addSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
+ *  Removes the section from the table view section controller's list of sections and from the table view
+ *
+ *  @param section The section object to remove
+ */
+- (void)removeSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
+ *  Reloads a section controller for the given identifier
+ *
+ *  @param identifier Unique identifier for a section
+ *  @param animation  UITableViewRowAnimation for a section's row(s)
+ */
+- (void)reloadSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation;
 @end
 

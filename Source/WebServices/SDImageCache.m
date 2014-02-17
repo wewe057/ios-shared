@@ -170,7 +170,7 @@
         UIImage *diskCachedImage = [UIImage imageWithData:cachedResponse.responseData];
         if (diskCachedImage)
         {
-            SDLog(@"image found in disk cache: %@", url);
+            //SDLog(@"image found in disk cache: %@", url);
             if (completionBlock)
                 completionBlock(diskCachedImage, nil);
             return;

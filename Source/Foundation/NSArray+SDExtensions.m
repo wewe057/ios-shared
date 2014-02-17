@@ -183,4 +183,17 @@ Returns a deepCopy of an array. It will recursively deepCopy contained arrays to
     return [collector copy];
 }
 
+/**
+ Returns a copy of the array but with the supplied object removed.
+ */
+- (NSArray *)arrayByRemovingObject:(id)anObject
+{
+    NSArray* editedArray = [self arrayByMappingBlock:^id(id item)
+    {
+        return [anObject isEqual:item] ? nil : item;
+    }];
+
+    return editedArray;
+}
+
 @end

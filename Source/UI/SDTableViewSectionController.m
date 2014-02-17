@@ -18,6 +18,8 @@
     BOOL _sectionsImplementHeightForHeader;
     BOOL _sectionsImplementEditingStyleForRow;
     BOOL _sectionsImplementCommitEditingStyleForRow;
+    BOOL _sectionsImplementWillDisplayCellForRow;
+    BOOL _sectionsImplementDidEndDisplayingCellForRow;
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -39,7 +41,68 @@
     return self;
 }
 
-#pragma mark - UITableViewDataSource
+- (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
+{
+    @strongify(self.tableView, strongTableView);
+    
+    [self p_sendSectionDidUnload:self.sectionControllers];
+
+    self.sectionControllers = sectionControllers;
+    
+    [self p_sendSectionDidLoad:self.sectionControllers];
+    
+      // Force caching of our flags and the table view's flags
+    [self p_updateFlags];
+    strongTableView.delegate = nil;
+    strongTableView.dataSource = nil;
+    strongTableView.delegate = self;
+    strongTableView.dataSource = self;
+    
+    if (animated)
+    {
+        // Placeholder for future animated work
+        // Currently allows for people to call reload without a tableView reloadData, but can still get the flags updated
+    }
+    else
+    {
+        [strongTableView reloadData];
+    }
+}
+
+#pragma mark - UITableView DataSource
+
+// This is where we hook to ask our dataSource for the Array of controllers
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    NSInteger sectionCount;
+    
+    sectionCount = (NSInteger)self.sectionControllers.count;
+    
+    return sectionCount;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)])
+    {
+        [sectionController sectionController:self commitEditingStyle:editingStyle forRow:row];
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    NSString *title;
+    if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
+    {
+        title = [sectionController sectionControllerTitleForHeader:self];
+    }
+    
+    return title;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -57,7 +120,7 @@
 {
     NSUInteger section = (NSUInteger)indexPath.section;
     NSInteger row = indexPath.row;
-    UITableViewCell *cell;
+    UITableViewCell *cell = nil;
     
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
     if ([sectionController respondsToSelector:@selector(sectionController:cellForRow:)])
@@ -67,57 +130,9 @@
     return cell;
 }
 
-// This is where we hook to ask our dataSource for the Array of controllers
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    @strongify(self.delegate, delegate);
-    @strongify(self.tableView, strongTableView);
-    NSInteger sectionCount = 0;
-    
-    if (tableView == strongTableView)
-    {
-        if ([delegate conformsToProtocol:@protocol(SDTableViewSectionControllerDelegate)])
-        {
-            self.sectionControllers = [delegate controllersForTableView:tableView];
-            
-            // Force caching of our flags and the table view's flags
-            [self p_updateFlags];
-            strongTableView.delegate = nil;
-            strongTableView.dataSource = nil;
-            strongTableView.delegate = self;
-            strongTableView.dataSource = self;
-            
-            sectionCount = (NSInteger)self.sectionControllers.count;
-        }
-    }
-    
-    return sectionCount;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
-    NSString *title;
-    if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
-    {
-        title = [sectionController sectionControllerTitleForHeader:self];
-    }
-    
-    return title;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    UIView *result;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
-    if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
-    {
-        result = [sectionController sectionControllerViewForHeader:self];
-    }    
-    return result;
-}
-
 #pragma mark - UITableView Delegate
+
+#pragma mark Managing Selections
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -129,6 +144,9 @@
         [sectionController sectionController:self didSelectRow:row];
     }
 }
+
+
+#pragma mark Configuring Rows for the Table View
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -143,6 +161,19 @@
     return rowHeight;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)])
+    {
+        [sectionController sectionController:self willDisplayCell:cell forRow:row];
+    }
+}
+
+#pragma mark Modifying the Header and Footer of Sections
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     CGFloat headerHeight = 0.0;
@@ -152,8 +183,21 @@
         headerHeight =[sectionController sectionControllerHeightForHeader:self];
     }
     return headerHeight;
-
 }
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *result = nil;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
+    {
+        result = [sectionController sectionControllerViewForHeader:self];
+    }
+    return result;
+}
+
+
+#pragma mark Editing Table Rows
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -170,15 +214,18 @@
     return editingStyle;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+#pragma mark Tracking the Removal of Views
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
-    if ([sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)])
+    if ([sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)])
     {
-        [sectionController sectionController:self commitEditingStyle:editingStyle forRow:row];
+        [sectionController sectionController:self didEndDisplayingCell:cell forRow:row];
     }
+
 }
 
 #pragma mark - SectionController Methods
@@ -228,12 +275,36 @@
     }
 }
 
+- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    return sectionIndex;
+}
+
+- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier
+{
+    id<SDTableViewSectionDelegate>section = nil;
+    
+    NSUInteger indexOfSection = [self.sectionControllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
+        BOOL sectionAlreadyInArray = [obj.identifier isEqualToString: identifier];
+        *stop = sectionAlreadyInArray;
+        return sectionAlreadyInArray;
+    }];
+    
+    if (indexOfSection != NSNotFound)
+    {
+        section = [self.sectionControllers objectAtIndex:indexOfSection];
+    }
+    
+    return section;
+}
+
 #pragma mark - Height Methods
 
 - (CGFloat)heightAboveSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self indexOfSection:section];
     if (sectionIndex > 0 && sectionIndex != NSNotFound)
     {
         NSRange rangeOfIndexes = NSMakeRange(0, sectionIndex);
@@ -247,7 +318,7 @@
 - (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat height = 0;
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self indexOfSection:section];
     if ((sectionIndex < (self.sectionControllers.count - 1) && sectionIndex != NSNotFound))
     {
         NSRange rangeOfIndexes = NSMakeRange(sectionIndex + 1, self.sectionControllers.count - sectionIndex - 1);
@@ -348,6 +419,12 @@
     } else if (aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:))
     {
         result = _sectionsImplementCommitEditingStyleForRow;
+    } else if (aSelector == @selector(tableView:willDisplayCell:forRowAtIndexPath:))
+    {
+        result = _sectionsImplementWillDisplayCellForRow;
+    } else if (aSelector == @selector(tableView:didEndDisplayingCell:forRowAtIndexPath:))
+    {
+        result = _sectionsImplementDidEndDisplayingCellForRow;
     }
     else
     {
@@ -365,7 +442,10 @@
     _sectionsImplementTitleForHeader = NO;
     _sectionsImplementViewForHeader = NO;
     _sectionsImplementHeightForHeader = NO;
+    _sectionsImplementCommitEditingStyleForRow = NO;
     _sectionsImplementEditingStyleForRow = NO;
+    _sectionsImplementWillDisplayCellForRow = NO;
+    _sectionsImplementDidEndDisplayingCellForRow = NO;
     
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
@@ -378,6 +458,8 @@
         _sectionsImplementHeightForHeader |= [sectionController respondsToSelector:@selector(sectionControllerHeightForHeader:)];
         _sectionsImplementEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:editingStyleForRow:)];
         _sectionsImplementCommitEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)];
+        _sectionsImplementWillDisplayCellForRow |= [sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)];
+        _sectionsImplementDidEndDisplayingCellForRow |= [sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)];
         
         // AND delegate methods
         // If one of the sections implements these delegate methods, then all must
@@ -392,5 +474,83 @@
         }
     }
 }
+
+- (void)addSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger index = [self.sectionControllers count];
+    
+    // make sure we are not adding the same section twice
+    id<SDTableViewSectionDelegate>sectionWithSameIdentifier;
+    sectionWithSameIdentifier = [self sectionWithIdentifier:section.identifier];
+    NSAssert(sectionWithSameIdentifier == nil, @"Adding section of identifier: %@ that already exists", section.identifier);
+    
+    // First change the model of section controllers
+    NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];
+    [newSectionControllers addObject:section];
+    self.sectionControllers = [newSectionControllers copy];
+    
+    // Now add the section to the tableview
+    @strongify(self.tableView, tableView);
+    NSIndexSet *setOfSectionsToAdd = [[NSIndexSet alloc] initWithIndex:index];
+    [tableView beginUpdates];
+    [tableView insertSections:setOfSectionsToAdd withRowAnimation:UITableViewRowAnimationFade];
+    [tableView endUpdates];
+}
+
+- (void)removeSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger index = [self.sectionControllers indexOfObject:section];
+    if (index > 0)
+    {
+        // First change the model of section controllers
+        NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];
+        [newSectionControllers removeObjectAtIndex:index];
+        self.sectionControllers = [newSectionControllers copy];
+
+        // Now nuke the section from the tableview
+        @strongify(self.tableView, tableView);
+        NSIndexSet *setOfSectionsToDelete = [[NSIndexSet alloc] initWithIndex:index];
+        [tableView beginUpdates];
+        [tableView deleteSections:setOfSectionsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        [tableView endUpdates];
+     }
+}
+
+- (void)reloadSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation
+{
+    id<SDTableViewSectionDelegate> section = [self sectionWithIdentifier:identifier];
+    if (section) {
+        NSUInteger sectionIndex = [self indexOfSection:section];
+        NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sectionIndex];
+        @strongify(self.tableView, tableView);
+        [tableView beginUpdates];
+        [tableView reloadSections:indexSet withRowAnimation:animation];
+        [tableView endUpdates];
+    }
+}
+
+- (void)p_sendSectionDidLoad:(NSArray *)sectionControllers
+{
+    for (id sectionController in sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionDidLoad)])
+        {
+            [sectionController sectionDidLoad];
+        }
+    }
+}
+
+- (void)p_sendSectionDidUnload:(NSArray *)sectionControllers
+{
+    for (id sectionController in sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionDidUnload)])
+        {
+            [sectionController sectionDidUnload];
+        }
+    }
+}
+
+
 
 @end

@@ -90,15 +90,19 @@
 
     if(self.showGlobalNavControls)
     {
-        if(viewController.navigationItem.leftBarButtonItems)
+        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
         {
-            viewController.navigationItem.leftBarButtonItems = nil;
+            if(viewController.navigationItem.leftBarButtonItems)
+            {
+                viewController.navigationItem.leftBarButtonItems = nil;
+            }
+            if(viewController.navigationItem.leftBarButtonItems == nil)
+            {
+                [self.leftBarItemsView removeFromSuperview];
+                viewController.navigationItem.leftBarButtonItems = @[self.leftBarItemsView.owningBarButtonItem];
+            }
         }
-        if(viewController.navigationItem.leftBarButtonItems == nil)
-        {
-            [self.leftBarItemsView removeFromSuperview];
-            viewController.navigationItem.leftBarButtonItems = @[self.leftBarItemsView.owningBarButtonItem];
-        }
+        completion:^(BOOL finished) {}];
 
         if(viewController.navigationItem.rightBarButtonItems)
         {
@@ -116,8 +120,8 @@
        didShowViewController:(UIViewController*)viewController
                     animated:(BOOL)animated
 {
-    SDLog(@"navigationController:didShowViewController:animated:");
-    SDLog(@"   viewController = %@", viewController);
+//    SDLog(@"navigationController:didShowViewController:animated:");
+//    SDLog(@"   viewController = %@", viewController);
 }
 
 - (void)statusBarDidChangeRotationNotification:(NSNotification*)notification
@@ -139,6 +143,12 @@
 
 - (void)navigateToTopLevelController:(Class)topLevelViewControllerClass andPopToRootWithAnimation:(BOOL)animate
 {
+    // Dismiss any modals that might be currently visible.
+    UINavigationController* selectedNavController = (UINavigationController*)self.globalPullNavController.selectedViewController;
+    if(selectedNavController.visibleViewController.presentingViewController)
+        [selectedNavController.visibleViewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+
+    // Now navigate.
     if([self navigateToTopLevelController:topLevelViewControllerClass])
         [(UINavigationController*)self.globalPullNavController.selectedViewController popToRootViewControllerAnimated:animate];
 }
@@ -147,6 +157,12 @@
 
 - (void)navigateWithSteps:(NSArray*)steps
 {
+    // Dismiss any modals that might be currently visible.
+    
+    UINavigationController* selectedNavController = (UINavigationController*)self.globalPullNavController.selectedViewController;
+    if(selectedNavController.visibleViewController.presentingViewController)
+        [selectedNavController.visibleViewController.presentingViewController dismissViewControllerAnimated:NO completion:nil];
+
     NSAssert(steps, @"Not gonna automate a lot with a nil steps array.");
     NSAssert(steps.count, @"Not gonna automate a lot with no steps in the array.");
 
