@@ -533,9 +533,9 @@
 {
     for (id sectionController in sectionControllers)
     {
-        if ([sectionController respondsToSelector:@selector(sectionDidLoad)])
+        if ([sectionController respondsToSelector:@selector(sectionDidLoad:)])
         {
-            [sectionController sectionDidLoad];
+            [sectionController sectionDidLoad:self];
         }
     }
 }
@@ -544,9 +544,9 @@
 {
     for (id sectionController in sectionControllers)
     {
-        if ([sectionController respondsToSelector:@selector(sectionDidUnload)])
+        if ([sectionController respondsToSelector:@selector(sectionDidUnload:)])
         {
-            [sectionController sectionDidUnload];
+            [sectionController sectionDidUnload:self];
         }
     }
 }

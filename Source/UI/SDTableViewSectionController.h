@@ -131,8 +131,8 @@
 
 @optional
 // Section Lifecycle support
-- (void)sectionDidLoad;
-- (void)sectionDidUnload;
+- (void)sectionDidLoad:(SDTableViewSectionController *)sectionController;
+- (void)sectionDidUnload:(SDTableViewSectionController *)sectionController;
 @end
 
 //__________________________________________________________________________
