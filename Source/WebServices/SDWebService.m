@@ -317,7 +317,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		[actualReplacements setObject:value forKey:key];
 	}
 
-    BOOL escape = ![actualReplacements boolForKey:@"pre-escaped"];
+    BOOL escape = ![actualReplacements boolForKey:@"alreadyEscaped"];
     
 	// now lets take that final list and apply it to the route format.
 	keyList = [actualReplacements allKeys];
