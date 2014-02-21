@@ -52,6 +52,22 @@
 + (instancetype)loadFromStoryboardNamed:(NSString *)storyboardName identifier:(NSString *)identifier;
 
 /**
+ Instantiates a UIViewController from a storyboard.  It assumes your controller is the initialViewController.
+
+ @param storyboardName the name of the storyboard file to search in.  if nil, the viewController's class name will be used as the name with _iPhone or _iPad appended to the end.
+ @param loadView controls whether the viewcontroller is loaded or not.
+ */
++ (instancetype)storyboardNamed:(NSString *)storyboardName loadView:(BOOL)loadView;
+/**
+ Instantiates a UIViewController with a specific identifier from a storyboard.
+
+ @param storyboardName the name of the storyboard file to search in.  if nil, the viewController's class name will be used as the name with _iPhone or _iPad appended to the end.
+ @param identifier the identifier of the viewController within the storyboard to load.  If none is specified it'll use the className as an identifier.
+ @param loadView controls whether the viewcontroller is loaded or not.
+ */
++ (instancetype)storyboardNamed:(NSString *)storyboardName identifier:(NSString *)identifier loadView:(BOOL)loadView;
+
+/**
  Recursive description for UIViewController hierarchies
 
  An equivalent of UIView's recursiveDescription method, but for inspecting the view controller hierarchy in an application.
