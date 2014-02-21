@@ -317,6 +317,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		[actualReplacements setObject:value forKey:key];
 	}
 
+    BOOL escape = ![actualReplacements boolForKey:@"alreadyEscaped"];
+    
 	// now lets take that final list and apply it to the route format.
 	keyList = [actualReplacements allKeys];
 	NSString *result = routeFormat;
@@ -329,15 +331,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             value = [self parameterizeDictionary:object];
 		else
 		if ([object isKindOfClass:[NSString class]])
-			value = [object escapedString];
+			value = escape ? [object escapedString] : object;
         else
 		{
 			// if its not, run some tests to see what we can do...
 			if ([object isKindOfClass:[NSNumber class]])
-				value = [[object stringValue] escapedString];
+				value = escape ? [[object stringValue] escapedString] : [object stringValue];
 			else
             if ([object respondsToSelector:@selector(stringValue)])
-                value = [[object stringValue] escapedString];
+                value = escape ? [[object stringValue] escapedString] : [object stringValue];
 		}
 		if (value)
 			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:value];
