@@ -17,7 +17,7 @@
     
     dispatch_once(&onceToken, ^{
         sFormatter = [[NSNumberFormatter alloc] init];
-        [sFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]]
+        [sFormatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
         [sFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
     });
     
