@@ -676,6 +676,19 @@ typedef struct
     return navHeight;
 }
 
+#pragma mark - Hit testing
+
+// If user taps in any of my subviews, dismiss the menu. Let the normal events go on as they are wont to do.
+- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView* hitView = [super hitTest:point withEvent:event];
+    
+    if([hitView isDescendantOfView:self])
+        [self dismissPullMenuWithCompletionBlock:nil];
+    
+    return hitView;
+}
+
 @end
 
 @implementation SDPullNavigationMenuContainer
