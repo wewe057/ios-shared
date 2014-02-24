@@ -24,7 +24,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eck-h8-akI" userLabel="CreditCardField" customClass="SDCreditCardField">
-                                <rect key="frame" x="30" y="100" width="260" height="32"/>
+                                <rect key="frame" x="25" y="100" width="270" height="32"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                             </view>
@@ -32,11 +32,29 @@
                                 <rect key="frame" x="136" y="150" width="48" height="48"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jWg-ni-Ymt">
+                                <rect key="frame" x="20" y="204" width="235" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bhh-QR-oZw">
+                                <rect key="frame" x="270" y="204" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Fill">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="pressedFillButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="cLB-5C-ZvO"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
                         <outlet property="creditCardField" destination="eck-h8-akI" id="Nt3-26-lsv"/>
+                        <outlet property="fillButton" destination="Bhh-QR-oZw" id="hkV-Ei-x6U"/>
+                        <outlet property="sampleCreditCardNumberField" destination="jWg-ni-Ymt" id="OA6-fv-9a6"/>
                         <outlet property="validImage" destination="F9C-LE-TAE" id="EDq-gu-xzf"/>
                     </connections>
                 </viewController>

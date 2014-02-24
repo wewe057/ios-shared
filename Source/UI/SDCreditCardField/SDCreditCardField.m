@@ -71,7 +71,7 @@
 - (void) setDelegate:(id<SDCreditCardFieldDelegate>)delegate
 {
     _delegate = delegate;
-    if(_placeholderView == nil)
+    if(self.placeholderView == nil)
     {
         [self setupPlaceholderView];
         [self addSubview:self.placeholderView];
@@ -183,11 +183,13 @@
 
     NSDictionary* attributes = self.defaultTextAttributes;
 
+    CGSize lastGroupSize;
     CGSize cardNumberSize;
 
     if(self.cardNumber.cardType == SDCardTypeAmex)
     {
         cardNumberSize = [@"1234 567890 12345" sizeWithAttributes:attributes];
+        lastGroupSize = [@" 00000" sizeWithAttributes:attributes];
     }
     else
     {
@@ -199,13 +201,17 @@
         {
             cardNumberSize = [_cardNumberField.placeholder sizeWithAttributes:attributes];
         }
+
+        lastGroupSize = [@" 0000" sizeWithAttributes:attributes];
     }
 
-    cardNumberSize = (CGSize){ ceil(cardNumberSize.width), ceil(cardNumberSize.height) };
-    CGFloat textFieldY = ceil((self.frame.size.height - cardNumberSize.height) * 0.5f);
-    CGFloat innerWidth = ceil(self.frame.size.width - _placeholderView.frame.size.width);
+    lastGroupSize = (CGSize){ ceil(lastGroupSize.width), ceil(lastGroupSize.height) };
+    cardNumberSize = (CGSize){ ceil(cardNumberSize.width + lastGroupSize.width), ceil(cardNumberSize.height) };
 
-    _cardNumberField.frame = (CGRect){ { ceil((innerWidth * 0.5f) - (cardNumberSize.width * 0.5f)), ceil(textFieldY) }, cardNumberSize };
+    CGFloat textFieldY = floor((self.frame.size.height - lastGroupSize.height) * 0.5f);
+    CGFloat innerWidth = self.frame.size.width - _placeholderView.frame.size.width;
+
+    _cardNumberField.frame = (CGRect){ { ceil((innerWidth * 0.5f) - (cardNumberSize.width * 0.5f)), textFieldY }, cardNumberSize };
 
     CGFloat x = _innerView.frame.origin.x;
 
@@ -293,13 +299,13 @@
 
     if(![_placeholderView.image isEqual:image])
     {
-        __block __unsafe_unretained UIView* previousPlaceholderView = _placeholderView;
+        __block UIView* previousPlaceholderView = _placeholderView;
         [UIView animateWithDuration:0.25
                               delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^
         {
-             _placeholderView.layer.opacity = 0.0;
+             _placeholderView.layer.opacity = 0.0f;
              _placeholderView.layer.transform = CATransform3DMakeScale(1.2f, 1.2f, 1.2f);
         }
         completion:^(BOOL finished)
@@ -311,7 +317,7 @@
         
         [self setupPlaceholderView];
         _placeholderView.image = image;
-        _placeholderView.layer.opacity = 0.0;
+        _placeholderView.layer.opacity = 0.0f;
         _placeholderView.layer.transform = CATransform3DMakeScale(0.8f, 0.8f, 0.8f);
         [self insertSubview:_placeholderView belowSubview:previousPlaceholderView];
         [UIView animateWithDuration:0.25
@@ -319,7 +325,7 @@
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^
         {
-            _placeholderView.layer.opacity = 1.0;
+            _placeholderView.layer.opacity = 1.0f;
             _placeholderView.layer.transform = CATransform3DIdentity;
         } completion:^(BOOL finished) {}];
     }

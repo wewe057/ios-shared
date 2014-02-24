@@ -13,6 +13,8 @@
 @interface SDViewController ()<SDCreditCardFieldDelegate>
 @property (nonatomic, strong) IBOutlet SDCreditCardField* creditCardField;
 @property (nonatomic, strong) IBOutlet UIImageView* validImage;
+@property (nonatomic, strong) IBOutlet UITextField* sampleCreditCardNumberField;
+@property (nonatomic, strong) IBOutlet UIButton* fillButton;
 @end
 
 @implementation SDViewController
@@ -71,6 +73,15 @@
 - (void)creditCardFieldDidChangeState:(SDCreditCardField*)creditCardField
 {
     SDLog(@"creditCardFieldDidChangeState:");
+}
+
+- (IBAction)pressedFillButton:(id)sender
+{
+    SDCard* card = [[SDCard alloc] init];
+    card.number = self.sampleCreditCardNumberField.text;
+
+    self.creditCardField.card = card;
+    [self.creditCardField setNeedsDisplay];
 }
 
 @end
