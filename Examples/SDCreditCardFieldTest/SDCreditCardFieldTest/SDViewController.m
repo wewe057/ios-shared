@@ -10,8 +10,9 @@
 
 #import "SDCreditCardField.h"
 
-@interface SDViewController ()
+@interface SDViewController ()<SDCreditCardFieldDelegate>
 @property (nonatomic, strong) IBOutlet SDCreditCardField* creditCardField;
+@property (nonatomic, strong) IBOutlet UIImageView* validImage;
 @end
 
 @implementation SDViewController
@@ -21,6 +22,17 @@
     [super viewDidLoad];
 
     [self.creditCardField becomeFirstResponder];
+    self.creditCardField.delegate = self;
+}
+
+- (void)paymentView:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid
+{
+    self.validImage.hidden = valid == NO;
+}
+
+- (void)paymentViewDidChangeState:(SDCreditCardField*)paymentView
+{
+    SDLog(@"paymentViewDidChangeState:");
 }
 
 @end

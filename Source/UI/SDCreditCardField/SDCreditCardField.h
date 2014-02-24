@@ -37,7 +37,6 @@
 @property (nonatomic, strong) UIView* innerView;
 @property (nonatomic, strong) UIView* clipView;
 @property (nonatomic, strong) SDCCTextField* cardNumberField;
-@property (nonatomic, strong) UITextField* cardLastFourField;
 @property (nonatomic, strong) UIImageView* placeholderView;
 @property (nonatomic, strong) SDCard* card;
 @property (nonatomic, weak) id<SDCreditCardFieldDelegate> delegate;

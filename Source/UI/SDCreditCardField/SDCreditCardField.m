@@ -58,10 +58,6 @@
     _innerView = [[UIView alloc] initWithFrame:(CGRect){ CGPointZero, { 0.0f, self.frame.size.height } }];
     _innerView.clipsToBounds = YES;
 
-    _cardLastFourField = [[UITextField alloc] init];
-    _cardLastFourField.defaultTextAttributes = _defaultTextAttributes;
-    _cardLastFourField.backgroundColor = self.backgroundColor;
-
     [self setupCardNumberField];
 
     self.defaultTextAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:16.0f],
@@ -150,7 +146,7 @@
     textField.delegate = self;
     textField.placeholder = placeholder;
     textField.keyboardType = UIKeyboardTypeNumberPad;
-    textField.defaultTextAttributes = _defaultTextAttributes;
+    textField.defaultTextAttributes = self.defaultTextAttributes;
     textField.layer.masksToBounds = NO;
 
     return textField;
@@ -171,7 +167,7 @@
 
 - (SDCardNumber*)cardNumber
 {
-    return [SDCardNumber cardNumberWithString:_cardNumberField.text];
+    return [SDCardNumber cardNumberWithString:self.cardNumberField.text];
 }
 
 - (void)layoutSubviews
@@ -202,11 +198,10 @@
         lastGroupSize = [@"0000" sizeWithAttributes:attributes];
     }
 
-    CGFloat textFieldY = (self.frame.size.height - lastGroupSize.height) / 2.0;
+    CGFloat textFieldY = (self.frame.size.height - lastGroupSize.height) * 0.5f;
     CGFloat innerWidth = self.frame.size.width - _placeholderView.frame.size.width;
 
     _cardNumberField.frame = (CGRect){ { (innerWidth * 0.5f) - (cardNumberSize.width * 0.5f), textFieldY }, cardNumberSize };
-    _cardLastFourField.frame = (CGRect){ { CGRectGetMaxX(_cardNumberField.frame) - lastGroupSize.width, textFieldY }, lastGroupSize };
 
     CGFloat x = _innerView.frame.origin.x;
 
@@ -215,7 +210,7 @@
         x = _placeholderView.frame.size.width;
     }
 
-    _innerView.frame = CGRectMake(x, 0.0f, CGRectGetMaxX(self.cardLastFourField.frame), self.frame.size.height);
+    _innerView.frame = CGRectMake(x, 0.0f, CGRectGetMaxX(self.cardNumberField.frame), self.frame.size.height);
 }
 
 // State
@@ -250,26 +245,6 @@
     }
 }
 
-- (void)stateMeta
-{
-    _initialState = NO;
-
-    _cardLastFourField.text = self.cardNumber.lastGroup;
-
-    [_innerView addSubview:_cardLastFourField];
-    
-    CGFloat difference = -(_innerView.frame.size.width - self.frame.size.width + _placeholderView.frame.size.width);
-
-    [UIView animateWithDuration:0.400
-                          delay:0
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^
-    {
-        _cardNumberField.alpha = 0.0;
-        _innerView.frame = CGRectOffset(_innerView.frame, difference, 0);
-    } completion:nil];
-}
-
 - (BOOL)isValid
 {
     return [self.cardNumber isValid];
@@ -289,7 +264,7 @@
     SDCardNumber* number = [[SDCardNumber alloc] initWithString:card.number];
     self.cardNumberField.text = [number formattedString];
     [self setPlaceholderToCardType];
-    [self stateMeta];
+    self.initialState = NO;
 }
 
 - (void)reset
@@ -376,7 +351,7 @@
 {
     [self setPlaceholderToCardType];
 
-    if([textField isEqual:_cardNumberField] && !self.initialState)
+    if([textField isEqual:self.cardNumberField] && !self.initialState)
     {
         [self stateCardNumber];
     }
@@ -421,7 +396,7 @@
         if([cardNumber isValid])
         {
             [self textFieldIsValid:self.cardNumberField];
-            [self stateMeta];
+            self.initialState = NO;
         }
         else if([cardNumber isValidLength] && ![cardNumber isValidLuhn])
         {
@@ -463,7 +438,7 @@
 
 - (void)textFieldIsValid:(SDCCTextField*)textField
 {
-    textField.textColor = _defaultTextAttributes[NSForegroundColorAttributeName];
+    textField.textColor = self.defaultTextAttributes[NSForegroundColorAttributeName];
     [self checkValid];
 }
 
