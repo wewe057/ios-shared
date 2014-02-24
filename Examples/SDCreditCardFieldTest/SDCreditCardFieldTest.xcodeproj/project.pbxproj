@@ -118,6 +118,7 @@
 		E2DD087018BACE16005A645C /* SDCCTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD086818BACE16005A645C /* SDCCTextField.m */; };
 		E2DD087118BACE16005A645C /* SDCreditCardField.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD086A18BACE16005A645C /* SDCreditCardField.m */; };
 		E2DD087218BACE16005A645C /* SDCreditCardField.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2DD086B18BACE16005A645C /* SDCreditCardField.xcassets */; };
+		E2DD087618BAD1E9005A645C /* UIResponder+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD087518BAD1E9005A645C /* UIResponder+SDExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -343,6 +344,8 @@
 		E2DD086918BACE16005A645C /* SDCreditCardField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDCreditCardField.h; sourceTree = "<group>"; };
 		E2DD086A18BACE16005A645C /* SDCreditCardField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDCreditCardField.m; sourceTree = "<group>"; };
 		E2DD086B18BACE16005A645C /* SDCreditCardField.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SDCreditCardField.xcassets; sourceTree = "<group>"; };
+		E2DD087418BAD1E9005A645C /* UIResponder+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SDExtensions.h"; sourceTree = "<group>"; };
+		E2DD087518BAD1E9005A645C /* UIResponder+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SDExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -515,6 +518,8 @@
 				E2DD076618BACD54005A645C /* SDTimer.m */,
 				E2DD076718BACD54005A645C /* UIDevice+machine.h */,
 				E2DD076818BACD54005A645C /* UIDevice+machine.m */,
+				E2DD087418BAD1E9005A645C /* UIResponder+SDExtensions.h */,
+				E2DD087518BAD1E9005A645C /* UIResponder+SDExtensions.m */,
 			);
 			name = Foundation;
 			path = ../../Source/Foundation;
@@ -897,6 +902,7 @@
 				E2DD085818BACD54005A645C /* NSURLRequest+SDExtensions.m in Sources */,
 				E2DD082F18BACD54005A645C /* SDNumberTextField.m in Sources */,
 				E2DD087118BACE16005A645C /* SDCreditCardField.m in Sources */,
+				E2DD087618BAD1E9005A645C /* UIResponder+SDExtensions.m in Sources */,
 				E2DD084918BACD54005A645C /* SDTextFieldPicker.m in Sources */,
 				E2DD085418BACD54005A645C /* UIViewController+SDExtensions.m in Sources */,
 				E2DD084118BACD54005A645C /* SDSearchBar.m in Sources */,
