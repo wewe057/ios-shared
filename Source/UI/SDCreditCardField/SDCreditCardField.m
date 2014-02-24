@@ -55,7 +55,6 @@ static UIColor* sSWIRedColor = nil;
 
 - (void)commonInit
 {
-    _imageStyle = SDCreditCardImageStyleNormal;
     _borderStyle = UITextBorderStyleRoundedRect;
 
     self.layer.masksToBounds = YES;
@@ -83,12 +82,9 @@ static UIColor* sSWIRedColor = nil;
     [self addSubview:_innerView];
     [self addSubview:_placeholderView];
 
-    if(_imageStyle == SDCreditCardImageStyleNormal)
-    {
-        UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { _placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, _innerView.frame.size.height } }];
-        line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
-        [self addSubview:line];
-    }
+    UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { _placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, _innerView.frame.size.height } }];
+    line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
+    [self addSubview:line];
 
     [self stateCardNumber];
 }
@@ -190,19 +186,7 @@ static UIColor* sSWIRedColor = nil;
 
 - (void)layoutSubviews
 {
-    if(self.imageStyle == SDCreditCardImageStyleOutline)
-    {
-        CGFloat height = 18.0f;
-        CGFloat y = (self.frame.size.height - height) * 0.5f;
-        CGFloat width = 25.0f + y;
-
-        _placeholderView.frame = CGRectMake(0.0f, y, width, height);
-        _placeholderView.contentMode = UIViewContentModeRight;
-    }
-    else
-    {
-        _placeholderView.frame = CGRectMake(0.0f, (self.frame.size.height - 32.0f) * 0.5f, 51.0f, 32.0f);
-    }
+    _placeholderView.frame = CGRectMake(0.0f, (self.frame.size.height - 32.0f) * 0.5f, 51.0f, 32.0f);
 
     NSDictionary* attributes = self.defaultTextAttributes;
 
@@ -265,7 +249,6 @@ static UIColor* sSWIRedColor = nil;
                          animations:^
         {
             _innerView.frame = (CGRect){ { _placeholderView.frame.size.width, 0.0f }, _innerView.frame.size };
-             
             _cardNumberField.alpha = 1.0f;
         }
         completion:^(BOOL completed) {}];
@@ -287,7 +270,10 @@ static UIColor* sSWIRedColor = nil;
     
     CGFloat difference = -(_innerView.frame.size.width - self.frame.size.width + _placeholderView.frame.size.width);
 
-    [UIView animateWithDuration:0.400 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+    [UIView animateWithDuration:0.400
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^
     {
         _cardNumberField.alpha = 0.0;
         _innerView.frame = CGRectOffset(_innerView.frame, difference, 0);
@@ -325,10 +311,13 @@ static UIColor* sSWIRedColor = nil;
 
 - (void)setPlaceholderViewImage:(UIImage*)image
 {
+    NSAssert(image, @"Seeting a nil image for the credit card image.");
+
     if(![_placeholderView.image isEqual:image])
     {
         __block __unsafe_unretained UIView* previousPlaceholderView = _placeholderView;
-        [UIView animateWithDuration:0.25 delay:0
+        [UIView animateWithDuration:0.25
+                              delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^
         {
@@ -345,9 +334,10 @@ static UIColor* sSWIRedColor = nil;
         [self setupPlaceholderView];
         _placeholderView.image = image;
         _placeholderView.layer.opacity = 0.0;
-        _placeholderView.layer.transform = CATransform3DMakeScale(0.8, 0.8, 0.8);
+        _placeholderView.layer.transform = CATransform3DMakeScale(0.8f, 0.8f, 0.8f);
         [self insertSubview:_placeholderView belowSubview:previousPlaceholderView];
-        [UIView animateWithDuration:0.25 delay:0
+        [UIView animateWithDuration:0.25
+                              delay:0
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:^
         {
@@ -375,7 +365,8 @@ static UIColor* sSWIRedColor = nil;
     SDCardType cardType      = [cardNumber cardType];
     NSString* cardTypeName   = @"placeholder";
 
-    switch (cardType) {
+    switch(cardType)
+    {
         case SDCardTypeAmex:
             cardTypeName = @"amex";
             break;
@@ -396,11 +387,6 @@ static UIColor* sSWIRedColor = nil;
             break;
         default:
             break;
-    }
-
-    if(self.imageStyle == SDCreditCardImageStyleOutline)
-    {
-        cardTypeName = [NSString stringWithFormat:@"%@-outline", cardTypeName];
     }
 
     [self setPlaceholderViewImage:[UIImage imageNamed:cardTypeName]];

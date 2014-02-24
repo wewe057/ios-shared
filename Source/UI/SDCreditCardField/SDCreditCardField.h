@@ -16,12 +16,6 @@
 @class SDCreditCardField;
 @class SDCCTextField;
 
-typedef NS_ENUM(NSUInteger, SDCreditCardImageStyle)
-{
-	SDCreditCardImageStyleNormal,
-    SDCreditCardImageStyleOutline
-};
-
 @protocol SDCreditCardFieldDelegate <NSObject>
 @optional
 - (void)paymentView:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid;
@@ -33,7 +27,6 @@ typedef NS_ENUM(NSUInteger, SDCreditCardImageStyle)
 - (BOOL)isValid;
 
 @property(nonatomic, assign) UITextBorderStyle borderStyle;
-@property(nonatomic, assign) SDCreditCardImageStyle imageStyle;
 @property(nonatomic, strong) UIFont* font;
 @property(nonatomic, strong) UIColor* textColor;
 @property(nonatomic, copy) NSDictionary* defaultTextAttributes;
