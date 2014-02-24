@@ -209,7 +209,7 @@
     cardNumberSize = (CGSize){ ceil(cardNumberSize.width + lastGroupSize.width), ceil(cardNumberSize.height) };
 
     CGFloat textFieldY = floor((self.frame.size.height - lastGroupSize.height) * 0.5f);
-    CGFloat innerWidth = self.frame.size.width - _placeholderView.frame.size.width;
+    CGFloat innerWidth = ceil(self.frame.size.width - _placeholderView.frame.size.width);
 
     _cardNumberField.frame = (CGRect){ { ceil((innerWidth * 0.5f) - (cardNumberSize.width * 0.5f)), textFieldY }, cardNumberSize };
 
