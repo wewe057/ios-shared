@@ -56,10 +56,10 @@
     _innerView = [[UIView alloc] initWithFrame:(CGRect){ CGPointZero, { 0.0f, self.frame.size.height } }];
     _innerView.clipsToBounds = YES;
 
-    [self setupCardNumberField];
+    _defaultTextAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:16.0f],
+                                NSForegroundColorAttributeName : [UIColor blackColor] };
 
-    self.defaultTextAttributes = @{ NSFontAttributeName : [UIFont boldSystemFontOfSize:16.0f],
-    NSForegroundColorAttributeName : [UIColor blackColor] };
+    [self setupCardNumberField];
 
     [_innerView addSubview:_cardNumberField];
 
@@ -179,17 +179,15 @@
 
 - (void)layoutSubviews
 {
-    _placeholderView.frame = CGRectMake(0.0f, (self.frame.size.height - 32.0f) * 0.5f, 51.0f, 32.0f);
+    _placeholderView.frame = CGRectMake(0.0f, ceil((self.frame.size.height - 32.0f) * 0.5f), 51.0f, 32.0f);
 
     NSDictionary* attributes = self.defaultTextAttributes;
 
-    CGSize lastGroupSize;
     CGSize cardNumberSize;
 
     if(self.cardNumber.cardType == SDCardTypeAmex)
     {
         cardNumberSize = [@"1234 567890 12345" sizeWithAttributes:attributes];
-        lastGroupSize = [@"00000" sizeWithAttributes:attributes];
     }
     else
     {
@@ -201,14 +199,13 @@
         {
             cardNumberSize = [_cardNumberField.placeholder sizeWithAttributes:attributes];
         }
-
-        lastGroupSize = [@"0000" sizeWithAttributes:attributes];
     }
 
-    CGFloat textFieldY = (self.frame.size.height - lastGroupSize.height) * 0.5f;
-    CGFloat innerWidth = self.frame.size.width - _placeholderView.frame.size.width;
+    cardNumberSize = (CGSize){ ceil(cardNumberSize.width), ceil(cardNumberSize.height) };
+    CGFloat textFieldY = ceil((self.frame.size.height - cardNumberSize.height) * 0.5f);
+    CGFloat innerWidth = ceil(self.frame.size.width - _placeholderView.frame.size.width);
 
-    _cardNumberField.frame = (CGRect){ { (innerWidth * 0.5f) - (cardNumberSize.width * 0.5f), textFieldY }, cardNumberSize };
+    _cardNumberField.frame = (CGRect){ { ceil((innerWidth * 0.5f) - (cardNumberSize.width * 0.5f)), ceil(textFieldY) }, cardNumberSize };
 
     CGFloat x = _innerView.frame.origin.x;
 
