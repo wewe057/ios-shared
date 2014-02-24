@@ -14,8 +14,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-static UIColor* sSWIRedColor = nil;
-
 @interface SDCreditCardField () <UITextFieldDelegate>
 
 @property (nonatomic, assign, getter = isInitialState) BOOL initialState;
@@ -24,14 +22,6 @@ static UIColor* sSWIRedColor = nil;
 @end
 
 @implementation SDCreditCardField
-
-- (void)initialize
-{
-    if([self class] == [SDCreditCardField class])
-    {
-        sSWIRedColor = [UIColor colorWithRed:253.0/255.0 green:0.0 blue:17.0/255.0 alpha:1.0];
-    }
-}
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -347,18 +337,6 @@ static UIColor* sSWIRedColor = nil;
     }
 }
 
-- (void)setPlaceholderToCVC
-{
-    SDCardNumber* cardNumber = [SDCardNumber cardNumberWithString:_cardNumberField.text];
-    SDCardType cardType      = [cardNumber cardType];
-    
-    if (cardType == SDCardTypeAmex) {
-        [self setPlaceholderViewImage:[UIImage imageNamed:@"cvc-amex"]];
-    } else {
-        [self setPlaceholderViewImage:[UIImage imageNamed:@"cvc"]];
-    }
-}
-
 - (void)setPlaceholderToCardType
 {
     SDCardNumber* cardNumber = [SDCardNumber cardNumberWithString:_cardNumberField.text];
@@ -421,41 +399,41 @@ static UIColor* sSWIRedColor = nil;
 
 - (BOOL)cardNumberFieldShouldChangeCharactersInRange:(NSRange)range replacementString:(NSString*)replacementString
 {
-    NSString* resultString = [_cardNumberField.text stringByReplacingCharactersInRange:range withString:replacementString];
+    NSString* resultString = [self.cardNumberField.text stringByReplacingCharactersInRange:range withString:replacementString];
     resultString = [SDCCTextField textByRemovingUselessSpacesFromString:resultString];
     SDCardNumber* cardNumber = [SDCardNumber cardNumberWithString:resultString];
 
-    if(![cardNumber isPartiallyValid])
-    {
-        return NO;
-    }
-    
-    if(replacementString.length > 0)
-    {
-        _cardNumberField.text = [cardNumber formattedStringWithTrail];
-    }
-    else
-    {
-        _cardNumberField.text = [cardNumber formattedString];
-    }
-    
-    [self setPlaceholderToCardType];
+    BOOL valid = NO;
 
-    if([cardNumber isValid])
+    if([cardNumber isPartiallyValid])
     {
-        [self textFieldIsValid:_cardNumberField];
-        [self stateMeta];
+        if(replacementString.length > 0)
+        {
+            self.cardNumberField.text = [cardNumber formattedStringWithTrail];
+        }
+        else
+        {
+            self.cardNumberField.text = [cardNumber formattedString];
+        }
+
+        [self setPlaceholderToCardType];
+
+        if([cardNumber isValid])
+        {
+            [self textFieldIsValid:self.cardNumberField];
+            [self stateMeta];
+        }
+        else if([cardNumber isValidLength] && ![cardNumber isValidLuhn])
+        {
+            [self textFieldIsInvalid:self.cardNumberField withErrors:YES];
+        }
+        else if(![cardNumber isValidLength])
+        {
+            [self textFieldIsInvalid:self.cardNumberField withErrors:NO];
+        }
     }
-    else if([cardNumber isValidLength] && ![cardNumber isValidLuhn])
-    {
-        [self textFieldIsInvalid:_cardNumberField withErrors:YES];
-    }
-    else if(![cardNumber isValidLength])
-    {
-        [self textFieldIsInvalid:_cardNumberField withErrors:NO];
-    }
-    
-    return NO;
+
+    return valid;
 }
 
 // Validations
@@ -483,21 +461,21 @@ static UIColor* sSWIRedColor = nil;
     }
 }
 
-- (void)textFieldIsValid:(UITextField*)textField
+- (void)textFieldIsValid:(SDCCTextField*)textField
 {
     textField.textColor = _defaultTextAttributes[NSForegroundColorAttributeName];
     [self checkValid];
 }
 
-- (void)textFieldIsInvalid:(UITextField*)textField withErrors:(BOOL)errors
+- (void)textFieldIsInvalid:(SDCCTextField*)textField withErrors:(BOOL)errors
 {
     if(errors)
     {
-        textField.textColor = sSWIRedColor;
+        textField.textColor = [UIColor colorWithRed:253.0/255.0 green:0.0 blue:17.0/255.0 alpha:1.0];
     }
     else
     {
-        textField.textColor = _defaultTextAttributes[NSForegroundColorAttributeName];;
+        textField.textColor = _defaultTextAttributes[NSForegroundColorAttributeName];
     }
 
     [self checkValid];
