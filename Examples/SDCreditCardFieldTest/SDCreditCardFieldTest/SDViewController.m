@@ -63,12 +63,12 @@
     return [UIImage imageNamed:imageName];
 }
 
-- (void)creditCardField:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid
+- (void)creditCardField:(SDCreditCardField*)creditCardField withCard:(SDCard*)card isValid:(BOOL)valid
 {
     self.validImage.hidden = valid == NO;
 }
 
-- (void)creditCardFieldDidChangeState:(SDCreditCardField*)paymentView
+- (void)creditCardFieldDidChangeState:(SDCreditCardField*)creditCardField
 {
     SDLog(@"creditCardFieldDidChangeState:");
 }

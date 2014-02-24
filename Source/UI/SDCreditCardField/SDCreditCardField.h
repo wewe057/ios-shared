@@ -21,8 +21,8 @@
 @required
 - (UIImage*)creditCardFieldCardImageForType:(SDCardType)type;
 @optional
-- (void)creditCardField:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid;
-- (void)creditCardFieldDidChangeState:(SDCreditCardField*)paymentView;
+- (void)creditCardField:(SDCreditCardField*)creditCardField withCard:(SDCard*)card isValid:(BOOL)valid;
+- (void)creditCardFieldDidChangeState:(SDCreditCardField*)creditCardField;
 @end
 
 @interface SDCreditCardField : UIView
