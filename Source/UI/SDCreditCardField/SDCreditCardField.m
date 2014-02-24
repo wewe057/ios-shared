@@ -53,8 +53,6 @@
     _initialState = YES;
     _validState   = NO;
 
-    [self setupPlaceholderView];
-
     _innerView = [[UIView alloc] initWithFrame:(CGRect){ CGPointZero, { 0.0f, self.frame.size.height } }];
     _innerView.clipsToBounds = YES;
 
@@ -66,13 +64,22 @@
     [_innerView addSubview:_cardNumberField];
 
     [self addSubview:_innerView];
-    [self addSubview:_placeholderView];
-
-    UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { _placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, _innerView.frame.size.height } }];
-    line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
-    [self addSubview:line];
 
     [self stateCardNumber];
+}
+
+- (void) setDelegate:(id<SDCreditCardFieldDelegate>)delegate
+{
+    _delegate = delegate;
+    if(_placeholderView == nil)
+    {
+        [self setupPlaceholderView];
+        [self addSubview:self.placeholderView];
+
+        UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { self.placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, self.innerView.frame.size.height } }];
+        line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
+        [self addSubview:line];
+    }
 }
 
 - (void)setBorderStyle:(UITextBorderStyle)borderStyle
@@ -154,7 +161,7 @@
 
 - (void)setupPlaceholderView
 {
-    _placeholderView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"placeholder"]];
+    _placeholderView = [[UIImageView alloc] initWithImage:[self imageForCardType:SDCardTypeUnknown]];
     _placeholderView.backgroundColor = [UIColor whiteColor];
 }
 
@@ -218,9 +225,9 @@
 - (void)stateCardNumber
 {
     @strongify(self.delegate, delegate);
-    if([delegate respondsToSelector:@selector(paymentViewDidChangeState:)])
+    if([delegate respondsToSelector:@selector(creditCardFieldDidChangeState:)])
     {
-        [delegate paymentViewDidChangeState:self];
+        [delegate creditCardFieldDidChangeState:self];
     }
 
     if(!_initialState)
@@ -243,6 +250,15 @@
     {
         [self.cardNumberField becomeFirstResponder];
     }
+}
+
+- (UIImage*)imageForCardType:(SDCardType)type
+{
+    UIImage* cardTypeImage = [self.delegate creditCardFieldCardImageForType:type];
+    NSAssert(cardTypeImage, @"Protocol not implemented correctly, could not supply card type %tu image", type);
+    NSAssert(cardTypeImage.size.width == 51.0f && cardTypeImage.size.height == 32.0f, @"Protocol not implemented correctly, card size for type %tu incorrect", type);
+
+    return cardTypeImage;
 }
 
 - (BOOL)isValid
@@ -316,33 +332,8 @@
 {
     SDCardNumber* cardNumber = [SDCardNumber cardNumberWithString:_cardNumberField.text];
     SDCardType cardType      = [cardNumber cardType];
-    NSString* cardTypeName   = @"placeholder";
-
-    switch(cardType)
-    {
-        case SDCardTypeAmex:
-            cardTypeName = @"amex";
-            break;
-        case SDCardTypeDinersClub:
-            cardTypeName = @"diners";
-            break;
-        case SDCardTypeDiscover:
-            cardTypeName = @"discover";
-            break;
-        case SDCardTypeJCB:
-            cardTypeName = @"jcb";
-            break;
-        case SDCardTypeMasterCard:
-            cardTypeName = @"mastercard";
-            break;
-        case SDCardTypeVisa:
-            cardTypeName = @"visa";
-            break;
-        default:
-            break;
-    }
-
-    [self setPlaceholderViewImage:[UIImage imageNamed:cardTypeName]];
+    UIImage* cardImage = [self imageForCardType:cardType];
+    [self setPlaceholderViewImage:cardImage];
 }
 
 // Delegates
@@ -420,18 +411,18 @@
     {
         self.validState = YES;
 
-        if([delegate respondsToSelector:@selector(paymentView:withCard:isValid:)])
+        if([delegate respondsToSelector:@selector(creditCardField:withCard:isValid:)])
         {
-            [delegate paymentView:self withCard:self.card isValid:YES];
+            [delegate creditCardField:self withCard:self.card isValid:YES];
         }
     }
     else if(![self isValid] && self.validState)
     {
         self.validState = NO;
         
-        if([delegate respondsToSelector:@selector(paymentView:withCard:isValid:)])
+        if([delegate respondsToSelector:@selector(creditCardField:withCard:isValid:)])
         {
-            [delegate paymentView:self withCard:self.card isValid:NO];
+            [delegate creditCardField:self withCard:self.card isValid:NO];
         }
     }
 }

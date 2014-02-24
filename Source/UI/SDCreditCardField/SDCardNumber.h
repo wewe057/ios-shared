@@ -14,7 +14,6 @@
 @interface SDCardNumber : NSObject
 
 @property (nonatomic, readonly) SDCardType cardType;
-@property (nonatomic, readonly) NSString* last4;
 @property (nonatomic, readonly) NSString* lastGroup;
 @property (nonatomic, readonly) NSString* string;
 @property (nonatomic, readonly) NSString* formattedString;
@@ -23,7 +22,6 @@
 + (instancetype)cardNumberWithString:(NSString*)string;
 - (instancetype)initWithString:(NSString *)string;
 - (SDCardType)cardType;
-- (NSString*)last4;
 - (NSString*)lastGroup;
 - (NSString*)string;
 - (NSString*)formattedString;

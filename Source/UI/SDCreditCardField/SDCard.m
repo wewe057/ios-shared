@@ -11,17 +11,4 @@
 #import "SDCard.h"
 
 @implementation SDCard
-
-- (NSString*)last4
-{
-    NSString* result = nil;
-
-    if(self.number.length >= 4)
-    {
-        result = [self.number substringFromIndex:(self.number.length - 4)];
-    }
-
-    return result;
-}
-
 @end

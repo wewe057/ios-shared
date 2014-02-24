@@ -38,10 +38,15 @@
 
 - (SDCardType)cardType
 {    
-    if(self.number.length < 2) return SDCardTypeUnknown;
-    
-    NSString* firstChars = [self.number substringWithRange:NSMakeRange(0, 2)];
+    if(self.number.length >= 6)
+    {
+        NSString* first6Chars = [self.number substringWithRange:NSMakeRange(0, 6)];
+        if([first6Chars isEqualToString:@"601136"])                   { return SDCardTypeSamsClub; }
+        else if([first6Chars isEqualToString:@"601137"])              { return SDCardTypeSamsClubBusiness; }
+    }
 
+    if(self.number.length < 2) return SDCardTypeUnknown;
+    NSString* firstChars = [self.number substringWithRange:NSMakeRange(0, 2)];
     NSInteger range = [firstChars integerValue];
 
     if(range >= 40 && range <= 49)                                    { return SDCardTypeVisa; }
@@ -50,19 +55,23 @@
     else if(range == 60 || range == 62 || range == 64 || range == 65) { return SDCardTypeDiscover; }
     else if(range == 35)                                              { return SDCardTypeJCB; }
     else if(range == 30 || range == 36 || range == 38 || range == 39) { return SDCardTypeDinersClub; }
-    else                                                              { return SDCardTypeUnknown; }
-}
 
-- (NSString*)last4
-{
-    NSString* result = nil;
+    // Now check the Sam's credit cards types.
+
+    if(self.number.length >= 3)
+    {
+        NSString* first3Chars = [self.number substringWithRange:NSMakeRange(0, 3)];
+        if([first3Chars isEqualToString:@"040"])                      { return SDCardTypeSamsClubBusiness; }
+    }
 
     if(self.number.length >= 4)
     {
-        result = [self.number substringFromIndex:(self.number.length - 4)];
+        NSString* first4Chars = [self.number substringWithRange:NSMakeRange(0, 4)];
+        if([first4Chars isEqualToString:@"7714"])                     { return SDCardTypeSamsClub; }
+        else if([first4Chars isEqualToString:@"7715"])                { return SDCardTypeSamsClubBusiness; }
     }
 
-    return result;
+    return SDCardTypeUnknown;
 }
 
 - (NSString*)lastGroup
@@ -86,7 +95,6 @@
 
     return result;
 }
-
 
 - (NSString*)string
 {

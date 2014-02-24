@@ -21,18 +21,56 @@
 {
     [super viewDidLoad];
 
-    [self.creditCardField becomeFirstResponder];
     self.creditCardField.delegate = self;
+    [self.creditCardField becomeFirstResponder];
 }
 
-- (void)paymentView:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid
+- (UIImage*)creditCardFieldCardImageForType:(SDCardType)type
+{
+    NSString* imageName = nil;
+    switch(type)
+    {
+        case SDCardTypeVisa:
+            imageName = @"cc-visa";
+            break;
+        case SDCardTypeMasterCard:
+            imageName = @"cc-mastercard";
+            break;
+        case SDCardTypeAmex:
+            imageName = @"cc-amex";
+            break;
+        case SDCardTypeDiscover:
+            imageName = @"cc-discover";
+            break;
+        case SDCardTypeJCB:
+            imageName = @"cc-jcb";
+            break;
+        case SDCardTypeDinersClub:
+            imageName = @"cc-diners";
+            break;
+        case SDCardTypeSamsClub:
+            imageName = @"cc-samsclub";
+            break;
+        case SDCardTypeSamsClubBusiness:
+            imageName = @"cc-samsclub-business";
+            break;
+        default:
+        case SDCardTypeUnknown:
+            imageName = @"cc-placeholder";
+            break;
+    }
+
+    return [UIImage imageNamed:imageName];
+}
+
+- (void)creditCardField:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid
 {
     self.validImage.hidden = valid == NO;
 }
 
-- (void)paymentViewDidChangeState:(SDCreditCardField*)paymentView
+- (void)creditCardFieldDidChangeState:(SDCreditCardField*)paymentView
 {
-    SDLog(@"paymentViewDidChangeState:");
+    SDLog(@"creditCardFieldDidChangeState:");
 }
 
 @end

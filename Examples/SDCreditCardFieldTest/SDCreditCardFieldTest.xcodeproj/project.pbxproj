@@ -117,8 +117,8 @@
 		E2DD086F18BACE16005A645C /* SDCardNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD086518BACE16005A645C /* SDCardNumber.m */; };
 		E2DD087018BACE16005A645C /* SDCCTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD086818BACE16005A645C /* SDCCTextField.m */; };
 		E2DD087118BACE16005A645C /* SDCreditCardField.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD086A18BACE16005A645C /* SDCreditCardField.m */; };
-		E2DD087218BACE16005A645C /* SDCreditCardField.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2DD086B18BACE16005A645C /* SDCreditCardField.xcassets */; };
 		E2DD087618BAD1E9005A645C /* UIResponder+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD087518BAD1E9005A645C /* UIResponder+SDExtensions.m */; };
+		E2DD089C18BAF460005A645C /* SDCreditCardField.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2DD089B18BAF460005A645C /* SDCreditCardField.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -343,9 +343,9 @@
 		E2DD086818BACE16005A645C /* SDCCTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDCCTextField.m; sourceTree = "<group>"; };
 		E2DD086918BACE16005A645C /* SDCreditCardField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDCreditCardField.h; sourceTree = "<group>"; };
 		E2DD086A18BACE16005A645C /* SDCreditCardField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDCreditCardField.m; sourceTree = "<group>"; };
-		E2DD086B18BACE16005A645C /* SDCreditCardField.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SDCreditCardField.xcassets; sourceTree = "<group>"; };
 		E2DD087418BAD1E9005A645C /* UIResponder+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SDExtensions.h"; sourceTree = "<group>"; };
 		E2DD087518BAD1E9005A645C /* UIResponder+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SDExtensions.m"; sourceTree = "<group>"; };
+		E2DD089B18BAF460005A645C /* SDCreditCardField.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SDCreditCardField.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -422,6 +422,7 @@
 			isa = PBXGroup;
 			children = (
 				E2DD072418BACD15005A645C /* Images.xcassets */,
+				E2DD089B18BAF460005A645C /* SDCreditCardField.xcassets */,
 				E2DD071418BACD15005A645C /* SDCreditCardFieldTest-Info.plist */,
 				E2DD071518BACD15005A645C /* InfoPlist.strings */,
 			);
@@ -748,7 +749,6 @@
 				E2DD086818BACE16005A645C /* SDCCTextField.m */,
 				E2DD086918BACE16005A645C /* SDCreditCardField.h */,
 				E2DD086A18BACE16005A645C /* SDCreditCardField.m */,
-				E2DD086B18BACE16005A645C /* SDCreditCardField.xcassets */,
 			);
 			path = SDCreditCardField;
 			sourceTree = "<group>";
@@ -835,7 +835,7 @@
 				E2DD072518BACD15005A645C /* Images.xcassets in Resources */,
 				E2DD071718BACD15005A645C /* InfoPlist.strings in Resources */,
 				E2DD080718BACD54005A645C /* README.md in Resources */,
-				E2DD087218BACE16005A645C /* SDCreditCardField.xcassets in Resources */,
+				E2DD089C18BAF460005A645C /* SDCreditCardField.xcassets in Resources */,
 				E2DD072018BACD15005A645C /* Main.storyboard in Resources */,
 				E2DD083418BACD54005A645C /* SDPickerModalViewController.xib in Resources */,
 				E2DD083218BACD54005A645C /* SDPickerModalViewController-iOS7.xib in Resources */,
@@ -1162,6 +1162,7 @@
 				E2DD073D18BACD15005A645C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E2DD073E18BACD15005A645C /* Build configuration list for PBXNativeTarget "SDCreditCardFieldTestTests" */ = {
 			isa = XCConfigurationList;
@@ -1170,6 +1171,7 @@
 				E2DD074018BACD15005A645C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

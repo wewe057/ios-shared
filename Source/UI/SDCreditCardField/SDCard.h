@@ -11,8 +11,5 @@
 #import <Foundation/Foundation.h>
 
 @interface SDCard : NSObject
-
 @property (nonatomic, copy) NSString* number;
-@property (nonatomic, readonly) NSString* last4;
-
 @end

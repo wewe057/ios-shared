@@ -12,14 +12,17 @@
 
 #import "SDCard.h"
 #import "SDCardNumber.h"
+#import "SDCardType.h"
 
 @class SDCreditCardField;
 @class SDCCTextField;
 
 @protocol SDCreditCardFieldDelegate <NSObject>
+@required
+- (UIImage*)creditCardFieldCardImageForType:(SDCardType)type;
 @optional
-- (void)paymentView:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid;
-- (void)paymentViewDidChangeState:(SDCreditCardField*)paymentView;
+- (void)creditCardField:(SDCreditCardField*)paymentView withCard:(SDCard*)card isValid:(BOOL)valid;
+- (void)creditCardFieldDidChangeState:(SDCreditCardField*)paymentView;
 @end
 
 @interface SDCreditCardField : UIView

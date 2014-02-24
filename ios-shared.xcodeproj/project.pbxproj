@@ -424,7 +424,6 @@
 		E2DD087E18BAEDF4005A645C /* SDCCTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDCCTextField.m; path = SDCreditCardField/SDCCTextField.m; sourceTree = "<group>"; };
 		E2DD087F18BAEDF4005A645C /* SDCreditCardField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDCreditCardField.h; path = SDCreditCardField/SDCreditCardField.h; sourceTree = "<group>"; };
 		E2DD088018BAEDF4005A645C /* SDCreditCardField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDCreditCardField.m; path = SDCreditCardField/SDCreditCardField.m; sourceTree = "<group>"; };
-		E2DD088118BAEDF4005A645C /* SDCreditCardField.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = SDCreditCardField.xcassets; path = SDCreditCardField/SDCreditCardField.xcassets; sourceTree = "<group>"; };
 		E2DF06881891A1A900BA7021 /* SDButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDButton.h; sourceTree = "<group>"; };
 		E2DF06891891A1A900BA7021 /* SDButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDButton.m; sourceTree = "<group>"; };
 		E2DF068A1891A1A900BA7021 /* SDCheckbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDCheckbox.h; sourceTree = "<group>"; };
@@ -823,7 +822,6 @@
 				E2DD087E18BAEDF4005A645C /* SDCCTextField.m */,
 				E2DD087F18BAEDF4005A645C /* SDCreditCardField.h */,
 				E2DD088018BAEDF4005A645C /* SDCreditCardField.m */,
-				E2DD088118BAEDF4005A645C /* SDCreditCardField.xcassets */,
 			);
 			name = SDCreditCardField;
 			sourceTree = "<group>";
