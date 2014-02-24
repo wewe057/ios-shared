@@ -56,4 +56,24 @@
     return [self popToRootViewControllerAnimated:animated];
 }
 
+- (BOOL)viewControllerClassPresentOnStack:(Class)controllerClass
+{
+    if (!controllerClass)
+        return NO;
+    
+    BOOL result = NO;
+    
+    NSArray *viewControllersOnStack = self.viewControllers;
+    for (UIViewController *controller in viewControllersOnStack)
+    {
+        if ([controller isKindOfClass:controllerClass])
+        {
+            result = YES;
+            break;
+        }
+    }
+    
+    return result;
+}
+
 @end
