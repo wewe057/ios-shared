@@ -26,6 +26,13 @@
 
 @optional
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidth;    // Defaults to 320.0f
+
+- (void)pullNavMenuWillAppear;
+- (void)pullNavMenuDidAppear;
+
+- (void)pullNavMenuWillDisappear;
+- (void)pullNavMenuDidDisappear;
+
 @end
 
 @interface SDPullNavigationBar : UINavigationBar

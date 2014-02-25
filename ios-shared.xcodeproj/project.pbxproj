@@ -167,6 +167,7 @@
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
 		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
 		E28923B4189970CB009C78CA /* SDAutolayoutStackView.m in Sources */ = {isa = PBXBuildFile; fileRef = E28923B3189970CB009C78CA /* SDAutolayoutStackView.m */; };
+		E28C6CAB189DAE7D00052C7F /* UIResponder+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E28C6CAA189DAE7D00052C7F /* UIResponder+SDExtensions.m */; };
 		E2B31BA2189342BF0006970E /* SDSpanParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E2B31B9E189342BF0006970E /* SDSpanParser.m */; };
 		E2B31BA3189342BF0006970E /* SDTextFieldPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = E2B31BA0189342BF0006970E /* SDTextFieldPicker.m */; };
 		E2C8A21C1853E660000DD265 /* SDPullNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2111853E660000DD265 /* SDPullNavigationBar.m */; };
@@ -175,6 +176,10 @@
 		E2C8A21F1853E660000DD265 /* SDPullNavigationBarTabButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A2171853E660000DD265 /* SDPullNavigationBarTabButton.m */; };
 		E2C8A2211853E660000DD265 /* SDPullNavigationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */; };
 		E2CADC74185649FF0018A704 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2CADC73185649FF0018A704 /* Accelerate.framework */; };
+		E2DD088218BAEDF4005A645C /* SDCard.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD087918BAEDF4005A645C /* SDCard.m */; };
+		E2DD088318BAEDF4005A645C /* SDCardNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD087B18BAEDF4005A645C /* SDCardNumber.m */; };
+		E2DD088418BAEDF4005A645C /* SDCCTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD087E18BAEDF4005A645C /* SDCCTextField.m */; };
+		E2DD088518BAEDF4005A645C /* SDCreditCardField.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DD088018BAEDF4005A645C /* SDCreditCardField.m */; };
 		E2DF06901891A1A900BA7021 /* SDButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF06891891A1A900BA7021 /* SDButton.m */; };
 		E2DF06911891A1A900BA7021 /* SDCheckbox.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF068B1891A1A900BA7021 /* SDCheckbox.m */; };
 		E2DF06921891A1A900BA7021 /* SDFormFieldContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF068D1891A1A900BA7021 /* SDFormFieldContainer.m */; };
@@ -391,6 +396,8 @@
 		E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E28923B2189970CB009C78CA /* SDAutolayoutStackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAutolayoutStackView.h; sourceTree = "<group>"; };
 		E28923B3189970CB009C78CA /* SDAutolayoutStackView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDAutolayoutStackView.m; sourceTree = "<group>"; };
+		E28C6CA9189DAE7D00052C7F /* UIResponder+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SDExtensions.h"; sourceTree = "<group>"; };
+		E28C6CAA189DAE7D00052C7F /* UIResponder+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SDExtensions.m"; sourceTree = "<group>"; };
 		E2B31B9D189342BF0006970E /* SDSpanParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDSpanParser.h; sourceTree = "<group>"; };
 		E2B31B9E189342BF0006970E /* SDSpanParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDSpanParser.m; sourceTree = "<group>"; };
 		E2B31B9F189342BF0006970E /* SDTextFieldPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTextFieldPicker.h; sourceTree = "<group>"; };
@@ -408,6 +415,15 @@
 		E2C8A21A1853E660000DD265 /* SDPullNavigationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationManager.h; sourceTree = "<group>"; };
 		E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationManager.m; sourceTree = "<group>"; };
 		E2CADC73185649FF0018A704 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		E2DD087818BAEDF4005A645C /* SDCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDCard.h; path = SDCreditCardField/SDCard.h; sourceTree = "<group>"; };
+		E2DD087918BAEDF4005A645C /* SDCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDCard.m; path = SDCreditCardField/SDCard.m; sourceTree = "<group>"; };
+		E2DD087A18BAEDF4005A645C /* SDCardNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDCardNumber.h; path = SDCreditCardField/SDCardNumber.h; sourceTree = "<group>"; };
+		E2DD087B18BAEDF4005A645C /* SDCardNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDCardNumber.m; path = SDCreditCardField/SDCardNumber.m; sourceTree = "<group>"; };
+		E2DD087C18BAEDF4005A645C /* SDCardType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDCardType.h; path = SDCreditCardField/SDCardType.h; sourceTree = "<group>"; };
+		E2DD087D18BAEDF4005A645C /* SDCCTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDCCTextField.h; path = SDCreditCardField/SDCCTextField.h; sourceTree = "<group>"; };
+		E2DD087E18BAEDF4005A645C /* SDCCTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDCCTextField.m; path = SDCreditCardField/SDCCTextField.m; sourceTree = "<group>"; };
+		E2DD087F18BAEDF4005A645C /* SDCreditCardField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDCreditCardField.h; path = SDCreditCardField/SDCreditCardField.h; sourceTree = "<group>"; };
+		E2DD088018BAEDF4005A645C /* SDCreditCardField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDCreditCardField.m; path = SDCreditCardField/SDCreditCardField.m; sourceTree = "<group>"; };
 		E2DF06881891A1A900BA7021 /* SDButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDButton.h; sourceTree = "<group>"; };
 		E2DF06891891A1A900BA7021 /* SDButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDButton.m; sourceTree = "<group>"; };
 		E2DF068A1891A1A900BA7021 /* SDCheckbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDCheckbox.h; sourceTree = "<group>"; };
@@ -535,6 +551,8 @@
 				CA0E770418284DD500B4398F /* SDTimer.m */,
 				CA0E770518284DD500B4398F /* UIDevice+machine.h */,
 				CA0E770618284DD500B4398F /* UIDevice+machine.m */,
+				E28C6CA9189DAE7D00052C7F /* UIResponder+SDExtensions.h */,
+				E28C6CAA189DAE7D00052C7F /* UIResponder+SDExtensions.m */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -591,6 +609,8 @@
 		CA0E771A18284DD500B4398F /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				E2DD087718BAEDDA005A645C /* SDCreditCardField */,
+				E205780918872F2600A1BA81 /* SDQuantityEditView */,
 				CA0E771B18284DD500B4398F /* NSObject+SDExtensions.h */,
 				CA0E771C18284DD500B4398F /* NSObject+SDExtensions.m */,
 				E2EDC79018A59D4F00E7E416 /* NSShadow+SDExtensions.h */,
@@ -650,7 +670,6 @@
 				E2C8A2171853E660000DD265 /* SDPullNavigationBarTabButton.m */,
 				E2C8A21A1853E660000DD265 /* SDPullNavigationManager.h */,
 				E2C8A21B1853E660000DD265 /* SDPullNavigationManager.m */,
-				E205780918872F2600A1BA81 /* SDQuantityEditView */,
 				CA0E773518284DD600B4398F /* SDSearchBar.h */,
 				CA0E773618284DD600B4398F /* SDSearchBar.m */,
 				CA0E773718284DD600B4398F /* SDSearchDisplayController.h */,
@@ -789,6 +808,22 @@
 				E205781418872F2600A1BA81 /* UIView+PaintCode.m */,
 			);
 			path = SDQuantityEditView;
+			sourceTree = "<group>";
+		};
+		E2DD087718BAEDDA005A645C /* SDCreditCardField */ = {
+			isa = PBXGroup;
+			children = (
+				E2DD087818BAEDF4005A645C /* SDCard.h */,
+				E2DD087918BAEDF4005A645C /* SDCard.m */,
+				E2DD087A18BAEDF4005A645C /* SDCardNumber.h */,
+				E2DD087B18BAEDF4005A645C /* SDCardNumber.m */,
+				E2DD087C18BAEDF4005A645C /* SDCardType.h */,
+				E2DD087D18BAEDF4005A645C /* SDCCTextField.h */,
+				E2DD087E18BAEDF4005A645C /* SDCCTextField.m */,
+				E2DD087F18BAEDF4005A645C /* SDCreditCardField.h */,
+				E2DD088018BAEDF4005A645C /* SDCreditCardField.m */,
+			);
+			name = SDCreditCardField;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -988,6 +1023,7 @@
 				E205781F18872F2600A1BA81 /* SDSectionedTableView.m in Sources */,
 				CA0E77DA18284DD600B4398F /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA0E777518284DD600B4398F /* NSMutableAttributedString+SDExtensions.m in Sources */,
+				E28C6CAB189DAE7D00052C7F /* UIResponder+SDExtensions.m in Sources */,
 				CA0E77DC18284DD600B4398F /* SDWebService.m in Sources */,
 				CA0E77BC18284DD600B4398F /* UIApplication+SDExtensions.m in Sources */,
 				CA0E77BE18284DD600B4398F /* UIColor+SDExtensions.m in Sources */,
@@ -1006,6 +1042,7 @@
 				CA0E77D418284DD600B4398F /* SDImageCache.m in Sources */,
 				CA0E77AC18284DD600B4398F /* SDPickerModalViewController.m in Sources */,
 				CA0E77A918284DD600B4398F /* SDPhotoImageView.m in Sources */,
+				E2DD088418BAEDF4005A645C /* SDCCTextField.m in Sources */,
 				CA0E778B18284DD600B4398F /* CLLocation+SDExtensions.m in Sources */,
 				E205781C18872F2600A1BA81 /* SDQuantityEditViewBehavior.m in Sources */,
 				E2DF06921891A1A900BA7021 /* SDFormFieldContainer.m in Sources */,
@@ -1018,6 +1055,7 @@
 				CA0E77CA18284DD600B4398F /* NSCachedURLResponse+LeakFix.m in Sources */,
 				CA0E777918284DD600B4398F /* NSRunLoop+SDExtensions.m in Sources */,
 				CA0E779518284DD600B4398F /* NSObject+SDExtensions.m in Sources */,
+				E2DD088518BAEDF4005A645C /* SDCreditCardField.m in Sources */,
 				CA0E779F18284DD600B4398F /* SDDragDropManager.m in Sources */,
 				E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */,
 				E2B31BA3189342BF0006970E /* SDTextFieldPicker.m in Sources */,
@@ -1029,8 +1067,10 @@
 				CA0E777118284DD600B4398F /* NSDictionary+SDExtensions.m in Sources */,
 				CA0E778718284DD600B4398F /* SDTimer.m in Sources */,
 				CA0E77DE18284DD600B4398F /* UIImageView+SDExtensions.m in Sources */,
+				E2DD088218BAEDF4005A645C /* SDCard.m in Sources */,
 				E205781E18872F2600A1BA81 /* UIView+PaintCode.m in Sources */,
 				CA0E779B18284DD600B4398F /* SDDeckController.m in Sources */,
+				E2DD088318BAEDF4005A645C /* SDCardNumber.m in Sources */,
 				CA0E777718284DD600B4398F /* NSNumber+SDExtensions.m in Sources */,
 				CA0E77A118284DD600B4398F /* SDImageButton.m in Sources */,
 				E2B31BA2189342BF0006970E /* SDSpanParser.m in Sources */,

@@ -25,7 +25,7 @@ t_b64_pton p_b64_pton = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         // we have no way of unloading it, so no need to keep the handle.
-        p_libResolv = dlopen("libResolv.dylib", RTLD_NOW);
+        p_libResolv = dlopen("libresolv.dylib", RTLD_NOW);
         if (p_libResolv)
         {
             p_b64_ntop = dlsym(p_libResolv, "res_9_b64_ntop");

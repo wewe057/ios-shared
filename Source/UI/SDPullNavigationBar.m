@@ -50,6 +50,11 @@ typedef struct
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
 @property (nonatomic, assign) BOOL showBottomAdornment;
 
+@property (nonatomic, assign) BOOL implementsWillAppear;
+@property (nonatomic, assign) BOOL implementsDidAppear;
+@property (nonatomic, assign) BOOL implementsWillDisappear;
+@property (nonatomic, assign) BOOL implementsDidDisappear;
+
 @end
 
 @implementation SDPullNavigationBar
@@ -160,6 +165,12 @@ typedef struct
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
 
             self.menuController.pullNavigationBarDelegate = self;
+
+            self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
+            self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
+            self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
+            self.implementsDidDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuDidDisappear)];
+
         }
         
         // View that darkens the views behind and to the side of the menu.
@@ -513,6 +524,9 @@ typedef struct
 
 - (void)expandMenu
 {
+    if(self.implementsWillAppear)
+        [self.menuController pullNavMenuWillAppear];
+
     [self centerViewsToOrientation];
 
     [self showBackgroundEffectWithAnimation:NO completion:nil];
@@ -527,11 +541,21 @@ typedef struct
     self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
 
     self.menuOpen = YES;
+
+    if(self.implementsDidAppear)
+        [self.menuController pullNavMenuDidAppear];
 }
 
 - (void)collapseMenu
 {
-    [self collapseMenuWithCompletion:nil];
+    if(self.implementsWillDisappear)
+        [self.menuController pullNavMenuWillDisappear];
+
+    [self collapseMenuWithCompletion:^
+    {
+        if(self.implementsDidDisappear)
+            [self.menuController pullNavMenuDidDisappear];
+    }];
 }
 
 - (void)collapseMenuWithCompletion:(void (^)(void))completion
@@ -576,6 +600,8 @@ typedef struct
     else
     {
         self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        if(completion)
+            completion();
     }
 }
 
@@ -596,6 +622,8 @@ typedef struct
     else
     {
         self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+        if(completion)
+            completion();
     }
 }
 
@@ -646,6 +674,19 @@ typedef struct
     navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
 
     return navHeight;
+}
+
+#pragma mark - Hit testing
+
+// If user taps in any of my subviews, dismiss the menu. Let the normal events go on as they are wont to do.
+- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView* hitView = [super hitTest:point withEvent:event];
+    
+    if([hitView isDescendantOfView:self])
+        [self dismissPullMenuWithCompletionBlock:nil];
+    
+    return hitView;
 }
 
 @end

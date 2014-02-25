@@ -32,10 +32,20 @@
 
 + (instancetype)loadFromStoryboard
 {
-    return [self loadFromStoryboardNamed:nil];
+    return [self storyboardNamed:nil loadView:YES];
 }
 
 + (instancetype)loadFromStoryboardNamed:(NSString *)storyboardName
+{
+    return [self storyboardNamed:storyboardName loadView:YES];
+}
+
++ (instancetype)loadFromStoryboardNamed:(NSString *)storyboardName identifier:(NSString *)identifier
+{
+    return [self storyboardNamed:storyboardName identifier:identifier loadView:YES];
+}
+
++ (instancetype)storyboardNamed:(NSString *)storyboardName loadView:(BOOL)loadView
 {
     NSString *modifiedName = [storyboardName copy];
     NSString *className = [self className];
@@ -87,19 +97,24 @@
     // else we're kind of SOL.  the caller had better support getting a nil view controller.
 
     if ([result isKindOfClass:[self class]])
-        [result view];
+    {
+        if(loadView)
+            [result view];
+    }
     else
+    {
         result = nil;
+    }
     
     // try the identifier...
     if (!result)
-        result = [self loadFromStoryboardNamed:storyboardName identifier:[self className]];
+        result = [self storyboardNamed:storyboardName identifier:[self className] loadView:loadView];
 
     // the types didn't match.  best to return nil.
     return result;
 }
 
-+ (instancetype)loadFromStoryboardNamed:(NSString *)storyboardName identifier:(NSString *)identifier
++ (instancetype)storyboardNamed:(NSString *)storyboardName identifier:(NSString *)identifier loadView:(BOOL)loadView
 {
     // if no identifier was given, use the class name.
     if (!identifier)
@@ -155,9 +170,14 @@
     // else we're kind of SOL.  the caller had better support getting a nil view controller.
     
     if ([result isKindOfClass:[self class]])
-        [result view];
+    {
+        if(loadView)
+            [result view];
+    }
     else
+    {
         result = nil;
+    }
 
     // the types didn't match.  best to return nil.
     return result;

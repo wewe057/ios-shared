@@ -102,6 +102,20 @@ typedef NS_ENUM(NSUInteger, SDGlobalNavMore)
     self.signedOutModeView.hidden = NO;
 }
 
+// PullNav delegate methods. Good place to hook into the otherwise unavailable viewWillAppear.
+// Commonly used to instrument analytics. Full series of methods supported.
+//
+// - (void)pullNavMenuWillAppear;
+// - (void)pullNavMenuDidAppear;
+//
+// - (void)pullNavMenuWillDisappear;
+// - (void)pullNavMenuDidDisappear;
+
+- (void)pullNavMenuDidAppear
+{
+    SDLog(@"pullNavMenuDidAppear called.");
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
