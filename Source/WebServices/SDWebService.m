@@ -547,7 +547,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 				mutablePost = [NSMutableString stringWithString:[mutablePost substringToIndex:[mutablePost length] - 1]];
 			}
 			post = mutablePost;
-			[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+			[request setValue:@"application/x-www-form-urlencoded;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
 		}
 		else
         if ([postFormat isEqualToString:@"JSON"])
@@ -638,6 +638,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     // setup caching, default is to let the server decide.
     [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+    
+    /*NSMutableDictionary *newHeaders = [request.allHTTPHeaderFields mutableCopy];
+    [newHeaders setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forKey:@"Content-Type"];
+    [request setAllHTTPHeaderFields:newHeaders];*/
     // it has to be explicitly disabled to go through here...
 	if (cache && ![cache boolValue])
 		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
