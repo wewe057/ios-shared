@@ -224,10 +224,26 @@ typedef NS_ENUM(NSUInteger, SDGlobalNavMore)
     return self.tableView.contentSize.height;
 }
 
+#if 0   // This can be used if you have a menu that is the same width in both orientations.
+
 - (CGFloat)pullNavigationMenuWidth
 {
     return self.tableView.contentSize.width;
 }
+
+#else
+
+- (CGFloat) pullNavigationMenuWidthForPortrait
+{
+    return self.tableView.contentSize.width;
+}
+
+- (CGFloat) pullNavigationMenuWidthForLandscape
+{
+    return self.tableView.contentSize.width + 80.0f;    // Just bigger so we can see this working.
+}
+
+#endif
 
 @end
 
