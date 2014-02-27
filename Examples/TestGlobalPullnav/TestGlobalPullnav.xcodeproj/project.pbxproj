@@ -122,6 +122,7 @@
 		E21F0B0A18971952009A4014 /* OrderHistory_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E21F0B0718971952009A4014 /* OrderHistory_iPhone.storyboard */; };
 		E28A7C6318971EE500B46990 /* OrderHistory_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E28A7C6118971EE500B46990 /* OrderHistory_iPad.storyboard */; };
 		E2A1D43D18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */; };
+		E2EADE2818BEB3FE0087F9A2 /* UIResponder+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EADE2718BEB3FE0087F9A2 /* UIResponder+SDExtensions.m */; };
 		E2FA030A18B0116C00326E9E /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2FA030918B0116C00326E9E /* SDLog.m */; };
 /* End PBXBuildFile section */
 
@@ -346,6 +347,8 @@
 		E28A7C6218971EE500B46990 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OrderHistory_iPad.storyboard; sourceTree = "<group>"; };
 		E2A1D43B18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPullNavigationBarTabButton.h; sourceTree = "<group>"; };
 		E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPullNavigationBarTabButton.m; sourceTree = "<group>"; };
+		E2EADE2618BEB3FE0087F9A2 /* UIResponder+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SDExtensions.h"; sourceTree = "<group>"; };
+		E2EADE2718BEB3FE0087F9A2 /* UIResponder+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SDExtensions.m"; sourceTree = "<group>"; };
 		E2FA030918B0116C00326E9E /* SDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLog.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -517,6 +520,8 @@
 				E21F09E81897091C009A4014 /* SDTimer.m */,
 				E21F09E91897091C009A4014 /* UIDevice+machine.h */,
 				E21F09EA1897091C009A4014 /* UIDevice+machine.m */,
+				E2EADE2618BEB3FE0087F9A2 /* UIResponder+SDExtensions.h */,
+				E2EADE2718BEB3FE0087F9A2 /* UIResponder+SDExtensions.m */,
 			);
 			name = Foundation;
 			path = ../../Source/Foundation;
@@ -916,6 +921,7 @@
 				E21F0AD01897091D009A4014 /* SDStackView.m in Sources */,
 				E21F0AAF1897091D009A4014 /* SDButton.m in Sources */,
 				E2A1D43D18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m in Sources */,
+				E2EADE2818BEB3FE0087F9A2 /* UIResponder+SDExtensions.m in Sources */,
 				E21F0B04189718FA009A4014 /* SDOrderHistoryViewController.m in Sources */,
 				E21F0ADD1897091D009A4014 /* UIScreen+SDExtensions.m in Sources */,
 				E21F0AA21897091D009A4014 /* MKMapView+SDExtensions.m in Sources */,

@@ -44,7 +44,9 @@ typedef struct
 @property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL menuOpen;
-@property (nonatomic, assign) CGFloat menuWidth;
+@property (nonatomic, assign) CGFloat menuWidthForPortrait;
+@property (nonatomic, assign) CGFloat menuWidthForLandscape;
+@property (nonatomic, assign) CGFloat menuWidthForCurrentOrientation;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
@@ -54,6 +56,9 @@ typedef struct
 @property (nonatomic, assign) BOOL implementsDidAppear;
 @property (nonatomic, assign) BOOL implementsWillDisappear;
 @property (nonatomic, assign) BOOL implementsDidDisappear;
+
+@property (nonatomic, assign) BOOL implementsMenuWidth;
+@property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
 
 @end
 
@@ -151,28 +156,20 @@ typedef struct
         {
             UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
             self.menuController = [menuStoryBoard instantiateInitialViewController];
+            [self setupProtocolHelpers];
 
-            self.menuWidth = kDefaultMenuWidth;
-            if([self.menuController respondsToSelector:@selector(pullNavigationMenuWidth)])
-                self.menuWidth = self.menuController.pullNavigationMenuWidth;
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
 
-            self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                                       { self.menuWidth, menuHeight } };
+            self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                                       { self.menuWidthForCurrentOrientation, menuHeight } };
             self.menuController.view.clipsToBounds = YES;
             self.menuController.view.tag = 4;
             self.menuController.view.autoresizingMask = 0;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
 
             self.menuController.pullNavigationBarDelegate = self;
-
-            self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
-            self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
-            self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
-            self.implementsDidDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuDidDisappear)];
-
         }
-        
+
         // View that darkens the views behind and to the side of the menu.
         {
             self.menuBackgroundEffectsView = [[UIView alloc] initWithFrame:self.menuContainer.bounds];
@@ -234,8 +231,8 @@ typedef struct
 - (void)centerViewsToOrientation
 {
     CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-    self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                               { self.menuWidth, menuHeight } };
+    self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                               { self.menuWidthForCurrentOrientation, menuHeight } };
     if(self.showBottomAdornment)
     {
         CGRect clientMenuFrame = self.menuController.view.frame;
@@ -272,6 +269,40 @@ typedef struct
 - (void)tapAction:(id)sender
 {
     [self togglePullMenuWithCompletionBlock:nil];
+}
+
+// Check to see if our menuController implements the @optional methods.
+// Set up flags and default values based on this.
+
+- (void)setupProtocolHelpers
+{
+    self.implementsMenuWidth = [self.menuController respondsToSelector:@selector(pullNavigationMenuWidth)];
+    self.implementsMenuWidthForOrientations = [self.menuController respondsToSelector:@selector(pullNavigationMenuWidthForPortrait)] &&
+    [self.menuController respondsToSelector:@selector(pullNavigationMenuWidthForLandscape)];
+    if(self.implementsMenuWidthForOrientations)
+        self.implementsMenuWidth = NO;
+    
+    self.menuWidthForPortrait = self.menuWidthForLandscape = kDefaultMenuWidth;
+    if(self.implementsMenuWidth)
+    {
+        self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidth;
+    }
+    else if(self.implementsMenuWidthForOrientations)
+    {
+        self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidthForPortrait;
+        self.menuWidthForLandscape = self.menuController.pullNavigationMenuWidthForLandscape;
+    }
+
+    self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
+    self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
+    self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
+    self.implementsDidDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuDidDisappear)];
+}
+
+- (CGFloat)menuWidthForCurrentOrientation
+{
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    return UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape;
 }
 
 #pragma mark - Gesture Handling
@@ -640,6 +671,27 @@ typedef struct
     [self hideMenuContainer];
     [self collapseMenu];
     [self.tabButton setNeedsDisplay];
+
+    if(self.implementsMenuWidthForOrientations)
+    {
+        UIInterfaceOrientation orientation = [notification.userInfo[UIApplicationStatusBarOrientationUserInfoKey] integerValue];
+        CGFloat menuWidth = UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape;
+
+        CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+        self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                                   { menuWidth, menuHeight } };
+
+        if(self.showBottomAdornment)
+        {
+            self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
+            
+            CGRect clientMenuFrame = self.menuController.view.frame;
+            CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
+                                     { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
+
+            self.menuBottomAdornmentView.frame = frame;
+        }
+    }
 }
 
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion
