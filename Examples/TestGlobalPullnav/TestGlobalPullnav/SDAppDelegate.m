@@ -57,6 +57,7 @@
     [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass = [CustomPullNavigationBarTabButton class];
     [SDPullNavigationManager sharedInstance].globalMenuStoryboardId = @"SDGlobalNavMenu";
     [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight = stretchImage.size.height;
+//    [SDPullNavigationManager sharedInstance].menuAdornmentBottomGap = 100.0f;
 
     // Either use the globalMenuAdornment image or the three part one if you ned it to stretch to fit a variable width adornment view.
 
