@@ -16,6 +16,7 @@
 #import "UIColor+SDExtensions.h"
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
+static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
 
 typedef struct
 {
@@ -59,6 +60,9 @@ typedef struct
 
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
+
+@property (nonatomic, assign) BOOL implementsMenuAdornmentImage;
+@property (nonatomic, assign) BOOL implementsmenuAdornmentImageWith3PartImage;
 
 @end
 
@@ -704,6 +708,19 @@ typedef struct
 
 - (CGFloat)availableHeight
 {
+    static CGFloat sBottomSafetyGap = 2.0f;
+
+    // Check to see what kind of gap between the bottom of the screen the client wants. Default to 44.0f
+    // Should not do this for iPad. Not going to work out well with the bottom of the screen.
+
+    if(sBottomSafetyGap == 2.0f)
+    {
+        if([UIDevice iPad])
+        {
+            sBottomSafetyGap = MAX([SDPullNavigationManager sharedInstance].menuAdornmentBottomGap, kDefaultMenuHeightBuffer);
+        }
+    }
+
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     UIWindow* topMostWindow = [UIApplication sharedApplication].windows.lastObject;
     CGSize topMostWindowSize = topMostWindow.bounds.size;
@@ -712,7 +729,7 @@ typedef struct
     CGFloat navHeight = self.navigationBarHeight;
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
-    navHeight += _menuBottomAdornmentView.frame.size.height + (_menuBottomAdornmentView ? 2.0f : 0.0f);
+    navHeight += _menuBottomAdornmentView.frame.size.height + (_menuBottomAdornmentView ? sBottomSafetyGap : 0.0f);
 
     return height - navHeight;
 }

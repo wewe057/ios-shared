@@ -13,6 +13,11 @@
 #import "SDPullNavigationBarControlsView.h"
 #import "SDPullNavigationAutomation.h"
 
+@interface SDPullNavigationManager()
+
+
+@end
+
 @implementation SDPullNavigationManager
 
 + (instancetype)sharedInstance
@@ -239,6 +244,15 @@
     }
 
     return foundControl;
+}
+
+#pragma mark - menu configuration
+
+- (void)menuAdornmentImageWithLeftImage:(UIImage*)leftImage
+                            centerImage:(UIImage*)centerImage
+                             rightImage:(UIImage*)rightImage
+{
+
 }
 
 @end
