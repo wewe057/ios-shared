@@ -16,6 +16,7 @@
 #import "UIColor+SDExtensions.h"
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
+static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
 
 typedef struct
 {
@@ -59,6 +60,9 @@ typedef struct
 
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
+
+@property (nonatomic, assign) BOOL implementsMenuAdornmentImage;
+@property (nonatomic, assign) BOOL implementsmenuAdornmentImageWith3PartImage;
 
 @end
 
@@ -712,7 +716,7 @@ typedef struct
     CGFloat navHeight = self.navigationBarHeight;
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
-    navHeight += _menuBottomAdornmentView.frame.size.height + (_menuBottomAdornmentView ? 2.0f : 0.0f);
+    navHeight += _menuBottomAdornmentView.frame.size.height + (_menuBottomAdornmentView ? 44.0f : 0.0f);
 
     return height - navHeight;
 }

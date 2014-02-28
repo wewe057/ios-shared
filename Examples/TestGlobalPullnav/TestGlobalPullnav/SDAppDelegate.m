@@ -56,8 +56,14 @@
     [SDPullNavigationManager sharedInstance].pullNavigationBarViewClass = [SDPullNavigationBarControlsView class];
     [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass = [CustomPullNavigationBarTabButton class];
     [SDPullNavigationManager sharedInstance].globalMenuStoryboardId = @"SDGlobalNavMenu";
-    [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
     [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight = stretchImage.size.height;
+
+    // Either use the globalMenuAdornment image or the three part one if you ned it to stretch to fit a variable width adornment view.
+
+    if(0)
+        [[SDPullNavigationManager sharedInstance] menuAdornmentImageWithLeftImage:nil centerImage:nil rightImage:nil];
+    else
+        [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
 }
 
 - (void)setupNavigationBarItems
