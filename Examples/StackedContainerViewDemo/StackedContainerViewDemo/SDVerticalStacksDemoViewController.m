@@ -73,7 +73,7 @@
     SDDemoBoxView *view = [SDDemoBoxView loadFromNib];
     view.translatesAutoresizingMaskIntoConstraints = NO;
     view.backgroundColor = [self getColor];
-    view.boxLabel.text = [NSString stringWithFormat:@"Box: %d", count];
+    view.boxLabel.text = [NSString stringWithFormat:@"Box: %lu", (unsigned long)count];
     
     self.views = [self.views arrayByAddingObject:view];
     count++;
