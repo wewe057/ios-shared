@@ -16,13 +16,16 @@
 @class SDTableViewSectionController;
 
 //____________________________________________________________________________________________
-// SDTableViewSectionControllerDelegate is typically implemented by a UIViewController
-// to provide the logic for how the table view should respond to requests by the
-// table view section controller.
-
-// Optional delete methods add navigation support.  You should implement these methods
-// If you want your view controller to support push/pop/modal navigation
-// (Proxy these methods to your navigationController)
+/**
+ *
+ * SDTableViewSectionControllerDelegate is typically implemented by a UIViewController
+ * to provide the logic for how the table view should respond to requests by the
+ * table view section controller.
+ *
+ * Optional delete methods add navigation support.  You should implement these methods
+ * If you want your view controller to support push/pop/modal navigation
+ * (Proxy these methods to your navigationController)
+ */
 
 @protocol SDTableViewSectionControllerDelegate <NSObject>
 
@@ -74,11 +77,17 @@
 @end
 
 //________________________________________________________________________________________
-// This protocol declares the data and delegate interface for section controllers
+/**
+ *
+ * The SDTableViewSectionDelegate protocol declares the data and delegate interface for section controllers
+ *
+ */
 
 @protocol SDTableViewSectionDelegate <NSObject>
 
-// "DataSource" methods
+/////////////////////////////////////////////////////////////////////////////////////////
+/// @name "DataSource" methods
+/////////////////////////////////////////////////////////////////////////////////////////
 @required
 
 /**
@@ -136,18 +145,39 @@
 @end
 
 //__________________________________________________________________________
-// This class manages sections and sending messages to its
-// sectionDataSource and sectionDelegate
+/**
+ *
+ * SDTableViewSectionController manages objects that implement the SDTableViewSectionDelegate protocol.
+ * 
+ * SDTableViewSectionController allows the logic for table view sections to be broken up into discrete
+ * controller objects.  The implementer of SDTableViewSectionDelegate objects is free to pass any models
+ * or data to the controllers.
+ *
+ * SDTableViewSectionController will query its SDTableViewSectionDelegate objects in a manner similar to UITableView.
+ * A SDTableViewSectionDelegate will be asked for its number of rows, cells for each rows, etc.
+ *
+ * Once your view controller (or any other controller) has received an update that requires the table view to be
+ * refreshed, generate a new array of SDTableViewSectionDelegate objects and send them to the SDTableViewSectionController
+ * by calling reloadWithSectionControllers:animated:
+ */
 
 @interface SDTableViewSectionController : NSObject
 
+/**
+ *  Initializes a newly created UITableViewSectionController with a UITableView.
+ *  Takes over the UITableViewDataSource and UITableViewDelegate responsibilities for the UITableView
+ *
+ *  @param tableView The UITableView to manage
+ *
+ *  @return An newly initialized SDTableViewSectionController object 
+ */
 - (instancetype) initWithTableView:(UITableView *)tableView;
 
 @property (nonatomic, weak)             id <SDTableViewSectionControllerDelegate>  delegate;
 @property (nonatomic, weak, readonly)   UITableView                                 *tableView;
 
 /**
- *  Array of objects conforming to SDTableViewSectionProtocol
+ *  Array of objects conforming to the SDTableViewSectionDelegate protocol
  */
 @property (nonatomic, strong, readonly) NSArray                                     *sectionControllers;
 
