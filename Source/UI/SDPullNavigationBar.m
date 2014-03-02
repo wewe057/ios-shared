@@ -24,8 +24,6 @@ typedef struct
     CGPoint currentTouchPoint;
     CGFloat maxMenuHeight;
     CGFloat minMenuHeight;
-    CGFloat maxAdornmentHeight;
-    CGFloat minAdornmentHeight;
     CGFloat velocity;
     BOOL    isInteracting;
 } SDMenuControllerInteractionFlags;
@@ -62,6 +60,8 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
+@property (nonatomic, strong) UIImage* menuAdornmentImage;
+@property (nonatomic, assign) BOOL showAdornment;
 
 @property (nonatomic, assign) BOOL implementsWillAppear;
 @property (nonatomic, assign) BOOL implementsDidAppear;
@@ -122,6 +122,10 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 {
     if(newSuperview)
     {
+        self.menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
+        if([UIDevice iPad] && self.menuAdornmentImage)
+            self.showAdornment = YES;
+
         // I tagged all of the view to be able to find them quickly when I am viewing the hierarchy in Spark Inspector or Reveal.
 
         // This is a navBar overlay which we can use to change navBar visuals.
@@ -205,9 +209,8 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
                                      { self.menuWidthForCurrentOrientation, menuHeight } };
 
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
-            UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
-            if([UIDevice iPad] && menuAdornmentImage)
-                self.menuBottomAdornmentView.adornmentImage = menuAdornmentImage;
+            if(self.showAdornment)
+                self.menuBottomAdornmentView.adornmentImage = self.menuAdornmentImage;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
         }
 
@@ -239,7 +242,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 
 - (void)centerViewsToOrientation
 {
-    CGFloat menuHeight = MAX(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+    CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
     self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
                                                    { self.menuWidthForCurrentOrientation, menuHeight } };
 }
@@ -338,8 +341,6 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
             _menuInteraction.velocity = 0.0f;
             _menuInteraction.minMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
             _menuInteraction.maxMenuHeight = self.navigationBarHeight;
-            _menuInteraction.minAdornmentHeight = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
-            _menuInteraction.maxAdornmentHeight = MIN(self.menuController.pullNavigationMenuHeight + self.navigationBarHeight, self.availableHeight);
 
             [recognizer setTranslation:CGPointZero inView:self];
 
@@ -368,7 +369,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
                     // Slow drag
 
                     CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
-                    if(_menuInteraction.velocity < 0)
+                    if(_menuInteraction.velocity < 0.0f)
                     {
                         if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f)
                             [self expandMenu];
@@ -387,7 +388,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
                 {
                     // Fast drag
 
-                    if(_menuInteraction.velocity < 0)
+                    if(_menuInteraction.velocity < 0.0f)
                         [self collapseMenu];
                     else
                         [self expandMenu];
@@ -421,8 +422,6 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
             _menuInteraction.velocity = 0.0f;
             _menuInteraction.minMenuHeight = self.navigationBarHeight;
             _menuInteraction.maxMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - (self.navigationBarHeight/* - self.menuAdornmentImageOverlapHeight*/));
-            _menuInteraction.minAdornmentHeight = MIN(self.menuController.pullNavigationMenuHeight + self.navigationBarHeight, self.availableHeight);
-            _menuInteraction.maxAdornmentHeight = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
 
             [recognizer setTranslation:CGPointZero inView:self];
             break;
@@ -702,7 +701,10 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
     CGFloat navHeight = self.navigationBarHeight;
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
-    navHeight += _menuBottomAdornmentView.frame.size.height + (_menuBottomAdornmentView ? sBottomSafetyGap : 0.0f);
+    if(self.showAdornment)
+        navHeight += self.menuAdornmentImage.size.height + sBottomSafetyGap;
+
+    SDLog(@"availableHeight = %f", height - navHeight);
 
     return height - navHeight;
 }
