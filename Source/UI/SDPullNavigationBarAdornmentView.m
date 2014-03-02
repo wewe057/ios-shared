@@ -9,6 +9,7 @@
 #import "SDPullNavigationBarAdornmentView.h"
 
 @interface SDPullNavigationBarAdornmentView()
+@property (nonatomic, assign) CGRect baseFrame;
 @property (nonatomic, strong) UIImageView* adornmentView;
 @end
 
@@ -19,6 +20,7 @@
     self = [super initWithFrame:frame];
     if(self != nil)
     {
+        _baseFrame = frame;
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;
@@ -32,22 +34,28 @@
 {
     if(_adornmentImage != adornmentImage)
     {
-        CGRect frame = self.frame;
-
-        // Take off the existing adornment image's height.
-        if(_adornmentImage)
-        {
-            frame.size.height -= _adornmentImage.size.height;
-        }
-
-        // Add the height of the image to the view.
-        frame.size.height += adornmentImage.size.height;
-
         _adornmentImage = adornmentImage;
+        [self setFrame:_baseFrame];    // Tell our setFrame to adjust for the image.
 
         // Adding or removing an adornment image means laying our the view again.
         [self setNeedsLayout];
     }
+}
+
+- (CGRect)frame
+{
+    return _baseFrame;
+}
+
+// Override the setFrame so that the code that sizes this view does not need to take into account the adornment view
+// at the bottom of the view.
+- (void)setFrame:(CGRect)frame
+{
+    _baseFrame = frame;
+    CGRect adjustedFrame = frame;
+    adjustedFrame.size.height += self.adornmentImage.size.height;
+
+    [super setFrame:adjustedFrame];
 }
 
 - (void)layoutSubviews
@@ -56,8 +64,8 @@
     if(self.adornmentView == nil && self.adornmentImage)
     {
         CGSize imageSize = self.adornmentImage.size;
-        CGRect imageViewRect = self.frame;
-        imageViewRect.origin.y = CGRectGetHeight(imageViewRect) - imageSize.height;
+        CGRect imageViewRect = self.baseFrame;
+        imageViewRect.origin.y = self.baseFrame.size.height;
         imageViewRect.origin.x = floor(CGRectGetWidth(imageViewRect) * 0.5f - imageSize.width * 0.5f);
         imageViewRect.size = imageSize;
 
@@ -68,10 +76,10 @@
     else if(self.adornmentView && self.adornmentImage)
     {
         CGSize imageSize = self.adornmentImage.size;
-        CGRect imageViewRect = self.frame;
-        imageViewRect.origin.y = CGRectGetHeight(imageViewRect) - imageSize.height;
+        CGRect imageViewRect = self.baseFrame;
+        imageViewRect.origin.y = self.baseFrame.size.height;
         imageViewRect.origin.x = floor(CGRectGetWidth(imageViewRect) * 0.5f - imageSize.width * 0.5f);
-        imageViewRect.size.width = imageSize.width;
+        imageViewRect.size = imageSize;
 
         self.adornmentView.frame = imageViewRect;
     }

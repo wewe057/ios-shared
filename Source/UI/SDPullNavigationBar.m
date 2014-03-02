@@ -239,7 +239,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 
 - (void)centerViewsToOrientation
 {
-    CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+    CGFloat menuHeight = MAX(self.menuController.pullNavigationMenuHeight, self.availableHeight);
     self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
                                                    { self.menuWidthForCurrentOrientation, menuHeight } };
 }
@@ -327,7 +327,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
         case UIGestureRecognizerStateBegan:
         {
             [self centerViewsToOrientation];
-            
+
             self.tabButton.tuckedTab = !self.menuOpen;
             [self.tabButton setNeedsDisplay];
 
@@ -353,10 +353,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
             _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
 
             CGFloat newY = MIN(_menuInteraction.minMenuHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
-            CGFloat newAdornmentY = MIN(_menuInteraction.minAdornmentHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxAdornmentHeight);
-
-            self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, newAdornmentY }, self.menuBottomAdornmentView.frame.size };
-            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, newY }, self.menuController.view.frame.size };
+            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
             break;
         }
 
@@ -373,14 +370,14 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
                     CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
                     if(_menuInteraction.velocity < 0)
                     {
-                        if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f)
                             [self expandMenu];
                         else
                             [self collapseMenu];
                     }
                     else
                     {
-                        if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f)
                             [self expandMenu];
                         else
                             [self collapseMenu];
@@ -437,14 +434,11 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 
             // Peg to the top value
             CGFloat newY = MAX(_menuInteraction.minMenuHeight - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
-            CGFloat newAdornmentY = MAX(_menuInteraction.minAdornmentHeight - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxAdornmentHeight);
 
             // Peg to the bottom value.
             newY = MIN(newY, _menuInteraction.minMenuHeight);
-            newAdornmentY = MIN(newAdornmentY, _menuInteraction.minAdornmentHeight);
 
-            self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, newAdornmentY }, self.menuBottomAdornmentView.frame.size };
-            self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, newY }, self.menuController.view.frame.size };
+            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
             break;
         }
             
@@ -461,7 +455,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
                     CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
                     if(_menuInteraction.velocity < 0)
                     {
-                        if(self.menuController.view.frame.origin.y < panArea * 0.66f)
+                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f)
                         {
                             [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
                         }
@@ -472,7 +466,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
                     }
                     else
                     {
-                        if(self.menuController.view.frame.origin.y < panArea * 0.33f)
+                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f)
                         {
                             [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
                         }
@@ -567,7 +561,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
     self.tabButton.tuckedTab = YES;
     [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
 
-    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.navigationBarHeight }, self.menuController.view.frame.size };
+    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, self.navigationBarHeight }, self.menuBottomAdornmentView.frame.size };
 
     self.menuOpen = YES;
 
@@ -594,7 +588,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
     self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
     
     CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
-    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, menuPositionY }, self.menuBottomAdornmentView.frame.size };
 
     self.menuOpen = NO;
 }
@@ -670,11 +664,9 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
     if(self.implementsMenuWidthForOrientations)
     {
         UIInterfaceOrientation orientation = [notification.userInfo[UIApplicationStatusBarOrientationUserInfoKey] integerValue];
-        CGFloat menuWidth = UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape;
-
-        CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-        self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                                   { menuWidth, menuHeight } };
+        CGSize menuSize = (CGSize){ UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape,
+                                    MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) };
+        self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - menuSize.width * 0.5f, -(menuSize.height - self.navigationBarHeight) }, menuSize };
 
     }
 }
