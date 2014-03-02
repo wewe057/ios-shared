@@ -1,7 +1,6 @@
 //
 //  SDPullNavigationBar.m
 //  ios-shared
-
 //
 //  Created by Brandon Sneed on 08/06/2013.
 //  Copyright 2013-2014 SetDirection. All rights reserved.
@@ -9,6 +8,7 @@
 
 #import "SDPullNavigationBar.h"
 
+#import "SDPullNavigationBarAdornmentView.h"
 #import "SDPullNavigationBarBackground.h"
 #import "SDPullNavigationBarTabButton.h"
 #import "SDPullNavigationManager.h"
@@ -30,6 +30,17 @@ typedef struct
     BOOL    isInteracting;
 } SDMenuControllerInteractionFlags;
 
+typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
+{
+    SDPullNavigationNavBarBackgroundViewTag  = 1,
+    SDPullNavigationTabButtonViewTag         = 2,
+    SDPullNavigationMenuContainerViewTag     = 3,
+    SDPullNavigationClientViewTag            = 4,
+    SDPullNavigationBackgroundEffectsViewTag = 5,
+    SDPullNavigationAdornmentView            = 6
+};
+
+
 @interface SDPullNavigationMenuContainer : UIView   // This custom class used for debugging purposes.
 @end
 
@@ -40,7 +51,7 @@ typedef struct
 @property (nonatomic, strong) SDPullNavigationBarBackground* navbarBackgroundView;
 @property (nonatomic, strong) SDPullNavigationBarTabButton* tabButton;
 @property (nonatomic, strong) SDPullNavigationMenuContainer* menuContainer;
-@property (nonatomic, strong) UIView* menuBackgroundEffectsView;
+@property (nonatomic, strong) UIView* backgroundEffectsView;
 @property (nonatomic, strong) SDPullNavigationBarAdornmentView* menuBottomAdornmentView;
 @property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
 @property (nonatomic, assign) BOOL animating;
@@ -51,7 +62,6 @@ typedef struct
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
-@property (nonatomic, assign) BOOL showBottomAdornment;
 
 @property (nonatomic, assign) BOOL implementsWillAppear;
 @property (nonatomic, assign) BOOL implementsDidAppear;
@@ -124,7 +134,7 @@ typedef struct
             self.navbarBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.navbarBackgroundView.delegate = (id<SDPullNavigationBarOverlayProtocol>)self;
             self.navbarBackgroundView.frame = self.bounds;
-            self.navbarBackgroundView.tag = 1;
+            self.navbarBackgroundView.tag = SDPullNavigationNavBarBackgroundViewTag;
         }
 
         // This is the hit area for showing the pulldown menu, as well as the area (at the bottom) where the nipple is shown.
@@ -134,7 +144,7 @@ typedef struct
                 tabBarButtonClass = [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass;
 
             self.tabButton = [[tabBarButtonClass alloc] initWithNavigationBar:self];
-            self.tabButton.tag = 2;
+            self.tabButton.tag = SDPullNavigationTabButtonViewTag;
 
             NSAssert([self.tabButton isKindOfClass:[SDPullNavigationBarTabButton class]], @"TabBarButton class must be derived from SDPullNavigationBarTabButton");
         }
@@ -153,7 +163,7 @@ typedef struct
             self.menuContainer.layer.shadowOffset = (CGSize){ 0.0f, -3.0f };
             self.menuContainer.layer.shadowRadius = 3.0f;
             self.menuContainer.layer.shadowOpacity = 1.0;
-            self.menuContainer.tag = 3;
+            self.menuContainer.tag = SDPullNavigationMenuContainerViewTag;
         }
 
         // This is the client's controller for the menu.
@@ -163,53 +173,48 @@ typedef struct
             [self setupProtocolHelpers];
 
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+            self.menuController.view.frame = (CGRect){ CGPointZero, { self.menuWidthForCurrentOrientation, menuHeight } };
 
-            self.menuController.view.frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                                       { self.menuWidthForCurrentOrientation, menuHeight } };
             self.menuController.view.clipsToBounds = YES;
-            self.menuController.view.tag = 4;
             self.menuController.view.autoresizingMask = 0;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
+            self.menuController.view.tag = SDPullNavigationClientViewTag;
 
             self.menuController.pullNavigationBarDelegate = self;
         }
 
         // View that darkens the views behind and to the side of the menu.
         {
-            self.menuBackgroundEffectsView = [[UIView alloc] initWithFrame:self.menuContainer.bounds];
-            self.menuBackgroundEffectsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            self.menuBackgroundEffectsView.clipsToBounds = YES;
-            self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
-            self.menuBackgroundEffectsView.opaque = NO;
-            self.menuBackgroundEffectsView.tag = 5;
+            self.backgroundEffectsView = [[UIView alloc] initWithFrame:self.menuContainer.bounds];
+            self.backgroundEffectsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            self.backgroundEffectsView.clipsToBounds = YES;
+            self.backgroundEffectsView.backgroundColor = [UIColor clearColor];
+            self.backgroundEffectsView.opaque = NO;
+            self.backgroundEffectsView.tag = SDPullNavigationBackgroundEffectsViewTag;
         }
 
-        // This is the little nubbin' at the bottom of the menu. Don't show this on iPhone, don't show this if client has not set it.
-        if([UIDevice iPad])
+        // The adornmentView should be the exact same size as the menuController's view, except for the area that hangs down below.
+        // It should also be the menu controller's superview. That way we just animate the adornment view instead of both.
+        // This is the little nubbin' at the bottom of the menu. Don't show this on iPhone, don't show this if client has not set the image.
+
         {
+            self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
+
+            CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+            CGRect frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                     { self.menuWidthForCurrentOrientation, menuHeight } };
+
+            self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             UIImage* menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
-            if(menuAdornmentImage)
-            {
-                self.showBottomAdornment = YES;
-                self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
-
-                CGRect clientMenuFrame = self.menuController.view.frame;
-                CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
-                                         { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
-
-                self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
-                self.menuBottomAdornmentView.clipsToBounds = YES;
-                self.menuBottomAdornmentView.backgroundColor = [UIColor clearColor];
-                self.menuBottomAdornmentView.opaque = YES;
-                self.menuBottomAdornmentView.image = menuAdornmentImage;
-                self.menuBottomAdornmentView.tag = 6;
-            }
+            if([UIDevice iPad] && menuAdornmentImage)
+                self.menuBottomAdornmentView.adornmentImage = menuAdornmentImage;
+            self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
         }
 
         [self insertSubview:self.navbarBackgroundView atIndex:1];
         [self addSubview:self.tabButton];
-        [self.menuContainer addSubview:self.menuBackgroundEffectsView];
-        [self.menuContainer addSubview:self.menuController.view];
+        [self.menuBottomAdornmentView addSubview:self.menuController.view];
+        [self.menuContainer addSubview:self.backgroundEffectsView];
         [self.menuContainer addSubview:self.menuBottomAdornmentView];
         [newSuperview insertSubview:self.menuContainer belowSubview:self];
 
@@ -235,15 +240,8 @@ typedef struct
 - (void)centerViewsToOrientation
 {
     CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-    self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                               { self.menuWidthForCurrentOrientation, menuHeight } };
-    if(self.showBottomAdornment)
-    {
-        CGRect clientMenuFrame = self.menuController.view.frame;
-        CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
-                                 { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
-        self.menuBottomAdornmentView.frame = frame;
-    }
+    self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                                   { self.menuWidthForCurrentOrientation, menuHeight } };
 }
 
 - (void)setFrame:(CGRect)frame
@@ -569,11 +567,7 @@ typedef struct
     self.tabButton.tuckedTab = YES;
     [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
 
-    CGFloat adornmentPositionY = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) + self.navigationBarHeight;
-    CGFloat menuPositionY = self.navigationBarHeight;
-
-    self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
-    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, self.navigationBarHeight }, self.menuController.view.frame.size };
 
     self.menuOpen = YES;
 
@@ -599,11 +593,8 @@ typedef struct
     
     self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
     
-    CGFloat adornmentPositionY = self.navigationBarHeight - self.menuAdornmentImageOverlapHeight;
     CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
-
-    self.menuBottomAdornmentView.frame = (CGRect){ {self.menuBottomAdornmentView.frame.origin.x, adornmentPositionY }, self.menuBottomAdornmentView.frame.size };
-    self.menuController.view.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
+    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuController.view.frame.origin.x, menuPositionY }, self.menuController.view.frame.size };
 
     self.menuOpen = NO;
 }
@@ -624,7 +615,7 @@ typedef struct
     {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-            self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+            self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
         }
         completion:^(BOOL finished)
         {
@@ -634,7 +625,7 @@ typedef struct
     }
     else
     {
-        self.menuBackgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
         if(completion)
             completion();
     }
@@ -646,7 +637,7 @@ typedef struct
     {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-             self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+             self.backgroundEffectsView.backgroundColor = [UIColor clearColor];
         }
         completion:^(BOOL finished)
         {
@@ -656,7 +647,7 @@ typedef struct
     }
     else
     {
-        self.menuBackgroundEffectsView.backgroundColor = [UIColor clearColor];
+        self.backgroundEffectsView.backgroundColor = [UIColor clearColor];
         if(completion)
             completion();
     }
@@ -685,16 +676,6 @@ typedef struct
         self.menuController.view.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - menuWidth * 0.5f, -(menuHeight - self.navigationBarHeight) },
                                                    { menuWidth, menuHeight } };
 
-        if(self.showBottomAdornment)
-        {
-            self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
-            
-            CGRect clientMenuFrame = self.menuController.view.frame;
-            CGRect frame = (CGRect){ { clientMenuFrame.origin.x, self.navigationBarHeight },
-                                     { clientMenuFrame.size.width, [SDPullNavigationManager sharedInstance].menuAdornmentImage.size.height } };
-
-            self.menuBottomAdornmentView.frame = frame;
-        }
     }
 }
 

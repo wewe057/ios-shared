@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E21C0E9C18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0E9B18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m */; };
 		E21F098D189708EA009A4014 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F098C189708EA009A4014 /* Foundation.framework */; };
 		E21F098F189708EA009A4014 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F098E189708EA009A4014 /* CoreGraphics.framework */; };
 		E21F0991189708EA009A4014 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F0990189708EA009A4014 /* UIKit.framework */; };
@@ -137,6 +138,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E21C0E9A18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationBarAdornmentView.h; sourceTree = "<group>"; };
+		E21C0E9B18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBarAdornmentView.m; sourceTree = "<group>"; };
 		E21F0989189708EA009A4014 /* TestGlobalPullnav.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestGlobalPullnav.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E21F098C189708EA009A4014 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E21F098E189708EA009A4014 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -631,6 +634,8 @@
 				E21F0A391897091C009A4014 /* SDPullNavigationBar.m */,
 				E21F0A3A1897091C009A4014 /* SDPullNavigationBarBackground.h */,
 				E21F0A3B1897091D009A4014 /* SDPullNavigationBarBackground.m */,
+				E21C0E9A18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.h */,
+				E21C0E9B18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m */,
 				E21F0A3C1897091D009A4014 /* SDPullNavigationBarControlsView.h */,
 				E21F0A3D1897091D009A4014 /* SDPullNavigationBarControlsView.m */,
 				E21F0A3E1897091D009A4014 /* SDPullNavigationBarTabButton.h */,
@@ -845,6 +850,7 @@
 				E21F0AC11897091D009A4014 /* SDPullNavigationAutomation.m in Sources */,
 				E21F0999189708EA009A4014 /* main.m in Sources */,
 				E21F0AC01897091D009A4014 /* SDPickerView.m in Sources */,
+				E21C0E9C18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m in Sources */,
 				E21F0AE61897091D009A4014 /* SDMockService.m in Sources */,
 				E21F09A6189708EA009A4014 /* SDHomeScreenViewController.m in Sources */,
 				E21F0AB51897091D009A4014 /* SDDragDropManager.m in Sources */,
