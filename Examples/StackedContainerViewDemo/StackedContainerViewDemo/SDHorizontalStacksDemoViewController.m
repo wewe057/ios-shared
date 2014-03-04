@@ -11,7 +11,7 @@
 #import "SDDemoBoxView.h"
 
 @interface SDHorizontalStacksDemoViewController ()
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, strong) SDAutolayoutStackView *stackView;
 @property (nonatomic, strong) NSArray *views;
 @end
