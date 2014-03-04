@@ -362,7 +362,7 @@ typedef struct
             _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
 
             CGFloat newY = MIN(_menuInteraction.minMenuHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
-            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
+            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.baseFrame.origin.x, newY }, self.menuBottomAdornmentView.baseFrame.size };
             break;
         }
 
@@ -443,7 +443,7 @@ typedef struct
             // Peg to the bottom value.
             newY = MIN(newY, _menuInteraction.minMenuHeight);
 
-            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.baseFrame.size };
+            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.baseFrame.origin.x, newY }, self.menuBottomAdornmentView.baseFrame.size };
             break;
         }
             
