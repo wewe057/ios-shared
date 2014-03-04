@@ -711,8 +711,6 @@ typedef struct
     if(self.showAdornment)
         navHeight += self.menuAdornmentImage.size.height + sBottomSafetyGap;
 
-    SDLog(@"availableHeight = %f", height - navHeight);
-
     return height - navHeight;
 }
 
