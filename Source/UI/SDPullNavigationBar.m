@@ -18,16 +18,6 @@
 static const CGFloat kDefaultMenuWidth = 320.0f;
 static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
 
-typedef struct
-{
-    CGPoint initialTouchPoint;
-    CGPoint currentTouchPoint;
-    CGFloat maxMenuHeight;
-    CGFloat minMenuHeight;
-    CGFloat velocity;
-    BOOL    isInteracting;
-} SDMenuControllerInteractionFlags;
-
 typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 {
     SDPullNavigationNavBarBackgroundViewTag  = 1,
@@ -38,6 +28,15 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
     SDPullNavigationAdornmentView            = 6
 };
 
+typedef struct
+{
+    CGPoint initialTouchPoint;
+    CGPoint currentTouchPoint;
+    CGFloat maxMenuHeight;
+    CGFloat minMenuHeight;
+    CGFloat velocity;
+    BOOL    isInteracting;
+} SDMenuControllerInteractionFlags;
 
 @interface SDPullNavigationMenuContainer : UIView   // This custom class used for debugging purposes.
 @end
@@ -180,7 +179,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
             self.menuController.view.frame = (CGRect){ CGPointZero, { self.menuWidthForCurrentOrientation, menuHeight } };
 
             self.menuController.view.clipsToBounds = YES;
-            self.menuController.view.autoresizingMask = 0;
+            self.menuController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuController.view.tag = SDPullNavigationClientViewTag;
 
@@ -245,6 +244,7 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
     CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
     self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
                                                    { self.menuWidthForCurrentOrientation, menuHeight } };
+    [self.menuBottomAdornmentView setNeedsLayout];
 }
 
 - (void)setFrame:(CGRect)frame
@@ -723,7 +723,8 @@ typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 #pragma mark - Hit testing
 
 // If user taps in any of my subviews, dismiss the menu. Let the normal events go on as they are wont to do.
-- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+
+- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event
 {
     UIView* hitView = [super hitTest:point withEvent:event];
     
