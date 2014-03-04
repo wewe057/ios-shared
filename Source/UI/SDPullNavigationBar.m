@@ -71,7 +71,7 @@ typedef struct
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
 
 @property (nonatomic, assign) BOOL implementsMenuAdornmentImage;
-@property (nonatomic, assign) BOOL implementsmenuAdornmentImageWith3PartImage;
+@property (nonatomic, assign) BOOL implementsMenuAdornmentImageWith3PartImage;
 
 @end
 
@@ -660,14 +660,21 @@ typedef struct
     [self collapseMenu];
     [self.tabButton setNeedsDisplay];
 
+    UIInterfaceOrientation orientation = [notification.userInfo[UIApplicationStatusBarOrientationUserInfoKey] integerValue];
+
     if(self.implementsMenuWidthForOrientations)
     {
-        UIInterfaceOrientation orientation = [notification.userInfo[UIApplicationStatusBarOrientationUserInfoKey] integerValue];
         CGSize menuSize = (CGSize){ UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape,
                                     MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) };
         self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - menuSize.width * 0.5f, -(menuSize.height - self.navigationBarHeight) }, menuSize };
-
     }
+
+#if 0
+    if(self.implementsMenuAdornmentImageWith3PartImage)
+    {
+        self.menuBottomAdornmentView.adornmentImage = image;
+    }
+#endif
 }
 
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion
