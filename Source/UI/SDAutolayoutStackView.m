@@ -24,8 +24,6 @@
 
 - (void)updateConstraints
 {
-    [super updateConstraints];
-    
     // Remove all constraints on this container view.
     [self removeConstraints:self.constraints];
     
@@ -144,6 +142,8 @@
         // Set this view to previousView for next iteration of this loop.
         previousView = view;
     }
+    
+    [super updateConstraints];
 }
 
 @end
