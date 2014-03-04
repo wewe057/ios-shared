@@ -8,6 +8,7 @@
 
 #import "SDPullNavigationBarAdornmentView.h"
 
+static const CGFloat kMinimumHeightForTapArea = 44.0f;
 
 @interface SDPullNavigationBarAdornmentView()
 @property (nonatomic, assign) CGRect baseFrame;
@@ -75,7 +76,7 @@
 {
     _baseFrame = frame;
     CGRect adjustedFrame = frame;
-    adjustedFrame.size.height += self.adornmentImage.size.height;
+    adjustedFrame.size.height += MAX(self.adornmentImage.size.height, kMinimumHeightForTapArea);
 
     [super setFrame:adjustedFrame];
 }

@@ -489,7 +489,7 @@ typedef struct
 
             // Falling through on purpose...
         }
-            
+
         case UIGestureRecognizerStateCancelled:
         case UIGestureRecognizerStateFailed:
         default:
