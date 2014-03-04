@@ -421,8 +421,11 @@ typedef struct
             _menuInteraction.isInteracting = YES;
             _menuInteraction.velocity = 0.0f;
             _menuInteraction.minMenuHeight = self.navigationBarHeight;
-            _menuInteraction.maxMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - (self.navigationBarHeight/* - self.menuAdornmentImageOverlapHeight*/));
+            _menuInteraction.maxMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight);
 
+            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, _menuInteraction.minMenuHeight }, self.menuBottomAdornmentView.frame.size };
+
+            SDLog(@"BEGAN self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
             [recognizer setTranslation:CGPointZero inView:self];
             break;
         }
@@ -437,6 +440,7 @@ typedef struct
             // Peg to the bottom value.
             newY = MIN(newY, _menuInteraction.minMenuHeight);
 
+            SDLog(@"CHANGED self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect((CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size }));
             self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
             break;
         }
