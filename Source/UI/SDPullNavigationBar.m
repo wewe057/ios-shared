@@ -18,6 +18,13 @@
 static const CGFloat kDefaultMenuWidth = 320.0f;
 static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
 
+typedef NS_ENUM(NSInteger, SDPullNavigationStateEndAction)
+{
+    SDPullNavigationStateEndNone,
+    SDPullNavigationStateEndExpand,
+    SDPullNavigationStateEndCollapse
+};
+
 typedef NS_ENUM(NSInteger, SDPullNavigationViewTag)
 {
     SDPullNavigationNavBarBackgroundViewTag  = 1,
@@ -364,6 +371,8 @@ typedef struct
 
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
             {
+                SDPullNavigationStateEndAction action = SDPullNavigationStateEndNone;
+
                 if(fabs(_menuInteraction.velocity) < 100.0f)
                 {
                     // Slow drag
@@ -371,28 +380,22 @@ typedef struct
                     CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
                     if(_menuInteraction.velocity < 0.0f)
                     {
-                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f)
-                            [self expandMenu];
-                        else
-                            [self collapseMenu];
+                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f ? SDPullNavigationStateEndExpand : SDPullNavigationStateEndCollapse;
                     }
                     else
                     {
-                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f)
-                            [self expandMenu];
-                        else
-                            [self collapseMenu];
+                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f ? SDPullNavigationStateEndExpand : SDPullNavigationStateEndCollapse;
                     }
                 }
                 else
                 {
                     // Fast drag
 
-                    if(_menuInteraction.velocity < 0.0f)
-                        [self collapseMenu];
-                    else
-                        [self expandMenu];
+                    action = _menuInteraction.velocity < 0.0f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
                 }
+
+                if(action == SDPullNavigationStateEndExpand)    [self expandMenu];
+                if(action == SDPullNavigationStateEndCollapse)  [self collapseMenu];
             }
             completion:^(BOOL finished) {}];
 
@@ -425,7 +428,6 @@ typedef struct
 
             self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, _menuInteraction.minMenuHeight }, self.menuBottomAdornmentView.frame.size };
 
-            SDLog(@"BEGAN self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect(self.menuBottomAdornmentView.frame));
             [recognizer setTranslation:CGPointZero inView:self];
             break;
         }
@@ -440,7 +442,6 @@ typedef struct
             // Peg to the bottom value.
             newY = MIN(newY, _menuInteraction.minMenuHeight);
 
-            SDLog(@"CHANGED self.menuBottomAdornmentView.frame = %@", NSStringFromCGRect((CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size }));
             self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
             break;
         }
@@ -451,47 +452,31 @@ typedef struct
 
             [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
             {
+                SDPullNavigationStateEndAction action = SDPullNavigationStateEndNone;
+
                 if(fabs(_menuInteraction.velocity) < 100.0f)
                 {
                     // Slow drag
-                    
+
                     CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
                     if(_menuInteraction.velocity < 0)
                     {
-                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f)
-                        {
-                            [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
-                        }
-                        else
-                        {
-                            [self expandMenu];
-                        }
+                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
                     }
                     else
                     {
-                        if(self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f)
-                        {
-                            [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
-                        }
-                        else
-                        {
-                            [self expandMenu];
-                        }
+                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
                     }
                 }
                 else
                 {
                     // Fast drag
                     
-                    if(_menuInteraction.velocity < 0)
-                    {
-                        [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
-                    }
-                    else
-                    {
-                        [self expandMenu];
-                    }
+                    action = _menuInteraction.velocity < 0 ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
                 }
+
+                if(action == SDPullNavigationStateEndExpand)    [self expandMenu];
+                if(action == SDPullNavigationStateEndCollapse)  [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
             }
             completion:^(BOOL finished)
             {
