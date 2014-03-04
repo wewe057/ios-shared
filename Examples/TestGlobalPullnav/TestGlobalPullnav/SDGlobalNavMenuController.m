@@ -233,12 +233,12 @@ typedef NS_ENUM(NSUInteger, SDGlobalNavMore)
 
 #else
 
-- (CGFloat) pullNavigationMenuWidthForPortrait
+- (CGFloat)pullNavigationMenuWidthForPortrait
 {
     return self.tableView.contentSize.width;
 }
 
-- (CGFloat) pullNavigationMenuWidthForLandscape
+- (CGFloat)pullNavigationMenuWidthForLandscape
 {
     return self.tableView.contentSize.width + 80.0f;    // Just bigger so we can see this working.
 }

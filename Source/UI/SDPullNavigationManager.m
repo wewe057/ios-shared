@@ -15,7 +15,6 @@
 
 @interface SDPullNavigationManager()
 
-
 @end
 
 @implementation SDPullNavigationManager
@@ -248,11 +247,11 @@
 
 #pragma mark - menu configuration
 
-- (void)menuAdornmentImageWithLeftImage:(UIImage*)leftImage
-                            centerImage:(UIImage*)centerImage
-                             rightImage:(UIImage*)rightImage
+- (void)menuAdornmentImageWithStretchImage:(UIImage*)stretchImage
+                            andCenterImage:(UIImage*)centerImage
 {
-
+    _menuAdornmentImageStretch = stretchImage;
+    _menuAdornmentImageCenter = centerImage;
 }
 
 @end

@@ -11,8 +11,8 @@
 static const CGFloat kMinimumHeightForTapArea = 44.0f;
 
 @interface SDPullNavigationBarAdornmentView()
-@property (nonatomic, assign) CGRect baseFrame;
 @property (nonatomic, strong) UIImageView* adornmentView;
+@property (nonatomic, assign) CGFloat adornmentViewHeight;  // This accounts for both imageSize and gap to make it more grabbable.
 @end
 
 @implementation SDPullNavigationBarAdornmentView
@@ -23,10 +23,17 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
     if(self != nil)
     {
         _baseFrame = frame;
+
         self.userInteractionEnabled = YES;
         self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;
         self.opaque = YES;
+
+        _containerView = [[UIView alloc] initWithFrame:(CGRect){ CGPointZero, frame.size }];
+        _containerView.backgroundColor = [UIColor clearColor];
+        _containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+        _containerView.tag = 1;
+        [self addSubview:_containerView];
     }
 
     return self;
@@ -38,6 +45,11 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
     {
         _adornmentImage = adornmentImage;
 
+        [self.adornmentView removeFromSuperview];
+        self.adornmentView = nil;
+
+        self.adornmentViewHeight = 0.0f;
+
         if(adornmentImage)
         {
             CGSize imageSize = self.adornmentImage.size;
@@ -45,18 +57,17 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
             imageViewRect.origin.y = self.baseFrame.size.height;
             imageViewRect.origin.x = floor(CGRectGetWidth(imageViewRect) * 0.5f - imageSize.width * 0.5f);
             imageViewRect.size = imageSize;
+            self.adornmentViewHeight = MAX(imageSize.height, kMinimumHeightForTapArea);
 
             self.adornmentView = [[UIImageView alloc] initWithFrame:imageViewRect];
+            self.adornmentView.backgroundColor = [UIColor clearColor];
+            self.adornmentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
             self.adornmentView.image = self.adornmentImage;
+            self.adornmentView.tag = 2;
             [self addSubview:self.adornmentView];
+        }
 
-            [self setFrame:_baseFrame];    // Tell our setFrame to adjust for the image.
-        }
-        else
-        {
-            [self.adornmentView removeFromSuperview];
-            self.adornmentView = nil;
-        }
+        [self setFrame:(CGRect){ self.baseFrame.origin, { self.baseFrame.size.width, self.baseFrame.size.height + self.adornmentViewHeight } }];
 
         // Adding or removing an adornment image means laying our the view again.
 
@@ -64,37 +75,32 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
     }
 }
 
-- (CGRect)frame
+- (void)setBaseFrame:(CGRect)baseFrame
 {
-    return _baseFrame;
-}
-
-// Override the setFrame so that the code that sizes this view does not need to take into account the adornment view
-// at the bottom of the view.
-
-- (void)setFrame:(CGRect)frame
-{
-    _baseFrame = frame;
-    CGRect adjustedFrame = frame;
-    adjustedFrame.size.height += MAX(self.adornmentImage.size.height, kMinimumHeightForTapArea);
-
-    [super setFrame:adjustedFrame];
+    SDLog(@"setBaseFrame:%@", NSStringFromCGRect(baseFrame));
+    if(!CGRectEqualToRect(baseFrame, _baseFrame))
+    {
+        _baseFrame = baseFrame;
+        [self setFrame:(CGRect){ _baseFrame.origin, { _baseFrame.size.width, _baseFrame.size.height + self.adornmentViewHeight } }];
+    }
 }
 
 - (void)layoutSubviews
 {
-    // If we haven't created the adornment view yet, and there is an image, create one, then position it at the bottom of the view.
+    // Adjust the views that we have. If we have an image, it means we created the image view that contains it.
 
     if(self.adornmentImage)
     {
         CGSize imageSize = self.adornmentImage.size;
         CGRect imageViewRect = self.baseFrame;
-        imageViewRect.origin.y = self.baseFrame.size.height;
         imageViewRect.origin.x = floor(CGRectGetWidth(imageViewRect) * 0.5f - imageSize.width * 0.5f);
+        imageViewRect.origin.y = self.baseFrame.size.height;
         imageViewRect.size = imageSize;
 
         self.adornmentView.frame = imageViewRect;
     }
+
+    self.containerView.frame = (CGRect){ CGPointZero, self.baseFrame.size };
 }
 
 @end

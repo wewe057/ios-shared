@@ -61,8 +61,8 @@
 
     // Either use the globalMenuAdornment image or the three part one if you ned it to stretch to fit a variable width adornment view.
 
-    if(0)
-        [[SDPullNavigationManager sharedInstance] menuAdornmentImageWithLeftImage:nil centerImage:nil rightImage:nil];
+    if(1)
+        [[SDPullNavigationManager sharedInstance] menuAdornmentImageWithStretchImage:stretchImage andCenterImage:tabImage];
     else
         [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
 }

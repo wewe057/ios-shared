@@ -14,9 +14,12 @@
 #import "SDPullNavigationManager.h"
 #import "UIDevice+machine.h"
 #import "UIColor+SDExtensions.h"
+#import "UIImage+SDExtensions.h"
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
 static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
+
+static NSCache* sMenuAdornmentImageCache = nil;
 
 typedef NS_ENUM(NSInteger, SDPullNavigationStateEndAction)
 {
@@ -66,7 +69,6 @@ typedef struct
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
-@property (nonatomic, strong) UIImage* menuAdornmentImage;
 @property (nonatomic, assign) BOOL showAdornment;
 
 @property (nonatomic, assign) BOOL implementsWillAppear;
@@ -76,9 +78,6 @@ typedef struct
 
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
-
-@property (nonatomic, assign) BOOL implementsMenuAdornmentImage;
-@property (nonatomic, assign) BOOL implementsMenuAdornmentImageWith3PartImage;
 
 @end
 
@@ -113,6 +112,10 @@ typedef struct
                                                  selector:@selector(statusBarWillChangeRotationNotification:)
                                                      name:UIApplicationWillChangeStatusBarOrientationNotification
                                                    object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(statusBarDidChangeRotationNotification:)
+                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
+                                                   object:nil];
     }
 
     return self;
@@ -128,10 +131,6 @@ typedef struct
 {
     if(newSuperview)
     {
-        self.menuAdornmentImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
-        if([UIDevice iPad] && self.menuAdornmentImage)
-            self.showAdornment = YES;
-
         // I tagged all of the view to be able to find them quickly when I am viewing the hierarchy in Spark Inspector or Reveal.
 
         // This is a navBar overlay which we can use to change navBar visuals.
@@ -180,6 +179,8 @@ typedef struct
         {
             UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
             self.menuController = [menuStoryBoard instantiateInitialViewController];
+            self.menuController.pullNavigationBarDelegate = self;
+
             [self setupProtocolHelpers];
 
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
@@ -189,8 +190,6 @@ typedef struct
             self.menuController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuController.view.tag = SDPullNavigationClientViewTag;
-
-            self.menuController.pullNavigationBarDelegate = self;
         }
 
         // View that darkens the views behind and to the side of the menu.
@@ -208,6 +207,9 @@ typedef struct
         // This is the little nubbin' at the bottom of the menu. Don't show this on iPhone, don't show this if client has not set the image.
 
         {
+            if([UIDevice iPad] && self.adornmentImageForCurrentOrientation)
+                self.showAdornment = YES;
+            
             self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
 
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
@@ -216,13 +218,13 @@ typedef struct
 
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
-                self.menuBottomAdornmentView.adornmentImage = self.menuAdornmentImage;
+                self.menuBottomAdornmentView.adornmentImage = self.adornmentImageForCurrentOrientation;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
         }
 
         [self insertSubview:self.navbarBackgroundView atIndex:1];
         [self addSubview:self.tabButton];
-        [self.menuBottomAdornmentView addSubview:self.menuController.view];
+        [self.menuBottomAdornmentView.containerView addSubview:self.menuController.view];
         [self.menuContainer addSubview:self.backgroundEffectsView];
         [self.menuContainer addSubview:self.menuBottomAdornmentView];
         [newSuperview insertSubview:self.menuContainer belowSubview:self];
@@ -249,9 +251,8 @@ typedef struct
 - (void)centerViewsToOrientation
 {
     CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-    self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                                   { self.menuWidthForCurrentOrientation, menuHeight } };
-    [self.menuBottomAdornmentView setNeedsLayout];
+    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
+                                                       { self.menuWidthForCurrentOrientation, menuHeight } };
 }
 
 - (void)setFrame:(CGRect)frame
@@ -361,7 +362,7 @@ typedef struct
             _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
 
             CGFloat newY = MIN(_menuInteraction.minMenuHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
-            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
+            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
             break;
         }
 
@@ -426,7 +427,7 @@ typedef struct
             _menuInteraction.minMenuHeight = self.navigationBarHeight;
             _menuInteraction.maxMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight);
 
-            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, _menuInteraction.minMenuHeight }, self.menuBottomAdornmentView.frame.size };
+            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, _menuInteraction.minMenuHeight }, self.menuBottomAdornmentView.baseFrame.size };
 
             [recognizer setTranslation:CGPointZero inView:self];
             break;
@@ -442,7 +443,7 @@ typedef struct
             // Peg to the bottom value.
             newY = MIN(newY, _menuInteraction.minMenuHeight);
 
-            self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.frame.size };
+            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, newY }, self.menuBottomAdornmentView.baseFrame.size };
             break;
         }
             
@@ -549,7 +550,7 @@ typedef struct
     self.tabButton.tuckedTab = YES;
     [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
 
-    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, self.navigationBarHeight }, self.menuBottomAdornmentView.frame.size };
+    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, self.navigationBarHeight }, self.menuBottomAdornmentView.baseFrame.size };
 
     self.menuOpen = YES;
 
@@ -576,7 +577,7 @@ typedef struct
     self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
     
     CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
-    self.menuBottomAdornmentView.frame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, menuPositionY }, self.menuBottomAdornmentView.frame.size };
+    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, menuPositionY }, self.menuBottomAdornmentView.baseFrame.size };
 
     self.menuOpen = NO;
 }
@@ -648,22 +649,18 @@ typedef struct
     [self hideMenuContainer];
     [self collapseMenu];
     [self.tabButton setNeedsDisplay];
+}
 
-    UIInterfaceOrientation orientation = [notification.userInfo[UIApplicationStatusBarOrientationUserInfoKey] integerValue];
-
+- (void)statusBarDidChangeRotationNotification:(NSNotification*)notification
+{
     if(self.implementsMenuWidthForOrientations)
     {
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
         CGSize menuSize = (CGSize){ UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape,
                                     MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) };
-        self.menuBottomAdornmentView.frame = (CGRect){ { self.superview.frame.size.width * 0.5f - menuSize.width * 0.5f, -(menuSize.height - self.navigationBarHeight) }, menuSize };
+        self.menuBottomAdornmentView.adornmentImage = [self adornmentImageForOrientation:orientation];
+        self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.superview.frame.size.width * 0.5f - menuSize.width * 0.5f, -(menuSize.height - self.navigationBarHeight) }, menuSize };
     }
-
-#if 0
-    if(self.implementsMenuAdornmentImageWith3PartImage)
-    {
-        self.menuBottomAdornmentView.adornmentImage = image;
-    }
-#endif
 }
 
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion
@@ -698,7 +695,7 @@ typedef struct
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
     if(self.showAdornment)
-        navHeight += self.menuAdornmentImage.size.height + sBottomSafetyGap;
+        navHeight += self.adornmentImageForCurrentOrientation.size.height + sBottomSafetyGap;
 
     return height - navHeight;
 }
@@ -712,6 +709,63 @@ typedef struct
     navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
 
     return navHeight;
+}
+
+- (UIImage*)adornmentImageForCurrentOrientation
+{
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    return [self adornmentImageForOrientation:orientation];
+}
+
+- (void)clearAdornmentImageCache
+{
+    [sMenuAdornmentImageCache removeAllObjects];
+}
+
+- (UIImage*)adornmentImageForOrientation:(UIInterfaceOrientation)orientation
+{
+    if(sMenuAdornmentImageCache == nil)
+    {
+        sMenuAdornmentImageCache = [[NSCache alloc] init];
+        sMenuAdornmentImageCache.name = @"bottom-adornment-image-cache";
+    }
+
+    // We don't need an image per orientation, just the two different ones. Take these two as representatives.
+    if(UIInterfaceOrientationIsPortrait(orientation))
+        orientation = UIInterfaceOrientationPortrait;
+    else
+        orientation = UIInterfaceOrientationLandscapeLeft;
+
+    UIImage* cachedImage = [sMenuAdornmentImageCache objectForKey:@(orientation)];
+
+    // If we don't have an entry for that orientation. Make one and cache it, then return that newly made one.
+
+    if(cachedImage == nil)
+    {
+        // If we have all of the 3 part images, then use those to make and cache, otherwise use the one size fits all version.
+
+        if([SDPullNavigationManager sharedInstance].menuAdornmentImageStretch && [SDPullNavigationManager sharedInstance].menuAdornmentImageCenter)
+        {
+            UIImage* stretchImage = [SDPullNavigationManager sharedInstance].menuAdornmentImageStretch;
+            UIImage* tabImage = [SDPullNavigationManager sharedInstance].menuAdornmentImageCenter;
+            CGFloat width = UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape;
+
+            cachedImage = [UIImage stretchImage:stretchImage
+                                         toSize:(CGSize){ width, stretchImage.size.height }
+                                andOverlayImage:tabImage
+                                    withOptions:SDImageCompositeOptionsPinSourceToTop |
+                                                SDImageCompositeOptionsCenterXOverlay |
+                                                SDImageCompositeOptionsPinOverlayToBottom];
+        }
+        else
+        {
+            cachedImage = [SDPullNavigationManager sharedInstance].menuAdornmentImage;
+        }
+
+        [sMenuAdornmentImageCache setObject:cachedImage forKey:@(orientation)];
+    }
+
+    return cachedImage;
 }
 
 #pragma mark - Hit testing

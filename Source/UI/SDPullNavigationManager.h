@@ -35,11 +35,15 @@
  Image that goes on the bottom of the menu to indicate that it is closable.
  This is a replacement for the one right above. In case where we need to stretch an image
  over variable widths (for example when portrait and landscape have different menu widths)
- this series of images can be used to draw the properly stretched images.
+ this stretch plus center image can be used to draw the properly stretched images without stretching
+ the center part.
  @optional
  */
 
-- (void)menuAdornmentImageWithLeftImage:(UIImage*)leftImage centerImage:(UIImage*)centerImage rightImage:(UIImage*)rightImage;
+- (void)menuAdornmentImageWithStretchImage:(UIImage*)leftImage andCenterImage:(UIImage*)centerImage;
+
+@property (nonatomic, strong) UIImage* menuAdornmentImageStretch;
+@property (nonatomic, strong) UIImage* menuAdornmentImageCenter;
 
 /**
  This is the offset to make the bottom adornment tuck neatly under the navbar.
