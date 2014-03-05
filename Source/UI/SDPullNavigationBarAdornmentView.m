@@ -77,7 +77,6 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
 
 - (void)setBaseFrame:(CGRect)baseFrame
 {
-    SDLog(@"setBaseFrame:%@", NSStringFromCGRect(baseFrame));
     if(!CGRectEqualToRect(baseFrame, _baseFrame))
     {
         _baseFrame = baseFrame;
