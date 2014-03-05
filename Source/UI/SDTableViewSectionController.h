@@ -119,6 +119,7 @@
 // Configuring Rows for the Table View
 - (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
 - (void)sectionController:(SDTableViewSectionController *)sectionController willDisplayCell:(UITableViewCell *)cell forRow:(NSInteger)row;
+- (CGFloat)sectionController:(SDTableViewSectionController *)sectionController estimatedHeightForRow:(NSInteger)row;
 
 @optional
 // Editing support
@@ -128,6 +129,10 @@
 @optional
 // Tracking the Removal of Views
 - (void)sectionController:(SDTableViewSectionController *)sectionController didEndDisplayingCell:(UITableViewCell *)cell forRow:(NSInteger)row;
+
+@optional
+// Scroll View Delegate
+- (void)sectionController:(SDTableViewSectionController *)sectionController scrollViewDidScroll:(UIScrollView *)scrollView;
 
 @optional
 // Section Lifecycle support
