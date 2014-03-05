@@ -168,10 +168,13 @@ typedef struct
             self.menuContainer.opaque = NO;
             self.menuContainer.hidden = NO;
 
-            self.menuContainer.layer.shadowColor = [UIColor blackColor].CGColor;
-            self.menuContainer.layer.shadowOffset = (CGSize){ 0.0f, -3.0f };
-            self.menuContainer.layer.shadowRadius = 3.0f;
-            self.menuContainer.layer.shadowOpacity = 1.0;
+            if([SDPullNavigationManager sharedInstance].disableShadowOnMenuContainer == NO)
+            {
+                self.menuContainer.layer.shadowColor = [UIColor blackColor].CGColor;
+                self.menuContainer.layer.shadowOffset = (CGSize){ 0.0f, -3.0f };
+                self.menuContainer.layer.shadowRadius = 3.0f;
+                self.menuContainer.layer.shadowOpacity = 1.0;
+            }
             self.menuContainer.tag = SDPullNavigationMenuContainerViewTag;
         }
 
