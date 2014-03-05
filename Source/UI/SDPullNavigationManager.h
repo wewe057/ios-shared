@@ -25,6 +25,12 @@
 @property (nonatomic, strong) Class pullNavigationBarViewClass;
 
 /**
+ Flag to determine whether the menu gets drawn with a shadow or not.
+ */
+
+@property (nonatomic, assign) BOOL disableShadowOnMenuContainer;
+
+/**
  Image that goes on the bottom of the menu to indicate that it is closable.
  @optional
  */
