@@ -20,6 +20,8 @@
     BOOL _sectionsImplementCommitEditingStyleForRow;
     BOOL _sectionsImplementWillDisplayCellForRow;
     BOOL _sectionsImplementDidEndDisplayingCellForRow;
+    BOOL _sectionsImplementScrollViewDidScroll;
+    BOOL _sectionsImplementEstimatedHeightForRow;
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -161,6 +163,19 @@
     return rowHeight;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    CGFloat estimatedRowHeight = UITableViewAutomaticDimension;
+    if ([sectionController respondsToSelector:@selector(sectionController:estimatedHeightForRow:)])
+    {
+        estimatedRowHeight = [sectionController sectionController:self estimatedHeightForRow:row];
+    }
+    return estimatedRowHeight;
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger section = indexPath.section;
@@ -227,6 +242,20 @@
     }
 
 }
+
+#pragma mark Scroll View Delegate 
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    for (id<SDTableViewSectionDelegate> sectionController in self.sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionController:scrollViewDidScroll:)])
+        {
+            [sectionController sectionController:self scrollViewDidScroll:scrollView];
+        }
+    }
+}
+
 
 #pragma mark - SectionController Methods
 
@@ -425,8 +454,13 @@
     } else if (aSelector == @selector(tableView:didEndDisplayingCell:forRowAtIndexPath:))
     {
         result = _sectionsImplementDidEndDisplayingCellForRow;
-    }
-    else
+    } else if (aSelector == @selector(scrollViewDidScroll:))
+    {
+        result = _sectionsImplementScrollViewDidScroll;
+    } else if (aSelector == @selector(tableView:estimatedHeightForRowAtIndexPath:))
+    {
+        result = _sectionsImplementEstimatedHeightForRow;
+    } else
     {
         result = [super respondsToSelector:aSelector];
     }
@@ -446,6 +480,8 @@
     _sectionsImplementEditingStyleForRow = NO;
     _sectionsImplementWillDisplayCellForRow = NO;
     _sectionsImplementDidEndDisplayingCellForRow = NO;
+    _sectionsImplementScrollViewDidScroll = NO;
+    _sectionsImplementEstimatedHeightForRow = NO;
     
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
@@ -460,6 +496,8 @@
         _sectionsImplementCommitEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)];
         _sectionsImplementWillDisplayCellForRow |= [sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)];
         _sectionsImplementDidEndDisplayingCellForRow |= [sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)];
+        _sectionsImplementScrollViewDidScroll |= [sectionController respondsToSelector:@selector(sectionController:scrollViewDidScroll:)];
+        _sectionsImplementEstimatedHeightForRow |= [sectionController respondsToSelector:@selector(sectionController:estimatedHeightForRow:)];
         
         // AND delegate methods
         // If one of the sections implements these delegate methods, then all must
