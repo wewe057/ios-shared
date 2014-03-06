@@ -129,6 +129,9 @@ typedef struct
 // Superview is known, start setting up our subviews.
 - (void)willMoveToSuperview:(UIView*)newSuperview
 {
+    if([UIDevice iPad] && self.adornmentImageForCurrentOrientation)
+        self.showAdornment = YES;
+    
     if(newSuperview)
     {
         // I tagged all of the view to be able to find them quickly when I am viewing the hierarchy in Spark Inspector or Reveal.
@@ -210,9 +213,6 @@ typedef struct
         // This is the little nubbin' at the bottom of the menu. Don't show this on iPhone, don't show this if client has not set the image.
 
         {
-            if([UIDevice iPad] && self.adornmentImageForCurrentOrientation)
-                self.showAdornment = YES;
-            
             self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
 
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
