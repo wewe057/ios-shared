@@ -99,18 +99,3 @@ static const CGFloat kBarTabAdornmentWidth = 53.0f;
 }
 
 @end
-
-@implementation SDPullNavigationBarAdornmentView
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if(self != nil)
-    {
-        self.userInteractionEnabled = YES;
-    }
-
-    return self;
-}
-
-@end

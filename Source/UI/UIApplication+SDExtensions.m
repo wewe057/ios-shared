@@ -1,9 +1,9 @@
 //
 //  UIApplication+SDExtensions.m
-//  SamsClub
+//  SetDirection
 //
 //  Created by Sam Grover on 6/27/13.
-//  Copyright (c) 2013 SetDirection All rights reserved.
+//  Copyright (c) 2013-2014 SetDirection All rights reserved.
 //
 
 #import "UIApplication+SDExtensions.h"

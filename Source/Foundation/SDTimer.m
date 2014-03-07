@@ -26,9 +26,8 @@
         if (_timer)
         {
             __block SDTimer *blockSelf = self;
-            dispatch_source_set_timer(_timer,
-                                      dispatch_time(DISPATCH_TIME_NOW, interval * NSEC_PER_SEC),
-                                      DISPATCH_TIME_FOREVER, 0);
+            uint64_t nanoInterval = interval * NSEC_PER_SEC;
+            dispatch_source_set_timer(_timer, dispatch_time(DISPATCH_TIME_NOW, (int64_t)nanoInterval), nanoInterval, 0);
             dispatch_source_set_event_handler(_timer, ^{
                 timerBlock(blockSelf);
                 if (!repeats)

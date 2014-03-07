@@ -317,6 +317,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 		[actualReplacements setObject:value forKey:key];
 	}
 
+    BOOL escape = ![actualReplacements boolForKey:@"alreadyEscaped"];
+    
 	// now lets take that final list and apply it to the route format.
 	keyList = [actualReplacements allKeys];
 	NSString *result = routeFormat;
@@ -329,15 +331,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             value = [self parameterizeDictionary:object];
 		else
 		if ([object isKindOfClass:[NSString class]])
-			value = [object escapedString];
+			value = escape ? [object escapedString] : object;
         else
 		{
 			// if its not, run some tests to see what we can do...
 			if ([object isKindOfClass:[NSNumber class]])
-				value = [[object stringValue] escapedString];
+				value = escape ? [[object stringValue] escapedString] : [object stringValue];
 			else
             if ([object respondsToSelector:@selector(stringValue)])
-                value = [[object stringValue] escapedString];
+                value = escape ? [[object stringValue] escapedString] : [object stringValue];
 		}
 		if (value)
 			result = [result stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"{%@}", key] withString:value];
@@ -547,7 +549,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 				mutablePost = [NSMutableString stringWithString:[mutablePost substringToIndex:[mutablePost length] - 1]];
 			}
 			post = mutablePost;
-			[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+			[request setValue:@"application/x-www-form-urlencoded;charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
 		}
 		else
         if ([postFormat isEqualToString:@"JSON"])
@@ -638,6 +640,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     // setup caching, default is to let the server decide.
     [request setCachePolicy:NSURLRequestUseProtocolCachePolicy];
+    
+    /*NSMutableDictionary *newHeaders = [request.allHTTPHeaderFields mutableCopy];
+    [newHeaders setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forKey:@"Content-Type"];
+    [request setAllHTTPHeaderFields:newHeaders];*/
     // it has to be explicitly disabled to go through here...
 	if (cache && ![cache boolValue])
 		[request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];

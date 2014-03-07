@@ -1,9 +1,9 @@
 //
 //  UINavigationController+SDExtensions.h
-//  samsclub
+//  SetDirection
 //
 //  Created by Sam Grover on 1/10/13.
-//  Copyright (c) 2013 SetDirection. All rights reserved.
+//  Copyright (c) 2013-2014 SetDirection. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
