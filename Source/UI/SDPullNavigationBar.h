@@ -27,7 +27,7 @@
 @optional
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidth;                // Defaults to 320.0f
 
-// If you provide the two following calls, pullnav will allow different widths per orientation and overrides the single width one.
+// If you implement the two following calls, pullnav will allow different widths per orientation and overrides the single width one.
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidthForPortrait;     // Defaults to 320.0f
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidthForLandscape;    // Defaults to 320.0f
 

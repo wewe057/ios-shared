@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB45F71818C27E86009CC406 /* SDHorizontalStacksDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AB45F71718C27E86009CC406 /* SDHorizontalStacksDemoViewController.m */; };
+		AB45F71B18C27FB3009CC406 /* UIResponder+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = AB45F71A18C27FB3009CC406 /* UIResponder+SDExtensions.m */; };
+		AB45F71D18C280EA009CC406 /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = AB45F71C18C280EA009CC406 /* SDLog.m */; };
 		ABDDE7D818987F3B0041B0CE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDDE7D718987F3B0041B0CE /* Foundation.framework */; };
 		ABDDE7DA18987F3B0041B0CE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDDE7D918987F3B0041B0CE /* CoreGraphics.framework */; };
 		ABDDE7DC18987F3B0041B0CE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ABDDE7DB18987F3B0041B0CE /* UIKit.framework */; };
@@ -128,6 +131,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB45F71618C27E86009CC406 /* SDHorizontalStacksDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDHorizontalStacksDemoViewController.h; sourceTree = "<group>"; };
+		AB45F71718C27E86009CC406 /* SDHorizontalStacksDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDHorizontalStacksDemoViewController.m; sourceTree = "<group>"; };
+		AB45F71918C27FB3009CC406 /* UIResponder+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SDExtensions.h"; sourceTree = "<group>"; };
+		AB45F71A18C27FB3009CC406 /* UIResponder+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SDExtensions.m"; sourceTree = "<group>"; };
+		AB45F71C18C280EA009CC406 /* SDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLog.m; sourceTree = "<group>"; };
 		ABDDE7D418987F3B0041B0CE /* StackedContainerViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StackedContainerViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABDDE7D718987F3B0041B0CE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ABDDE7D918987F3B0041B0CE /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -500,6 +508,8 @@
 				ABDDE94A189882C40041B0CE /* SDTimer.m */,
 				ABDDE94B189882C40041B0CE /* UIDevice+machine.h */,
 				ABDDE94C189882C40041B0CE /* UIDevice+machine.m */,
+				AB45F71918C27FB3009CC406 /* UIResponder+SDExtensions.h */,
+				AB45F71A18C27FB3009CC406 /* UIResponder+SDExtensions.m */,
 			);
 			path = Foundation;
 			sourceTree = "<group>";
@@ -508,6 +518,7 @@
 			isa = PBXGroup;
 			children = (
 				ABDDE94F189882C40041B0CE /* SDLog.h */,
+				AB45F71C18C280EA009CC406 /* SDLog.m */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -709,6 +720,8 @@
 				ABDDE7ED18987F3B0041B0CE /* SDViewController.m */,
 				ABDDE80C18987FF70041B0CE /* SDVerticalStacksDemoViewController.h */,
 				ABDDE80D18987FF70041B0CE /* SDVerticalStacksDemoViewController.m */,
+				AB45F71618C27E86009CC406 /* SDHorizontalStacksDemoViewController.h */,
+				AB45F71718C27E86009CC406 /* SDHorizontalStacksDemoViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -836,6 +849,7 @@
 				ABDDE9EC189882C50041B0CE /* NSMutableAttributedString+SDExtensions.m in Sources */,
 				ABDDEA14189882C50041B0CE /* SDPullNavigationBarBackground.m in Sources */,
 				ABDDEA1D189882C50041B0CE /* SDSearchBar.m in Sources */,
+				AB45F71818C27E86009CC406 /* SDHorizontalStacksDemoViewController.m in Sources */,
 				ABDDE9ED189882C50041B0CE /* NSNumber+SDExtensions.m in Sources */,
 				ABDDEA37189882C50041B0CE /* SDMockService.m in Sources */,
 				ABDDE9EF189882C50041B0CE /* NSString+SDExtensions.m in Sources */,
@@ -843,6 +857,7 @@
 				ABDDEA36189882C50041B0CE /* SDImageCache.m in Sources */,
 				ABDDEA3A189882C50041B0CE /* SDWebService.m in Sources */,
 				ABDDEA24189882C50041B0CE /* SDTextField.m in Sources */,
+				AB45F71D18C280EA009CC406 /* SDLog.m in Sources */,
 				ABDDE9E7189882C50041B0CE /* NSArray+SDExtensions.m in Sources */,
 				ABDDEA3B189882C50041B0CE /* UIImageView+SDExtensions.m in Sources */,
 				ABDDE9FF189882C50041B0CE /* SDAutolayoutStackView.m in Sources */,
@@ -909,6 +924,7 @@
 				ABDDEA0B189882C50041B0CE /* SDNumberTextField.m in Sources */,
 				ABDDEA03189882C50041B0CE /* SDContentAlertView.m in Sources */,
 				ABDDEA09189882C50041B0CE /* SDImageButton.m in Sources */,
+				AB45F71B18C27FB3009CC406 /* UIResponder+SDExtensions.m in Sources */,
 				ABDDEA35189882C50041B0CE /* Reachability.m in Sources */,
 				ABDDEA2A189882C50041B0CE /* UIApplication+SDExtensions.m in Sources */,
 				ABDDE9F6189882C50041B0CE /* UIDevice+machine.m in Sources */,
@@ -1124,6 +1140,7 @@
 				ABDDE80818987F3C0041B0CE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ABDDE80918987F3C0041B0CE /* Build configuration list for PBXNativeTarget "StackedContainerViewDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -1132,6 +1149,7 @@
 				ABDDE80B18987F3C0041B0CE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

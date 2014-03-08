@@ -61,6 +61,7 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
 
             self.adornmentView = [[UIImageView alloc] initWithFrame:imageViewRect];
             self.adornmentView.backgroundColor = [UIColor clearColor];
+            self.adornmentView.opaque = YES;
             self.adornmentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
             self.adornmentView.image = self.adornmentImage;
             self.adornmentView.tag = 2;
@@ -81,6 +82,7 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
     {
         _baseFrame = baseFrame;
         [self setFrame:(CGRect){ _baseFrame.origin, { _baseFrame.size.width, _baseFrame.size.height + self.adornmentViewHeight } }];
+        [self setNeedsLayout];
     }
 }
 
