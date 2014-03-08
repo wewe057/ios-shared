@@ -39,6 +39,13 @@
  in an ordered visual stack using auto layout techniques.
  */
 
+
+typedef NS_ENUM(NSUInteger, SDAutolayoutStackViewOrientation)
+{
+    SDAutolayoutStackViewOrientationVertical,
+    SDAutolayoutStackViewOrientationHorizontal
+};
+
 @interface SDAutolayoutStackView : UIView
 
 /**
@@ -50,5 +57,11 @@
  The gap between each subview. (Default is 0)
  */
 @property (nonatomic, assign) CGFloat gap;
+
+
+/**
+ The orientation of the stack view. Vertical (default) or horizontal layout
+ */
+@property (nonatomic, assign) SDAutolayoutStackViewOrientation orientation;
 
 @end
