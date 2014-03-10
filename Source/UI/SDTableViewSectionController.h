@@ -16,13 +16,16 @@
 @class SDTableViewSectionController;
 
 //____________________________________________________________________________________________
-// SDTableViewSectionControllerDelegate is typically implemented by a UIViewController
-// to provide the logic for how the table view should respond to requests by the
-// table view section controller.
-
-// Optional delete methods add navigation support.  You should implement these methods
-// If you want your view controller to support push/pop/modal navigation
-// (Proxy these methods to your navigationController)
+/**
+ *
+ * SDTableViewSectionControllerDelegate is typically implemented by a UIViewController
+ * to provide the logic for how the table view should respond to requests by the
+ * table view section controller.
+ *
+ * Optional delete methods add navigation support.  You should implement these methods
+ * If you want your view controller to support push/pop/modal navigation
+ * (Proxy these methods to your navigationController)
+ */
 
 @protocol SDTableViewSectionControllerDelegate <NSObject>
 
@@ -74,11 +77,17 @@
 @end
 
 //________________________________________________________________________________________
-// This protocol declares the data and delegate interface for section controllers
+/**
+ *
+ * The SDTableViewSectionDelegate protocol declares the data and delegate interface for section controllers
+ *
+ */
 
 @protocol SDTableViewSectionDelegate <NSObject>
 
-// "DataSource" methods
+/////////////////////////////////////////////////////////////////////////////////////////
+/// @name "DataSource" methods
+/////////////////////////////////////////////////////////////////////////////////////////
 @required
 
 /**
@@ -116,9 +125,9 @@
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
 
 @optional
-// Variable height support
-// Required for now because of the current design
+// Configuring Rows for the Table View
 - (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController willDisplayCell:(UITableViewCell *)cell forRow:(NSInteger)row;
 
 @optional
 // Editing support
@@ -126,24 +135,49 @@
 - (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
 
 @optional
+// Tracking the Removal of Views
+- (void)sectionController:(SDTableViewSectionController *)sectionController didEndDisplayingCell:(UITableViewCell *)cell forRow:(NSInteger)row;
+
+@optional
 // Section Lifecycle support
-- (void)sectionDidLoad;
-- (void)sectionDidUnload;
+- (void)sectionDidLoad:(SDTableViewSectionController *)sectionController;
+- (void)sectionDidUnload:(SDTableViewSectionController *)sectionController;
 @end
 
 //__________________________________________________________________________
-// This class manages sections and sending messages to its
-// sectionDataSource and sectionDelegate
+/**
+ *
+ * SDTableViewSectionController manages objects that implement the SDTableViewSectionDelegate protocol.
+ * 
+ * SDTableViewSectionController allows the logic for table view sections to be broken up into discrete
+ * controller objects.  The implementer of SDTableViewSectionDelegate objects is free to pass any models
+ * or data to the controllers.
+ *
+ * SDTableViewSectionController will query its SDTableViewSectionDelegate objects in a manner similar to UITableView.
+ * A SDTableViewSectionDelegate will be asked for its number of rows, cells for each rows, etc.
+ *
+ * Once your view controller (or any other controller) has received an update that requires the table view to be
+ * refreshed, generate a new array of SDTableViewSectionDelegate objects and send them to the SDTableViewSectionController
+ * by calling reloadWithSectionControllers:animated:
+ */
 
 @interface SDTableViewSectionController : NSObject
 
+/**
+ *  Initializes a newly created UITableViewSectionController with a UITableView.
+ *  Takes over the UITableViewDataSource and UITableViewDelegate responsibilities for the UITableView
+ *
+ *  @param tableView The UITableView to manage
+ *
+ *  @return An newly initialized SDTableViewSectionController object 
+ */
 - (instancetype) initWithTableView:(UITableView *)tableView;
 
 @property (nonatomic, weak)             id <SDTableViewSectionControllerDelegate>  delegate;
 @property (nonatomic, weak, readonly)   UITableView                                 *tableView;
 
 /**
- *  Array of objects conforming to SDTableViewSectionProtocol
+ *  Array of objects conforming to the SDTableViewSectionDelegate protocol
  */
 @property (nonatomic, strong, readonly) NSArray                                     *sectionControllers;
 
@@ -151,8 +185,9 @@
  *  Call this method instead of reloadData on the tableView.  Pass it an array of objects that conform to SDTableViewSectionDelegate
  *
  *  @param sectionControllers Array of SDTableViewSectionDelegates
+ *  @param animated YES if the table should reload with animations (currently unimplemented) or NO if a standard reloadData should occur (implemented)
  */
-- (void)reloadWithSectionControllers:(NSArray *)sectionControllers;
+- (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated;
 
 /**
  *  Asks the section controller's delegate to push this view controller.  Use this method
@@ -208,6 +243,15 @@
 - (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section;
 
 /**
+ *  Returns a section controller for the given identifier
+ *
+ *  @param identifier Unique identifier for a section
+ *
+ *  @return Object confirming to SDTableViewSectionDelegate
+ */
+- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier;
+
+/**
  *  Returns the height of all sections above the given section
  *
  *  @param section   Calculate the height of sections above this section
@@ -228,10 +272,25 @@
 - (CGFloat)heightBelowSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight;
 
 /**
+ *  Add the section to the table view section controller's list of sections and to the table view
+ *
+ *  @param section The section object to add
+ */
+- (void)addSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
  *  Removes the section from the table view section controller's list of sections and from the table view
  *
  *  @param section The section object to remove
  */
 - (void)removeSection:(id<SDTableViewSectionDelegate>)section;
+
+/**
+ *  Reloads a section controller for the given identifier
+ *
+ *  @param identifier Unique identifier for a section
+ *  @param animation  UITableViewRowAnimation for a section's row(s)
+ */
+- (void)reloadSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation;
 @end
 
