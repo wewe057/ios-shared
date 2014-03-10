@@ -18,8 +18,3 @@
 - (id)initWithNavigationBar:(SDPullNavigationBar*)navigationBar;
 
 @end
-
-#pragma mark - Adornment view (derived for ease of debugging and gesture handling)
-
-@interface SDPullNavigationBarAdornmentView : UIImageView
-@end

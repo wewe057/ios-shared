@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E21C0E9C18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0E9B18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m */; };
 		E21F098D189708EA009A4014 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F098C189708EA009A4014 /* Foundation.framework */; };
 		E21F098F189708EA009A4014 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F098E189708EA009A4014 /* CoreGraphics.framework */; };
 		E21F0991189708EA009A4014 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E21F0990189708EA009A4014 /* UIKit.framework */; };
@@ -121,6 +122,9 @@
 		E21F0B04189718FA009A4014 /* SDOrderHistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E21F0B03189718FA009A4014 /* SDOrderHistoryViewController.m */; };
 		E21F0B0A18971952009A4014 /* OrderHistory_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E21F0B0718971952009A4014 /* OrderHistory_iPhone.storyboard */; };
 		E28A7C6318971EE500B46990 /* OrderHistory_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E28A7C6118971EE500B46990 /* OrderHistory_iPad.storyboard */; };
+		E2A1D43D18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */; };
+		E2EADE2818BEB3FE0087F9A2 /* UIResponder+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EADE2718BEB3FE0087F9A2 /* UIResponder+SDExtensions.m */; };
+		E2FA030A18B0116C00326E9E /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2FA030918B0116C00326E9E /* SDLog.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,6 +138,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E21C0E9A18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationBarAdornmentView.h; sourceTree = "<group>"; };
+		E21C0E9B18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBarAdornmentView.m; sourceTree = "<group>"; };
 		E21F0989189708EA009A4014 /* TestGlobalPullnav.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestGlobalPullnav.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E21F098C189708EA009A4014 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E21F098E189708EA009A4014 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -342,6 +348,11 @@
 		E21F0B03189718FA009A4014 /* SDOrderHistoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDOrderHistoryViewController.m; sourceTree = "<group>"; };
 		E21F0B0818971952009A4014 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OrderHistory_iPhone.storyboard; sourceTree = "<group>"; };
 		E28A7C6218971EE500B46990 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/OrderHistory_iPad.storyboard; sourceTree = "<group>"; };
+		E2A1D43B18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomPullNavigationBarTabButton.h; sourceTree = "<group>"; };
+		E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomPullNavigationBarTabButton.m; sourceTree = "<group>"; };
+		E2EADE2618BEB3FE0087F9A2 /* UIResponder+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIResponder+SDExtensions.h"; sourceTree = "<group>"; };
+		E2EADE2718BEB3FE0087F9A2 /* UIResponder+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIResponder+SDExtensions.m"; sourceTree = "<group>"; };
+		E2FA030918B0116C00326E9E /* SDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDLog.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -417,6 +428,8 @@
 			children = (
 				E21F099B189708EA009A4014 /* SDAppDelegate.h */,
 				E21F099C189708EA009A4014 /* SDAppDelegate.m */,
+				E2A1D43B18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.h */,
+				E2A1D43C18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m */,
 				E21F0AF918970C59009A4014 /* MainWindow.xib */,
 				E21F0AFC18971419009A4014 /* SDGlobalNavMenuController.h */,
 				E21F0AFD18971419009A4014 /* SDGlobalNavMenuController.m */,
@@ -510,6 +523,8 @@
 				E21F09E81897091C009A4014 /* SDTimer.m */,
 				E21F09E91897091C009A4014 /* UIDevice+machine.h */,
 				E21F09EA1897091C009A4014 /* UIDevice+machine.m */,
+				E2EADE2618BEB3FE0087F9A2 /* UIResponder+SDExtensions.h */,
+				E2EADE2718BEB3FE0087F9A2 /* UIResponder+SDExtensions.m */,
 			);
 			name = Foundation;
 			path = ../../Source/Foundation;
@@ -518,6 +533,7 @@
 		E21F09EC1897091C009A4014 /* Logging */ = {
 			isa = PBXGroup;
 			children = (
+				E2FA030918B0116C00326E9E /* SDLog.m */,
 				E21F09ED1897091C009A4014 /* SDLog.h */,
 			);
 			name = Logging;
@@ -618,6 +634,8 @@
 				E21F0A391897091C009A4014 /* SDPullNavigationBar.m */,
 				E21F0A3A1897091C009A4014 /* SDPullNavigationBarBackground.h */,
 				E21F0A3B1897091D009A4014 /* SDPullNavigationBarBackground.m */,
+				E21C0E9A18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.h */,
+				E21C0E9B18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m */,
 				E21F0A3C1897091D009A4014 /* SDPullNavigationBarControlsView.h */,
 				E21F0A3D1897091D009A4014 /* SDPullNavigationBarControlsView.m */,
 				E21F0A3E1897091D009A4014 /* SDPullNavigationBarTabButton.h */,
@@ -832,6 +850,7 @@
 				E21F0AC11897091D009A4014 /* SDPullNavigationAutomation.m in Sources */,
 				E21F0999189708EA009A4014 /* main.m in Sources */,
 				E21F0AC01897091D009A4014 /* SDPickerView.m in Sources */,
+				E21C0E9C18C2A3FB00C45490 /* SDPullNavigationBarAdornmentView.m in Sources */,
 				E21F0AE61897091D009A4014 /* SDMockService.m in Sources */,
 				E21F09A6189708EA009A4014 /* SDHomeScreenViewController.m in Sources */,
 				E21F0AB51897091D009A4014 /* SDDragDropManager.m in Sources */,
@@ -894,6 +913,7 @@
 				E21F0ADA1897091D009A4014 /* UIColor+SDExtensions.m in Sources */,
 				E21F0AE31897091D009A4014 /* NSURLRequest+SDExtensions.m in Sources */,
 				E21F0AE71897091D009A4014 /* SDURLConnection.m in Sources */,
+				E2FA030A18B0116C00326E9E /* SDLog.m in Sources */,
 				E21F0A941897091D009A4014 /* NSDictionary+SDExtensions.m in Sources */,
 				E21F0AE91897091D009A4014 /* SDWebService.m in Sources */,
 				E21F0AE11897091D009A4014 /* NSURL+SDExtensions.m in Sources */,
@@ -906,6 +926,8 @@
 				E21F0AA11897091D009A4014 /* CLLocation+SDExtensions.m in Sources */,
 				E21F0AD01897091D009A4014 /* SDStackView.m in Sources */,
 				E21F0AAF1897091D009A4014 /* SDButton.m in Sources */,
+				E2A1D43D18A989DF00E86AC0 /* CustomPullNavigationBarTabButton.m in Sources */,
+				E2EADE2818BEB3FE0087F9A2 /* UIResponder+SDExtensions.m in Sources */,
 				E21F0B04189718FA009A4014 /* SDOrderHistoryViewController.m in Sources */,
 				E21F0ADD1897091D009A4014 /* UIScreen+SDExtensions.m in Sources */,
 				E21F0AA21897091D009A4014 /* MKMapView+SDExtensions.m in Sources */,

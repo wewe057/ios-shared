@@ -20,6 +20,8 @@
     BOOL _sectionsImplementCommitEditingStyleForRow;
     BOOL _sectionsImplementWillDisplayCellForRow;
     BOOL _sectionsImplementDidEndDisplayingCellForRow;
+    BOOL _sectionsImplementScrollViewDidScroll;
+    BOOL _sectionsImplementEstimatedHeightForRow;
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -161,6 +163,19 @@
     return rowHeight;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    CGFloat estimatedRowHeight = UITableViewAutomaticDimension;
+    if ([sectionController respondsToSelector:@selector(sectionController:estimatedHeightForRow:)])
+    {
+        estimatedRowHeight = [sectionController sectionController:self estimatedHeightForRow:row];
+    }
+    return estimatedRowHeight;
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger section = indexPath.section;
@@ -228,6 +243,20 @@
 
 }
 
+#pragma mark Scroll View Delegate 
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    for (id<SDTableViewSectionDelegate> sectionController in self.sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionController:scrollViewDidScroll:)])
+        {
+            [sectionController sectionController:self scrollViewDidScroll:scrollView];
+        }
+    }
+}
+
+
 #pragma mark - SectionController Methods
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -277,7 +306,7 @@
 
 - (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
 {
-    NSInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
     return sectionIndex;
 }
 
@@ -425,8 +454,13 @@
     } else if (aSelector == @selector(tableView:didEndDisplayingCell:forRowAtIndexPath:))
     {
         result = _sectionsImplementDidEndDisplayingCellForRow;
-    }
-    else
+    } else if (aSelector == @selector(scrollViewDidScroll:))
+    {
+        result = _sectionsImplementScrollViewDidScroll;
+    } else if (aSelector == @selector(tableView:estimatedHeightForRowAtIndexPath:))
+    {
+        result = _sectionsImplementEstimatedHeightForRow;
+    } else
     {
         result = [super respondsToSelector:aSelector];
     }
@@ -446,6 +480,16 @@
     _sectionsImplementEditingStyleForRow = NO;
     _sectionsImplementWillDisplayCellForRow = NO;
     _sectionsImplementDidEndDisplayingCellForRow = NO;
+    _sectionsImplementScrollViewDidScroll = NO;
+    
+    // Radar: 16266367
+    // There appears to be a bug in UITableView that will cause a crash when a UITableViewDelegate that implements estimatedHeightForRow
+    // for section 1 (of 3) is replaced by another UITableViewDelegate that has two sections that do NOT implement estimatedHeightForRow.
+    // To stop the crash we tell our UITableView that we always implement estimatedHeightForRow.  When we get the callback we check
+    // to see if the sections actually implement the method.  If they do we return the value computer by the seciton, otherwise we
+    // return the default UITableViewAutomaticDimension.
+    // Here is an sample app that shows the crash: https://github.com/steveriggins/EstimatedHeight
+    _sectionsImplementEstimatedHeightForRow = YES;
     
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
@@ -460,6 +504,7 @@
         _sectionsImplementCommitEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)];
         _sectionsImplementWillDisplayCellForRow |= [sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)];
         _sectionsImplementDidEndDisplayingCellForRow |= [sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)];
+        _sectionsImplementScrollViewDidScroll |= [sectionController respondsToSelector:@selector(sectionController:scrollViewDidScroll:)];
         
         // AND delegate methods
         // If one of the sections implements these delegate methods, then all must

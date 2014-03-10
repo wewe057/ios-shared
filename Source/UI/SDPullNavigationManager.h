@@ -15,7 +15,20 @@
 
 @interface SDPullNavigationManager : NSObject<UINavigationControllerDelegate>
 
+/**
+ Override to draw the tab button. Defaults to SDPullNavigationBarTabButton.
+ @optional
+ */
+
+@property (nonatomic, strong) Class pullNavigationBarTabButtonClass;
+
 @property (nonatomic, strong) Class pullNavigationBarViewClass;
+
+/**
+ Flag to determine whether the menu gets drawn with a shadow or not.
+ */
+
+@property (nonatomic, assign) BOOL disableShadowOnMenuContainer;
 
 /**
  Image that goes on the bottom of the menu to indicate that it is closable.
@@ -25,6 +38,20 @@
 @property (nonatomic, strong) UIImage* menuAdornmentImage;
 
 /**
+ Image that goes on the bottom of the menu to indicate that it is closable.
+ This is a replacement for the one right above. In case where we need to stretch an image
+ over variable widths (for example when portrait and landscape have different menu widths)
+ this stretch plus center image can be used to draw the properly stretched images without stretching
+ the center part.
+ @optional
+ */
+
+- (void)menuAdornmentImageWithStretchImage:(UIImage*)leftImage andCenterImage:(UIImage*)centerImage;
+
+@property (nonatomic, strong) UIImage* menuAdornmentImageStretch;
+@property (nonatomic, strong) UIImage* menuAdornmentImageCenter;
+
+/**
  This is the offset to make the bottom adornment tuck neatly under the navbar.
  This works if the bottom adornment looks like the top adornment but is slight taller.
  This measurement is the difference in height between the two.
@@ -32,6 +59,14 @@
  */
 
 @property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
+
+/**
+ This is the offset to make the bottom adornment doesn't get too close to the bottom of the screen.
+ Measured in pts from the bottom of the screen. The default is 44pts.
+ @optional
+ */
+
+@property (nonatomic, assign) CGFloat menuAdornmentBottomGap;
 
 /**
  The storyboard ID to use for the global menu.

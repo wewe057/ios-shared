@@ -10,6 +10,7 @@
 
 #import "SDHomeScreenViewController.h"
 #import "SDOrderHistoryViewController.h"
+#import "CustomPullNavigationBarTabButton.h"
 
 #import "SDPullNavigation.h"
 #import "UIImage+SDExtensions.h"
@@ -51,11 +52,19 @@
                                              withOptions:SDImageCompositeOptionsPinSourceToTop |
                                     SDImageCompositeOptionsCenterXOverlay |
                                     SDImageCompositeOptionsPinOverlayToBottom];
-    
+
     [SDPullNavigationManager sharedInstance].pullNavigationBarViewClass = [SDPullNavigationBarControlsView class];
+    [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass = [CustomPullNavigationBarTabButton class];
     [SDPullNavigationManager sharedInstance].globalMenuStoryboardId = @"SDGlobalNavMenu";
-    [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
     [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight = stretchImage.size.height;
+    [SDPullNavigationManager sharedInstance].menuAdornmentBottomGap = 64.0f;
+
+    // Either use the globalMenuAdornment image or the three part one if you ned it to stretch to fit a variable width adornment view.
+
+    if(1)
+        [[SDPullNavigationManager sharedInstance] menuAdornmentImageWithStretchImage:stretchImage andCenterImage:tabImage];
+    else
+        [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
 }
 
 - (void)setupNavigationBarItems
