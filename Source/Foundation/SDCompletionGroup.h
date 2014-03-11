@@ -1,6 +1,6 @@
 //
 //  SDCompletionGroup.h
-//  Studly
+//  SetDirection
 //
 //  Created by Joel Bernstein on 02/08/2011.
 //  Copyright 2011-2014 Joel Bernstein. All rights reserved.
