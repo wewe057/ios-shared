@@ -35,7 +35,7 @@
     if(self != nil)
     {
         _tokens = [NSMutableSet set];
-        _queue = dispatch_queue_create("TokenBag", NULL);
+        _queue = dispatch_queue_create("SDCompletionGroup", NULL);
     }
     
     return self;
