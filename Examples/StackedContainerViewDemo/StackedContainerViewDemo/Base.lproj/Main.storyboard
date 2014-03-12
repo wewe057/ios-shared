@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="fX7-1f-kfV">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="fX7-1f-kfV">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
@@ -17,20 +17,32 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tTK-GG-im1">
-                                <rect key="frame" x="83" y="99" width="155" height="30"/>
+                                <rect key="frame" x="77" y="99" width="167" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Vertical Stacked Views">
+                                <state key="normal" title="Vertically Stacked Views">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <segue destination="o34-1U-wOM" kind="push" id="Eyl-zF-kGD"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="U1W-8O-lKl">
+                                <rect key="frame" x="67" y="176" width="186" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Horizontally Stacked Views">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="mHW-Vf-Vl5" kind="push" id="Cc1-iX-U4z"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="U1W-8O-lKl" firstAttribute="centerX" secondItem="tTK-GG-im1" secondAttribute="centerX" constant="-0.5" id="C1m-3c-HD9"/>
                             <constraint firstItem="tTK-GG-im1" firstAttribute="top" secondItem="Cx8-e7-cTQ" secondAttribute="bottom" constant="35" id="IPr-qm-8Qa"/>
                             <constraint firstAttribute="centerX" secondItem="tTK-GG-im1" secondAttribute="centerX" constant="-0.5" id="bDV-1R-JSB"/>
+                            <constraint firstItem="U1W-8O-lKl" firstAttribute="top" secondItem="tTK-GG-im1" secondAttribute="bottom" constant="47" id="r8h-xU-N8f"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Stacked Container View Demo" id="hk5-Nv-W5N"/>
@@ -51,7 +63,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WZ1-Xe-yZ5">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WZ1-Xe-yZ5">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </scrollView>
@@ -65,12 +77,12 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Vertical Stacks" id="G3B-m3-cXI">
-                        <barButtonItem key="leftBarButtonItem" title="Remove Item" id="1nI-z3-NfJ">
+                        <barButtonItem key="leftBarButtonItem" systemItem="trash" id="1nI-z3-NfJ">
                             <connections>
                                 <action selector="removeItemTapped:" destination="o34-1U-wOM" id="NYQ-6j-4EK"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Add Item" id="mBd-p7-8hA">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="mBd-p7-8hA">
                             <connections>
                                 <action selector="addItemTapped:" destination="o34-1U-wOM" id="yvF-oD-3n0"/>
                             </connections>
@@ -83,6 +95,51 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fsm-nV-6oh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1049" y="138"/>
+        </scene>
+        <!--Horizontal Stacks Demo View Controller - Horizontal Stacks-->
+        <scene sceneID="ZYZ-nP-ZEp">
+            <objects>
+                <viewController id="mHW-Vf-Vl5" customClass="SDHorizontalStacksDemoViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="b32-Gs-Yxk"/>
+                        <viewControllerLayoutGuide type="bottom" id="czw-m6-8yC"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="XUb-ff-tmd">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RNG-8m-hbH">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="RNG-8m-hbH" firstAttribute="top" secondItem="XUb-ff-tmd" secondAttribute="top" id="8wa-ce-cuU"/>
+                            <constraint firstAttribute="bottom" secondItem="RNG-8m-hbH" secondAttribute="bottom" id="POA-tD-fzJ"/>
+                            <constraint firstAttribute="trailing" secondItem="RNG-8m-hbH" secondAttribute="trailing" id="jaQ-I7-zSV"/>
+                            <constraint firstItem="RNG-8m-hbH" firstAttribute="leading" secondItem="XUb-ff-tmd" secondAttribute="leading" id="kU2-ge-K8I"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Horizontal Stacks" id="eea-cN-SU3">
+                        <barButtonItem key="leftBarButtonItem" systemItem="trash" id="jge-1K-jgj">
+                            <connections>
+                                <action selector="removeItemTapped:" destination="mHW-Vf-Vl5" id="efy-di-G7U"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="bXI-zc-IMA">
+                            <connections>
+                                <action selector="addItemTapped:" destination="mHW-Vf-Vl5" id="fah-cp-7Mb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="scrollView" destination="RNG-8m-hbH" id="unW-LU-6sz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BpG-5X-ek1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1046" y="836"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="28Z-c4-NY1">

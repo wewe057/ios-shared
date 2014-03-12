@@ -1,24 +1,22 @@
 //
-//  SDVerticalStacksDemoViewController.m
+//  SDHorizontalStacksDemoViewController.m
 //  StackedContainerViewDemo
 //
-//  Created by Tim Trautmann on 1/28/14.
-//  Copyright (c) 2014 SetDirection All rights reserved.
+//  Created by Tim Trautmann on 3/1/14.
+//  Copyright (c) 2014 Wal-mart Stores, Inc. All rights reserved.
 //
 
-#import "SDVerticalStacksDemoViewController.h"
-
-// Views
+#import "SDHorizontalStacksDemoViewController.h"
 #import "SDAutolayoutStackView.h"
 #import "SDDemoBoxView.h"
 
-@interface SDVerticalStacksDemoViewController ()
-@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@interface SDHorizontalStacksDemoViewController ()
+@property (nonatomic, weak) IBOutlet UIScrollView *scrollView;
 @property (nonatomic, strong) SDAutolayoutStackView *stackView;
 @property (nonatomic, strong) NSArray *views;
 @end
 
-@implementation SDVerticalStacksDemoViewController
+@implementation SDHorizontalStacksDemoViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -38,6 +36,7 @@
     self.stackView.edgeInsets = UIEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
     self.stackView.gap = 50.0f;
     self.stackView.backgroundColor = @"#dddddd".uicolor;
+    self.stackView.orientation = SDAutolayoutStackViewOrientationHorizontal;
     [self.scrollView addSubview:self.stackView];
     
     self.views = @[];
@@ -49,10 +48,10 @@
     NSDictionary *views = NSDictionaryOfVariableBindings(_stackView);
     
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.stackView
-                                                          attribute:NSLayoutAttributeWidth
+                                                          attribute:NSLayoutAttributeHeight
                                                           relatedBy:NSLayoutRelationEqual
                                                              toItem:self.view
-                                                          attribute:NSLayoutAttributeWidth
+                                                          attribute:NSLayoutAttributeHeight
                                                          multiplier:1.0
                                                            constant:0.0]];
     
@@ -81,12 +80,12 @@
     [self.stackView addSubview:view];
     
     [view addConstraint:[NSLayoutConstraint constraintWithItem:view
-                                                     attribute:NSLayoutAttributeHeight
+                                                     attribute:NSLayoutAttributeWidth
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:nil
                                                      attribute:NSLayoutAttributeNotAnAttribute
                                                     multiplier:1.0
-                                                      constant:40.0]];
+                                                      constant:180.0]];
     
 }
 
@@ -109,4 +108,5 @@
     NSArray *colors = @[[UIColor redColor], [UIColor greenColor], [UIColor orangeColor], [UIColor purpleColor], [UIColor brownColor], [UIColor yellowColor]];
     return [colors objectAtIndex:count++ % [colors count]];
 }
+
 @end

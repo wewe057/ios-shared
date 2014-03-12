@@ -481,7 +481,15 @@
     _sectionsImplementWillDisplayCellForRow = NO;
     _sectionsImplementDidEndDisplayingCellForRow = NO;
     _sectionsImplementScrollViewDidScroll = NO;
-    _sectionsImplementEstimatedHeightForRow = NO;
+    
+    // Radar: 16266367
+    // There appears to be a bug in UITableView that will cause a crash when a UITableViewDelegate that implements estimatedHeightForRow
+    // for section 1 (of 3) is replaced by another UITableViewDelegate that has two sections that do NOT implement estimatedHeightForRow.
+    // To stop the crash we tell our UITableView that we always implement estimatedHeightForRow.  When we get the callback we check
+    // to see if the sections actually implement the method.  If they do we return the value computer by the seciton, otherwise we
+    // return the default UITableViewAutomaticDimension.
+    // Here is an sample app that shows the crash: https://github.com/steveriggins/EstimatedHeight
+    _sectionsImplementEstimatedHeightForRow = YES;
     
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
@@ -497,7 +505,6 @@
         _sectionsImplementWillDisplayCellForRow |= [sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)];
         _sectionsImplementDidEndDisplayingCellForRow |= [sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)];
         _sectionsImplementScrollViewDidScroll |= [sectionController respondsToSelector:@selector(sectionController:scrollViewDidScroll:)];
-        _sectionsImplementEstimatedHeightForRow |= [sectionController respondsToSelector:@selector(sectionController:estimatedHeightForRow:)];
         
         // AND delegate methods
         // If one of the sections implements these delegate methods, then all must
