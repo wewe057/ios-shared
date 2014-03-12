@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 #import "SDPullNavigationBar.h"
+#import "UIImage+SDExtensions.h"
 
 @class SDPullNavigationBarControlsView;
 
@@ -46,10 +47,11 @@
  @optional
  */
 
-- (void)menuAdornmentImageWithStretchImage:(UIImage*)leftImage andCenterImage:(UIImage*)centerImage;
+- (void)menuAdornmentImageWithStretchImage:(UIImage*)leftImage andCenterImage:(UIImage*)centerImage compositionOptions:(SDImageCompositionOptions)imageCompositionOptions;
 
 @property (nonatomic, strong) UIImage* menuAdornmentImageStretch;
 @property (nonatomic, strong) UIImage* menuAdornmentImageCenter;
+@property (nonatomic, assign) SDImageCompositionOptions menuAdornmentImageCompositionOptions;
 
 /**
  This is the offset to make the bottom adornment tuck neatly under the navbar.

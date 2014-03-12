@@ -249,9 +249,11 @@
 
 - (void)menuAdornmentImageWithStretchImage:(UIImage*)stretchImage
                             andCenterImage:(UIImage*)centerImage
+                        compositionOptions:(SDImageCompositionOptions)imageCompositionOptions
 {
     _menuAdornmentImageStretch = stretchImage;
     _menuAdornmentImageCenter = centerImage;
+    _menuAdornmentImageCompositionOptions = imageCompositionOptions;
 }
 
 @end
