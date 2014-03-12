@@ -41,7 +41,7 @@
     return self;
 }
 
-- (instancetype)acquireToken
+- (id)acquireToken
 {
     __block id token;
     

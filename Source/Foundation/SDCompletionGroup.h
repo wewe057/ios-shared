@@ -16,7 +16,7 @@
 
 @property (nonatomic, copy) void(^completion)();
 
-- (instancetype)acquireToken;
+- (id)acquireToken;
 - (void)acquireTokenWithCompletion:(void(^)(id token))completion;
 - (void(^)(void))acquireCompletion;
 - (void)redeemToken:(id)token;
