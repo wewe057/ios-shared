@@ -59,10 +59,15 @@
     [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight = stretchImage.size.height;
     [SDPullNavigationManager sharedInstance].menuAdornmentBottomGap = 64.0f;
 
-    // Either use the globalMenuAdornment image or the three part one if you ned it to stretch to fit a variable width adornment view.
+    // Either use the globalMenuAdornment image or the three part one if you need it to stretch to fit a variable width adornment view.
+
 
     if(1)
-        [[SDPullNavigationManager sharedInstance] menuAdornmentImageWithStretchImage:stretchImage andCenterImage:tabImage];
+        [[SDPullNavigationManager sharedInstance] menuAdornmentImageWithStretchImage:stretchImage
+                                                                      andCenterImage:tabImage
+                                                                  compositionOptions:SDImageCompositeOptionsPinSourceToTop |
+                                                                                     SDImageCompositeOptionsCenterXOverlay |
+                                                                                     SDImageCompositeOptionsPinOverlayToBottom];
     else
         [SDPullNavigationManager sharedInstance].menuAdornmentImage = globalMenuAdornment;
 }

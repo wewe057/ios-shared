@@ -164,6 +164,7 @@
 		E2136B4B18A4573A00000D1B /* SDMultilineLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = E2136B4A18A4573A00000D1B /* SDMultilineLabel.m */; };
 		E2136B5E18A466F700000D1B /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2136B3218A4387200000D1B /* SDLog.m */; };
 		E21C0F45187B3F39001CA469 /* SDPullNavigationAutomation.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */; };
+		E21C3B3418CFAFD400BD380D /* SDCompletionGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = E21C3B3318CFAFD400BD380D /* SDCompletionGroup.m */; };
 		E22B37361843F61E00C7CBEE /* NSString+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */; };
 		E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */; };
 		E28923B4189970CB009C78CA /* SDAutolayoutStackView.m in Sources */ = {isa = PBXBuildFile; fileRef = E28923B3189970CB009C78CA /* SDAutolayoutStackView.m */; };
@@ -392,6 +393,8 @@
 		E2136B4A18A4573A00000D1B /* SDMultilineLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDMultilineLabel.m; sourceTree = "<group>"; };
 		E21C0F43187B3F39001CA469 /* SDPullNavigationAutomation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationAutomation.h; sourceTree = "<group>"; };
 		E21C0F44187B3F39001CA469 /* SDPullNavigationAutomation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationAutomation.m; sourceTree = "<group>"; };
+		E21C3B3218CFAFD400BD380D /* SDCompletionGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDCompletionGroup.h; sourceTree = "<group>"; };
+		E21C3B3318CFAFD400BD380D /* SDCompletionGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDCompletionGroup.m; sourceTree = "<group>"; };
 		E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		E28923B2189970CB009C78CA /* SDAutolayoutStackView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAutolayoutStackView.h; sourceTree = "<group>"; };
@@ -541,6 +544,8 @@
 				CA0E76FA18284DD500B4398F /* NSUserDefaults+SDExtensions.m */,
 				CA0E76FB18284DD500B4398F /* SDBase64.h */,
 				CA0E76FC18284DD500B4398F /* SDBase64.m */,
+				E21C3B3218CFAFD400BD380D /* SDCompletionGroup.h */,
+				E21C3B3318CFAFD400BD380D /* SDCompletionGroup.m */,
 				CA0E76FD18284DD500B4398F /* SDDataMap.h */,
 				CA0E76FE18284DD500B4398F /* SDDataMap.m */,
 				CA0E76FF18284DD500B4398F /* SDModelObject.h */,
@@ -1026,6 +1031,7 @@
 				E28C6CAB189DAE7D00052C7F /* UIResponder+SDExtensions.m in Sources */,
 				CA0E77DC18284DD600B4398F /* SDWebService.m in Sources */,
 				CA0E77BC18284DD600B4398F /* UIApplication+SDExtensions.m in Sources */,
+				E21C3B3418CFAFD400BD380D /* SDCompletionGroup.m in Sources */,
 				CA0E77BE18284DD600B4398F /* UIColor+SDExtensions.m in Sources */,
 				CA0E77C818284DD600B4398F /* UIViewController+SDExtensions.m in Sources */,
 				CA0E779918284DD600B4398F /* SDContainerViewController.m in Sources */,
