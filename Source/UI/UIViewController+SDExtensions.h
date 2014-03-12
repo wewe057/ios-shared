@@ -75,4 +75,9 @@
  */
 - (NSString *)recursiveDescription;
 
+/**
+ Sets the name of the back button for the pushing view controller to "Back", so that the pushed view controller shows that button.
+ */
+- (void)useGenericBackButton;
+
 @end
