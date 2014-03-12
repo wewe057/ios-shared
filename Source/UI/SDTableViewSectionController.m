@@ -330,7 +330,7 @@
 - (id<SDTableViewSectionDelegate>)p_sectionAtIndex:(NSInteger)index
 {
     id<SDTableViewSectionDelegate> sectionController = nil;
-    if (index < self.sectionControllers.count)
+    if ((index != NSNotFound) && (index < self.sectionControllers.count))
     {
         sectionController = self.sectionControllers[(NSUInteger)index];
     }
