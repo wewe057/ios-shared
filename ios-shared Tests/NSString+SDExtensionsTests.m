@@ -87,4 +87,37 @@
     XCTAssertTrue([source isEqualToString:changed], @"The capitalizeStreetAddress method did not properly capitalize.");
 }
 
+- (void)testRemoveLeadingWhitespace
+{
+    NSString* source = @"  test";
+    NSString* changed = [source removeLeadingWhitespace];
+    
+    XCTAssertTrue([changed isEqualToString:@"test"], @"The capitalizeStreetAddress method did not properly capitalize.");
+}
+
+- (void)testRemoveTrailingWhitespace
+{
+    NSString* source = @"test   ";
+    NSString* changed = [source removeLeadingAndTrailingWhitespace];
+    
+    XCTAssertTrue([changed isEqualToString:@"test"], @"The capitalizeStreetAddress method did not properly capitalize.");
+}
+
+
+- (void)testRemoveLeadingAndTrailingWhitespace
+{
+    NSString* source = @"  test   ";
+    NSString* changed = [source removeLeadingAndTrailingWhitespace];
+    
+    XCTAssertTrue([changed isEqualToString:@"test"], @"The capitalizeStreetAddress method did not properly capitalize.");
+}
+
+- (void)testRemoveLeadingAndTrailingWhitespaceNoChange
+{
+    NSString* source = @"test";
+    NSString* changed = [source removeLeadingAndTrailingWhitespace];
+    
+    XCTAssertTrue([changed isEqualToString:@"test"], @"The capitalizeStreetAddress method did not properly capitalize.");
+}
+
 @end
