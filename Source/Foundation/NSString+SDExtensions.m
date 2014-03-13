@@ -102,7 +102,7 @@ GENERICSABLE_IMPLEMENTATION(NSString)
 - (NSString*)escapedString 
 {            
 	NSString *selfCopy = [self mutableCopy];
-	return (__bridge_transfer  NSString *) CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)selfCopy, NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
+	return (__bridge_transfer  NSString *) CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)selfCopy, NULL, CFSTR("%￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
 }
 
 - (NSString *)removeExcessWhitespace 

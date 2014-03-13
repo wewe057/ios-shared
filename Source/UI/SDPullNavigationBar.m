@@ -129,7 +129,7 @@ typedef struct
 // Superview is known, start setting up our subviews.
 - (void)willMoveToSuperview:(UIView*)newSuperview
 {
-    if([UIDevice iPad] && self.adornmentImageForCurrentOrientation)
+    if([UIDevice iPad] && self.implementsAdornmentImages)
         self.showAdornment = YES;
     
     if(newSuperview)
@@ -725,6 +725,26 @@ typedef struct
     [sMenuAdornmentImageCache removeAllObjects];
 }
 
+- (BOOL)implementsAdornmentImages
+{
+    BOOL supportsAdornmentImages = NO;
+
+    if([SDPullNavigationManager sharedInstance].menuAdornmentImageStretch && [SDPullNavigationManager sharedInstance].menuAdornmentImageCenter)
+    {
+        // Supports adornment images through composition.
+
+        supportsAdornmentImages = YES;
+    }
+    else
+    {
+        // Supports simple adornment images.
+
+        supportsAdornmentImages = [SDPullNavigationManager sharedInstance].menuAdornmentImage != nil;
+    }
+
+    return supportsAdornmentImages;
+}
+
 - (UIImage*)adornmentImageForOrientation:(UIInterfaceOrientation)orientation
 {
     if(sMenuAdornmentImageCache == nil)
@@ -751,14 +771,12 @@ typedef struct
         {
             UIImage* stretchImage = [SDPullNavigationManager sharedInstance].menuAdornmentImageStretch;
             UIImage* tabImage = [SDPullNavigationManager sharedInstance].menuAdornmentImageCenter;
-            CGFloat width = UIInterfaceOrientationIsPortrait(orientation) ? self.menuWidthForPortrait : self.menuWidthForLandscape;
+            CGFloat width = self.menuWidthForCurrentOrientation;
 
             cachedImage = [UIImage stretchImage:stretchImage
                                          toSize:(CGSize){ width, stretchImage.size.height }
                                 andOverlayImage:tabImage
-                                    withOptions:SDImageCompositeOptionsPinSourceToTop |
-                                                SDImageCompositeOptionsCenterXOverlay |
-                                                SDImageCompositeOptionsPinOverlayToBottom];
+                                    withOptions:[SDPullNavigationManager sharedInstance].menuAdornmentImageCompositionOptions];
         }
         else
         {
