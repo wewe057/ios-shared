@@ -69,7 +69,12 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
 
 
 /**
- The suffix on the quantity.  This is only used for kAdjustableItemQuantityMethod_Weighted and defaults to "kg".
+ The weight suffix on the quantity.  This is only used for kAdjustableItemQuantityMethod_Weighted and defaults to "kg".
+ */
+@property (nonatomic, copy) NSString *weightSuffix;
+
+/**
+ Arbitrary suffix on the quantity.  This suffix is always added (after weightSuffix).  Can be used for "in cart" or "in list"
  */
 @property (nonatomic, copy) NSString *quantitySuffix;
 
@@ -95,13 +100,4 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
  */
 - (id)initWithAdjustableItem:(id<SDAdjustableItem>)adjustableItem delegate:(UIView<SDQuantityEditViewProtocol> *)delegate;
 
-/**
- NOTE: These should probably not be exposed.  We are using them in a case where we are reseting the original quantity of the
- behavior.  Instead we should really either create a new behavior or add a new method to "reset" the behavior so
- that it doesn't need to access these methods.
- TODO: Remove these when this behavior is updated.
- */
-- (void)updateTotalCost;
-- (void)updateTotalWeight;
-- (void)updateButtonState;
 @end
