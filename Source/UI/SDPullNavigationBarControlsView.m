@@ -16,11 +16,13 @@
 {
     NSAssert(edge == UIRectEdgeLeft || edge == UIRectEdgeRight, @"Only left or right edges are supported.");
     
-    self = [super initWithFrame:(CGRect){CGPointZero, { 200.0f, 40.0f }}];
+	CGFloat defaultWidth = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 200.0f : 40.0f;
+    self = [super initWithFrame:(CGRect){CGPointZero, { defaultWidth, 40.0f }}];
     if( self != nil )
     {
         self.backgroundColor = [UIColor clearColor];
         _edge = edge;
+		self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
     
     return self;
@@ -35,6 +37,21 @@
         [subview removeFromSuperview];
 
     [self setNeedsLayout];
+}
+
+- (CGSize) sizeThatFits:(CGSize)size
+{
+	CGSize fitSize = [super sizeThatFits:size];
+
+	CGFloat fitWidth = 0;
+    for(UIControl* control in self.barItems)
+    {
+		fitWidth += control.size.width;
+    }
+
+	fitSize.width = fitWidth;
+	
+	return fitSize;
 }
 
 // Layout from left to right for the edge == UIRectEdgeLeft and from right to left for the edge == UIRectEdgeRight
