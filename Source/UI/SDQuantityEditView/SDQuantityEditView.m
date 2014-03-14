@@ -40,6 +40,22 @@
     return self;
 }
 
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    // If a user is loading from a nib ignore the stock constraints and use what they provided
+    self.createdConstraints = YES;
+    
+    // quantityView is readonly, so create one here so the user has access to it in awakeFromNib
+    _quantityView = [SDQuantityView quantityView];
+    _quantityView.translatesAutoresizingMaskIntoConstraints = NO;
+    _quantityView.fillColor = [UIColor lightGrayColor];
+    _quantityView.quantityLabel.textColor = [UIColor darkTextColor];
+    
+    [_doneButton addTarget:self action:@selector(doneTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [_removeButton addTarget:self action:@selector(removeTapped:) forControlEvents:UIControlEventTouchUpInside];
+}
+
 - (void)createDoneAndRemoveButtons
 {
     _removeButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -65,11 +81,18 @@
     _backgroundImageView.backgroundColor = [UIColor whiteColor];
     [self addSubview:_backgroundImageView];
     
-    [_removeButton setTitle:NSLocalizedString(@"Remove", @"Remove Button Title") forState:UIControlStateNormal];
+    // if the user hasn't provided a title for the buttons, add a default one now
+    if ([_removeButton titleForState:UIControlStateNormal] == nil)
+    {
+        [_removeButton setTitle:NSLocalizedString(@"Remove", @"Remove Button Title") forState:UIControlStateNormal];
+    }
     _removeButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_removeButton];
     
-    [_doneButton setTitle:NSLocalizedString(@"Done", @"Done Button Title") forState:UIControlStateNormal];
+    if ([_doneButton titleForState:UIControlStateNormal] == nil)
+    {
+        [_doneButton setTitle:NSLocalizedString(@"Done", @"Done Button Title") forState:UIControlStateNormal];
+    }
     _doneButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:_doneButton];
     
@@ -115,7 +138,7 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(43)-[quantityView]" options:0 metrics:nil views:@{@"quantityView":self.quantityView}]];
         
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[totalLabel]-(10)-[quantityView(110)]-(12)-[removeButton]-(13)-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[totalLabel]-(10)-[quantityView(>=110)]-(12)-[removeButton]-(13)-|"
                                                                      options:0
                                                                      metrics:nil
                                                                        views:@{@"totalLabel":self.totalPriceLabel, @"quantityView":self.quantityView, @"removeButton":self.removeButton}]];
@@ -219,8 +242,8 @@
         _committing = committing;
         if (committing)
         {
-            self.doneButton.hidden = YES;
-            self.removeButton.hidden = YES;
+            self.doneButton.alpha = 0.0f;
+            self.removeButton.alpha = 0.0f;
             [self.activitingIndicator startAnimating];
             self.quantityView.alpha = 0.4f;
             
@@ -230,14 +253,15 @@
         }
         else
         {
-            self.doneButton.hidden = NO;
-            self.removeButton.hidden = YES;
+            self.doneButton.alpha = 1.0f;
+            self.removeButton.alpha = 0.0f;
             [self.activitingIndicator stopAnimating];
             
             self.quantityView.alpha = 1.0f;
             self.quantityView.userInteractionEnabled = YES;
             self.totalPriceLabel.alpha = 1.0f;
             self.weightLabel.alpha = 1.0;
+            [self updateDoneRemoveButtons:YES];
         }
     }
 }
