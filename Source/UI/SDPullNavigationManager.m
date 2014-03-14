@@ -100,9 +100,10 @@
             {
                 viewController.navigationItem.leftBarButtonItems = nil;
             }
-            if(viewController.navigationItem.leftBarButtonItems == nil)
+            if(viewController.navigationItem.leftBarButtonItems == nil && [[self.leftBarItemsView barItems] count] > 0)
             {
                 [self.leftBarItemsView removeFromSuperview];
+				[self.leftBarItemsView sizeToFit];
                 viewController.navigationItem.leftBarButtonItems = @[self.leftBarItemsView.owningBarButtonItem];
             }
         }
@@ -112,9 +113,10 @@
         {
             viewController.navigationItem.rightBarButtonItems = nil;
         }
-        if(viewController.navigationItem.rightBarButtonItems == nil)
+        if(viewController.navigationItem.rightBarButtonItems == nil && [[self.rightBarItemsView barItems] count] > 0)
         {
             [self.rightBarItemsView removeFromSuperview];
+			[self.rightBarItemsView sizeToFit];
             viewController.navigationItem.rightBarButtonItems = @[self.rightBarItemsView.owningBarButtonItem];
         }
     }
