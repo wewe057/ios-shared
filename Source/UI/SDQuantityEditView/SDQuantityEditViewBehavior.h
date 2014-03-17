@@ -100,4 +100,10 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
  */
 - (id)initWithAdjustableItem:(id<SDAdjustableItem>)adjustableItem delegate:(UIView<SDQuantityEditViewProtocol> *)delegate;
 
+/**
+ Takes the current state as the new baseline.  In other words, sets originalQuantity to currentQuantity and updatedQuantity back to nil.
+ Useful after the underlying item has been updated and you want the SDQuantityEditViewProtocol updated to reflect that change.
+ */
+- (void)setCurrentAsBaseline;
+
 @end

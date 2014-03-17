@@ -302,6 +302,20 @@ static char kObserveQuantityContext;
         }
     }
 }
+
+- (void)setCurrentAsBaseline
+{
+    self.originalQuantity = self.currentQuantity;
+    self.updatedQuantity = nil;
+    
+    if ([self.originalQuantity isEqual:[NSDecimalNumber zero]])
+    {
+        self.currentQuantity = [self.originalQuantity decimalNumberByAdding:_stepAmount];
+    }
+    [self updateTotalCost];
+    [self updateTotalWeight];
+}
+
 @end
 
 
