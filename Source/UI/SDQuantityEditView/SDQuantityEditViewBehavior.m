@@ -314,6 +314,7 @@ static char kObserveQuantityContext;
     }
     [self updateTotalCost];
     [self updateTotalWeight];
+    [self updateButtonState];
 }
 
 @end
