@@ -203,4 +203,10 @@
     }
 }
 
+- (void)useGenericBackButton
+{
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle: @"Back" style: UIBarButtonItemStyleBordered target: nil action: nil];
+    [self.navigationItem setBackBarButtonItem:backButton];
+}
+
 @end

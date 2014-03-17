@@ -102,7 +102,7 @@ GENERICSABLE_IMPLEMENTATION(NSString)
 - (NSString*)escapedString 
 {            
 	NSString *selfCopy = [self mutableCopy];
-	return (__bridge_transfer  NSString *) CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)selfCopy, NULL, CFSTR("￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
+	return (__bridge_transfer  NSString *) CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)selfCopy, NULL, CFSTR("%￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
 }
 
 - (NSString *)removeExcessWhitespace 
@@ -150,6 +150,14 @@ GENERICSABLE_IMPLEMENTATION(NSString)
                                       withTemplate:@""];
 }
 
+/**
+ Removes all leading and trailing white space characters in the receiver.
+ */
+- (NSString *)removeLeadingAndTrailingWhitespace
+{
+    NSString *cleaned = [self removeLeadingWhitespace];
+    return [cleaned removeTrailingWhitespace];
+}
 
 + (NSString *)stringWithNewUUID
 {

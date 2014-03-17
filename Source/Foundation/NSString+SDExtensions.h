@@ -56,14 +56,19 @@ GENERICSABLE(NSString)
 - (NSString *)removeLeadingWhitespace;
 
 /**
+ Removes all trailing white space characters in the receiver.
+ */
+- (NSString *)removeTrailingWhitespace;
+
+/**
+ Removes all leading and trailing white space characters in the receiver.
+ */
+- (NSString *)removeLeadingAndTrailingWhitespace;
+
+/**
  Removes all leading zeroes in the receiver.
  */
 - (NSString *)removeLeadingZeroes;
-
-/**
- Replaces all trailing white space characters in the receiver with a single space character.
- */
-- (NSString *)removeTrailingWhitespace;
 
 /**
  Returns a dictionary created from all key-value pairs in the receiver assuming it is formatted as URL query parameters.

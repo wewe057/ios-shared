@@ -87,7 +87,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)])
     {
         [sectionController sectionController:self commitEditingStyle:editingStyle forRow:row];
@@ -96,7 +96,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     NSString *title;
     if ([sectionController respondsToSelector:@selector(sectionControllerTitleForHeader:)])
     {
@@ -110,7 +110,7 @@
 {
     NSInteger numberOfRows = 0;
     
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(numberOfRowsForSectionController:)])
     {
         numberOfRows = [sectionController numberOfRowsForSectionController:self];
@@ -120,11 +120,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSUInteger section = (NSUInteger)indexPath.section;
+    NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     UITableViewCell *cell = nil;
     
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionController:cellForRow:)])
     {
         cell = [sectionController sectionController:self cellForRow:row];
@@ -140,7 +140,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionController:didSelectRow:)])
     {
         [sectionController sectionController:self didSelectRow:row];
@@ -154,7 +154,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     CGFloat rowHeight = 44.0;
     if ([sectionController respondsToSelector:@selector(sectionController:heightForRow:)])
     {
@@ -167,7 +167,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     CGFloat estimatedRowHeight = UITableViewAutomaticDimension;
     if ([sectionController respondsToSelector:@selector(sectionController:estimatedHeightForRow:)])
     {
@@ -180,7 +180,7 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)])
     {
         [sectionController sectionController:self willDisplayCell:cell forRow:row];
@@ -192,7 +192,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     CGFloat headerHeight = 0.0;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionControllerHeightForHeader:)])
     {
         headerHeight =[sectionController sectionControllerHeightForHeader:self];
@@ -203,7 +203,7 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView *result = nil;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionControllerViewForHeader:)])
     {
         result = [sectionController sectionControllerViewForHeader:self];
@@ -220,7 +220,7 @@
  
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionController:editingStyleForRow:)])
     {
         editingStyle =[sectionController sectionController:self editingStyleForRow:row];
@@ -235,12 +235,11 @@
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
-    id<SDTableViewSectionDelegate>sectionController = self.sectionControllers[(NSUInteger)section];
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
     if ([sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)])
     {
         [sectionController sectionController:self didEndDisplayingCell:cell forRow:row];
     }
-
 }
 
 #pragma mark Scroll View Delegate 
@@ -326,6 +325,16 @@
     }
     
     return section;
+}
+
+- (id<SDTableViewSectionDelegate>)p_sectionAtIndex:(NSInteger)index
+{
+    id<SDTableViewSectionDelegate> sectionController = nil;
+    if ((index != NSNotFound) && (index < self.sectionControllers.count))
+    {
+        sectionController = self.sectionControllers[(NSUInteger)index];
+    }
+    return sectionController;
 }
 
 #pragma mark - Height Methods
@@ -489,7 +498,13 @@
     // to see if the sections actually implement the method.  If they do we return the value computer by the seciton, otherwise we
     // return the default UITableViewAutomaticDimension.
     // Here is an sample app that shows the crash: https://github.com/steveriggins/EstimatedHeight
-    _sectionsImplementEstimatedHeightForRow = YES;
+
+    // Disabled setting _sectionsImplementEstimatedHeightForRow to YES
+    
+    // Due to other issues with estimated height, such as reloadTable causing a table to scroll if you call it
+    // WHen the table is not at 0,0, or causing cells to not re-render, I am making estimatedHeight opt in and then permanent
+    // Once any section determines it wants estimated height, this section controller will always respond YES for estimatedHeight
+    // And thus if you see any weirdnesses with your table, this may be the reason.
     
     for (NSUInteger controllerIndex = 0; controllerIndex < self.sectionControllers.count; controllerIndex++)
     {
@@ -578,9 +593,9 @@
 {
     for (id sectionController in sectionControllers)
     {
-        if ([sectionController respondsToSelector:@selector(sectionDidLoad)])
+        if ([sectionController respondsToSelector:@selector(sectionDidLoad:)])
         {
-            [sectionController sectionDidLoad];
+            [sectionController sectionDidLoad:self];
         }
     }
 }
@@ -589,9 +604,9 @@
 {
     for (id sectionController in sectionControllers)
     {
-        if ([sectionController respondsToSelector:@selector(sectionDidUnload)])
+        if ([sectionController respondsToSelector:@selector(sectionDidUnload:)])
         {
-            [sectionController sectionDidUnload];
+            [sectionController sectionDidUnload:self];
         }
     }
 }
