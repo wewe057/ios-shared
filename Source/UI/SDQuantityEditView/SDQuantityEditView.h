@@ -103,6 +103,18 @@ typedef void (^SDQuantityEditViewDoneEditingBlock)(NSDecimalNumber *originalQuan
 @property (nonatomic, strong) IBOutlet UIButton *doneButton;
 
 /**
+ This function is provided so that a subclass can customize what happens when the editView goes into a commit state.
+ This method is called automatically by the commit property.  DO NOT CALL this method by itself.
+ */
+- (void)updateUIForCommitingState;
+
+
+/**
+ Provide access to the behavior so subclasses can check its values
+ */
+@property (nonatomic, readonly) SDQuantityEditViewBehavior *quantityBehavior;
+
+/**
  Subclass SDQuantityEditView and override this method to provide a custom Quantity Behavior.
  @return the quantity behavior for this edit quantity view.
  */

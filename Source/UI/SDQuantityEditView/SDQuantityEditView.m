@@ -46,6 +46,9 @@
     // If a user is loading from a nib ignore the stock constraints and use what they provided
     self.createdConstraints = YES;
     
+    _activitingIndicator.hidesWhenStopped = YES;
+    [_activitingIndicator stopAnimating];
+    
     // quantityView is readonly, so create one here so the user has access to it in awakeFromNib
     _quantityView = [SDQuantityView quantityView];
     _quantityView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -240,29 +243,33 @@
     if (committing != _committing)
     {
         _committing = committing;
-        if (committing)
-        {
-            self.doneButton.alpha = 0.0f;
-            self.removeButton.alpha = 0.0f;
-            [self.activitingIndicator startAnimating];
-            self.quantityView.alpha = 0.4f;
-            
-            self.quantityView.userInteractionEnabled = NO;
-            self.totalPriceLabel.alpha = 0.4f;
-            self.weightLabel.alpha = 0.4;
-        }
-        else
-        {
-            self.doneButton.alpha = 1.0f;
-            self.removeButton.alpha = 0.0f;
-            [self.activitingIndicator stopAnimating];
-            
-            self.quantityView.alpha = 1.0f;
-            self.quantityView.userInteractionEnabled = YES;
-            self.totalPriceLabel.alpha = 1.0f;
-            self.weightLabel.alpha = 1.0;
-            [self updateDoneRemoveButtons:YES];
-        }
+        [self updateUIForCommitingState];
+    }
+}
+
+- (void)updateUIForCommitingState
+{
+    if (self.committing)
+    {
+        self.doneButton.alpha = 0.0f;
+        self.removeButton.alpha = 0.0f;
+        [self.activitingIndicator startAnimating];
+        self.quantityView.alpha = 0.4f;
+        
+        self.quantityView.userInteractionEnabled = NO;
+        self.totalPriceLabel.alpha = 0.4f;
+        self.weightLabel.alpha = 0.4;
+    }
+    else
+    {
+        [self.activitingIndicator stopAnimating];
+        
+        self.quantityView.alpha = 1.0f;
+        self.quantityView.userInteractionEnabled = YES;
+        self.totalPriceLabel.alpha = 1.0f;
+        self.weightLabel.alpha = 1.0;
+        [self.quantityBehavior setCurrentAsBaseline];
+        [self updateDoneRemoveButtons:YES];
     }
 }
 
