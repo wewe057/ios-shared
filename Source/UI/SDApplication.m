@@ -12,6 +12,7 @@
 
 @interface SDApplicationAction : NSObject
 
+@property (nonatomic, assign) NSTimeInterval timerTimestamp;
 @property (nonatomic, copy) NSObjectPerformBlock handlerBlock;
 @property (nonatomic, weak) UIViewController *controller;
 
@@ -25,6 +26,8 @@
 {
     if (self.handlerBlock && self.controller)
     {
+        // Reset our timestamp for the next time the timer executes.
+        self.timerTimestamp = [NSDate timeIntervalSinceReferenceDate];
         NSObjectPerformBlock tempHandlerBlock = [self.handlerBlock copy];
         tempHandlerBlock();
     }
@@ -58,6 +61,7 @@
             [self performTimeoutBlock];
     }];*/
     
+    self.timerTimestamp = [NSDate timeIntervalSinceReferenceDate];
     _internalTimer = [NSTimer scheduledTimerWithTimeInterval:self.timeoutInterval target:self selector:@selector(performActionBlock) userInfo:nil repeats:YES];
 }
 
@@ -71,6 +75,15 @@
 {
     [self stopTimeoutMonitor];
     [self startTimeoutMonitor];
+}
+
+- (void)checkForTimerReset
+{
+    // We only reset the timer if it wasn't already scheduled to fire
+    // If it is overdue to fire, we do nothing, assuming that the run loop
+    // preparing to fire will trigger in the near future.
+    if (self.timerTimestamp && (self.timerTimestamp + self.timeoutInterval)>[NSDate timeIntervalSinceReferenceDate])
+        [self resetTimeoutMonitor];
 }
 
 @end
@@ -160,7 +173,7 @@
     if (touches.count < 1)
         return;
     
-    [_timeoutHandlers makeObjectsPerformSelector:@selector(resetTimeoutMonitor)];
+    [_timeoutHandlers makeObjectsPerformSelector:@selector(checkForTimerReset)];
 }
 
 #pragma mark - Backgrounding Action methods
