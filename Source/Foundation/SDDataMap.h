@@ -37,6 +37,11 @@
  */
 - (BOOL)validModel;
 
+/**
+* Called after the model was successfully loaded
+*/
+- (void)modelDidLoad;
+
 @end
 
 
