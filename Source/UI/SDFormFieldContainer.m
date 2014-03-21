@@ -27,7 +27,7 @@
 
 - (void)configureView
 {
-    self.separatorColor = [UIColor lightGrayColor];
+    self.separatorColor = [UIColor colorWith8BitRed:200 green:199 blue:204 alpha:1.0];
     self.separatorInset = 0;
     self.backgroundColor = [UIColor clearColor];
 }
