@@ -247,7 +247,7 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 
 			NSArray *objects = [[NSArray alloc] initWithObjects:
                                 (__bridge NSString *)kSecClassGenericPassword,
-                                (__bridge NSString *)kSecAttrAccessibleWhenUnlocked,
+                                (__bridge NSString *)kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
 			                     serviceName,
 			                     serviceName,
 			                     username,
@@ -274,7 +274,7 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 
 		NSArray *objects = [[NSArray alloc] initWithObjects:
                             (__bridge NSString *)kSecClassGenericPassword,
-                            (__bridge NSString *)kSecAttrAccessibleWhenUnlocked,
+                            (__bridge NSString *)kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
 		                     serviceName,
 		                     serviceName,
 		                     username,
