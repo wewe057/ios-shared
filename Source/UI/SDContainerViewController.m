@@ -46,16 +46,23 @@
         _containerView = self.view;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
+- (void) viewDidLoad {
+	[super viewDidLoad];
+	
+	// Someone has set our selectedViewController, but it was before we had a view, make sure it's set up now
+	if (_selectedViewController && nil == _selectedViewController.view.superview) {
+		_selectedViewController.view.frame = self.containerView.bounds;
+		[_selectedViewController.view setNeedsUpdateConstraints];
+		
+		[self.containerView addSubview:_selectedViewController.view];
+	}
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    self.selectedViewController = _selectedViewController;
+	self.selectedViewController = _selectedViewController;
 }
 
 #pragma mark properties
@@ -101,23 +108,25 @@
     NSUInteger index = [_viewControllers indexOfObject:selectedViewController];
     if (index == NSNotFound)
         return;
-    
-    // remove the existing one from the parent controller
-    UIViewController *currentController = _selectedViewController;
-    [currentController willMoveToParentViewController:nil];
-    [currentController.view removeFromSuperview];
-    [currentController removeFromParentViewController];
-
-    _selectedViewController = selectedViewController;
-
-    // add the new one to the parent controller (only set frame when not using autolayout)
-    [self addChildViewController:_selectedViewController];
-
-    _selectedViewController.view.frame = self.containerView.bounds;
-    [_selectedViewController.view setNeedsUpdateConstraints];
-
-    [self.containerView addSubview:_selectedViewController.view];
-    [_selectedViewController didMoveToParentViewController:self];
+	
+	if (_selectedViewController != selectedViewController) {
+		// remove the existing one from the parent controller
+		UIViewController *currentController = _selectedViewController;
+		[currentController willMoveToParentViewController:nil];
+		[currentController.view removeFromSuperview];
+		[currentController removeFromParentViewController];
+		
+		_selectedViewController = selectedViewController;
+		
+		// add the new one to the parent controller (only set frame when not using autolayout)
+		[self addChildViewController:_selectedViewController];
+		
+		_selectedViewController.view.frame = self.containerView.bounds;
+		[_selectedViewController.view setNeedsUpdateConstraints];
+		
+		[self.containerView addSubview:_selectedViewController.view];
+		[_selectedViewController didMoveToParentViewController:self];
+	}
 }
 
 - (UIViewController *)currentVisibleViewController
