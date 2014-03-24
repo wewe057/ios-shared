@@ -120,4 +120,14 @@
     XCTAssertTrue([changed isEqualToString:@"test"], @"The capitalizeStreetAddress method did not properly capitalize.");
 }
 
+- (void)testIsValidZIPCode
+{
+    XCTAssertTrue([@"97212-2414" isValidZIPCode] == YES, @"The isValidZIPCode method did not recognize valid ZIP code.");
+    XCTAssertTrue([@"972a2-2414" isValidZIPCode] == NO, @"The isValidZIPCode method did not recognize an invalid ZIP code.");
+    XCTAssertTrue([@"97212" isValidZIPCode] == YES, @"The isValidZIPCode method did not recognize valid ZIP code.");
+    XCTAssertTrue([@"972a2" isValidZIPCode] == NO, @"The isValidZIPCode method did not recognize an invalid ZIP code.");
+    XCTAssertTrue([@"9721" isValidZIPCode] == NO, @"The isValidZIPCode method did not recognize an invalid ZIP code.");
+    XCTAssertTrue([@"972122" isValidZIPCode] == NO, @"The isValidZIPCode method did not recognize an invalid ZIP code.");
+}
+
 @end

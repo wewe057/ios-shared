@@ -394,5 +394,29 @@ GENERICSABLE_IMPLEMENTATION(NSString)
     return capitalizedString;
 }
 
+/**
+ * Quick validation of US ZIP code.
+ */
+
+- (BOOL)isValidZIPCode
+{
+    BOOL valid = NO;
+    NSError* error;
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"^\\d{5}([\\-]?\\d{4})?$"
+                                                                           options:NSRegularExpressionCaseInsensitive | NSRegularExpressionSearch
+                                                                             error:&error];
+
+    if(regex && error == nil)
+    {
+        NSTextCheckingResult* result = [regex firstMatchInString:self options:0 range:NSMakeRange(0, [self length] )];
+        if (result)
+        {
+            valid = YES;
+        }
+    }
+
+    return valid;
+}
+
 @end
 

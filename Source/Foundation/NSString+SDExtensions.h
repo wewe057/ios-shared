@@ -118,4 +118,10 @@ GENERICSABLE(NSString)
  */
 - (NSString *)capitalizedStreetAddressString;
 
+/**
+ * Quick validation of US ZIP code.
+ */
+
+- (BOOL)isValidZIPCode;
+
 @end

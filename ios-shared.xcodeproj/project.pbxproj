@@ -14,9 +14,6 @@
 		CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */; };
 		CA01F1C517D7A72D00E7C553 /* UIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */; };
 		CA01F1C617D7A72D00E7C553 /* UIImageViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */; };
-		CA0E776718284DD600B4398F /* Global-iOS.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CA0E76E218284DD500B4398F /* Global-iOS.xcconfig */; };
-		CA0E776818284DD600B4398F /* Project-iOS-Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CA0E76E318284DD500B4398F /* Project-iOS-Debug.xcconfig */; };
-		CA0E776918284DD600B4398F /* Project-iOS-Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = CA0E76E418284DD500B4398F /* Project-iOS-Release.xcconfig */; };
 		CA0E776A18284DD600B4398F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CA0E76E518284DD500B4398F /* README.md */; };
 		CA0E776B18284DD600B4398F /* NSArray+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E76E818284DD500B4398F /* NSArray+SDExtensions.m */; };
 		CA0E776C18284DD600B4398F /* NSArray+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E76E818284DD500B4398F /* NSArray+SDExtensions.m */; };
@@ -876,7 +873,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = SD;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = SetDirection;
 				TargetAttributes = {
 					CA01F1AE17D7A6EF00E7C553 = {
@@ -907,15 +904,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA0E776918284DD600B4398F /* Project-iOS-Release.xcconfig in Resources */,
 				CA0E77AB18284DD600B4398F /* SDPickerModalViewController-iOS7.xib in Resources */,
 				CA0E77B718284DD600B4398F /* SDWebViewCell.xib in Resources */,
 				CA0E77AE18284DD600B4398F /* SDPickerModalViewController.xib in Resources */,
-				CA0E776818284DD600B4398F /* Project-iOS-Debug.xcconfig in Resources */,
 				CA0E776A18284DD600B4398F /* README.md in Resources */,
 				CAAB5A3318564CEE006737D4 /* json1.txt in Resources */,
 				CA01F1B817D7A6F000E7C553 /* InfoPlist.strings in Resources */,
-				CA0E776718284DD600B4398F /* Global-iOS.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1232,7 +1226,6 @@
 		CA80794D17C94199009574BB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/ios_shared.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ios-shared/ios-shared-Prefix.pch";
@@ -1245,7 +1238,6 @@
 		CA80794E17C94199009574BB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				DSTROOT = /tmp/ios_shared.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ios-shared/ios-shared-Prefix.pch";
