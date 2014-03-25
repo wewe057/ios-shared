@@ -251,29 +251,29 @@ typedef struct
     self.tabButton.frame = CGRectIntegral(tabFrame);
     
     [self addSubview:self.tabButton];
-	
-	if (NO == [UIDevice iPad]) {
-		UIView *customTitleView = self.topItem.titleView;
-		if (customTitleView) {
-			CGRect titleViewFrame = customTitleView.frame;
-			CGRect leftItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].leftBarItemsView frame];
-			CGRect rightItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].rightBarItemsView frame];
-			
-			CGFloat leftItemsMax = CGRectGetMaxX(leftItemsFrame);
-			CGFloat rightItemsMin = rightItemsFrame.origin.x;
-			
-			CGFloat midX = CGRectGetMidX(self.bounds);
-			CGFloat leftSpan = midX-leftItemsMax;
-			CGFloat rightSpan = rightItemsMin-midX;
-			CGFloat titleWidth = (leftSpan < rightSpan ? : rightSpan)*2.;
-			CGFloat titleOriginX = midX-(titleWidth/2.);
-			
-			titleViewFrame.origin.x = titleOriginX;
-			titleViewFrame.size.width = titleWidth;
-			
-			customTitleView.frame = titleViewFrame;
-		}
-	}
+    
+    if (NO == [UIDevice iPad]) {
+        UIView *customTitleView = self.topItem.titleView;
+        if (customTitleView) {
+            CGRect titleViewFrame = customTitleView.frame;
+            CGRect leftItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].leftBarItemsView frame];
+            CGRect rightItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].rightBarItemsView frame];
+            
+            CGFloat leftItemsMax = CGRectGetMaxX(leftItemsFrame);
+            CGFloat rightItemsMin = rightItemsFrame.origin.x;
+            
+            CGFloat midX = CGRectGetMidX(self.bounds);
+            CGFloat leftSpan = midX-leftItemsMax;
+            CGFloat rightSpan = rightItemsMin-midX;
+            CGFloat titleWidth = (leftSpan < rightSpan ? : rightSpan)*2.;
+            CGFloat titleOriginX = midX-(titleWidth/2.);
+            
+            titleViewFrame.origin.x = titleOriginX;
+            titleViewFrame.size.width = titleWidth;
+            
+            customTitleView.frame = titleViewFrame;
+        }
+    }
 }
 
 - (void)centerViewsToOrientation
@@ -720,10 +720,11 @@ typedef struct
     CGFloat height = UIInterfaceOrientationIsPortrait(orientation) ? MAX(topMostWindowSize.height, topMostWindowSize.width) : MIN(topMostWindowSize.height, topMostWindowSize.width);
 
     CGFloat navHeight = self.navigationBarHeight;
-	
-	if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1) {
-		navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
-	}
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
+        navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
+    }
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
     if(self.showAdornment)
@@ -739,9 +740,10 @@ typedef struct
     if(navHeight == 0.0f)
         navHeight += 44.0f;
 
-	if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
-		navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
-	}
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+    {
+        navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
+    }
 
     return navHeight;
 }
