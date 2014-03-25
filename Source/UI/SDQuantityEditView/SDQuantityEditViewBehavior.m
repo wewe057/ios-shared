@@ -53,11 +53,11 @@ static char kObserveQuantityContext;
         
         
         if (_adjustQuantityMethod == kAdjustableItemQuantityMethod_Weighted) {
-            _quantitySuffix = @"kg";
+            _weightSuffix = @"kg";
             _stepAmount = [NSDecimalNumber decimalNumberWithString:@"0.1"];
         }
         else {
-            _quantitySuffix = @"";
+            _weightSuffix = @"";
             _stepAmount = [NSDecimalNumber decimalNumberWithString:@"1"];
         }
         
@@ -126,28 +126,50 @@ static char kObserveQuantityContext;
     [viewDelegate.minusButton removeTarget:self action:@selector(decrementAction:) forControlEvents:UIControlEventTouchUpInside];
 }
 
+- (NSString *)displayWeightLabelTextWithValue:(NSDecimalNumber *)value
+{
+    NSMutableString *weightLabelText = [NSMutableString stringWithString:value.stringValue];
+    if ([self.weightSuffix length])
+    {
+        [weightLabelText appendFormat:@" %@", self.weightSuffix];
+    }
+    if ([self.quantitySuffix length])
+    {
+        [weightLabelText appendFormat:@" %@", self.quantitySuffix];
+    }
+    return weightLabelText;
+}
+
+- (void)setQuantitySuffix:(NSString *)quantitySuffix
+{
+    if (![_quantitySuffix isEqualToString:quantitySuffix])
+    {
+        _quantitySuffix = [quantitySuffix copy];
+        _quantityViewDelegate.quantityLabel.text = [self displayWeightLabelTextWithValue:self.currentQuantity];
+    }
+}
+
+- (void)setWeightSuffix:(NSString *)weightSuffix
+{
+    if (![_weightSuffix isEqualToString:weightSuffix])
+    {
+        _weightSuffix = [weightSuffix copy];
+        _quantityViewDelegate.quantityLabel.text = [self displayWeightLabelTextWithValue:self.currentQuantity];
+    }
+}
+
 -(void)setOriginalQuantity:(NSDecimalNumber *)newOriginalQuantity
 {
     @strongify(_quantityViewDelegate, viewDelegate);
     _originalQuantity = newOriginalQuantity;
-    if ([self.quantitySuffix length]) {
-        viewDelegate.quantityLabel.text = [NSString stringWithFormat: @"%@ %@", _originalQuantity.stringValue, self.quantitySuffix];
-    }
-    else {
-        viewDelegate.quantityLabel.text = _originalQuantity.stringValue;
-    }
+    viewDelegate.quantityLabel.text = [self displayWeightLabelTextWithValue:_originalQuantity];
     
 }
 
 -(void)updateQuantityLabel
 {
     @strongify(_quantityViewDelegate, viewDelegate);
-    if ([self.quantitySuffix length]) {
-        viewDelegate.quantityLabel.text = [NSString stringWithFormat: @"%@ %@", self.currentQuantity.stringValue, self.quantitySuffix];
-    }
-    else {
-        viewDelegate.quantityLabel.text = self.currentQuantity.stringValue;
-    }
+    viewDelegate.quantityLabel.text = [self displayWeightLabelTextWithValue:self.currentQuantity];
 }
 
 
@@ -168,7 +190,6 @@ static char kObserveQuantityContext;
     viewDelegate.minusButton.enabled = ( minResult == NSOrderedAscending);
 }
 
-
 -(IBAction)incrementAction:(id)sender
 {
     if (self.willChangeQuantity)
@@ -182,6 +203,7 @@ static char kObserveQuantityContext;
     [self updateButtonState];
     [self updateTotalCost];
     [self updateTotalWeight];
+    [self updateQuantityLabel];
     
     if (self.didChangeQuantity)
     {
@@ -207,6 +229,7 @@ static char kObserveQuantityContext;
     [self updateButtonState];
     [self updateTotalCost];
     [self updateTotalWeight];
+    [self updateQuantityLabel];
     
     if (self.didChangeQuantity)
     {
@@ -271,14 +294,29 @@ static char kObserveQuantityContext;
             SDLog(@"Quantity Changed to %f", [newValue floatValue]);
             
             NSString *quantityLabelString = [newValue stringValue];
-            if([self.quantitySuffix length])
+            if([self.weightSuffix length])
             {
-                quantityLabelString = [NSString stringWithFormat: @"%@ %@", [newValue stringValue], self.quantitySuffix];
+                quantityLabelString = [NSString stringWithFormat: @"%@ %@", [newValue stringValue], self.weightSuffix];
             }
-            self.quantityViewDelegate.quantityLabel.text = quantityLabelString;
+            self.quantityViewDelegate.quantityLabel.text = [self displayWeightLabelTextWithValue:newValue];
         }
     }
 }
+
+- (void)setCurrentAsBaseline
+{
+    self.originalQuantity = self.currentQuantity;
+    self.updatedQuantity = nil;
+    
+    if ([self.originalQuantity isEqual:[NSDecimalNumber zero]])
+    {
+        self.currentQuantity = [self.originalQuantity decimalNumberByAdding:_stepAmount];
+    }
+    [self updateTotalCost];
+    [self updateTotalWeight];
+    [self updateButtonState];
+}
+
 @end
 
 

@@ -89,7 +89,7 @@ static const CGFloat kCircularButtonHeight = 29.0f;
     //// Btn-DecPressed
     {
         //// TrolleyPaddle-CircDec2 Drawing
-        UIBezierPath* trolleyPaddleCircDec2Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, 30, 30)];
+        UIBezierPath* trolleyPaddleCircDec2Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0.0f, 0.0f, 28.5f, 28.5f)];
         [pressesGray setFill];
         [trolleyPaddleCircDec2Path fill];
         [white setStroke];
@@ -98,15 +98,15 @@ static const CGFloat kCircularButtonHeight = 29.0f;
         
         
         //// TrolleyPaddle-Icn-Minus 4 Drawing
-        UIBezierPath* trolleyPaddleIcnMinus4Path = [UIBezierPath bezierPath];
-        [trolleyPaddleIcnMinus4Path moveToPoint: CGPointMake(9, 14)];
-        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(22, 14)];
-        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(22, 17)];
-        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(9, 17)];
-        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(9, 14)];
-        [trolleyPaddleIcnMinus4Path closePath];
+        UIBezierPath* trolleyPaddleIcnMinusPath = [UIBezierPath bezierPath];
+        [trolleyPaddleIcnMinusPath moveToPoint: CGPointMake(8, 13)];
+        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(21, 13)];
+        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(21, 16)];
+        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(8, 16)];
+        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(8, 13)];
+        [trolleyPaddleIcnMinusPath closePath];
         [white setFill];
-        [trolleyPaddleIcnMinus4Path fill];
+        [trolleyPaddleIcnMinusPath fill];
     }
 }
 
@@ -198,7 +198,7 @@ static const CGFloat kCircularButtonHeight = 29.0f;
     //// Btn-IncPressed
     {
         //// Oval Drawing
-        UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0.5f, 0.5f, 28.0f, 28.0f)];
         [pressesGray setFill];
         [ovalPath fill];
         [white setStroke];
@@ -207,21 +207,21 @@ static const CGFloat kCircularButtonHeight = 29.0f;
         
         
         //// TrolleyPaddle-Icn-Plus 6 Drawing
-        UIBezierPath* trolleyPaddleIcnPlus6Path = [UIBezierPath bezierPath];
-        [trolleyPaddleIcnPlus6Path moveToPoint: CGPointMake(8, 14)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(23, 14)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(23, 17)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(8, 17)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(8, 14)];
-        [trolleyPaddleIcnPlus6Path closePath];
-        [trolleyPaddleIcnPlus6Path moveToPoint: CGPointMake(17, 8)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(17, 23)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(14, 23)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(14, 8)];
-        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(17, 8)];
-        [trolleyPaddleIcnPlus6Path closePath];
+        UIBezierPath* trolleyPaddleIcnPlusPath = [UIBezierPath bezierPath];
+        [trolleyPaddleIcnPlusPath moveToPoint: CGPointMake(7, 13)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(22, 13)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(22, 16)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(7, 16)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(7, 13)];
+        [trolleyPaddleIcnPlusPath closePath];
+        [trolleyPaddleIcnPlusPath moveToPoint: CGPointMake(16, 7)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(16, 22)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(13, 22)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(13, 7)];
+        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(16, 7)];
+        [trolleyPaddleIcnPlusPath closePath];
         [white setFill];
-        [trolleyPaddleIcnPlus6Path fill];
+        [trolleyPaddleIcnPlusPath fill];
     }
 }
 
@@ -254,8 +254,6 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)setup
 {
-    self.translatesAutoresizingMaskIntoConstraints = NO;
- 
     _incrementButton = [SDCircularPlusButton circularPlusButtonWithStrokeColor:_fillColor];
     _incrementButton.highlightedColor = [UIColor lightGrayColor];
     
@@ -280,6 +278,8 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     _rightImageView.translatesAutoresizingMaskIntoConstraints = NO;
     [_rightImageView setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
     [_rightImageView setContentCompressionResistancePriority:0 forAxis:UILayoutConstraintAxisHorizontal];
+    
+    [self setNeedsUpdateConstraints];
 }
 
 - (void)setRightImage:(UIImage *)image
@@ -321,7 +321,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         if (self.rightImageView.image)
         {
             [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_rightImageView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_rightImageView)]];
-            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_decrementButton(29)][_quantityLabel][_rightImageView][_incrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton, _quantityLabel, _rightImageView, _incrementButton)]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:|[_decrementButton(29)][_quantityLabel]-(2)-[_rightImageView(%tu)]-(2)-[_incrementButton(29)]|", (NSUInteger)self.rightImageView.image.size.width] options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton, _quantityLabel, _rightImageView, _incrementButton)]];
         }
         else
         {
