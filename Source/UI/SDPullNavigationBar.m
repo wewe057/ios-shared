@@ -15,7 +15,6 @@
 #import "UIDevice+machine.h"
 #import "UIColor+SDExtensions.h"
 #import "UIImage+SDExtensions.h"
-#import "UIDevice+machine.h"
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
 static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
@@ -218,7 +217,7 @@ typedef struct
             
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
             CGRect frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                { self.menuWidthForCurrentOrientation, menuHeight } };
+                                     { self.menuWidthForCurrentOrientation, menuHeight } };
             
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
