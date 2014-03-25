@@ -231,7 +231,6 @@ typedef struct
         [self.menuContainer addSubview:self.backgroundEffectsView];
         [self.menuContainer addSubview:self.menuBottomAdornmentView];
         [newSuperview insertSubview:self.menuContainer belowSubview:self];
-        NSLog(@"newSuperview.subviews:%@",newSuperview.subviews);
         
         [self setupGestureRecognizers];
     }
