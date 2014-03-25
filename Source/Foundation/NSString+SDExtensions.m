@@ -394,6 +394,13 @@ GENERICSABLE_IMPLEMENTATION(NSString)
     return capitalizedString;
 }
 
++ (NSString *)pluralizedCount:(NSUInteger)count singleString:(NSString *)singleString pluralString:(NSString *)pluralString
+{
+    if (count == 1)
+        return [NSString stringWithFormat:@"%tu %@", count, singleString];
+    return [NSString stringWithFormat:@"%tu %@", count, pluralString];
+}
+
 /**
  * Quick validation of US ZIP code.
  */

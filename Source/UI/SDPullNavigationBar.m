@@ -132,10 +132,10 @@ typedef struct
     if([UIDevice iPad] && self.implementsAdornmentImages)
         self.showAdornment = YES;
     
-    if(newSuperview)
+    if(newSuperview && nil == self.menuContainer)
     {
         // I tagged all of the view to be able to find them quickly when I am viewing the hierarchy in Spark Inspector or Reveal.
-
+        
         // This is a navBar overlay which we can use to change navBar visuals.
         {
             self.navbarBackgroundView = [[SDPullNavigationBarBackground alloc] init];
@@ -148,19 +148,19 @@ typedef struct
             self.navbarBackgroundView.frame = self.bounds;
             self.navbarBackgroundView.tag = SDPullNavigationNavBarBackgroundViewTag;
         }
-
+        
         // This is the hit area for showing the pulldown menu, as well as the area (at the bottom) where the nipple is shown.
         {
             Class tabBarButtonClass = [SDPullNavigationBarTabButton class];
             if([SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass)
                 tabBarButtonClass = [SDPullNavigationManager sharedInstance].pullNavigationBarTabButtonClass;
-
+            
             self.tabButton = [[tabBarButtonClass alloc] initWithNavigationBar:self];
             self.tabButton.tag = SDPullNavigationTabButtonViewTag;
-
+            
             NSAssert([self.tabButton isKindOfClass:[SDPullNavigationBarTabButton class]], @"TabBarButton class must be derived from SDPullNavigationBarTabButton");
         }
-
+        
         // The view that the client's menu lives in.
         {
             self.menuContainer = [[SDPullNavigationMenuContainer alloc] initWithFrame:newSuperview.bounds];
@@ -170,7 +170,7 @@ typedef struct
             self.menuContainer.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuContainer.opaque = NO;
             self.menuContainer.hidden = NO;
-
+            
             if([SDPullNavigationManager sharedInstance].disableShadowOnMenuContainer == NO)
             {
                 self.menuContainer.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -180,24 +180,24 @@ typedef struct
             }
             self.menuContainer.tag = SDPullNavigationMenuContainerViewTag;
         }
-
+        
         // This is the client's controller for the menu.
         {
             UIStoryboard* menuStoryBoard = [UIStoryboard storyboardWithName:[SDPullNavigationManager sharedInstance].globalMenuStoryboardId bundle:nil];
             self.menuController = [menuStoryBoard instantiateInitialViewController];
             self.menuController.pullNavigationBarDelegate = self;
-
+            
             [self setupProtocolHelpers];
-
+            
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
             self.menuController.view.frame = (CGRect){ CGPointZero, { self.menuWidthForCurrentOrientation, menuHeight } };
-
+            
             self.menuController.view.clipsToBounds = YES;
             self.menuController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuController.view.tag = SDPullNavigationClientViewTag;
         }
-
+        
         // View that darkens the views behind and to the side of the menu.
         {
             self.backgroundEffectsView = [[UIView alloc] initWithFrame:self.menuContainer.bounds];
@@ -207,31 +207,31 @@ typedef struct
             self.backgroundEffectsView.opaque = NO;
             self.backgroundEffectsView.tag = SDPullNavigationBackgroundEffectsViewTag;
         }
-
+        
         // The adornmentView should be the exact same size as the menuController's view, except for the area that hangs down below.
         // It should also be the menu controller's superview. That way we just animate the adornment view instead of both.
         // This is the little nubbin' at the bottom of the menu. Don't show this on iPhone, don't show this if client has not set the image.
-
+        
         {
             self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
-
+            
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
             CGRect frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
                                      { self.menuWidthForCurrentOrientation, menuHeight } };
-
+            
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
                 self.menuBottomAdornmentView.adornmentImage = self.adornmentImageForCurrentOrientation;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
         }
-
+        
         [self insertSubview:self.navbarBackgroundView atIndex:1];
         [self addSubview:self.tabButton];
         [self.menuBottomAdornmentView.containerView addSubview:self.menuController.view];
         [self.menuContainer addSubview:self.backgroundEffectsView];
         [self.menuContainer addSubview:self.menuBottomAdornmentView];
         [newSuperview insertSubview:self.menuContainer belowSubview:self];
-
+        
         [self setupGestureRecognizers];
     }
 }
@@ -249,6 +249,29 @@ typedef struct
     self.tabButton.frame = CGRectIntegral(tabFrame);
     
     [self addSubview:self.tabButton];
+    
+    if (NO == [UIDevice iPad]) {
+        UIView *customTitleView = self.topItem.titleView;
+        if (customTitleView) {
+            CGRect titleViewFrame = customTitleView.frame;
+            CGRect leftItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].leftBarItemsView frame];
+            CGRect rightItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].rightBarItemsView frame];
+            
+            CGFloat leftItemsMax = CGRectGetMaxX(leftItemsFrame);
+            CGFloat rightItemsMin = rightItemsFrame.origin.x;
+            
+            CGFloat midX = CGRectGetMidX(self.bounds);
+            CGFloat leftSpan = midX-leftItemsMax;
+            CGFloat rightSpan = rightItemsMin-midX;
+            CGFloat titleWidth = (leftSpan < rightSpan ? : rightSpan)*2.;
+            CGFloat titleOriginX = midX-(titleWidth/2.);
+            
+            titleViewFrame.origin.x = titleOriginX;
+            titleViewFrame.size.width = titleWidth;
+            
+            customTitleView.frame = titleViewFrame;
+        }
+    }
 }
 
 - (void)centerViewsToOrientation
@@ -695,6 +718,11 @@ typedef struct
     CGFloat height = UIInterfaceOrientationIsPortrait(orientation) ? MAX(topMostWindowSize.height, topMostWindowSize.width) : MIN(topMostWindowSize.height, topMostWindowSize.width);
 
     CGFloat navHeight = self.navigationBarHeight;
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_6_1)
+    {
+        navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
+    }
 
     // Take into account the menuAdornment at the bottom of the menu and some extra so that the adornment does not butt up against the bottom of the screen.
     if(self.showAdornment)
@@ -709,7 +737,11 @@ typedef struct
     
     if(navHeight == 0.0f)
         navHeight += 44.0f;
-    navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
+
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)
+    {
+        navHeight += MIN([UIApplication sharedApplication].statusBarFrame.size.height, [UIApplication sharedApplication].statusBarFrame.size.width);
+    }
 
     return navHeight;
 }

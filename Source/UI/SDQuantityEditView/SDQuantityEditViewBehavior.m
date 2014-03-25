@@ -121,7 +121,6 @@ static char kObserveQuantityContext;
     @strongify(_quantityViewDelegate, viewDelegate);
     [self removeObserver:self forKeyPath:@"currentQuantity"];
     self.roundingBehavior = nil;
-    [viewDelegate removeFromSuperview];
     [viewDelegate.plusButton removeTarget:self action:@selector(incrementAction:) forControlEvents:UIControlEventTouchUpInside];
     [viewDelegate.minusButton removeTarget:self action:@selector(decrementAction:) forControlEvents:UIControlEventTouchUpInside];
 }

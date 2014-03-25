@@ -46,8 +46,7 @@
         _containerView = self.view;
 }
 
-- (void)viewDidLoad
-{
+- (void) viewDidLoad {
     [super viewDidLoad];
 
     // Someone has set our selectedViewController, but it was before we had a view, make sure it's set up now
