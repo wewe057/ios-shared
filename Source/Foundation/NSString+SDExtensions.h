@@ -121,6 +121,6 @@ GENERICSABLE(NSString)
 /**
  Pluralizes a string with a count.  ie: "0 items", "1 item", "2 items"
  */
-- (NSString *)pluralizedCount:(NSUInteger)count singleString:(NSString *)singleString pluralString:(NSString *)pluralString;
++ (NSString *)pluralizedCount:(NSUInteger)count singleString:(NSString *)singleString pluralString:(NSString *)pluralString;
 
 @end
