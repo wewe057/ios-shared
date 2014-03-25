@@ -123,4 +123,10 @@ GENERICSABLE(NSString)
  */
 + (NSString *)pluralizedCount:(NSUInteger)count singleString:(NSString *)singleString pluralString:(NSString *)pluralString;
 
+/**
+ * Quick validation of US ZIP code.
+ */
+
+- (BOOL)isValidZIPCode;
+
 @end
