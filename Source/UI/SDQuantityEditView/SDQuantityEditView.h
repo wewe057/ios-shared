@@ -106,7 +106,7 @@ typedef void (^SDQuantityEditViewDoneEditingBlock)(NSDecimalNumber *originalQuan
  This function is provided so that a subclass can customize what happens when the editView goes into a commit state.
  This method is called automatically by the commit property.  DO NOT CALL this method by itself.
  */
-- (void)updateUIForCommitingState;
+- (void)updateUIForCommittingState;
 
 
 /**

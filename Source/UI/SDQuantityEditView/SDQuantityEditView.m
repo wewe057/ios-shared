@@ -243,11 +243,11 @@
     if (committing != _committing)
     {
         _committing = committing;
-        [self updateUIForCommitingState];
+        [self updateUIForCommittingState];
     }
 }
 
-- (void)updateUIForCommitingState
+- (void)updateUIForCommittingState
 {
     if (self.committing)
     {
@@ -268,7 +268,6 @@
         self.quantityView.userInteractionEnabled = YES;
         self.totalPriceLabel.alpha = 1.0f;
         self.weightLabel.alpha = 1.0;
-        [self.quantityBehavior setCurrentAsBaseline];
         [self updateDoneRemoveButtons:YES];
     }
 }
