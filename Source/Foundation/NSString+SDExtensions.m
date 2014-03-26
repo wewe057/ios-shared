@@ -407,9 +407,18 @@ GENERICSABLE_IMPLEMENTATION(NSString)
 
 - (BOOL)isValidZIPCode
 {
+    return [self isValidWithRegex:@"^\\d{5}([\\-]?\\d{4})?$"];
+}
+
+/**
+ * Validate a string with a regex. Returns YES if there is a match.
+ */
+
+- (BOOL)isValidWithRegex:(NSString*)regexString
+{
     BOOL valid = NO;
     NSError* error;
-    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"^\\d{5}([\\-]?\\d{4})?$"
+    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:regexString
                                                                            options:NSRegularExpressionCaseInsensitive | NSRegularExpressionSearch
                                                                              error:&error];
 
