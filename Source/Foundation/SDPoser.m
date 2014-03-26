@@ -191,7 +191,7 @@
 {
     if (!impersonatedClass)
     {
-        NSLog(@"lookupNameForImpersonatedClass doesn't accept a nil impersonatedClass");
+        SDLog(@"lookupNameForImpersonatedClass doesn't accept a nil impersonatedClass");
         return nil;
     }
 

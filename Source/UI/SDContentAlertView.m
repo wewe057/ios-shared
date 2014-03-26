@@ -306,7 +306,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     if (orientation == UIInterfaceOrientationLandscapeRight)
         angle = M_PI_2;
 
-    NSLog(@"alertRect = %@", NSStringFromCGRect(self.alertView.frame));
+    SDLog(@"alertRect = %@", NSStringFromCGRect(self.alertView.frame));
 
     [self.layer removeAllAnimations];
     [self.layer setTransform:CATransform3DMakeRotation(angle, 0.0f, 0.0f, 1.0f)];
