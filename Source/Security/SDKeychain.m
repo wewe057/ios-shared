@@ -237,13 +237,17 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 		{
 			//Only update if we're allowed to update existing.  If not, simply do nothing.
 
-			NSArray *keys = [[NSArray alloc] initWithObjects:(__bridge NSString *)kSecClass,
+			NSArray *keys = [[NSArray alloc] initWithObjects:
+                             (__bridge NSString *)kSecClass,
+                             (__bridge NSString *)kSecAttrAccessible,
 			                  kSecAttrService,
 			                  kSecAttrLabel,
 			                  kSecAttrAccount,
 			                  nil];
 
-			NSArray *objects = [[NSArray alloc] initWithObjects:(__bridge NSString *)kSecClassGenericPassword,
+			NSArray *objects = [[NSArray alloc] initWithObjects:
+                                (__bridge NSString *)kSecClassGenericPassword,
+                                (__bridge NSString *)kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
 			                     serviceName,
 			                     serviceName,
 			                     username,
@@ -259,14 +263,18 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 		// No existing entry (or an existing, improperly entered, and therefore now
 		// deleted, entry).  Create a new entry.
 
-		NSArray *keys = [[NSArray alloc] initWithObjects:(__bridge NSString *)kSecClass,
+		NSArray *keys = [[NSArray alloc] initWithObjects:
+                         (__bridge NSString *)kSecClass,
+                         (__bridge NSString *)kSecAttrAccessible,
 		                  kSecAttrService,
 		                  kSecAttrLabel,
 		                  kSecAttrAccount,
 		                  kSecValueData,
 		                  nil];
 
-		NSArray *objects = [[NSArray alloc] initWithObjects:(__bridge NSString *)kSecClassGenericPassword,
+		NSArray *objects = [[NSArray alloc] initWithObjects:
+                            (__bridge NSString *)kSecClassGenericPassword,
+                            (__bridge NSString *)kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
 		                     serviceName,
 		                     serviceName,
 		                     username,

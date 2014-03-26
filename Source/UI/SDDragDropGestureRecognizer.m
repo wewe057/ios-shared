@@ -60,7 +60,7 @@
 - (void)processAction:(SDDragDropGestureRecognizer *)gesture
 {
     // do nothing.
-//    NSLog(@"state in-action = %u", self.state);
+//    SDLog(@"state in-action = %u", self.state);
     
 }
 
@@ -137,7 +137,7 @@
 - (void)setState:(UIGestureRecognizerState)state
 {
     [super setState:state];
-//    NSLog(@"state = %u", self.state);
+//    SDLog(@"state = %u", self.state);
     if (state == UIGestureRecognizerStateBegan)
     {
         [self performSelector:@selector(startDrag) withObject:nil afterDelay:0.1];
