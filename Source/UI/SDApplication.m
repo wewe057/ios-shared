@@ -62,6 +62,7 @@
     }];*/
     
     self.timerTimestamp = [NSDate timeIntervalSinceReferenceDate];
+    SDLog(@"TIMEOUT SETUP: will fire at: %@", [NSDate dateWithTimeIntervalSinceNow:self.timeoutInterval]);
     _internalTimer = [NSTimer scheduledTimerWithTimeInterval:self.timeoutInterval target:self selector:@selector(performActionBlock) userInfo:nil repeats:YES];
 }
 
@@ -77,13 +78,28 @@
     [self startTimeoutMonitor];
 }
 
+- (void)handleOverdueTimer
+{
+    if (self.timerTimestamp && (self.timerTimestamp + self.timeoutInterval)<=[NSDate timeIntervalSinceReferenceDate])
+    {
+        // Time should have fired
+        [self resetTimeoutMonitor];
+        [self performActionBlock];
+    }
+}
+
 - (void)checkForTimerReset
 {
     // We only reset the timer if it wasn't already scheduled to fire
     // If it is overdue to fire, we do nothing, assuming that the run loop
     // preparing to fire will trigger in the near future.
-    if (self.timerTimestamp && (self.timerTimestamp + self.timeoutInterval)>[NSDate timeIntervalSinceReferenceDate])
+    NSTimeInterval nowInterval = [NSDate timeIntervalSinceReferenceDate];
+    if (self.timerTimestamp &&
+        (self.timerTimestamp + self.timeoutInterval)>nowInterval &&     // This insures the timer isn't already past due.
+        (nowInterval - self.timerTimestamp) > 1.0)                      // This insures that we don't reset the timer more frequently than every second
+    {
         [self resetTimeoutMonitor];
+    }
 }
 
 @end
@@ -147,6 +163,13 @@
             [itemsToRemove makeObjectsPerformSelector:@selector(stopTimeoutMonitor)];
         }
     }
+}
+
+- (void)handleOverdueTimers
+{
+    // First let's clean up any that are no longer valid
+    [self cleanupIdleTimers];
+    [_timeoutHandlers makeObjectsPerformSelector:@selector(handleOverdueTimer)];
 }
 
 - (void)removeIdleTimeoutsForController:(UIViewController *)controller

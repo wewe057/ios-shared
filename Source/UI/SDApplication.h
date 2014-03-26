@@ -13,6 +13,7 @@
 
 - (void)addIdleTimeout:(NSTimeInterval)timeoutInterval controller:(UIViewController *)controller handlerBlock:(NSObjectPerformBlock)handlerBlock;
 - (void)removeIdleTimeoutsForController:(UIViewController *)controller;
+- (void)handleOverdueTimers;
 - (void)cleanupIdleTimers;
 
 /*- (void)addActionForNotification:(NSString *)notificationName controller:(UIViewController *)controller actionBlock:(NSObjectPerformBlock)actionBlock;
