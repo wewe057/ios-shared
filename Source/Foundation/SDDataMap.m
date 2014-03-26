@@ -283,7 +283,7 @@ static NSNumberFormatter *__internalformatter = nil;
     {
         // we'll try and set the value.
         [self setValue:array destProperty:destProperty targetObject:targetObject];
-        //NSLog(@"SDDataMap: why does it get here? %@, %@, %@", array, destProperty, targetObject);
+        //SDLog(@"SDDataMap: why does it get here? %@, %@, %@", array, destProperty, targetObject);
     }
 }
 
