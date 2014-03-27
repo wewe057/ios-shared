@@ -62,7 +62,6 @@
     }];*/
     
     self.timerTimestamp = [NSDate timeIntervalSinceReferenceDate];
-    SDLog(@"TIMEOUT SETUP: will fire at: %@", [NSDate dateWithTimeIntervalSinceNow:self.timeoutInterval]);
     _internalTimer = [NSTimer scheduledTimerWithTimeInterval:self.timeoutInterval target:self selector:@selector(performActionBlock) userInfo:nil repeats:YES];
 }
 
