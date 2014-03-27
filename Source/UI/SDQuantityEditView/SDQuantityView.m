@@ -272,6 +272,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     [_quantityLabel setContentHuggingPriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
     [_quantityLabel setContentCompressionResistancePriority:1000 forAxis:UILayoutConstraintAxisHorizontal];
     [_quantityLabel setFont:[UIFont systemFontOfSize:14]];
+	[_quantityLabel setBackgroundColor:[UIColor clearColor]];
     [self addSubview:_quantityLabel];
     
     _rightImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
