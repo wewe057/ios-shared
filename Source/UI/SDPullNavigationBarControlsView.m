@@ -17,18 +17,24 @@
     NSAssert(edge == UIRectEdgeLeft || edge == UIRectEdgeRight, @"Only left or right edges are supported.");
     
     CGFloat defaultWidth = UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? 200.0f : 40.0f;
-    self = [super initWithFrame:(CGRect){CGPointZero, { defaultWidth, 44.0f }}];
+    self = [super initWithFrame:(CGRect){ CGPointZero, { defaultWidth, 44.0f } }];
     if( self != nil )
     {
         self.backgroundColor = [UIColor clearColor];
         _edge = edge;
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+
+        // This is temporary. It is the right idea for the controls to grow to use the space up to
+        // the title, but this is making it shrink the title and cause the controls to no longer take taps.
+        // Needs further study. SW:2014-03-26
+
+        if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+            self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     }
     
     return self;
 }
 
-- (void)layoutWithBarItems:(NSArray *)barItems
+- (void)layoutWithBarItems:(NSArray*)barItems
 {
     self.barItems = barItems;
 
@@ -39,7 +45,7 @@
     [self setNeedsLayout];
 }
 
-- (CGSize) sizeThatFits:(CGSize)size
+- (CGSize)sizeThatFits:(CGSize)size
 {
     CGSize fitSize = [super sizeThatFits:size];
 
