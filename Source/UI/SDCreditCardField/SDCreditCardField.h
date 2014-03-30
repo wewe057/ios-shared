@@ -29,6 +29,7 @@
 
 - (BOOL)isValid;
 
+@property(nonatomic, assign) BOOL secureDisplay;
 @property(nonatomic, assign) UITextBorderStyle borderStyle;
 @property(nonatomic, strong) UIFont* font;
 @property(nonatomic, strong) UIColor* textColor;

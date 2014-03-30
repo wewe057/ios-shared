@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E286E18018E7BE9E00710082 /* SDPullNavigationBarAdornmentView.m in Sources */ = {isa = PBXBuildFile; fileRef = E286E17F18E7BE9E00710082 /* SDPullNavigationBarAdornmentView.m */; };
 		E2DD070D18BACD15005A645C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2DD070C18BACD15005A645C /* Foundation.framework */; };
 		E2DD070F18BACD15005A645C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2DD070E18BACD15005A645C /* CoreGraphics.framework */; };
 		E2DD071118BACD15005A645C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2DD071018BACD15005A645C /* UIKit.framework */; };
@@ -132,6 +133,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E286E17E18E7BE9E00710082 /* SDPullNavigationBarAdornmentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPullNavigationBarAdornmentView.h; sourceTree = "<group>"; };
+		E286E17F18E7BE9E00710082 /* SDPullNavigationBarAdornmentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPullNavigationBarAdornmentView.m; sourceTree = "<group>"; };
 		E2DD070918BACD15005A645C /* SDCreditCardFieldTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDCreditCardFieldTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2DD070C18BACD15005A645C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E2DD070E18BACD15005A645C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -636,6 +639,8 @@
 				E2DD07AE18BACD54005A645C /* SDPullNavigationAutomation.m */,
 				E2DD07AF18BACD54005A645C /* SDPullNavigationBar.h */,
 				E2DD07B018BACD54005A645C /* SDPullNavigationBar.m */,
+				E286E17E18E7BE9E00710082 /* SDPullNavigationBarAdornmentView.h */,
+				E286E17F18E7BE9E00710082 /* SDPullNavigationBarAdornmentView.m */,
 				E2DD07B118BACD54005A645C /* SDPullNavigationBarBackground.h */,
 				E2DD07B218BACD54005A645C /* SDPullNavigationBarBackground.m */,
 				E2DD07B318BACD54005A645C /* SDPullNavigationBarControlsView.h */,
@@ -892,6 +897,7 @@
 				E2DD082E18BACD54005A645C /* SDMultilineLabel.m in Sources */,
 				E2DD083C18BACD54005A645C /* SDPaintCodeButton.m in Sources */,
 				E2DD084C18BACD54005A645C /* UIActivityIndicatorView+SDExtensions.m in Sources */,
+				E286E18018E7BE9E00710082 /* SDPullNavigationBarAdornmentView.m in Sources */,
 				E2DD082718BACD54005A645C /* SDDeckController.m in Sources */,
 				E2DD083E18BACD54005A645C /* SDQuantityEditViewBehavior.m in Sources */,
 				E2DD084518BACD54005A645C /* SDStackView.m in Sources */,

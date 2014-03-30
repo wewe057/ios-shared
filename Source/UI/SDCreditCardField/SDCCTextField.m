@@ -1,6 +1,5 @@
 //
-//  SDCCTextField.h
-//  PaymentKit Example
+//  SDCCTextField.m
 //
 //  Created by Michaël Villar on 03/20/2013.
 //  Copyright (c) 2013 Stripe. All rights reserved.
