@@ -88,6 +88,8 @@
     }
 }
 
+// TODO: This needs to be broken up so that each time the credit card number is set, this is applied.
+
 - (void)setSecureDisplay:(BOOL)flag
 {
     if(_secureDisplay != flag)
@@ -556,7 +558,7 @@
     {
         NSCharacterSet* replaceables = [NSCharacterSet decimalDigitCharacterSet];
         NSMutableString* mutableString = [self mutableCopy];
-        for (NSUInteger characterIndex = 0; characterIndex < (self.length - 5); ++characterIndex)
+        for (NSUInteger characterIndex = 0; characterIndex < (self.length - 4); ++characterIndex)
         {
             unichar currentChar = [self characterAtIndex:characterIndex];
             if ([replaceables characterIsMember:currentChar])
