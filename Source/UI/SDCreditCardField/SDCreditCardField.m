@@ -92,25 +92,22 @@
 
 - (void)setSecureDisplay:(BOOL)flag
 {
-    if(_secureDisplay != flag)
+    _secureDisplay = flag;
+
+    if(_secureDisplay)
     {
-        _secureDisplay = flag;
+        _cardNumberField.enabled = NO;
+        _cardNumberField.hidden = YES;
 
-        if(_secureDisplay)
-        {
-            _cardNumberField.enabled = NO;
-            _cardNumberField.hidden = YES;
+        _cardNumberSecurity.hidden = NO;
+        _cardNumberSecurity.text = [_cardNumberField.text stringByHidingAllButLastFourDigits];
+    }
+    else
+    {
+        _cardNumberField.enabled = YES;
+        _cardNumberField.hidden = NO;
 
-            _cardNumberSecurity.hidden = NO;
-            _cardNumberSecurity.text = [_cardNumberField.text stringByHidingAllButLastFourDigits];
-        }
-        else
-        {
-            _cardNumberField.enabled = YES;
-            _cardNumberField.hidden = NO;
-
-            _cardNumberSecurity.hidden = YES;
-        }
+        _cardNumberSecurity.hidden = YES;
     }
 }
 
