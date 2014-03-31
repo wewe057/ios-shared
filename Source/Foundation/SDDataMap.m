@@ -170,6 +170,13 @@ static NSNumberFormatter *__internalformatter = nil;
             }
         }
     }];
+    
+    // Now that the object has been mapped, let's tell the
+    // target object that the model has been loaded
+    if ([object2 respondsToSelector:@selector(modelDidLoad)])
+    {
+        [object2 modelDidLoad];
+    }
 }
 
 #pragma mark - Collection and Model handling
@@ -308,10 +315,6 @@ static NSNumberFormatter *__internalformatter = nil;
     
     value = [self convertValue:value forType:destProperty.propertyType];
     [targetObject setValue:value forKeyPath:parentPath];
-    if ([targetObject respondsToSelector:@selector(modelDidLoad)])
-    {
-        [targetObject modelDidLoad];
-    }
 }
 
 - (id)convertValue:(id)value forType:(NSString *)type
