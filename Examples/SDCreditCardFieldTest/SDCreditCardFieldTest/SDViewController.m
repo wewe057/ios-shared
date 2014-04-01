@@ -15,6 +15,7 @@
 @property (nonatomic, strong) IBOutlet UIImageView* validImage;
 @property (nonatomic, strong) IBOutlet UITextField* sampleCreditCardNumberField;
 @property (nonatomic, strong) IBOutlet UIButton* fillButton;
+@property (nonatomic, strong) IBOutlet UIButton* hideButton;
 @end
 
 @implementation SDViewController
@@ -82,6 +83,11 @@
 
     self.creditCardField.card = card;
     [self.creditCardField setNeedsDisplay];
+}
+
+- (IBAction)pressedHideButton:(id)sender
+{
+    self.creditCardField.secureDisplay = YES;
 }
 
 @end

@@ -129,4 +129,10 @@ GENERICSABLE(NSString)
 
 - (BOOL)isValidZIPCode;
 
+/**
+ * Validate a string with a regex. Returns YES if there is a match.
+ */
+
+- (BOOL)isValidWithRegex:(NSString*)regexString;
+
 @end

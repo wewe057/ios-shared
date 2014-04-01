@@ -37,4 +37,11 @@
  */
 - (void)removePreviousViewControllers:(NSUInteger)count pushViewController:(UIViewController *)controller;
 
+/**
+ Checks to see if a given view controller class is present in the current navigation stack.
+ @param controllerClass The controller class to look for.
+ @return YES if present, NO if not, or nil.
+ */
+- (BOOL)viewControllerClassPresentOnStack:(Class)controllerClass;
+
 @end

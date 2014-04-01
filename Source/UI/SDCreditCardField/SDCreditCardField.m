@@ -14,10 +14,15 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+@interface NSString(SDCreditCardField_Security)
+- (NSString*)stringByHidingAllButLastFourDigits;
+@end
+
 @interface SDCreditCardField () <UITextFieldDelegate>
 
 @property (nonatomic, assign, getter = isInitialState) BOOL initialState;
 @property (nonatomic, assign, getter = isValidState) BOOL validState;
+@property (nonatomic, strong) UITextField* cardNumberSecurity;
 
 @end
 
@@ -62,13 +67,14 @@
     [self setupCardNumberField];
 
     [_innerView addSubview:_cardNumberField];
+    [_innerView addSubview:_cardNumberSecurity];
 
     [self addSubview:_innerView];
 
     [self stateCardNumber];
 }
 
-- (void) setDelegate:(id<SDCreditCardFieldDelegate>)delegate
+- (void)setDelegate:(id<SDCreditCardFieldDelegate>)delegate
 {
     _delegate = delegate;
     if(self.placeholderView == nil)
@@ -79,6 +85,29 @@
         UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { self.placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, self.innerView.frame.size.height } }];
         line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
         [self addSubview:line];
+    }
+}
+
+// TODO: This needs to be broken up so that each time the credit card number is set, this is applied.
+
+- (void)setSecureDisplay:(BOOL)flag
+{
+    _secureDisplay = flag;
+
+    if(_secureDisplay)
+    {
+        _cardNumberField.enabled = NO;
+        _cardNumberField.hidden = YES;
+
+        _cardNumberSecurity.hidden = NO;
+        _cardNumberSecurity.text = [_cardNumberField.text stringByHidingAllButLastFourDigits];
+    }
+    else
+    {
+        _cardNumberField.enabled = YES;
+        _cardNumberField.hidden = NO;
+
+        _cardNumberSecurity.hidden = YES;
     }
 }
 
@@ -168,6 +197,12 @@
 - (void)setupCardNumberField
 {
     _cardNumberField = [self textFieldWithPlaceholder:@"1234 5678 9012 3456"];
+    _cardNumberSecurity = [[UITextField alloc] init];
+    _cardNumberSecurity.delegate = self;
+    _cardNumberSecurity.defaultTextAttributes = self.defaultTextAttributes;
+    _cardNumberSecurity.layer.masksToBounds = NO;
+    _cardNumberSecurity.enabled = NO;
+    _cardNumberSecurity.hidden = YES;
 }
 
 // Accessors
@@ -212,6 +247,7 @@
     CGFloat innerWidth = ceil(self.frame.size.width - _placeholderView.frame.size.width);
 
     _cardNumberField.frame = (CGRect){ { ceil((innerWidth * 0.5f) - (cardNumberSize.width * 0.5f)), textFieldY }, cardNumberSize };
+    _cardNumberSecurity.frame = (CGRect){ { ceil((innerWidth * 0.5f) - (cardNumberSize.width * 0.5f)), textFieldY }, cardNumberSize };
 
     CGFloat x = _innerView.frame.origin.x;
 
@@ -297,7 +333,6 @@
 {
     NSAssert(image, @"Seeting a nil image for the credit card image.");
 
-    if(![_placeholderView.image isEqual:image])
     {
         __block UIView* previousPlaceholderView = _placeholderView;
         [UIView animateWithDuration:0.25
@@ -502,6 +537,38 @@
 - (BOOL)resignFirstResponder;
 {
     return [self.firstResponderField resignFirstResponder];
+}
+
+@end
+
+#pragma mark - NSString(SDCreditCardField_Security)
+
+@implementation NSString(SDCreditCardField_Security)
+
+- (NSString*)stringByHidingAllButLastFourDigits
+{
+    NSString* result = nil;
+    NSString* strippedString = [self stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+    if (strippedString.length > 4)
+    {
+        NSCharacterSet* replaceables = [NSCharacterSet decimalDigitCharacterSet];
+        NSMutableString* mutableString = [self mutableCopy];
+        for (NSUInteger characterIndex = 0; characterIndex < (self.length - 4); ++characterIndex)
+        {
+            unichar currentChar = [self characterAtIndex:characterIndex];
+            if ([replaceables characterIsMember:currentChar])
+                [mutableString replaceCharactersInRange:(NSRange){ characterIndex, 1 } withString:@"*"];
+        }
+
+        result = [mutableString copy];
+    }
+    else
+    {
+        result = [self copy];
+    }
+
+    return result;
 }
 
 @end

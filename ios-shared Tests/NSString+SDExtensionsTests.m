@@ -130,4 +130,11 @@
     XCTAssertTrue([@"972122" isValidZIPCode] == NO, @"The isValidZIPCode method did not recognize an invalid ZIP code.");
 }
 
+- (void)testIsValidWithRegex
+{
+    XCTAssertTrue([@"97212-2414" isValidWithRegex:@"^\\d{5}([\\-]?\\d{4})?$"] == YES, @"The isValidWithRegex method did not recognize valid ZIP code.");
+    XCTAssertTrue([@"1234567890" isValidWithRegex:@"^\\d{10}?$"] == YES, @"The isValidWithRegex method did not recognize a valid string.");
+    XCTAssertTrue([@"1234567890-" isValidWithRegex:@"^\\d{10}?$"] == NO, @"The isValidWithRegex method did not recognize an invalid string.");
+}
+
 @end
