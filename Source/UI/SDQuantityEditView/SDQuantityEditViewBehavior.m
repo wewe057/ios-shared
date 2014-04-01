@@ -291,12 +291,6 @@ static char kObserveQuantityContext;
         if ([[change valueForKey:NSKeyValueChangeKindKey] integerValue] == NSKeyValueChangeSetting) {
             NSDecimalNumber *newValue = (NSDecimalNumber*)[change objectForKey:NSKeyValueChangeNewKey];
             SDLog(@"Quantity Changed to %f", [newValue floatValue]);
-            
-            NSString *quantityLabelString = [newValue stringValue];
-            if([self.weightSuffix length])
-            {
-                quantityLabelString = [NSString stringWithFormat: @"%@ %@", [newValue stringValue], self.weightSuffix];
-            }
             self.quantityViewDelegate.quantityLabel.text = [self displayWeightLabelTextWithValue:newValue];
         }
     }
