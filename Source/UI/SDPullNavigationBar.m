@@ -325,6 +325,7 @@ typedef struct
     if(self.implementsMenuWidth)
     {
         self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidth;
+        self.menuWidthForLandscape = self.menuWidthForPortrait;
     }
     else if(self.implementsMenuWidthForOrientations)
     {
