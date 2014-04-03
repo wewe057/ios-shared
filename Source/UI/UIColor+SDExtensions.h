@@ -25,4 +25,10 @@
  */
 + (UIColor *)colorWithHexValue:(NSString *)hexValueString;
 
+/**
+* Creates a color with random color values and alpha of 1.0
+*
+* @return A UIColor with random color values
+*/
++ (UIColor *)randomColor;
 @end
