@@ -103,7 +103,7 @@
 
         while ([self actualMemoryCacheSize] > _memoryCacheSize - (_memoryCacheSize / 4))
         {
-            NSString *key = [keys lastObject];
+            NSString *key = [keys firstObject];
             [_memoryCache removeObjectForKey:key];
             [keys removeObject:key];
             SDLog(@"dumped from cache: %@", key);
@@ -170,6 +170,7 @@
         UIImage *diskCachedImage = [UIImage imageWithData:cachedResponse.responseData];
         if (diskCachedImage)
         {
+            [self addImageToMemoryCache:diskCachedImage withURL:url];
             //SDLog(@"image found in disk cache: %@", url);
             if (completionBlock)
                 completionBlock(diskCachedImage, nil);
