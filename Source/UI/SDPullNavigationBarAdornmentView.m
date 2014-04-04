@@ -11,6 +11,7 @@
 static const CGFloat kMinimumHeightForTapArea = 44.0f;
 
 @interface SDPullNavigationBarAdornmentView()
+@property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIImageView* adornmentView;
 @property (nonatomic, assign) CGFloat adornmentViewHeight;  // This accounts for both imageSize and gap to make it more grabbable.
 @end
@@ -53,13 +54,9 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
         if(adornmentImage)
         {
             CGSize imageSize = self.adornmentImage.size;
-            CGRect imageViewRect = self.baseFrame;
-            imageViewRect.origin.y = self.baseFrame.size.height;
-            imageViewRect.origin.x = floor(CGRectGetWidth(imageViewRect) * 0.5f - imageSize.width * 0.5f);
-            imageViewRect.size = imageSize;
             self.adornmentViewHeight = MAX(imageSize.height, kMinimumHeightForTapArea);
 
-            self.adornmentView = [[UIImageView alloc] initWithFrame:imageViewRect];
+            self.adornmentView = [[UIImageView alloc] initWithFrame:[self adornmentViewFrame]];
             self.adornmentView.backgroundColor = [UIColor clearColor];
             self.adornmentView.opaque = YES;
             self.adornmentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
@@ -86,22 +83,57 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
     }
 }
 
+- (void)setBackgroundViewClass:(Class)backgroundViewClass
+{
+    if(backgroundViewClass != _backgroundViewClass)
+    {
+        _backgroundViewClass = backgroundViewClass;
+        
+        UIView *oldView = self.backgroundView;
+        [oldView removeFromSuperview];
+        self.backgroundView = nil;
+        
+        if(backgroundViewClass != nil)
+        {
+            self.backgroundView = [[_backgroundViewClass alloc] initWithFrame:[self backgroundViewFrame]];
+            self.backgroundView.backgroundColor = [UIColor clearColor];
+            self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+            self.backgroundView.tag = 3;
+            [self insertSubview:self.backgroundView atIndex:0];
+        }
+    }
+}
+
 - (void)layoutSubviews
 {
     // Adjust the views that we have. If we have an image, it means we created the image view that contains it.
 
     if(self.adornmentImage)
     {
-        CGSize imageSize = self.adornmentImage.size;
-        CGRect imageViewRect = self.baseFrame;
-        imageViewRect.origin.x = floor(CGRectGetWidth(imageViewRect) * 0.5f - imageSize.width * 0.5f);
-        imageViewRect.origin.y = self.baseFrame.size.height;
-        imageViewRect.size = imageSize;
-
-        self.adornmentView.frame = imageViewRect;
+        self.adornmentView.frame = [self adornmentViewFrame];
     }
-
+    if(self.backgroundView)
+    {
+        self.backgroundView.frame = [self backgroundViewFrame];
+    }
     self.containerView.frame = (CGRect){ CGPointZero, self.baseFrame.size };
+}
+
+- (CGRect)backgroundViewFrame
+{
+    CGRect containerFrame = (CGRect){ CGPointZero, self.baseFrame.size };
+    containerFrame.size.height += self.adornmentImage.size.height;
+    return containerFrame;
+}
+
+- (CGRect)adornmentViewFrame
+{
+    CGSize imageSize = self.adornmentImage.size;
+    CGRect imageViewRect = self.baseFrame;
+    imageViewRect.origin.x = floor(CGRectGetWidth(imageViewRect) * 0.5f - imageSize.width * 0.5f);
+    imageViewRect.origin.y = self.baseFrame.size.height;
+    imageViewRect.size = imageSize;
+    return imageViewRect;
 }
 
 @end

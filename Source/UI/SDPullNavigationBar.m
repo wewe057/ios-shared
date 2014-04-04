@@ -66,6 +66,7 @@ typedef struct
 @property (nonatomic, assign) CGFloat menuWidthForPortrait;
 @property (nonatomic, assign) CGFloat menuWidthForLandscape;
 @property (nonatomic, assign) CGFloat menuWidthForCurrentOrientation;
+@property (nonatomic, assign) Class backgroundViewClass;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
@@ -78,6 +79,7 @@ typedef struct
 
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
+@property (nonatomic, assign) BOOL implementsBackgroundViewClass;
 
 @end
 
@@ -222,6 +224,8 @@ typedef struct
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
                 self.menuBottomAdornmentView.adornmentImage = self.adornmentImageForCurrentOrientation;
+            if(self.implementsBackgroundViewClass)
+                self.menuBottomAdornmentView.backgroundViewClass = self.backgroundViewClass;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
         }
         
@@ -332,7 +336,10 @@ typedef struct
         self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidthForPortrait;
         self.menuWidthForLandscape = self.menuController.pullNavigationMenuWidthForLandscape;
     }
-
+    self.implementsBackgroundViewClass = [self.menuController respondsToSelector:@selector(pullNavigationMenuBackgroundViewClass)];
+    if(self.implementsBackgroundViewClass)
+        self.backgroundViewClass = self.menuController.pullNavigationMenuBackgroundViewClass;
+    
     self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
     self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
     self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
