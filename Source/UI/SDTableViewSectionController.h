@@ -68,12 +68,21 @@
 - (void)sectionController:(SDTableViewSectionController *)sectionController popViewController: (BOOL)animated;
 
 /**
+ *  A section controller is asking you to pop to navigation stack back to yourself
+ *
+ *  @param sectionController The section controller making the request
+ *  @param animated          YES if the section controller wants the pop animated
+ */
+- (void)sectionController:(SDTableViewSectionController *)sectionController popToSelfAnimated:(BOOL)animated;
+
+/**
  *  A section controller is asking you to pop to the root view controller
  *
  *  @param sectionController The section controller making the request
  *  @param animated          YES if the section controller wants the pop animated
  */
 - (void)sectionController:(SDTableViewSectionController *)sectionController popToRootViewControllerAnimated:(BOOL)animated;
+
 @end
 
 //________________________________________________________________________________________
