@@ -197,10 +197,8 @@ static NSNumberFormatter *__internalformatter = nil;
     BOOL respondsToCreateWithData = [outputClass respondsToSelector:@selector(createWithData:)];
     BOOL respondsToMappingDictionaryForData = [outputObject respondsToSelector:@selector(mappingDictionaryForData:)];
     
-    if (respondsToCreateWithData)
-        NSLog(@"booya");
-    if (respondsToCreateWithData && respondsToMappingDictionaryForData)
-        [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];
+    /*if (respondsToCreateWithData && respondsToMappingDictionaryForData)
+        [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];*/
     
     if (respondsToCreateWithData)
     {
@@ -276,10 +274,8 @@ static NSNumberFormatter *__internalformatter = nil;
             BOOL respondsToCreateWithData = [outputClass respondsToSelector:@selector(createWithData:)];
             BOOL respondsToMappingDictionaryForData = [outputObject respondsToSelector:@selector(mappingDictionaryForData:)];
             
-            if (respondsToCreateWithData)
-                NSLog(@"booya");
-            if (respondsToCreateWithData && respondsToMappingDictionaryForData)
-                [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];
+            /*if (respondsToCreateWithData && respondsToMappingDictionaryForData)
+                [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];*/
             
             if (respondsToCreateWithData)
             {
