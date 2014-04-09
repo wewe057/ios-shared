@@ -193,9 +193,27 @@ static NSNumberFormatter *__internalformatter = nil;
     else
     if ([outputObject isKindOfClass:[NSArray class]])
         outputObject = [NSMutableArray array];
-
-    if ([outputObject respondsToSelector:@selector(mappingDictionaryForData:)] ||
-        [value respondsToSelector:@selector(exportMappingDictionary)])
+    
+    BOOL respondsToCreateWithData = [[outputObject class] respondsToSelector:@selector(createWithData:)];
+    BOOL respondsToMappingDictionaryForData = [outputObject respondsToSelector:@selector(mappingDictionaryForData:)];
+    
+    if (respondsToCreateWithData && respondsToMappingDictionaryForData)
+        [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];
+    
+    if (respondsToCreateWithData)
+    {
+        outputObject = [[outputObject class] createWithData:value];
+        BOOL validModel = YES;
+        if ([outputObject respondsToSelector:@selector(validModel)])
+        {
+            validModel = [outputObject validModel];
+        }
+        
+        if (validModel)
+            [self setValue:outputObject destProperty:destProperty targetObject:targetObject];
+    }
+    else
+    if (respondsToMappingDictionaryForData || [value respondsToSelector:@selector(exportMappingDictionary)])
     {
         SDDataMap *newMap = [SDDataMap map];
         [newMap mapObject:value toObject:outputObject strict:YES];
