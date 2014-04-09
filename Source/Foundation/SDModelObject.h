@@ -19,13 +19,6 @@
 @interface SDModelObject : NSObject<SDDataMapProtocol>
 
 /**
- *  Subclasses can implement this class method as an alternative means by which to input data into
- *  the resulting object.  This bypasses the mapp all together.  If both this class method and 
- *  mappingDictionaryForData: are implemented, an exception is thrown by SDDataMap.
- */
-+ (id)createWithData:(id)data;
-
-/**
  *	Subclasses should override this method to provide a data map dictionary per the specifications
  *  for SDDataMap.  The map should be in the format of @{@"sourceKey": @"destKey"}.  The destination
  *  will always be the subclass of SDModelObject.
