@@ -265,6 +265,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
+    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
         [self stopUpdatingLocationForAllDelegates];
     }
