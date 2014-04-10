@@ -25,7 +25,7 @@
  *
  *	@return	A dictionary containing the data mapping dictionary.
  */
-- (NSDictionary *)mappingDictionaryForData:(id)data;
+//- (NSDictionary *)mappingDictionaryForData:(id)data;
 
 /**
  *  The dictionary representation is an NSDictionary filled with the SDDataMap name values based on

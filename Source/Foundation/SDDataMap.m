@@ -170,6 +170,13 @@ static NSNumberFormatter *__internalformatter = nil;
             }
         }
     }];
+    
+    // Now that the object has been mapped, let's tell the
+    // target object that the model has been loaded
+    if ([object2 respondsToSelector:@selector(modelDidLoad)])
+    {
+        [object2 modelDidLoad];
+    }
 }
 
 #pragma mark - Collection and Model handling
@@ -186,9 +193,30 @@ static NSNumberFormatter *__internalformatter = nil;
     else
     if ([outputObject isKindOfClass:[NSArray class]])
         outputObject = [NSMutableArray array];
+    
+    BOOL respondsToCreateWithData = [outputClass respondsToSelector:@selector(createWithData:)];
+    BOOL respondsToMappingDictionaryForData = [outputObject respondsToSelector:@selector(mappingDictionaryForData:)];
+    
+    /*if (respondsToCreateWithData && respondsToMappingDictionaryForData)
+        [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];*/
+    
+    if (respondsToCreateWithData)
+    {
+        // if the model object class responds to createWithData, use that.
+        outputObject = [[outputObject class] createWithData:value];
 
-    if ([outputObject respondsToSelector:@selector(mappingDictionaryForData:)] ||
-        [value respondsToSelector:@selector(exportMappingDictionary)])
+        // assume models are valid unless model explicitly says no.
+        BOOL validModel = YES;
+        if ([outputObject respondsToSelector:@selector(validModel)])
+        {
+            validModel = [outputObject validModel];
+        }
+        
+        if (validModel)
+            [self setValue:outputObject destProperty:destProperty targetObject:targetObject];
+    }
+    else
+    if (respondsToMappingDictionaryForData || [value respondsToSelector:@selector(exportMappingDictionary)])
     {
         SDDataMap *newMap = [SDDataMap map];
         [newMap mapObject:value toObject:outputObject strict:YES];
@@ -243,11 +271,31 @@ static NSNumberFormatter *__internalformatter = nil;
             if ([outputObject isKindOfClass:[NSArray class]])
                 outputObject = [NSMutableArray array];
             
-            // if the model object or item doesn't support the protocol, we don't know how
-            // to map the objects, if it does, let's do it.
-            if ([outputObject respondsToSelector:@selector(mappingDictionaryForData:)] ||
-                [item respondsToSelector:@selector(exportMappingDictionary)])
+            BOOL respondsToCreateWithData = [outputClass respondsToSelector:@selector(createWithData:)];
+            BOOL respondsToMappingDictionaryForData = [outputObject respondsToSelector:@selector(mappingDictionaryForData:)];
+            
+            /*if (respondsToCreateWithData && respondsToMappingDictionaryForData)
+                [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];*/
+            
+            if (respondsToCreateWithData)
             {
+                // if the model object class responds to createWithData, use that.
+                outputObject = [[outputObject class] createWithData:item];
+                
+                // assume models are valid unless model explicitly says NO.
+                BOOL validModel = YES;
+                if ([outputObject respondsToSelector:@selector(validModel)])
+                    validModel = [outputObject validModel];
+                
+                if (validModel && outputObject)
+                    [workArray addObject:outputObject];
+            }
+            else
+            if (respondsToMappingDictionaryForData || [item respondsToSelector:@selector(exportMappingDictionary)])
+            {
+                // if the model object or item doesn't support the protocol, we don't know how
+                // to map the objects, if it does, let's do it.
+
                 SDDataMap *newMap = [SDDataMap map];
                 [newMap mapObject:item toObject:outputObject strict:YES];
                 
@@ -308,10 +356,6 @@ static NSNumberFormatter *__internalformatter = nil;
     
     value = [self convertValue:value forType:destProperty.propertyType];
     [targetObject setValue:value forKeyPath:parentPath];
-    if ([targetObject respondsToSelector:@selector(modelDidLoad)])
-    {
-        [targetObject modelDidLoad];
-    }
 }
 
 - (id)convertValue:(id)value forType:(NSString *)type

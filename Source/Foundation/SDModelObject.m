@@ -42,7 +42,7 @@
     @throw [NSException exceptionWithName:@"SDModelObjectException" reason:@"Subclasses MUST override -validModel." userInfo:nil];
 }
 
-- (NSDictionary *)mappingDictionaryForData:(id)data
+/*- (NSDictionary *)mappingDictionaryForData:(id)data
 {
     // this is the base class, so we'll return nothing.
     return nil;
@@ -58,7 +58,7 @@
 {
     // this is the base class, so we'll return nothing.
     return nil;
-}
+}*/
 
 + (instancetype)mapFromObject:(id)sourceObject
 {

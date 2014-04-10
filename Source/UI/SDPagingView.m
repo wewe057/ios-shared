@@ -39,7 +39,7 @@
     
     _scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
     _scrollView.delegate = self;
-    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _scrollView.multipleTouchEnabled = YES;
     _scrollView.scrollEnabled = YES;
     _scrollView.directionalLockEnabled = YES;
@@ -181,10 +181,11 @@
     {
         [dataSource pagingView:self updateView:_rightView atIndex:_currentPage + 1];
         _rightView.frame = CGRectIntegral(CGRectMake((_scrollView.contentOffset.x + _scrollView.frame.size.width) + halfSpace, 0, _scrollView.frame.size.width - fullSpace, _scrollView.frame.size.height));
+        _rightView.hidden = NO;
     }
     else
     {
-        _rightView.frame = CGRectZero;
+        _rightView.hidden = YES;
     }
     
     // the view to the left
@@ -192,10 +193,11 @@
     {
         [dataSource pagingView:self updateView:_leftView atIndex:_currentPage - 1];
         _leftView.frame = CGRectIntegral(CGRectMake((_scrollView.contentOffset.x - _scrollView.frame.size.width) + halfSpace, 0, _scrollView.frame.size.width - fullSpace, _scrollView.frame.size.height));
+        _leftView.hidden = NO;
     }
     else
     {
-        _leftView.frame = CGRectZero;
+        _leftView.hidden = YES;
     }
     
     [_scrollView bringSubviewToFront:_centerView];
@@ -206,7 +208,7 @@
     [super layoutSubviews];
     
     CGFloat pageWidth = _scrollView.frame.size.width;
-    NSInteger page = floor((_scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
+    NSInteger page = (NSInteger)floor((_scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     
     if (page == _currentPage)
         return;
@@ -225,6 +227,5 @@
 {
     [self layoutViewsForPage:self.currentPage];
 }
-
 
 @end

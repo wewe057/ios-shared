@@ -16,6 +16,13 @@
 @optional
 
 /**
+ Subclasses can implement this class method as an alternative means by which to input data into
+ the resulting object.  This bypasses the mapp all together.  If both this class method and
+ mappingDictionaryForData: are implemented, an exception is thrown by SDDataMap.
+ */
++ (id)createWithData:(id)data;
+
+/**
  Provides a mapping dictionary based on the input data in the form of "srcKey":"destKey".
  Caller can optionally pass nil which should return a default map.
  */
