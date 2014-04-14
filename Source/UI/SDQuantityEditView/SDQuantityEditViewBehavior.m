@@ -162,7 +162,6 @@ static char kObserveQuantityContext;
     @strongify(_quantityViewDelegate, viewDelegate);
     _originalQuantity = newOriginalQuantity;
     viewDelegate.quantityLabel.text = [self displayWeightLabelTextWithValue:_originalQuantity];
-    
 }
 
 -(void)updateQuantityLabel
@@ -296,6 +295,15 @@ static char kObserveQuantityContext;
     }
 }
 
+- (void)resetOriginalQuantity
+{
+    self.originalQuantity = [NSDecimalNumber zero];
+    self.currentQuantity = [self.originalQuantity decimalNumberByAdding:self.stepAmount];
+    [self updateTotalCost];
+    [self updateTotalWeight];
+    [self updateButtonState];
+}
+
 - (void)setCurrentAsBaseline
 {
     self.originalQuantity = self.currentQuantity;
@@ -303,7 +311,7 @@ static char kObserveQuantityContext;
     
     if ([self.originalQuantity isEqual:[NSDecimalNumber zero]])
     {
-        self.currentQuantity = [self.originalQuantity decimalNumberByAdding:_stepAmount];
+        self.currentQuantity = [self.originalQuantity decimalNumberByAdding:self.stepAmount];
     }
     [self updateTotalCost];
     [self updateTotalWeight];
