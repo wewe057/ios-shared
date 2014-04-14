@@ -30,6 +30,9 @@
 @interface SDTextField ()
 @property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @property (nonatomic, strong, readonly) UIToolbar *accessoryToolbar;
+@property (nonatomic) BOOL isShowingErrorText;
+@property (nonatomic) BOOL isTextManuallySet;
+
 @end
 
 @implementation SDTextField
@@ -121,12 +124,20 @@
     }
     else
     {
-        _floatingLabel.textColor = self.floatingLabelInactiveTextColor;
+        if ( self.isShowingErrorText )
+            _floatingLabel.textColor = [UIColor redColor];
+        else
+            _floatingLabel.textColor = self.floatingLabelInactiveTextColor;
         if (!self.text || 0 == [self.text length])
             [self hideFloatingLabel];
         else
             [self showFloatingLabel];
     }
+}
+
+- (BOOL)resignFirstResponderWithoutValidate
+{
+    return [super resignFirstResponder];
 }
 
 - (BOOL)resignFirstResponder
@@ -143,6 +154,10 @@
 - (BOOL)becomeFirstResponder
 {
     BOOL result = [super becomeFirstResponder];
+    
+    self.isTextManuallySet = NO; // user is about to enter text
+    
+    [self hideFloatingLabelWithErrorText];
     
     [self stripInvalidLabelChar];
     /*BOOL valid = [self internalValidate];
@@ -164,6 +179,7 @@
     return rect;
 }
 
+
 - (void)showFloatingLabel
 {
     if (self.disableFloatingLabels)
@@ -176,8 +192,16 @@
     
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut animations:^{
         _floatingLabel.alpha = 1.0f;
-        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, 2.0f, _floatingLabel.frame.size.width + 30, _floatingLabel.frame.size.height);
+        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, 2.0f, [self widthOfFloatingLabel] + 30, _floatingLabel.frame.size.height);
     } completion:nil];
+}
+
+- (CGFloat) widthOfFloatingLabel
+{
+    if ( self.isShowingErrorText ) {
+        return [_floatingLabel.text sizeWithFont:_floatingLabel.font].width;
+    }
+    return self.frame.size.width;
 }
 
 - (void)hideFloatingLabel
@@ -196,7 +220,7 @@
 
     [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseIn animations:^{
         _floatingLabel.alpha = 0.0f;
-        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, _floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, _floatingLabel.frame.size.width + 30, _floatingLabel.frame.size.height);
+        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, _floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue, [self widthOfFloatingLabel] + 30, _floatingLabel.frame.size.height);
     } completion:nil];
 }
 
@@ -402,7 +426,7 @@
     BOOL result = YES;
     
     SDTextFieldValidationBlock validationBlock = self.validationBlock;
-    if (validationBlock)
+    if (validationBlock && !self.isTextManuallySet)
     {
         result = validationBlock(self);
         if (!result)
@@ -439,6 +463,39 @@
     }
     
     return fieldsAreValid;
+}
+
+- (void)resetTextWithoutValidate
+{
+    self.isTextManuallySet = YES;
+    self.text = @"";
+}
+
+- (void)showFloatingLabelWithErrorText:(NSString *)errorText
+{
+    // Set up the label
+    [self stripInvalidLabelChar];
+    _floatingLabel.text = [NSString stringWithFormat:@"✖︎ %@", errorText];
+    _floatingLabel.textColor = [UIColor redColor];
+    self.isShowingErrorText = YES;
+    self.clipsToBounds = NO;
+    
+    [self setLabelOriginForTextAlignment];
+    
+    [UIView animateWithDuration:0.3f delay:0.0f options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut animations:^{
+        _floatingLabel.alpha = 1.0f;
+        _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x, 2.0f, [self widthOfFloatingLabel] + 30, _floatingLabel.frame.size.height);
+    } completion:nil];
+}
+
+- (void)hideFloatingLabelWithErrorText
+{
+    self.clipsToBounds = YES;
+    
+    _floatingLabel.text = self.placeholder;
+    self.isShowingErrorText = NO;
+    
+    [self hideFloatingLabel];
 }
 
 @end
