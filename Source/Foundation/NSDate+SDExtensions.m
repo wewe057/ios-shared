@@ -56,6 +56,46 @@
     return [sFormatter dateFromString:argDateString];
 }
 
++ (NSDate *)dateAtBeginningOfMonthForDate:(NSDate *)inputDate
+{
+    // Use the user's current calendar and time zone
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSTimeZone *timeZone = [NSTimeZone systemTimeZone];
+    [calendar setTimeZone:timeZone];
+    
+    // Selectively convert the date components (year, month) of the input date
+    NSDateComponents *dateComps = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit fromDate:inputDate];
+    
+    // Set the time components manually
+    [dateComps setHour:0];
+    [dateComps setMinute:0];
+    [dateComps setSecond:0];
+	[dateComps setDay:1];
+	
+    // Convert back
+    NSDate *beginningOfMonth = [calendar dateFromComponents:dateComps];
+    return beginningOfMonth;
+}
+
++ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray sortBlock:(SDDateSortBlock)sortBlock
+{
+    NSMutableDictionary *sections = [NSMutableDictionary dictionary];
+    for (id object in inputArray)
+    {
+        NSDate *dateRepresentingThisSection = sortBlock(object);
+        NSMutableArray *objectsForThisSection = [sections objectForKey:dateRepresentingThisSection];
+        if (objectsForThisSection == nil)
+        {
+            objectsForThisSection = [NSMutableArray array];
+            [sections setObject:objectsForThisSection forKey:dateRepresentingThisSection];
+        }
+        [objectsForThisSection addObject:object];
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:sections];
+}
+
+
 // ---------------------------------------------------------------- //
 // Time interval comparison convenience methods
 
