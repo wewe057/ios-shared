@@ -562,6 +562,11 @@ typedef struct
 
             if(completion)
                 completion();
+            
+            // If we just finished our collapse, tell the controller now
+            if(self.implementsDidDisappear && !self.menuOpen)
+                [self.menuController pullNavMenuDidDisappear];
+
         }];
     }
     else
@@ -599,7 +604,9 @@ typedef struct
 
     [self collapseMenuWithCompletion:^
     {
-        if(self.implementsDidDisappear)
+        // If we're animating, then firing did disappear here is a lie. Hold
+        //  off until we're actually done animating.
+        if(self.implementsDidDisappear && !self.animating)
             [self.menuController pullNavMenuDidDisappear];
     }];
 }
