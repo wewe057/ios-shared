@@ -182,6 +182,6 @@ typedef id (^SDSectionKeyBlock)(id blockObject);
 /**
  Returns a  given inputArray as a dictionary of arrays split by critera defined in sortBlock. Used for grouping by month or other section interval.
  */
-+ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSectionKeyBlock:(SDSectionKeyBlock)sortBlock;
++ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSectionKeyBlock:(SDSectionKeyBlock)keyBlock;
 
 @end
