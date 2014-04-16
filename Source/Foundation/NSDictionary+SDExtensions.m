@@ -340,12 +340,12 @@
 	return [keyValuePairs componentsJoinedByString:@"&"];
 }
 
-+ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSortBlock:(SDDictionarySortBlock)sortBlock
++ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSectionKeyBlock:(SDSectionKeyBlock)keyBlock
 {
     NSMutableDictionary *sections = [NSMutableDictionary dictionary];
     for (id object in inputArray)
     {
-        id <NSCopying> keyRepresentingThisSection = sortBlock(object);
+        id <NSCopying> keyRepresentingThisSection = keyBlock(object);
         NSMutableArray *objectsForThisSection = [sections objectForKey:keyRepresentingThisSection];
         if (objectsForThisSection == nil)
         {
