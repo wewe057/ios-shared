@@ -94,4 +94,6 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 - (BOOL)resignFirstResponderWithoutValidate;
 - (void)resetTextWithoutValidate; // clear the field, but don't allow validation
 
+- (void)setFloatingLabelsVisible:(BOOL)visible;
+
 @end

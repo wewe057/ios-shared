@@ -147,6 +147,11 @@
     return result;
 }
 
+- (void)setFloatingLabelsVisible:(BOOL)visible
+{
+    _floatingLabel.hidden = !visible;
+}
+
 - (BOOL)becomeFirstResponder
 {
     BOOL result = [super becomeFirstResponder];
