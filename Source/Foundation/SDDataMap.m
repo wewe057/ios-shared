@@ -90,7 +90,7 @@ static NSNumberFormatter *__internalformatter = nil;
     if ([object2 respondsToSelector:@selector(initialKeyPath)])
     {
         NSString *initialKeyPath = [object2 initialKeyPath];
-        id newObject1 = [object1 valueForKeyPath:initialKeyPath];
+        id newObject1 = [self valueFromObject:object1 forKeyPath:initialKeyPath];
         if (newObject1)
             tempObject1 = newObject1;
     }
@@ -108,11 +108,13 @@ static NSNumberFormatter *__internalformatter = nil;
     }
     
     [_mapDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        id value = [object1 valueForKeyPath:key];
+        id value = [self valueFromObject:object1 forKeyPath:key];
         if (!value)
             return;
         
         NSString *destPropertyString = (NSString *)obj;
+        
+        
         SDObjectProperty *destProperty = [SDObjectProperty propertyFromString:destPropertyString];
         
         // if we don't have a destination property type, do some introspection on the destination
@@ -337,6 +339,73 @@ static NSNumberFormatter *__internalformatter = nil;
 
 #pragma mark - Utilities
 
+/// This is a classwide replacement for [NSObject valueForKeyPath:]
+/// it adds array notation to the standard valueForKeyPath
+/// such that a mapping dictionary entry @"foo[1].bar": @"fooBar" works properly
+- (id)valueFromObject:(NSObject *)sourceObject forKeyPath:(NSString *)keyPath
+{
+    id value = NULL;
+    
+    NSRange leftBrace = [keyPath rangeOfString:@"["];
+    if (leftBrace.location==NSNotFound) {
+        // It have no array, default to KVO
+        value = [sourceObject valueForKeyPath:keyPath];
+    } else {
+        // Let's traverse the object using the index in the braces
+        NSRange rightBrace = [keyPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, keyPath.length - leftBrace.location)];
+        if (rightBrace.location==NSNotFound) {
+            // Fall back to KVO if unmatched braces
+            value = [sourceObject valueForKeyPath:keyPath];
+        } else {
+            NSString *currentPath = [keyPath copy];
+            NSObject *currentObject = sourceObject;
+            while (leftBrace.location!=NSNotFound) {
+                NSString *parentPath = [currentPath substringToIndex:leftBrace.location];
+                NSInteger arrayIndex = [[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
+                NSArray *parentArray = [currentObject valueForKeyPath:parentPath];
+                
+                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex)
+                {
+                    // Fall back to KVO if it's not an array or the index doesn't exist
+                    value = [sourceObject valueForKeyPath:keyPath];
+                    break;
+                }
+                
+                currentObject = [parentArray objectAtIndex:arrayIndex];
+                currentPath = [currentPath substringFromIndex:rightBrace.location + 1];
+                
+                
+                if ([currentPath characterAtIndex:0]=='.') {
+                    currentPath = [currentPath substringFromIndex:1];
+                }
+                
+                // If currentPath is an emptyString, current object is the correct value
+                if (currentPath.length==0) {
+                    value = currentObject;
+                    break;
+                }
+                
+                // Let's look for more
+                leftBrace = [currentPath rangeOfString:@"["];
+                
+                if (leftBrace.location==NSNotFound) {
+                    // The remaining path is standard KVO
+                    value = [currentObject valueForKeyPath:currentPath];
+                } else {
+                    // more array, let's find the right brace
+                    rightBrace = [currentPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, currentPath.length - leftBrace.location)];
+                    if (rightBrace.location==NSNotFound) {
+                        // Fall back to KVO if unmatched braces
+                        value = [sourceObject valueForKeyPath:keyPath];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return value;
+}
+
 - (void)setValue:(id)value destProperty:(SDObjectProperty *)destProperty targetObject:(id)targetObject
 {
     NSString *basePath = destProperty.propertyName;
@@ -349,7 +418,7 @@ static NSNumberFormatter *__internalformatter = nil;
     
     if ([targetObject keyPathExists:parentPath])
     {
-        id targetParent = [targetObject valueForKeyPath:parentPath];
+        id targetParent = [self valueFromObject:targetObject forKeyPath:parentPath];
         if (![parentPath isEqualToString:propName])
             destProperty = [SDObjectProperty propertyFromObject:targetParent named:propName];
     }
@@ -423,7 +492,7 @@ static NSNumberFormatter *__internalformatter = nil;
     
     if ([targetObject keyPathExists:parentPath])
     {
-        id targetParent = [targetObject valueForKeyPath:parentPath];
+        id targetParent = [self valueFromObject:targetObject forKeyPath:parentPath];
         if (![parentPath isEqualToString:propName] && targetParent)
             targetObject = targetParent;
     }

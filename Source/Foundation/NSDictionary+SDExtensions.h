@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef id (^SDDictionarySortBlock)(id blockObject);
+typedef id (^SDSectionKeyBlock)(id blockObject);
 
 /**
  A number of these typeForKey type methods came into being to extract a specific type from a given object, e.g. in the case of badly typed data in a JSON response.
@@ -182,6 +182,6 @@ typedef id (^SDDictionarySortBlock)(id blockObject);
 /**
  Returns a  given inputArray as a dictionary of arrays split by critera defined in sortBlock. Used for grouping by month or other section interval.
  */
-+ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSortBlock:(SDDictionarySortBlock)sortBlock;
++ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSectionKeyBlock:(SDSectionKeyBlock)keyBlock;
 
 @end
