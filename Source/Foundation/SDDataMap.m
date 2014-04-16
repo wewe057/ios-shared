@@ -361,7 +361,7 @@ static NSNumberFormatter *__internalformatter = nil;
             NSObject *currentObject = sourceObject;
             while (leftBrace.location!=NSNotFound) {
                 NSString *parentPath = [currentPath substringToIndex:leftBrace.location];
-                NSInteger arrayIndex = [[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
+                NSUInteger arrayIndex = (NSUInteger)[[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
                 NSArray *parentArray = [currentObject valueForKeyPath:parentPath];
                 
                 if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex)
