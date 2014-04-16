@@ -20,7 +20,7 @@
     NSDictionary *object2 = @{@"date": [NSDate dateFromRFC822String:@"2014-04-15T07:00:00-0000"], @"name": @"Tax Day"};
     NSDictionary *object3 = @{@"date": [NSDate dateFromRFC822String:@"2014-01-01T07:00:00-0000"], @"name": @"New Years Day"};
     NSArray *objectArray = @[object1, object2, object3];
-    NSDictionary *resultDictionary = [NSDictionary sectionDictionaryFromArray:objectArray withSortBlock:^(id blockObject) {
+    NSDictionary *resultDictionary = [NSDictionary sectionDictionaryFromArray:objectArray withSectionKeyBlock:^(id blockObject) {
         if ([blockObject isKindOfClass:[NSDictionary class]])
         {
             NSDictionary *object = (NSDictionary*)blockObject;
