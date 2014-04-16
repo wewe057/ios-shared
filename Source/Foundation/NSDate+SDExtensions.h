@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @interface NSDate (SDExtensions)
 
 /**
@@ -25,6 +24,11 @@
  Creates an NSDate from a string of the format `month/day/year`.
  */
 + (NSDate *)dateFromMonthDayYearString:(NSString *)argDateString;
+
+/**
+ Creates an NSDate at the start of the month from the beginning date. For example 4/14/2014 becomes 4/1/2014. Used for grouping / sorting by month.
+ */
++ (NSDate *)dateAtBeginningOfMonthForDate:(NSDate *)inputDate;
 
 /**
  Returns `YES` if the date represented by the receiver occurred more than `numSeconds` seconds ago. Returns `NO` otherwise.
