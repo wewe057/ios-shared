@@ -340,5 +340,22 @@
 	return [keyValuePairs componentsJoinedByString:@"&"];
 }
 
++ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSortBlock:(SDDictionarySortBlock)sortBlock
+{
+    NSMutableDictionary *sections = [NSMutableDictionary dictionary];
+    for (id object in inputArray)
+    {
+        id <NSCopying> keyRepresentingThisSection = sortBlock(object);
+        NSMutableArray *objectsForThisSection = [sections objectForKey:keyRepresentingThisSection];
+        if (objectsForThisSection == nil)
+        {
+            objectsForThisSection = [NSMutableArray array];
+            [sections setObject:objectsForThisSection forKey:keyRepresentingThisSection];
+        }
+        [objectsForThisSection addObject:object];
+    }
+    
+    return [sections copy];
+}
 
 @end

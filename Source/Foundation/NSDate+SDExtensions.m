@@ -56,6 +56,28 @@
     return [sFormatter dateFromString:argDateString];
 }
 
++ (NSDate *)dateAtBeginningOfMonthForDate:(NSDate *)inputDate
+{
+    // Use the user's current calendar and time zone
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSTimeZone *timeZone = [NSTimeZone systemTimeZone];
+    [calendar setTimeZone:timeZone];
+    
+    // Selectively convert the date components (year, month) of the input date
+    NSDateComponents *dateComps = [calendar components:NSYearCalendarUnit | NSMonthCalendarUnit fromDate:inputDate];
+    
+    // Set the time components manually
+    [dateComps setHour:0];
+    [dateComps setMinute:0];
+    [dateComps setSecond:0];
+    [dateComps setDay:1];
+	
+    // Convert back
+    NSDate *beginningOfMonth = [calendar dateFromComponents:dateComps];
+    return beginningOfMonth;
+}
+
+
 // ---------------------------------------------------------------- //
 // Time interval comparison convenience methods
 
