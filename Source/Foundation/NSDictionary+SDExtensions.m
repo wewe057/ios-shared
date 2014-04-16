@@ -355,7 +355,7 @@
         [objectsForThisSection addObject:object];
     }
     
-    return [NSDictionary copy];
+    return [sections copy];
 }
 
 @end
