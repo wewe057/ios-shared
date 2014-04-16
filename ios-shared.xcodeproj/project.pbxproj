@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		08EFCA2218FDCB70006547E0 /* NSDate+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08EFCA2118FDCB70006547E0 /* NSDate+SDExtensionsTests.m */; };
+		08EFCA2818FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 08EFCA2718FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m */; };
 		2008D37A188DAA9700255BC4 /* SDApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 2008D379188DAA9700255BC4 /* SDApplication.m */; };
 		CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
 		CA01F1B817D7A6F000E7C553 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA01F1B617D7A6F000E7C553 /* InfoPlist.strings */; };
@@ -213,6 +214,7 @@
 
 /* Begin PBXFileReference section */
 		08EFCA2118FDCB70006547E0 /* NSDate+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+SDExtensionsTests.m"; sourceTree = "<group>"; };
+		08EFCA2718FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		2008D378188DAA9700255BC4 /* SDApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDApplication.h; sourceTree = "<group>"; };
 		2008D379188DAA9700255BC4 /* SDApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDApplication.m; sourceTree = "<group>"; };
 		CA01F1AF17D7A6EF00E7C553 /* ios-shared Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ios-shared Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -469,17 +471,18 @@
 			isa = PBXGroup;
 			children = (
 				CA01F1B917D7A6F000E7C553 /* ios_shared_Tests.m */,
-				CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */,
-				CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */,
-				CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */,
-				CABD744F18AAB4180083A097 /* SDBase64Tests.m */,
 				E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */,
-				E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */,
-				E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */,
-				CAAB5A2518564B0E006737D4 /* SDDataMapTests.m */,
 				08EFCA2118FDCB70006547E0 /* NSDate+SDExtensionsTests.m */,
+				08EFCA2718FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m */,
+				E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */,
+				CA01F1C117D7A72D00E7C553 /* SDABTestingTests.m */,
+				CABD744F18AAB4180083A097 /* SDBase64Tests.m */,
+				CAAB5A2518564B0E006737D4 /* SDDataMapTests.m */,
 				CAAB5A2718564CEE006737D4 /* SDDataMapTestSupportFiles */,
 				CA01F1B417D7A6F000E7C553 /* Supporting Files */,
+				E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */,
+				CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */,
+				CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */,
 			);
 			path = "ios-shared Tests";
 			sourceTree = "<group>";
@@ -969,6 +972,7 @@
 				CA0E779E18284DD600B4398F /* SDDragDropGestureRecognizer.m in Sources */,
 				CA0E778818284DD600B4398F /* SDTimer.m in Sources */,
 				CA0E778418284DD600B4398F /* SDModelObject.m in Sources */,
+				08EFCA2818FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m in Sources */,
 				CA0E778C18284DD600B4398F /* CLLocation+SDExtensions.m in Sources */,
 				08EFCA2218FDCB70006547E0 /* NSDate+SDExtensionsTests.m in Sources */,
 				CAA3E93F182D516E00602210 /* SDSwitch.m in Sources */,

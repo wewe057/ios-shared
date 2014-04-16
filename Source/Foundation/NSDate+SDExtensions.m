@@ -70,29 +70,11 @@
     [dateComps setHour:0];
     [dateComps setMinute:0];
     [dateComps setSecond:0];
-	[dateComps setDay:1];
+    [dateComps setDay:1];
 	
     // Convert back
     NSDate *beginningOfMonth = [calendar dateFromComponents:dateComps];
     return beginningOfMonth;
-}
-
-+ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray sortBlock:(SDDateSortBlock)sortBlock
-{
-    NSMutableDictionary *sections = [NSMutableDictionary dictionary];
-    for (id object in inputArray)
-    {
-        NSDate *dateRepresentingThisSection = sortBlock(object);
-        NSMutableArray *objectsForThisSection = [sections objectForKey:dateRepresentingThisSection];
-        if (objectsForThisSection == nil)
-        {
-            objectsForThisSection = [NSMutableArray array];
-            [sections setObject:objectsForThisSection forKey:dateRepresentingThisSection];
-        }
-        [objectsForThisSection addObject:object];
-    }
-    
-    return [NSDictionary dictionaryWithDictionary:sections];
 }
 
 

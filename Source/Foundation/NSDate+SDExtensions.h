@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef id (^SDDateSortBlock)(id blockObject);
-
 @interface NSDate (SDExtensions)
 
 /**
@@ -31,11 +29,6 @@ typedef id (^SDDateSortBlock)(id blockObject);
  Creates an NSDate at the start of the month from the beginning date. For example 4/14/2014 becomes 4/1/2014. Used for grouping / sorting by month.
  */
 + (NSDate *)dateAtBeginningOfMonthForDate:(NSDate *)inputDate;
-
-/**
- Returns a the given inputArray as a dictionary of arrays split by critera defined in sortBlock. Used for grouping by month or other section interval.
- */
-+ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray sortBlock:(SDDateSortBlock)sortBlock;
 
 /**
  Returns `YES` if the date represented by the receiver occurred more than `numSeconds` seconds ago. Returns `NO` otherwise.
