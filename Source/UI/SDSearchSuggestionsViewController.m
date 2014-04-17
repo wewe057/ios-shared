@@ -1,5 +1,5 @@
 //
-//  SWISearchViewController.m
+//  SDSearchSuggestionsViewController.h
 //  SetDirection
 //
 //  Created by Joel Bernstein on 12/8/13.

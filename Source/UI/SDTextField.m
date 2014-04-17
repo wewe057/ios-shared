@@ -30,7 +30,7 @@
 @interface SDTextField ()
 @property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @property (nonatomic, strong, readonly) UIToolbar *accessoryToolbar;
-@property (nonatomic) BOOL isTextManuallySet;
+@property (nonatomic, getter = isTextManuallySet) BOOL textManuallySet;
 
 @end
 
@@ -156,7 +156,7 @@
 {
     BOOL result = [super becomeFirstResponder];
     
-    self.isTextManuallySet = NO; // user is about to enter text
+    self.textManuallySet = NO; // user is about to enter text
         
     [self stripInvalidLabelChar];
     /*BOOL valid = [self internalValidate];
@@ -458,7 +458,7 @@
 
 - (void)resetTextWithoutValidate
 {
-    self.isTextManuallySet = YES;
+    self.textManuallySet = YES;
     self.text = @"";
 }
 

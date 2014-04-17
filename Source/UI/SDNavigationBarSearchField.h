@@ -32,7 +32,7 @@
 - (CGRect) textFieldFrame;
 - (CGRect) textFieldExpandedFrame;
 
-- (void) configureTextField; // call super
+- (void) configureTextField __attribute__((objc_requires_super)); // call super
 - (void) configureSuggestionTableCell:(UITableViewCell *)cell;
 - (void) configurePopover;
 
