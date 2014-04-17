@@ -728,7 +728,12 @@ typedef struct
     }
 
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    UIWindow* topMostWindow = [UIApplication sharedApplication].windows.lastObject;
+    UIWindow *topMostWindow = self.window;
+    if ( topMostWindow == nil )
+    {
+        topMostWindow = [UIApplication sharedApplication].windows.lastObject;
+    }
+
     CGSize topMostWindowSize = topMostWindow.bounds.size;
     CGFloat height = UIInterfaceOrientationIsPortrait(orientation) ? MAX(topMostWindowSize.height, topMostWindowSize.width) : MIN(topMostWindowSize.height, topMostWindowSize.width);
 
