@@ -324,4 +324,81 @@
     XCTAssertTrue(itemId.integerValue == 28421697, @"itemId's value should be 28421697!");
 }
 
+- (void)testTraverseArrayToFindMappedFields
+{
+    NSDictionary *inputDictionary = @{@"topLevel": @[
+                                              @{@"itemName" : @"item0", @"itemValue" : @"A Horse"},
+                                              @{@"itemName" : @"item1", @"itemValue" : @"Leprocy"},
+                                              @{@"itemName" : @"item2", @"itemValue" : @"Three Hamburgers"},
+                                              @{@"itemName" : @"item3", @"itemValue" : @"Unknown smells",
+                                                @"sources" : @[
+                                                        @{ @"city" : @"Portland" },
+                                                        @{ @"city" : @"Malmo" },
+                                                        @{ @"city" : @"Gross Pointe" },
+                                                        @{ @"city" : @"Prego" }
+                                                        ]}
+                                              ]};
+    NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
+    
+    NSDictionary *mappingDictionary = @{
+                                        @"topLevel[0].itemValue" : @"value0",
+                                        @"topLevel[2].itemName" : @"name2",
+                                        @"topLevel[3].sources[0].city" : @"pdx",
+                                        @"topLevel[3].sources" : @"cityArray",
+                                        @"topLevel[0]" : @"anObj"
+                                        };
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:inputDictionary toObject:outputDictionary];
+    
+    NSString *value0    = [outputDictionary objectForKey:@"value0"];
+    NSString *name2     = [outputDictionary objectForKey:@"name2"];
+    NSString *pdx       = [outputDictionary objectForKey:@"pdx"];
+    NSArray  *cityArray = [outputDictionary objectForKey:@"cityArray"];
+    NSDictionary *anObj = [outputDictionary objectForKey:@"anObj"];
+    
+    XCTAssertTrue([value0    isKindOfClass:[NSString     class]], @"value0 isn't of the NSString type!");
+    XCTAssertTrue([name2     isKindOfClass:[NSString     class]], @"name2 isn't of the NSString type!");
+    XCTAssertTrue([pdx       isKindOfClass:[NSString     class]], @"pdx isn't of the NSString type!");
+    XCTAssertTrue([cityArray isKindOfClass:[NSArray      class]], @"cityArray isn't of the NSArray type!");
+    XCTAssertTrue([anObj     isKindOfClass:[NSDictionary class]], @"anObj isn't of the NSDictionary type!");
+    
+    XCTAssertTrue([value0 isEqualToString:@"A Horse"], @"value0 should be A Horse!");
+    XCTAssertTrue([name2  isEqualToString:@"item2"], @"name2 should be item2!");
+    XCTAssertTrue([pdx    isEqualToString:@"Portland"], @"pdx should be Portland!");
+    XCTAssertTrue([cityArray count]==4, @"cityArray should have 4 entries!");
+    XCTAssertTrue([anObj count]==2, @"anObj should have 2 entries!");
+}
+
+- (void)testTraverseArrayFailures
+{
+    NSDictionary *inputDictionary = @{@"topLevel": @[
+                                              @{@"itemName" : @"item0", @"itemValue" : @"A Horse"},
+                                              @{@"itemName" : @"item1", @"itemValue" : @"Leprocy"},
+                                              @{@"itemName" : @"item2", @"itemValue" : @"Three Hamburgers"},
+                                              @{@"itemName" : @"item3", @"itemValue" : @"Unknown smells",
+                                                @"sources" : @[
+                                                        @{ @"city" : @"Portland" },
+                                                        @{ @"city" : @"Malmo" },
+                                                        @{ @"city" : @"Gross Pointe" },
+                                                        @{ @"city" : @"Prego" }
+                                                        ]}
+                                              ]};
+    NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
+    
+    NSDictionary *mappingDictionary = @{
+                                        @"topLevel[400].itemValue" : @"value0", // beyond the end of the array
+                                        @"topLevel[0.itemValue" : @"value1",
+                                        @"topLevel0].itemValue" : @"value2",
+                                        @"topLevel[].itemValue" : @"value3",
+                                        @"topLevel.[0].itemValue" : @"value4",
+                                        @"topLevel.[0]itemValue" : @"value5"
+                                        };
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:inputDictionary toObject:outputDictionary];
+    
+    XCTAssertTrue(outputDictionary.count==0, @"the mapping returned results when they should have failed!");
+}
+
 @end
