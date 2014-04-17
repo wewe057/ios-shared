@@ -322,7 +322,12 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         if (self.rightImageView.image)
         {
             [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_rightImageView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_rightImageView)]];
-            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:|[_decrementButton(29)][_quantityLabel]-(2)-[_rightImageView(%tu)]-(2)-[_incrementButton(29)]|", (NSUInteger)self.rightImageView.image.size.width] options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton, _quantityLabel, _rightImageView, _incrementButton)]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_decrementButton(29)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton)]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_incrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_incrementButton)]];
+            
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:[_quantityLabel]-(2)-[_rightImageView(%tu)]", (NSUInteger)self.rightImageView.image.size.width] options:0 metrics:nil views:NSDictionaryOfVariableBindings(_quantityLabel, _rightImageView)]];
+            
+            [self addConstraint:[NSLayoutConstraint constraintWithItem:self.quantityLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:-self.rightImageView.image.size.width/2.0]];
         }
         else
         {

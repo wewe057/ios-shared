@@ -31,6 +31,8 @@
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidthForPortrait;     // Defaults to 320.0f
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidthForLandscape;    // Defaults to 320.0f
 
+@property (nonatomic, assign, readonly) Class pullNavigationMenuBackgroundViewClass; // for when you want to extend under the footer adornment
+
 - (void)pullNavMenuWillAppear;
 - (void)pullNavMenuDidAppear;
 
