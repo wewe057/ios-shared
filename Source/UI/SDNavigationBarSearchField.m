@@ -9,11 +9,7 @@
 #import "SDNavigationBarSearchField.h"
 #import "SDSearchSuggestionsViewController.h"
 
-#import "UIImageView+PaintCode.h"
-
 @interface SDNavigationBarSearchField () <UITextFieldDelegate, SDSearchSuggestionsViewControllerDelegate, UIPopoverControllerDelegate>
-
-
 @end
 
 @implementation SDNavigationBarSearchField
