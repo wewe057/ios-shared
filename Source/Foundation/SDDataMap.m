@@ -360,12 +360,18 @@ static NSNumberFormatter *__internalformatter = nil;
             NSString *currentPath = [keyPath copy];
             NSObject *currentObject = sourceObject;
             while (leftBrace.location!=NSNotFound) {
+                // Make sure that there is content within the braces
+                if (leftBrace.location==(rightBrace.location-1)) {
+                    // it was a [], fall back to KVO
+                    value = [sourceObject valueForKeyPath:keyPath];
+                    break;
+                }
+                
                 NSString *parentPath = [currentPath substringToIndex:leftBrace.location];
                 NSUInteger arrayIndex = (NSUInteger)[[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
                 NSArray *parentArray = [currentObject valueForKeyPath:parentPath];
                 
-                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex)
-                {
+                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex) {
                     // Fall back to KVO if it's not an array or the index doesn't exist
                     value = [sourceObject valueForKeyPath:keyPath];
                     break;
@@ -375,7 +381,7 @@ static NSNumberFormatter *__internalformatter = nil;
                 currentPath = [currentPath substringFromIndex:rightBrace.location + 1];
                 
                 
-                if ([currentPath characterAtIndex:0]=='.') {
+                if (currentPath.length>0 && [currentPath characterAtIndex:0]=='.') {
                     currentPath = [currentPath substringFromIndex:1];
                 }
                 
