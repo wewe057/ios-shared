@@ -152,6 +152,7 @@
     [delegate searchField:self performSearch:keyword];
     
     [self.suggestionsPopover dismissPopoverAnimated:YES];
+    [self.textField resignFirstResponder];
     [self collapseTextField];
 }
 
