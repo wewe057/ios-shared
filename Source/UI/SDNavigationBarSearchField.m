@@ -67,6 +67,7 @@
 {
     self.textField.font = [UIFont systemFontOfSize:14];
     self.textField.returnKeyType = UIReturnKeySearch;
+    self.textField.enablesReturnKeyAutomatically = YES;
     self.textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
