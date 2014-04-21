@@ -11,8 +11,6 @@
 @interface SDSearchSuggestionsViewController ()
 
 @property (nonatomic, copy) NSArray* searchSuggestions;
-@property (nonatomic, strong) IBOutlet UILabel* titleLabel;
-@property (nonatomic, strong) IBOutlet UIButton* clearButton;
 
 @end
 
@@ -23,6 +21,9 @@
     [super viewDidLoad];
     
     self.tableView.backgroundColor = [UIColor whiteColor];
+    
+    @strongify(self.delegate, delegate);
+    [delegate configureSearchSuggestionsViewController:self];
 }
 
 -(void)setSearchString:(NSString *)searchString
