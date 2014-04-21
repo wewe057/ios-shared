@@ -19,7 +19,8 @@
 - (instancetype) initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    if ( self != nil ) {
+    if ( self != nil )
+    {
         [self commonInit];
     }
     return self;
@@ -28,7 +29,8 @@
 - (instancetype) initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if ( self != nil ) {
+    if ( self != nil )
+    {
         [self commonInit];
     }
     return self;
@@ -41,13 +43,13 @@
     [self configureTextField];
     [self.textField addTarget:self action:@selector(searchFieldEdited:) forControlEvents:UIControlEventEditingChanged];
     [self.textField addTarget:self action:@selector(searchFieldEditingDidBegin:) forControlEvents:UIControlEventEditingDidBegin];
+    [self.textField addTarget:self action:@selector(searchFieldEditingDidEnd:) forControlEvents:UIControlEventEditingDidEnd];
     self.textField.delegate = self;
     [self addSubview:self.textField];
     
     // Load and configure the suggestions view controller
     self.suggestionsViewController = [[UIStoryboard storyboardWithName:@"SDSearchSuggestions" bundle:nil] instantiateInitialViewController];
     self.suggestionsViewController.delegate = self;
-    [self configureSuggestionsViewController];
 }
 
 - (CGRect) textFieldFrame
@@ -80,6 +82,11 @@
     
 }
 
+-(void) configureSearchSuggestionsViewController:(SDSearchSuggestionsViewController *)viewController
+{
+    [self configureSuggestionsViewController];
+}
+
 - (void) configureSuggestionTableCell:(UITableViewCell *)cell
 {
     cell.textLabel.font = [UIFont systemFontOfSize:15];
@@ -97,18 +104,40 @@
     self.suggestionsViewController.searchString = searchTextField.text;
 }
 
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    [self configureForExpand];
+    
+    return YES;
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+{
+    if ( self.canCollapse )
+        [self configureForCollapse];
+    
+    return YES;
+}
+
+- (void) configureForExpand
+{
+    
+}
+
+- (void) configureForCollapse
+{
+    
+}
+
 - (void)searchFieldEditingDidBegin:(UITextField*)searchTextField;
 {
     @strongify(self.usageDelegate, usageDelegate);
     
     [usageDelegate searchUserTappedSearchField:self];
     
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^
-     {
-         self.textField.frame = [self textFieldExpandedFrame];
-     } completion:nil];
+    [self expand];
     
-    if(!self.suggestionsPopover)
+    if ( self.suggestionsPopover == nil )
     {
         self.suggestionsPopover = [[UIPopoverController alloc] initWithContentViewController:self.suggestionsViewController];
         self.suggestionsPopover.delegate = self;
@@ -118,6 +147,26 @@
     self.suggestionsViewController.searchString = searchTextField.text;
     
     [self.suggestionsPopover presentPopoverFromRect:self.frame inView:self.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+}
+
+- (void)searchFieldEditingDidEnd:(UITextField *)searchTextField
+{
+    if ( self.canCollapse )
+        [self collapse];
+}
+
+- (BOOL)textFieldShouldClear:(UITextField *)textField
+{
+    // If no focus, collapse now
+    if ( !self.collapseRegardlessIfEmpty && ![self.textField isFirstResponder] )
+        [self collapse];
+
+    return YES;
+}
+
+- (BOOL) canCollapse
+{
+    return self.collapseRegardlessIfEmpty || (!self.collapseRegardlessIfEmpty && (self.textField.text == 0 || [self.textField.text length] == 0));
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -134,7 +183,6 @@
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
     [self.textField resignFirstResponder];
-    [self collapseTextField];
 }
 
 -(void)searchViewController:(SDSearchSuggestionsViewController *)searchViewController didSearchForKeyword:(NSString *)keyword
@@ -154,14 +202,21 @@
     
     [self.suggestionsPopover dismissPopoverAnimated:YES];
     [self.textField resignFirstResponder];
-    [self collapseTextField];
 }
 
-- (void) collapseTextField
+- (void) collapse
 {
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^
      {
          self.textField.frame = [self textFieldFrame];
+     } completion:nil];
+}
+
+- (void) expand
+{
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^
+     {
+         self.textField.frame = [self textFieldExpandedFrame];
      } completion:nil];
 }
 

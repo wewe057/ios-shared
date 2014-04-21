@@ -28,6 +28,8 @@
 @property (nonatomic, strong) SDSearchSuggestionsViewController *suggestionsViewController;
 @property (nonatomic, strong) UIPopoverController *suggestionsPopover;
 
+@property (nonatomic) BOOL collapseRegardlessIfEmpty;
+
 // Override points for subclasses
 - (CGRect) textFieldFrame;
 - (CGRect) textFieldExpandedFrame;
@@ -35,5 +37,11 @@
 - (void) configureTextField __attribute__((objc_requires_super)); // call super
 - (void) configureSuggestionTableCell:(UITableViewCell *)cell;
 - (void) configurePopover;
+- (void) configureSuggestionsViewController;
+- (void) configureForExpand;
+- (void) configureForCollapse;
+
+- (void) collapse __attribute__((objc_requires_super));
+- (void) expand __attribute__((objc_requires_super));
 
 @end
