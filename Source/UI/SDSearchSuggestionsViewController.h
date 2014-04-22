@@ -18,10 +18,14 @@
 -(void)searchViewController:(SDSearchSuggestionsViewController*)searchViewController didSearchForKeyword:(NSString*)keyword;
 
 -(void) configureSuggestionTableCell:(UITableViewCell *)cell;
+-(void) configureSearchSuggestionsViewController:(SDSearchSuggestionsViewController *)viewController;
 
 @end
 
 @interface SDSearchSuggestionsViewController : UITableViewController
+
+@property (nonatomic, strong) IBOutlet UILabel* titleLabel;
+@property (nonatomic, strong) IBOutlet UIButton* clearButton;
 
 @property (nonatomic, weak) id<SDSearchUsageDelegate> usageDelegate;
 @property (nonatomic, weak) id<SDSearchSuggestionsViewControllerDelegate> delegate;
