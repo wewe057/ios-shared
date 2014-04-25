@@ -102,6 +102,13 @@
     self.suggestionsViewController.searchString = searchTextField.text;
 }
 
+- (void) clear
+{
+    self.textField.text = @"";
+    [self configureForCollapse];
+    [self collapse];
+}
+
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
     [self configureForExpand];
