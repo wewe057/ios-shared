@@ -236,6 +236,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 @property (nonatomic, strong, readwrite) SDCircularMinusButton *decrementButton;
 @property (nonatomic, strong, readwrite) UIImageView *rightImageView;
 @property (nonatomic, strong, readwrite) UILabel *quantityLabel;
+@property (nonatomic, strong) NSLayoutConstraint *labelWidthConstraint;
 @end
 
 @implementation SDQuantityView
@@ -338,7 +339,25 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         
         self.hasSetupConstraints = YES;
     }
+    [self updateLabelWidthConstraint];
     [super updateConstraints];
+}
+
+- (void) updateLabelWidthConstraint
+{
+    if (self.labelWidthConstraint != nil)
+    {
+        [self removeConstraint:self.labelWidthConstraint];
+        self.labelWidthConstraint = nil;
+    }
+    
+    if (self.rightImageView.image)
+    {
+        static const CGFloat kSDQuantityViewLabelMargin = 2.0;
+        CGFloat maxLabelWidth = CGRectGetWidth(self.bounds) - (kCircularButtonWidth + 2.0 + self.rightImageView.image.size.width + kCircularButtonWidth + 2 * kSDQuantityViewLabelMargin);
+        self.labelWidthConstraint = [NSLayoutConstraint constraintWithItem:self.quantityLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:maxLabelWidth];
+        [self addConstraint:self.labelWidthConstraint];
+    }
 }
 
 - (void)layoutSubviews
@@ -360,6 +379,13 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     
     layer.fillColor = self.fillColor.CGColor;
     layer.strokeColor = self.fillColor.CGColor;
+}
+
+- (void) setBounds:(CGRect)bounds
+{
+    [super setBounds:bounds];
+    if (self.rightImageView.image)
+        [self setNeedsUpdateConstraints];
 }
 
 @end
