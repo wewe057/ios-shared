@@ -10,31 +10,88 @@
 #import "SDLocationManager.h"
 #import "NSArray+SDExtensions.h"
 
+
 NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationManagerHasReceivedLocationUpdate";
+
+
+@interface SDLocationManagerDelegateRegistration : NSObject
+@property (nonatomic, strong) id<SDLocationManagerDelegate> delegate;
+@property (nonatomic) CLLocationAccuracy desiredAccuracy;
+@end
+@implementation SDLocationManagerDelegateRegistration
+- (NSUInteger) hash {
+    return [self.delegate hash];
+}
+- (BOOL) isEqual:(id)object {
+    if (NO == [object isKindOfClass:[self class]]) {
+        return NO;
+    }
+    return self.delegate == [(SDLocationManagerDelegateRegistration *)object delegate];
+}
+@end
+
+
+@interface SDLocationManager ()
+@property (nonatomic, strong) NSMutableSet *delegateRegistrations;
+@property (nonatomic, readonly) NSArray *delegates;
+@property (nonatomic, readonly) CLLocationAccuracy highestDesiredAccuracy;
+@end
+
 
 @implementation SDLocationManager
 {
     BOOL _isUpdatingLocation;
     BOOL _isUpdatingHeading;
-    NSMutableArray *_delegates;
 
 	NSTimer *_timeoutTimer;
 	NSDate *_timestamp;
-	CLLocationAccuracy _actualDesiredAccuracy;
     BOOL _gotFirstLocationUpdate;
 }
 
+
+
+#pragma mark - Properties
+
+
+
 @synthesize timeout;
-@synthesize hasReceivedLocationUpdate;
 
-static SDLocationManager *sdLocationManagerInstance = NULL;
-
-+ (SDLocationManager *) instance
+@dynamic hasReceivedLocationUpdate;
+-(BOOL)hasReceivedLocationUpdate
 {
-	if (sdLocationManagerInstance == NULL)
-	{
-		sdLocationManagerInstance = [self new];
-	}
+	return [[NSUserDefaults standardUserDefaults] boolForKey: kSDLocationManagerHasReceivedLocationUpdateDefaultsKey];
+}
+
+@dynamic delegates;
+- (NSArray *) delegates {
+    NSSet *delegates = [_delegateRegistrations valueForKey:@"delegate"];
+    return [delegates allObjects];
+}
+
+@dynamic highestDesiredAccuracy;
+- (CLLocationAccuracy) highestDesiredAccuracy {
+    CLLocationAccuracy desiredAccuracy = kCLLocationAccuracyThreeKilometers;
+    for (SDLocationManagerDelegateRegistration *registration in _delegateRegistrations) {
+        if (registration.desiredAccuracy < desiredAccuracy) {
+            desiredAccuracy = registration.desiredAccuracy;
+        }
+    }
+    return desiredAccuracy;
+}
+
+
+#pragma mark - Object
+
+
+
++ (SDLocationManager *) instance {
+    static SDLocationManager *sdLocationManagerInstance = nil;
+    static dispatch_once_t locationManagerInitToken;
+    dispatch_once(&locationManagerInitToken, ^{
+        if (nil == sdLocationManagerInstance) {
+            sdLocationManagerInstance = [self new];
+        }
+    });
 	return sdLocationManagerInstance;
 }
 
@@ -43,7 +100,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	self = [super init];
 	
 	timeout = 60;
-    _delegates = [[NSMutableArray alloc] init];
+    _delegateRegistrations = [[NSMutableSet alloc] init];
 	
 	return self;
 }
@@ -56,21 +113,13 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	
 }
 
-- (void)unsupported
-{
-    //[[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];
-}
 
--(BOOL)hasReceivedLocationUpdate
-{
-	return [[NSUserDefaults standardUserDefaults] boolForKey: kSDLocationManagerHasReceivedLocationUpdateDefaultsKey];
-}
 
-- (void)setDelegate:(id<CLLocationManagerDelegate>)delegate { [self unsupported]; }
-- (void)startUpdatingLocation { [self unsupported]; }
-- (void)stopUpdatingLocation { [self unsupported]; }
-- (void)startUpdatingHeading { [self unsupported]; }
-- (void)stopUpdatingHeading { [self unsupported]; }
+
+#pragma mark - Internal
+
+
+
 
 - (void)timeoutHandler
 {
@@ -80,13 +129,13 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if (self.location)
 	{
         CLLocation *location = self.location;
-        [_delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
 	}
 	else
 	{
 		// otherwise, lets simulate a failure...
         NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
-        [_delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
 	}
 }
 
@@ -95,7 +144,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	// make ourselves a timestamp to compare against.
 	_timestamp = [NSDate date];
 	
-	if ([_delegates count] > 0)
+	if ([_delegateRegistrations count] > 0)
 		[super setDelegate:self];	
 	else
 		[super setDelegate:nil];	
@@ -116,6 +165,39 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
     return [CLLocationManager authorizationStatus];
 }
 
+- (void) registerDelegate:(id<SDLocationManagerDelegate>)delegate forDesiredAccuracy:(CLLocationAccuracy)accuracy {
+    SDLocationManagerDelegateRegistration *delegateRegistration = [SDLocationManagerDelegateRegistration new];
+    delegateRegistration.delegate = delegate;
+
+    CLLocationAccuracy desiredAccuracy = accuracy;
+
+    // Removing this does break past expectations but do we want to do this for every delegate?
+
+//    // actually set it somewhat below what we want.  this insures we get something under what we asked for.
+//    desiredAccuracy -= 600;
+//    if (desiredAccuracy < 10) {
+//        desiredAccuracy = kCLLocationAccuracyBest;
+//    }
+
+    delegateRegistration.desiredAccuracy = desiredAccuracy;
+    [_delegateRegistrations addObject:delegateRegistration];
+}
+
+- (void) deregisterDelegate:(id<SDLocationManagerDelegate>)delegate {
+    SDLocationManagerDelegateRegistration *existingRegistration = [[_delegateRegistrations objectsPassingTest:^BOOL(SDLocationManagerDelegateRegistration *obj, BOOL *stop) {
+        return obj.delegate == delegate;
+    }] anyObject];
+    if (existingRegistration) {
+        [_delegateRegistrations removeObject:existingRegistration];
+    }
+}
+
+
+
+#pragma mark - Public Interface
+
+
+
 - (BOOL)isLocationAllowed
 {
     if (self.authorizationStatus == kCLAuthorizationStatusAuthorized || self.authorizationStatus == kCLAuthorizationStatusNotDetermined)
@@ -123,9 +205,9 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
     return NO;
 }
 
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy
 {
-    [_delegates addObject:delegate];
+    [self registerDelegate:delegate forDesiredAccuracy:accuracy];
     if (!_isUpdatingLocation)
     {
         _isUpdatingLocation = YES;
@@ -148,8 +230,8 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate
 {
-    [_delegates removeObject:delegate];
-    if ([_delegates count] == 0 && _isUpdatingLocation)
+    [self deregisterDelegate:delegate];
+    if ([_delegateRegistrations count] == 0 && _isUpdatingLocation)
     {
         _isUpdatingLocation = NO;
         [self internalStop];
@@ -159,7 +241,7 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 
 - (void)stopUpdatingLocationForAllDelegates
 {
-    NSArray *delegates = [_delegates copy];
+    NSArray *delegates = self.delegates;
     for (id delegate in delegates) {
         [self stopUpdatingLocationWithDelegate:delegate];
     }
@@ -177,15 +259,8 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	[super stopUpdatingHeading];
 }
 
-- (void)setDesiredAccuracy:(CLLocationAccuracy)anAccuracy
-{
-	_actualDesiredAccuracy = anAccuracy;
-	// actually set it somewhat below what we want.  this insures we get something under what we asked for.
-	anAccuracy -= 600;
-	if (anAccuracy < 10)
-		anAccuracy = kCLLocationAccuracyBest;
-	[super setDesiredAccuracy:anAccuracy];
-}
+
+
 
 #pragma mark CoreLocationManager delegates
 
@@ -210,21 +285,21 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ([newLocation.timestamp timeIntervalSinceDate:_timestamp] < 0)
 	{
 		SDLog(@"SDLocationManager: this location was cached.");
-        [_delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
 		return; // this one is cached, lets wait for a good one.
 	}
 	
-	// if the accuracy is within what we're looking for, OR.. we got the same accuracy multiple times.. continue on..
-	if ((newLocation.horizontalAccuracy >= _actualDesiredAccuracy) || (newLocation.horizontalAccuracy > oldLocation.horizontalAccuracy))
+	// if the accuracy isn't within what we're looking for, OR.. we got the same accuracy multiple times.. continue on..
+	if ((newLocation.horizontalAccuracy >= self.highestDesiredAccuracy) || (newLocation.horizontalAccuracy > oldLocation.horizontalAccuracy))
 	{
 		SDLog(@"SDLocationManager: this location didn't meet the accuracy requirements (%f).", newLocation.horizontalAccuracy);
 		//return; // the accuracy isn't good enough, wait some more...
-        [_delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
         return;
 	}
 	
 	SDLog(@"SDLocationManager: location obtained.");
-    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newLocation, &oldLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
@@ -232,43 +307,64 @@ static SDLocationManager *sdLocationManagerInstance = NULL;
 	if ([newHeading.timestamp timeIntervalSinceDate:_timestamp] < 0)
 		return; // this one is cached, lets wait for a good one.
 	
-    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newHeading];
+    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newHeading];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
 	// we're masking out didFail unless they've said NO to the "allow" dialog.
 	if ([error.domain isEqualToString:kCLErrorDomain] && error.code == kCLErrorDenied)
-        [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
+        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
-    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
+    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
-    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
+    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
 {
-    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region, &error];
+    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region, &error];
 }
 
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager
 {
-    [self unsupported];
+    [self unsupported:_cmd];
     return FALSE;
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status
 {
-    [_delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
+    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
         [self stopUpdatingLocationForAllDelegates];
     }
 }
+
+
+
+
+#pragma mark - Unsupported CLLocationManager Methods
+
+
+- (void)setDelegate:(id<CLLocationManagerDelegate>)delegate { [self unsupported:_cmd]; }
+- (void)startUpdatingLocation { [self unsupported:_cmd]; }
+- (void)stopUpdatingLocation { [self unsupported:_cmd]; }
+- (void)startUpdatingHeading { [self unsupported:_cmd]; }
+- (void)stopUpdatingHeading { [self unsupported:_cmd]; }
+- (void)setDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy { [self unsupported:_cmd]; }
+
+
+- (void)unsupported:(SEL)sel {
+	NSLog(@"Deprecated method called on SDLocationManager instance (%@ - %@)",self,NSStringFromSelector(sel));
+    //[[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];
+}
+
+
 
 @end
