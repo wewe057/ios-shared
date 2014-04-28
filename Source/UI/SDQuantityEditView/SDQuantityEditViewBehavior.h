@@ -113,5 +113,6 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
  *  TODO: it may make sense to put this logic in the setOriginalQuantity method.  I need to see how it is being used first.
  */
 - (void)resetOriginalQuantity;
+- (void)resetCurrentQuantity;
 
 @end

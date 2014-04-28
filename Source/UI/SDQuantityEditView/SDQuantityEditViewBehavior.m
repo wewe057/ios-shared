@@ -362,6 +362,13 @@ static char kObserveQuantityContext;
     [self updateButtonState];
 }
 
+- (void)resetCurrentQuantity
+{
+    self.currentQuantity = self.originalQuantity;
+    [self updateTotalWeightAndCost];
+    [self updateButtonState];
+}
+
 - (void)setCurrentAsBaseline
 {
     self.originalQuantity = self.currentQuantity;
