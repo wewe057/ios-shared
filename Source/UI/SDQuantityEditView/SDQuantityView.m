@@ -355,8 +355,10 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     {
         static const CGFloat kSDQuantityViewLabelMargin = 2.0;
         CGFloat maxLabelWidth = CGRectGetWidth(self.bounds) - (kCircularButtonWidth + 2.0 + self.rightImageView.image.size.width + kCircularButtonWidth + 2 * kSDQuantityViewLabelMargin);
-        self.labelWidthConstraint = [NSLayoutConstraint constraintWithItem:self.quantityLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:maxLabelWidth];
-        [self addConstraint:self.labelWidthConstraint];
+        if ( maxLabelWidth > 1.0 ) {
+            self.labelWidthConstraint = [NSLayoutConstraint constraintWithItem:self.quantityLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:maxLabelWidth];
+            [self addConstraint:self.labelWidthConstraint];
+        }
     }
 }
 
