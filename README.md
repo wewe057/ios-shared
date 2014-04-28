@@ -7,7 +7,8 @@ To use iOS-Shared in your project, add the contents of ./Source as source code a
 header file. iOS-Shared uses strict warnings and warnings as errors. If you want to use the same level of warnings that iOS-Shared
 uses, you can set your project to use the Xcode config files in your project. See an example below:
 
-![config file setup](https://github.com/setdirection/ios-shared/config-files.png)
+![config file setup](https://github.com/setdirection/ios-shared/raw/master/config-files.png)
+
 
 Purpose
 -------
