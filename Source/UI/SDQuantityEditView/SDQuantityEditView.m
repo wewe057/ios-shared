@@ -213,6 +213,11 @@
 - (void)setAdjustableItem:(id<SDAdjustableItem>)adjustableItem
 {
     _adjustableItem = adjustableItem;
+    [self adjustableItemChanged];
+}
+
+- (void)adjustableItemChanged
+{
     self.quantityBehavior = [self defaultQuantityBehavior];
     
     @weakify(self);
@@ -223,7 +228,7 @@
     
     [self updateDoneRemoveButtons:NO];
     
-    switch ([adjustableItem adjustQuantityMethod])
+    switch ([_adjustableItem adjustQuantityMethod])
     {
         case kAdjustableItemQuantityMethod_Counted:
         case kAdjustableItemQuantityMethod_Weighted:
