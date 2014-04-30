@@ -1,0 +1,484 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9C33746F19119EC500809D52 /* SDExpandingTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C33746E19119EC500809D52 /* SDExpandingTableViewController.m */; };
+		9CD4E66A1908573B00CDD6A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CD4E6691908573B00CDD6A3 /* Foundation.framework */; };
+		9CD4E66C1908573B00CDD6A3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CD4E66B1908573B00CDD6A3 /* CoreGraphics.framework */; };
+		9CD4E66E1908573B00CDD6A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CD4E66D1908573B00CDD6A3 /* UIKit.framework */; };
+		9CD4E6741908573B00CDD6A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9CD4E6721908573B00CDD6A3 /* InfoPlist.strings */; };
+		9CD4E6761908573B00CDD6A3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD4E6751908573B00CDD6A3 /* main.m */; };
+		9CD4E67A1908573B00CDD6A3 /* SDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD4E6791908573B00CDD6A3 /* SDAppDelegate.m */; };
+		9CD4E67D1908573B00CDD6A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9CD4E67B1908573B00CDD6A3 /* Main.storyboard */; };
+		9CD4E6801908573B00CDD6A3 /* SDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD4E67F1908573B00CDD6A3 /* SDViewController.m */; };
+		9CD4E6821908573B00CDD6A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9CD4E6811908573B00CDD6A3 /* Images.xcassets */; };
+		9CD4E6891908573B00CDD6A3 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CD4E6881908573B00CDD6A3 /* XCTest.framework */; };
+		9CD4E68A1908573B00CDD6A3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CD4E6691908573B00CDD6A3 /* Foundation.framework */; };
+		9CD4E68B1908573B00CDD6A3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CD4E66D1908573B00CDD6A3 /* UIKit.framework */; };
+		9CD4E6931908573B00CDD6A3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9CD4E6911908573B00CDD6A3 /* InfoPlist.strings */; };
+		9CD4E6951908573B00CDD6A3 /* SDExpandingTableViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CD4E6941908573B00CDD6A3 /* SDExpandingTableViewTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9CD4E68C1908573B00CDD6A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9CD4E65E1908573B00CDD6A3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9CD4E6651908573B00CDD6A3;
+			remoteInfo = SDExpandingTableView;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		9C33746D19119EC500809D52 /* SDExpandingTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDExpandingTableViewController.h; path = ../../../Source/UI/SDExpandingTableViewController.h; sourceTree = "<group>"; };
+		9C33746E19119EC500809D52 /* SDExpandingTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDExpandingTableViewController.m; path = ../../../Source/UI/SDExpandingTableViewController.m; sourceTree = "<group>"; };
+		9C33747019119F0D00809D52 /* SDMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDMacros.h; path = ../../../Source/Macros/SDMacros.h; sourceTree = "<group>"; };
+		9CD4E6661908573B00CDD6A3 /* SDExpandingTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SDExpandingTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CD4E6691908573B00CDD6A3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		9CD4E66B1908573B00CDD6A3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		9CD4E66D1908573B00CDD6A3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		9CD4E6711908573B00CDD6A3 /* SDExpandingTableView-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SDExpandingTableView-Info.plist"; sourceTree = "<group>"; };
+		9CD4E6731908573B00CDD6A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9CD4E6751908573B00CDD6A3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		9CD4E6771908573B00CDD6A3 /* SDExpandingTableView-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SDExpandingTableView-Prefix.pch"; sourceTree = "<group>"; };
+		9CD4E6781908573B00CDD6A3 /* SDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDAppDelegate.h; sourceTree = "<group>"; };
+		9CD4E6791908573B00CDD6A3 /* SDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDAppDelegate.m; sourceTree = "<group>"; };
+		9CD4E67C1908573B00CDD6A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		9CD4E67E1908573B00CDD6A3 /* SDViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDViewController.h; sourceTree = "<group>"; };
+		9CD4E67F1908573B00CDD6A3 /* SDViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDViewController.m; sourceTree = "<group>"; };
+		9CD4E6811908573B00CDD6A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		9CD4E6871908573B00CDD6A3 /* SDExpandingTableViewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SDExpandingTableViewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CD4E6881908573B00CDD6A3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		9CD4E6901908573B00CDD6A3 /* SDExpandingTableViewTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SDExpandingTableViewTests-Info.plist"; sourceTree = "<group>"; };
+		9CD4E6921908573B00CDD6A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9CD4E6941908573B00CDD6A3 /* SDExpandingTableViewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDExpandingTableViewTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9CD4E6631908573B00CDD6A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CD4E66C1908573B00CDD6A3 /* CoreGraphics.framework in Frameworks */,
+				9CD4E66E1908573B00CDD6A3 /* UIKit.framework in Frameworks */,
+				9CD4E66A1908573B00CDD6A3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CD4E6841908573B00CDD6A3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CD4E6891908573B00CDD6A3 /* XCTest.framework in Frameworks */,
+				9CD4E68B1908573B00CDD6A3 /* UIKit.framework in Frameworks */,
+				9CD4E68A1908573B00CDD6A3 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9CD4E65D1908573B00CDD6A3 = {
+			isa = PBXGroup;
+			children = (
+				9CD4E66F1908573B00CDD6A3 /* SDExpandingTableView */,
+				9CD4E68E1908573B00CDD6A3 /* SDExpandingTableViewTests */,
+				9CD4E6681908573B00CDD6A3 /* Frameworks */,
+				9CD4E6671908573B00CDD6A3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9CD4E6671908573B00CDD6A3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9CD4E6661908573B00CDD6A3 /* SDExpandingTableView.app */,
+				9CD4E6871908573B00CDD6A3 /* SDExpandingTableViewTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9CD4E6681908573B00CDD6A3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9CD4E6691908573B00CDD6A3 /* Foundation.framework */,
+				9CD4E66B1908573B00CDD6A3 /* CoreGraphics.framework */,
+				9CD4E66D1908573B00CDD6A3 /* UIKit.framework */,
+				9CD4E6881908573B00CDD6A3 /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		9CD4E66F1908573B00CDD6A3 /* SDExpandingTableView */ = {
+			isa = PBXGroup;
+			children = (
+				9C33747019119F0D00809D52 /* SDMacros.h */,
+				9C33746D19119EC500809D52 /* SDExpandingTableViewController.h */,
+				9C33746E19119EC500809D52 /* SDExpandingTableViewController.m */,
+				9CD4E6781908573B00CDD6A3 /* SDAppDelegate.h */,
+				9CD4E6791908573B00CDD6A3 /* SDAppDelegate.m */,
+				9CD4E67B1908573B00CDD6A3 /* Main.storyboard */,
+				9CD4E67E1908573B00CDD6A3 /* SDViewController.h */,
+				9CD4E67F1908573B00CDD6A3 /* SDViewController.m */,
+				9CD4E6811908573B00CDD6A3 /* Images.xcassets */,
+				9CD4E6701908573B00CDD6A3 /* Supporting Files */,
+			);
+			path = SDExpandingTableView;
+			sourceTree = "<group>";
+		};
+		9CD4E6701908573B00CDD6A3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9CD4E6711908573B00CDD6A3 /* SDExpandingTableView-Info.plist */,
+				9CD4E6721908573B00CDD6A3 /* InfoPlist.strings */,
+				9CD4E6751908573B00CDD6A3 /* main.m */,
+				9CD4E6771908573B00CDD6A3 /* SDExpandingTableView-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		9CD4E68E1908573B00CDD6A3 /* SDExpandingTableViewTests */ = {
+			isa = PBXGroup;
+			children = (
+				9CD4E6941908573B00CDD6A3 /* SDExpandingTableViewTests.m */,
+				9CD4E68F1908573B00CDD6A3 /* Supporting Files */,
+			);
+			path = SDExpandingTableViewTests;
+			sourceTree = "<group>";
+		};
+		9CD4E68F1908573B00CDD6A3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9CD4E6901908573B00CDD6A3 /* SDExpandingTableViewTests-Info.plist */,
+				9CD4E6911908573B00CDD6A3 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9CD4E6651908573B00CDD6A3 /* SDExpandingTableView */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CD4E6981908573B00CDD6A3 /* Build configuration list for PBXNativeTarget "SDExpandingTableView" */;
+			buildPhases = (
+				9CD4E6621908573B00CDD6A3 /* Sources */,
+				9CD4E6631908573B00CDD6A3 /* Frameworks */,
+				9CD4E6641908573B00CDD6A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SDExpandingTableView;
+			productName = SDExpandingTableView;
+			productReference = 9CD4E6661908573B00CDD6A3 /* SDExpandingTableView.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9CD4E6861908573B00CDD6A3 /* SDExpandingTableViewTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9CD4E69B1908573B00CDD6A3 /* Build configuration list for PBXNativeTarget "SDExpandingTableViewTests" */;
+			buildPhases = (
+				9CD4E6831908573B00CDD6A3 /* Sources */,
+				9CD4E6841908573B00CDD6A3 /* Frameworks */,
+				9CD4E6851908573B00CDD6A3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9CD4E68D1908573B00CDD6A3 /* PBXTargetDependency */,
+			);
+			name = SDExpandingTableViewTests;
+			productName = SDExpandingTableViewTests;
+			productReference = 9CD4E6871908573B00CDD6A3 /* SDExpandingTableViewTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9CD4E65E1908573B00CDD6A3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = SD;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "My name is kuma";
+				TargetAttributes = {
+					9CD4E6861908573B00CDD6A3 = {
+						TestTargetID = 9CD4E6651908573B00CDD6A3;
+					};
+				};
+			};
+			buildConfigurationList = 9CD4E6611908573B00CDD6A3 /* Build configuration list for PBXProject "SDExpandingTableView" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 9CD4E65D1908573B00CDD6A3;
+			productRefGroup = 9CD4E6671908573B00CDD6A3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9CD4E6651908573B00CDD6A3 /* SDExpandingTableView */,
+				9CD4E6861908573B00CDD6A3 /* SDExpandingTableViewTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9CD4E6641908573B00CDD6A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CD4E6821908573B00CDD6A3 /* Images.xcassets in Resources */,
+				9CD4E6741908573B00CDD6A3 /* InfoPlist.strings in Resources */,
+				9CD4E67D1908573B00CDD6A3 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CD4E6851908573B00CDD6A3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CD4E6931908573B00CDD6A3 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9CD4E6621908573B00CDD6A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CD4E6761908573B00CDD6A3 /* main.m in Sources */,
+				9CD4E6801908573B00CDD6A3 /* SDViewController.m in Sources */,
+				9C33746F19119EC500809D52 /* SDExpandingTableViewController.m in Sources */,
+				9CD4E67A1908573B00CDD6A3 /* SDAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9CD4E6831908573B00CDD6A3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9CD4E6951908573B00CDD6A3 /* SDExpandingTableViewTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9CD4E68D1908573B00CDD6A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9CD4E6651908573B00CDD6A3 /* SDExpandingTableView */;
+			targetProxy = 9CD4E68C1908573B00CDD6A3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		9CD4E6721908573B00CDD6A3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9CD4E6731908573B00CDD6A3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		9CD4E67B1908573B00CDD6A3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9CD4E67C1908573B00CDD6A3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		9CD4E6911908573B00CDD6A3 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9CD4E6921908573B00CDD6A3 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		9CD4E6961908573B00CDD6A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		9CD4E6971908573B00CDD6A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		9CD4E6991908573B00CDD6A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SDExpandingTableView/SDExpandingTableView-Prefix.pch";
+				INFOPLIST_FILE = "SDExpandingTableView/SDExpandingTableView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		9CD4E69A1908573B00CDD6A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SDExpandingTableView/SDExpandingTableView-Prefix.pch";
+				INFOPLIST_FILE = "SDExpandingTableView/SDExpandingTableView-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		9CD4E69C1908573B00CDD6A3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SDExpandingTableView.app/SDExpandingTableView";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SDExpandingTableView/SDExpandingTableView-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "SDExpandingTableViewTests/SDExpandingTableViewTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		9CD4E69D1908573B00CDD6A3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SDExpandingTableView.app/SDExpandingTableView";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SDExpandingTableView/SDExpandingTableView-Prefix.pch";
+				INFOPLIST_FILE = "SDExpandingTableViewTests/SDExpandingTableViewTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9CD4E6611908573B00CDD6A3 /* Build configuration list for PBXProject "SDExpandingTableView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CD4E6961908573B00CDD6A3 /* Debug */,
+				9CD4E6971908573B00CDD6A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CD4E6981908573B00CDD6A3 /* Build configuration list for PBXNativeTarget "SDExpandingTableView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CD4E6991908573B00CDD6A3 /* Debug */,
+				9CD4E69A1908573B00CDD6A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9CD4E69B1908573B00CDD6A3 /* Build configuration list for PBXNativeTarget "SDExpandingTableViewTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CD4E69C1908573B00CDD6A3 /* Debug */,
+				9CD4E69D1908573B00CDD6A3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9CD4E65E1908573B00CDD6A3 /* Project object */;
+}
