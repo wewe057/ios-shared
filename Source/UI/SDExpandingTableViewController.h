@@ -3,7 +3,7 @@
 //  SDExpandingTableView
 //
 //  Created by ricky cancro on 4/23/14.
-//
+//  Copyright (c) 2014 SetDirection. All rights reserved.
 
 #import <UIKit/UIKit.h>
 
@@ -12,6 +12,7 @@
  *  (be it a string or a custom model object) should implement this protocol.
  */
 @protocol SDExpandingTableViewColumnDelegate <NSObject>
+@required
 /**
  *  @return An unique ID for this column
  */
@@ -22,7 +23,7 @@
  *  Datasource to provide cells and table specifics to SDExpandingTableViewController
  */
 @protocol SDExpandingTableViewControllerDataSource<NSObject>
-
+@required
 /**
  *  Returns a cell for the given index path, in the given column.
  *
@@ -59,6 +60,7 @@
  *  A delegate to respond to some UI interactions
  */
 @protocol SDExpandingTableViewControllerDelegate<NSObject>
+@required
 /**
  *  Called when a user taps on a cell in a column
  *
