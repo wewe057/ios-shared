@@ -34,7 +34,7 @@
     _activeConnections = [NSMutableDictionary dictionary];
     _memoryCache = [NSMutableDictionary dictionary];
     _decodeQueue = [[NSOperationQueue alloc] init];
-    _memoryCacheSize = 1024 * 1024 * 4; // default to 4mb
+    _memoryCacheSize = 1024 * 1024 * 16; // default to 4mb
     _imageCounter = 0;
 
     // Subscribe to app events
