@@ -565,8 +565,8 @@ typedef struct
                 completion();
             
             // If we just finished our collapse, tell the controller now
-            if(self.implementsDidDisappear && !self.menuOpen)
-                [self.menuController pullNavMenuDidDisappear];
+            if(!self.menuOpen)
+                [self notifyPullNavMenuDidDisappear];
 
         }];
     }
@@ -578,10 +578,35 @@ typedef struct
     }
 }
 
-- (void)expandMenu
+- (void)notifyPullNavMenuWillAppear
 {
     if(self.implementsWillAppear)
         [self.menuController pullNavMenuWillAppear];
+    [self.menuBottomAdornmentView pullNavigationMenuWillAppear];
+}
+
+- (void)notifyPullNavMenuDidAppear
+{
+    if(self.implementsDidAppear)
+        [self.menuController pullNavMenuDidAppear];
+}
+
+- (void)notifyPullNavMenuWillDisappear
+{
+    if(self.implementsWillDisappear)
+        [self.menuController pullNavMenuWillDisappear];
+}
+
+- (void)notifyPullNavMenuDidDisappear
+{
+    if(self.implementsDidDisappear)
+        [self.menuController pullNavMenuDidDisappear];
+    [self.menuBottomAdornmentView pullNavigationMenuDidDisappear];
+}
+
+- (void)expandMenu
+{
+    [self notifyPullNavMenuWillAppear];
 
     [self centerViewsToOrientation];
 
@@ -594,21 +619,19 @@ typedef struct
 
     self.menuOpen = YES;
 
-    if(self.implementsDidAppear)
-        [self.menuController pullNavMenuDidAppear];
+    [self notifyPullNavMenuDidAppear];
 }
 
 - (void)collapseMenu
 {
-    if(self.implementsWillDisappear)
-        [self.menuController pullNavMenuWillDisappear];
+    [self notifyPullNavMenuWillDisappear];
 
     [self collapseMenuWithCompletion:^
     {
         // If we're animating, then firing did disappear here is a lie. Hold
         //  off until we're actually done animating.
-        if(self.implementsDidDisappear && !self.animating)
-            [self.menuController pullNavMenuDidDisappear];
+        if(!self.animating)
+            [self notifyPullNavMenuDidDisappear];
     }];
 }
 
