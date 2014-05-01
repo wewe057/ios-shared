@@ -543,16 +543,16 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     return alertView;
 }
 
-static BOOL _defaultAlertWindowLevelEverSet;
-static UIWindowLevel _defaultAlertWindowLevel;
+static BOOL sDefaultAlertWindowLevelEverSet;
+static UIWindowLevel sDefaultAlertWindowLevel;
 
 + (UIWindowLevel) defaultAlertWindowLevel;
 {
-    if (!_defaultAlertWindowLevelEverSet) {
-        _defaultAlertWindowLevel = UIWindowLevelAlert;
-        _defaultAlertWindowLevelEverSet = YES;
+    if (!sDefaultAlertWindowLevelEverSet) {
+        sDefaultAlertWindowLevel = UIWindowLevelAlert;
+        sDefaultAlertWindowLevelEverSet = YES;
     }
-    return _defaultAlertWindowLevel;
+    return sDefaultAlertWindowLevel;
 }
 
 + (void) setDefaultAlertWindowLevel:(UIWindowLevel) defaultAlertWindowLevel;
@@ -561,7 +561,7 @@ static UIWindowLevel _defaultAlertWindowLevel;
         SDLog(@"***** WARNING: Cannot change defaultAlertWindowLevel while an alert is visible, ignoring change");
         return;
     }
-    _defaultAlertWindowLevel = defaultAlertWindowLevel;
+    sDefaultAlertWindowLevel = defaultAlertWindowLevel;
     [[SDContentAlertViewQueue sharedInstance] setAlertWindowLevel:defaultAlertWindowLevel];
 }
 
@@ -613,12 +613,14 @@ static UIWindowLevel _defaultAlertWindowLevel;
 
 - (BOOL)anyAlertViewsVisible;
 {
+    BOOL result = NO;
     for (SDContentAlertView *contentAlertView in self.alertViews) {
         if (contentAlertView.visible) {
-            return YES;
+            result = YES;
+            break;
         }
     }
-    return NO;
+    return result;
 }
 
 @end
