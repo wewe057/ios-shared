@@ -658,12 +658,14 @@ typedef struct
 
 - (UIColor *) backgroundEffectsBackgroundColor
 {
+    UIColor *backgroundColor = [@"#00000033" uicolor];
+    
     if(self.implementsLightboxEffectColor)
     {
-        return [self.menuController pullNavigationLightboxEffectColor];
+        backgroundColor = [self.menuController pullNavigationLightboxEffectColor];
     }
     
-    return [@"#00000033" uicolor];
+    return backgroundColor;
 }
 
 - (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
