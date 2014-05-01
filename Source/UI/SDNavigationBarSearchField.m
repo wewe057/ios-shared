@@ -100,6 +100,14 @@
 - (void)searchFieldEdited:(UITextField*)searchTextField;
 {
     self.suggestionsViewController.searchString = searchTextField.text;
+    [self autoShowHidePopover];
+}
+
+- (void) clear
+{
+    self.textField.text = @"";
+    [self configureForCollapse];
+    [self collapse];
 }
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
@@ -127,6 +135,25 @@
     
 }
 
+- (BOOL)shouldShowPopover
+{
+    @strongify(self.suggestionDataSource, dataSource);
+    
+    return (self.textField.text.length > 0) || (dataSource.recentSearchStrings.count > 0);
+}
+
+- (void) autoShowHidePopover
+{
+    BOOL shouldShow = [self shouldShowPopover];
+    BOOL isShowing = self.suggestionsPopover != nil && self.suggestionsPopover.isPopoverVisible;
+    
+    if ( shouldShow && !isShowing ) {
+        [self.suggestionsPopover presentPopoverFromRect:self.frame inView:self.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+    } else if ( !shouldShow && isShowing ) {
+        [self.suggestionsPopover dismissPopoverAnimated:YES];
+    }
+}
+
 - (void)searchFieldEditingDidBegin:(UITextField*)searchTextField;
 {
     @strongify(self.usageDelegate, usageDelegate);
@@ -144,7 +171,7 @@
     
     self.suggestionsViewController.searchString = searchTextField.text;
     
-    [self.suggestionsPopover presentPopoverFromRect:self.frame inView:self.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+    [self autoShowHidePopover];
 }
 
 - (void)searchFieldEditingDidEnd:(UITextField *)searchTextField

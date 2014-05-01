@@ -80,6 +80,7 @@ typedef struct
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
 @property (nonatomic, assign) BOOL implementsBackgroundViewClass;
+@property (nonatomic, assign) BOOL implementsLightboxEffectColor;
 
 @end
 
@@ -339,7 +340,7 @@ typedef struct
     self.implementsBackgroundViewClass = [self.menuController respondsToSelector:@selector(pullNavigationMenuBackgroundViewClass)];
     if(self.implementsBackgroundViewClass)
         self.backgroundViewClass = self.menuController.pullNavigationMenuBackgroundViewClass;
-    
+    self.implementsLightboxEffectColor = [self.menuController respondsToSelector:@selector(pullNavigationLightboxEffectColor)];
     self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
     self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
     self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
@@ -639,7 +640,7 @@ typedef struct
     {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-            self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+            self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         }
         completion:^(BOOL finished)
         {
@@ -649,10 +650,22 @@ typedef struct
     }
     else
     {
-        self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         if(completion)
             completion();
     }
+}
+
+- (UIColor *) backgroundEffectsBackgroundColor
+{
+    UIColor *backgroundColor = [@"#00000033" uicolor];
+    
+    if(self.implementsLightboxEffectColor)
+    {
+        backgroundColor = [self.menuController pullNavigationLightboxEffectColor];
+    }
+    
+    return backgroundColor;
 }
 
 - (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion

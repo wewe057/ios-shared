@@ -33,6 +33,8 @@
 
 @property (nonatomic, assign, readonly) Class pullNavigationMenuBackgroundViewClass; // for when you want to extend under the footer adornment
 
+@property (nonatomic, assign, readonly) UIColor *pullNavigationLightboxEffectColor;
+
 - (void)pullNavMenuWillAppear;
 - (void)pullNavMenuDidAppear;
 

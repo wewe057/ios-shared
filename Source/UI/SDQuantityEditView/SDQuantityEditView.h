@@ -108,6 +108,7 @@ typedef void (^SDQuantityEditViewDoneEditingBlock)(NSDecimalNumber *originalQuan
  */
 - (void)updateUIForCommittingState;
 
+- (void)adjustableItemChanged;
 
 /**
  Provide access to the behavior so subclasses can check its values
