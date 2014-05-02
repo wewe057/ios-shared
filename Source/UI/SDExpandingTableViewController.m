@@ -9,7 +9,8 @@
 #import "SDMacros.h"
 
 static const CGSize kDefaultTableViewSize = {205.f, 350.f};
-static const UIEdgeInsets kDefaultTableViewPaddingInsets = {5.f, 5.f, 5.f, 5.f};
+static const UIEdgeInsets kDefaultTableContainerPaddingInsets = {5.f, 5.f, 5.f, 5.f};
+static const CGFloat kDefaultTableViewHorizontalPadding = 0.f;
 static const CGFloat kMaxWidthPadding = 20.f;
 static const CGFloat kMaxHeightPadding = 20.f;
 
@@ -40,7 +41,8 @@ static const CGFloat kMaxHeightPadding = 20.f;
         _tableViewToIdentifier = [NSMutableDictionary dictionary];
         _tableViews = [NSMutableArray array];
         _tableViewSize = kDefaultTableViewSize;
-        _tableViewsPaddingInsets = kDefaultTableViewPaddingInsets;
+        _tableContainerPaddingInsets = kDefaultTableContainerPaddingInsets;
+        _tableViewHorizontalPadding = kDefaultTableViewHorizontalPadding;
         _needsUpdateConstraints = YES;
         _selectedColumnColor = [UIColor whiteColor];
         _nonselectedColumnColor = [UIColor colorWithRed:.95f green:.95f blue:.95f alpha:1.f];
@@ -84,6 +86,7 @@ static const CGFloat kMaxHeightPadding = 20.f;
 {
     self.popController = [[UIPopoverController alloc] initWithContentViewController:self];
     self.popController.delegate = self;
+    self.popController.backgroundColor = self.view.backgroundColor;
     [self.popController presentPopoverFromRect:rect inView:view permittedArrowDirections:arrowDirections animated:animated];
     [self navigateToColumn:[self.dataSource rootColumnIdentifier] fromParentColumn:nil animated:YES];
 }
@@ -92,6 +95,7 @@ static const CGFloat kMaxHeightPadding = 20.f;
 {
     self.popController = [[UIPopoverController alloc] initWithContentViewController:self];
     self.popController.delegate = self;
+    self.popController.backgroundColor = self.view.backgroundColor;
     [self.popController presentPopoverFromBarButtonItem:item permittedArrowDirections:arrowDirections animated:animated];
     [self navigateToColumn:[self.dataSource rootColumnIdentifier] fromParentColumn:nil animated:YES];
 }
@@ -204,17 +208,24 @@ static const CGFloat kMaxHeightPadding = 20.f;
             {
                 if (index == 0)
                 {
-                    [horizontalConstraints appendFormat:@"|-(%f)-", self.tableViewsPaddingInsets.left];
+                    [horizontalConstraints appendFormat:@"|-(%f)-", self.tableContainerPaddingInsets.left];
                 }
                 NSString *tableId = [NSString stringWithFormat:@"tableView%tu", index];
-                [horizontalConstraints appendFormat:@"[%@(%f)]", tableId, self.tableViewSize.width];
+                if (index + 1 == [self.tableViews count])
+                {
+                    [horizontalConstraints appendFormat:@"[%@(%f)]", tableId, self.tableViewSize.width];
+                }
+                else
+                {
+                    [horizontalConstraints appendFormat:@"[%@(%f)]-(%f)-", tableId, self.tableViewSize.width, self.tableViewHorizontalPadding];
+                }
                 
                 views[tableId] = tableView;
-                [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-(%f)-[tableView(%f)]-(%f)-|", self.tableViewsPaddingInsets.top, self.tableViewSize.height, self.tableViewsPaddingInsets.left] options:0 metrics:nil views:NSDictionaryOfVariableBindings(tableView)]];
+                [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-(%f)-[tableView(%f)]-(%f)-|", self.tableContainerPaddingInsets.top, self.tableViewSize.height, self.tableContainerPaddingInsets.left] options:0 metrics:nil views:NSDictionaryOfVariableBindings(tableView)]];
                 
                 index++;
             }
-            [horizontalConstraints appendFormat:@"-(%f)-|", self.tableViewsPaddingInsets.right];
+            [horizontalConstraints appendFormat:@"-(%f)-|", self.tableContainerPaddingInsets.right];
             [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:horizontalConstraints options:0 metrics:nil views:views]];
             
             [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_scrollView)]];
@@ -236,8 +247,8 @@ static const CGFloat kMaxHeightPadding = 20.f;
     CGRect containerFrame = self.view.frame;
     NSUInteger tableViewCount = [self.tableViews count] == 0 ? 1 : [self.tableViews count];
     
-    containerFrame.size.width = self.tableViewsPaddingInsets.left + self.tableViewsPaddingInsets.right + (self.tableViewSize.width * tableViewCount);
-    containerFrame.size.height = self.tableViewsPaddingInsets.top + self.tableViewsPaddingInsets.bottom + self.tableViewSize.height;
+    containerFrame.size.width = self.tableContainerPaddingInsets.left + self.tableContainerPaddingInsets.right + (self.tableViewSize.width * tableViewCount) + (self.tableViewHorizontalPadding * (tableViewCount - 1));
+    containerFrame.size.height = self.tableContainerPaddingInsets.top + self.tableContainerPaddingInsets.bottom + self.tableViewSize.height;
     
     CGRect viewFrame = containerFrame;
     CGSize currentMaxSize = [self currentMaxSize];
