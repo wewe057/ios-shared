@@ -17,6 +17,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 @interface SDLocationManagerDelegateRegistration : NSObject
 @property (nonatomic, strong) id<SDLocationManagerDelegate> delegate;
 @property (nonatomic) CLLocationAccuracy desiredAccuracy;
+@property (nonatomic) CLLocationDistance distanceFilter;
 @end
 @implementation SDLocationManagerDelegateRegistration
 - (NSUInteger) hash {
@@ -34,7 +35,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 @interface SDLocationManager ()
 @property (nonatomic, strong) NSMutableSet *delegateRegistrations;
 @property (nonatomic, readonly) NSArray *delegates;
-@property (nonatomic, readonly) CLLocationAccuracy highestDesiredAccuracy;
+@property (nonatomic, readonly) CLLocationAccuracy greatestDesiredAccuracy;
+@property (nonatomic, readonly) CLLocationDistance finestDistanceFilter;
+@property (nonatomic, readonly) CLAuthorizationStatus authorizationStatus;
 @end
 
 
@@ -53,6 +56,13 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 #pragma mark - Properties
 
 
+@dynamic isLocationAllowed;
+- (BOOL)isLocationAllowed {
+    if (self.authorizationStatus == kCLAuthorizationStatusAuthorized || self.authorizationStatus == kCLAuthorizationStatusNotDetermined) {
+        return YES;
+    }
+    return NO;
+}
 
 @synthesize timeout;
 
@@ -68,16 +78,39 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     return [delegates allObjects];
 }
 
-@dynamic highestDesiredAccuracy;
-- (CLLocationAccuracy) highestDesiredAccuracy {
-    CLLocationAccuracy desiredAccuracy = kCLLocationAccuracyThreeKilometers;
+@dynamic greatestDesiredAccuracy;
+- (CLLocationAccuracy) greatestDesiredAccuracy {
+    CLLocationAccuracy greatestDesiredAccuracy = kCLLocationAccuracyThreeKilometers;
     for (SDLocationManagerDelegateRegistration *registration in _delegateRegistrations) {
-        if (registration.desiredAccuracy < desiredAccuracy) {
-            desiredAccuracy = registration.desiredAccuracy;
+        if (registration.desiredAccuracy < greatestDesiredAccuracy) {
+            greatestDesiredAccuracy = registration.desiredAccuracy;
+            if (greatestDesiredAccuracy <= kCLLocationAccuracyBest) {
+                break;
+            }
         }
     }
-    return desiredAccuracy;
+    return greatestDesiredAccuracy;
 }
+
+@dynamic finestDistanceFilter;
+- (CLLocationDistance) finestDistanceFilter {
+    CLLocationDistance finestDistanceFilter = DBL_MAX;
+    for (SDLocationManagerDelegateRegistration *registration in _delegateRegistrations) {
+        if (registration.distanceFilter < finestDistanceFilter) {
+            finestDistanceFilter = registration.distanceFilter;
+            if (finestDistanceFilter == kCLDistanceFilterNone) {
+                break;
+            }
+        }
+    }
+    return finestDistanceFilter;
+}
+
+@dynamic authorizationStatus;
+- (CLAuthorizationStatus)authorizationStatus {
+    return [CLLocationManager authorizationStatus];
+}
+
 
 
 #pragma mark - Object
@@ -115,99 +148,17 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 
 
-
-#pragma mark - Internal
-
-
-
-
-- (void)timeoutHandler
-{
-	_timeoutTimer = nil;
-	
-	// if we have a location, pass it along...
-	if (self.location)
-	{
-        CLLocation *location = self.location;
-        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
-	}
-	else
-	{
-		// otherwise, lets simulate a failure...
-        NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
-        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
-	}
-}
-
-- (void)internalStart
-{
-	// make ourselves a timestamp to compare against.
-	_timestamp = [NSDate date];
-	
-	if ([_delegateRegistrations count] > 0)
-		[super setDelegate:self];	
-	else
-		[super setDelegate:nil];	
-}
-
-- (void)internalStop
-{
-	[_timeoutTimer invalidate];
-	_timeoutTimer = nil;
-	
-	_timestamp = nil;
-
-	[super setDelegate:nil];
-}
-
-- (CLAuthorizationStatus)authorizationStatus
-{
-    return [CLLocationManager authorizationStatus];
-}
-
-- (void) registerDelegate:(id<SDLocationManagerDelegate>)delegate forDesiredAccuracy:(CLLocationAccuracy)accuracy {
-    SDLocationManagerDelegateRegistration *delegateRegistration = [SDLocationManagerDelegateRegistration new];
-    delegateRegistration.delegate = delegate;
-
-    CLLocationAccuracy desiredAccuracy = accuracy;
-
-    // Removing this does break past expectations but do we want to do this for every delegate?
-
-//    // actually set it somewhat below what we want.  this insures we get something under what we asked for.
-//    desiredAccuracy -= 600;
-//    if (desiredAccuracy < 10) {
-//        desiredAccuracy = kCLLocationAccuracyBest;
-//    }
-
-    delegateRegistration.desiredAccuracy = desiredAccuracy;
-    [_delegateRegistrations addObject:delegateRegistration];
-}
-
-- (void) deregisterDelegate:(id<SDLocationManagerDelegate>)delegate {
-    SDLocationManagerDelegateRegistration *existingRegistration = [[_delegateRegistrations objectsPassingTest:^BOOL(SDLocationManagerDelegateRegistration *obj, BOOL *stop) {
-        return obj.delegate == delegate;
-    }] anyObject];
-    if (existingRegistration) {
-        [_delegateRegistrations removeObject:existingRegistration];
-    }
-}
-
-
-
 #pragma mark - Public Interface
 
 
 
-- (BOOL)isLocationAllowed
-{
-    if (self.authorizationStatus == kCLAuthorizationStatusAuthorized || self.authorizationStatus == kCLAuthorizationStatusNotDetermined)
-        return YES;
-    return NO;
+
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy {
+    return [self startUpdatingLocationWithDelegate:delegate desiredAccuracy:accuracy distanceFilter:kCLDistanceFilterNone];
 }
 
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy
-{
-    [self registerDelegate:delegate forDesiredAccuracy:accuracy];
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter {
+    [self registerDelegate:delegate forDesiredAccuracy:accuracy distanceFilter:distanceFilter];
     if (!_isUpdatingLocation)
     {
         _isUpdatingLocation = YES;
@@ -262,10 +213,94 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 
 
+#pragma mark - Internal
+
+
+
+
+- (void)timeoutHandler
+{
+	_timeoutTimer = nil;
+
+	// if we have a location, pass it along...
+	if (self.location)
+	{
+        CLLocation *location = self.location;
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
+	}
+	else
+	{
+		// otherwise, lets simulate a failure...
+        NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
+	}
+}
+
+- (void)internalStart
+{
+	// make ourselves a timestamp to compare against.
+	_timestamp = [NSDate date];
+
+	if ([_delegateRegistrations count] > 0)
+		[super setDelegate:self];
+	else
+		[super setDelegate:nil];
+}
+
+- (void)internalStop
+{
+	[_timeoutTimer invalidate];
+	_timeoutTimer = nil;
+
+	_timestamp = nil;
+
+	[super setDelegate:nil];
+}
+
+- (void) registerDelegate:(id<SDLocationManagerDelegate>)delegate forDesiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter {
+    SDLocationManagerDelegateRegistration *delegateRegistration = [SDLocationManagerDelegateRegistration new];
+    delegateRegistration.delegate = delegate;
+
+    CLLocationAccuracy desiredAccuracy = accuracy;
+
+    //???: This is a carry-over from past implmentations where there was only one accuracy setting, do we want to do this for every delegate? Seems weird to set accuracy so much lower than what was requested ..
+//    // actually set it somewhat below what we want.  this insures we get something under what we asked for.
+//    desiredAccuracy -= 600;
+//    if (desiredAccuracy < 10) {
+//        desiredAccuracy = kCLLocationAccuracyBest;
+//    }
+
+    delegateRegistration.desiredAccuracy = desiredAccuracy;
+    delegateRegistration.distanceFilter = distanceFilter;
+    [_delegateRegistrations addObject:delegateRegistration];
+
+    self.desiredAccuracy = self.greatestDesiredAccuracy;
+    self.distanceFilter = self.finestDistanceFilter;
+}
+
+- (void) deregisterDelegate:(id<SDLocationManagerDelegate>)delegate {
+    SDLocationManagerDelegateRegistration *existingRegistration = [[_delegateRegistrations objectsPassingTest:^BOOL(SDLocationManagerDelegateRegistration *obj, BOOL *stop) {
+        return obj.delegate == delegate;
+    }] anyObject];
+    if (existingRegistration) {
+        [_delegateRegistrations removeObject:existingRegistration];
+    }
+    self.desiredAccuracy = self.greatestDesiredAccuracy;
+    self.distanceFilter = self.finestDistanceFilter;
+}
+
+
+
+
 #pragma mark CoreLocationManager delegates
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
-{
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    CLLocation *newLocation = [locations lastObject];
+    CLLocation *oldLocation = nil;
+    if ([locations count] > 1) {
+        oldLocation = locations[[locations count]-2];
+    }
     if ( ! _gotFirstLocationUpdate )
     {
         // dont start the timeout until we got the first location change, which should only happen after the user said YES to
@@ -290,7 +325,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 	}
 	
 	// if the accuracy isn't within what we're looking for, OR.. we got the same accuracy multiple times.. continue on..
-	if ((newLocation.horizontalAccuracy >= self.highestDesiredAccuracy) || (newLocation.horizontalAccuracy > oldLocation.horizontalAccuracy))
+	if ((newLocation.horizontalAccuracy >= self.greatestDesiredAccuracy) || (newLocation.horizontalAccuracy > oldLocation.horizontalAccuracy))
 	{
 		SDLog(@"SDLocationManager: this location didn't meet the accuracy requirements (%f).", newLocation.horizontalAccuracy);
 		//return; // the accuracy isn't good enough, wait some more...
@@ -299,7 +334,10 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 	}
 	
 	SDLog(@"SDLocationManager: location obtained.");
-    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+    [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &locations];
+
+    //REMOVE: when all usages of the now deprecated locationManager:didUpdateToLocation:fromLocation: are cleared.
+    [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading
