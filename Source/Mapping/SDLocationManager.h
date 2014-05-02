@@ -40,12 +40,20 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingLocationForAllDelegates;
 
+- (BOOL) startMonitoringForSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (void) stopMonitoringSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+- (void) stopMonitoringSignificantLocationChangesForAllDelegates;
+
 //!!!: These currently ignore the delegate param. Make sure you registered it using startUpdatingLocationWithDelegate: and remove it with stopUpdatingLocationWithDelegate:.
 - (void)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 
 - (void)startUpdatingLocation __deprecated__("Use the withDelegate versions of this method");
+- (void)stopUpdatingLocation __deprecated__("Use the withDelegate versions of this method");
+- (void)startUpdatingHeading __deprecated__("Use the withDelegate versions of this method");
 - (void)stopUpdatingHeading __deprecated__("Use the withDelegate versions of this method");
+- (void)startMonitoringSignificantLocationChanges __deprecated__("Use the withDelegate versions of this method");
+- (void)stopMonitoringSignificantLocationChanges __deprecated__("Use the withDelegate versions of this method");
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager __deprecated__("Use the withDelegate versions of this method");
 - (void)setDelegate:(id<CLLocationManagerDelegate>)delegate __deprecated__("Use the withDelegate versions of this method");
 

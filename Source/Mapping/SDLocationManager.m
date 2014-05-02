@@ -210,7 +210,21 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 	[super stopUpdatingHeading];
 }
 
+- (BOOL) startMonitoringForSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate {
+	//TODO: implement this in such a way that if any delegate is interested in more active updates this stays off, but comes on when other delegates have resigned their interest
+	[self unsupported:_cmd];
+	return NO;
+}
 
+- (void) stopMonitoringSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate {
+	//TODO: implement this so that it turns off location updates unless other delegates are also interested in this service
+	[self unsupported:_cmd];
+}
+
+- (void) stopMonitoringSignificantLocationChangesForAllDelegates {
+	//TODO: implement this so that any delegate that is soley interested in this service is removed, but those interested in active updates are left observing
+	[self unsupported:_cmd];
+}
 
 
 #pragma mark - Internal
@@ -395,6 +409,8 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 - (void)stopUpdatingLocation { [self unsupported:_cmd]; }
 - (void)startUpdatingHeading { [self unsupported:_cmd]; }
 - (void)stopUpdatingHeading { [self unsupported:_cmd]; }
+- (void)startMonitoringSignificantLocationChanges { [self unsupported:_cmd]; }
+- (void)stopMonitoringSignificantLocationChanges { [self unsupported:_cmd]; }
 - (void)setDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy { [self unsupported:_cmd]; }
 
 
