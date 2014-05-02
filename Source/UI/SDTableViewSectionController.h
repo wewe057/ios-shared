@@ -129,6 +129,26 @@
 
 - (CGFloat)sectionControllerHeightForHeader:(SDTableViewSectionController *)sectionController;
 
+/**
+ *  Return a title for the footer for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a title for the footer for this section
+ */
+- (NSString *)sectionControllerTitleForFooter:(SDTableViewSectionController *)sectionController;
+
+/**
+ *  Return a view for the footer for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a view for the footer for this section
+ */
+- (UIView *)sectionControllerViewForFooter:(SDTableViewSectionController *)sectionController;
+
+- (CGFloat)sectionControllerHeightForFooter:(SDTableViewSectionController *)sectionController;
+
 // "Delegate" methods
 @optional
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
