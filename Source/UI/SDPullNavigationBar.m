@@ -80,6 +80,7 @@ typedef struct
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
 @property (nonatomic, assign) BOOL implementsBackgroundViewClass;
+@property (nonatomic, assign) BOOL implementsLightboxEffectColor;
 
 @end
 
@@ -339,7 +340,7 @@ typedef struct
     self.implementsBackgroundViewClass = [self.menuController respondsToSelector:@selector(pullNavigationMenuBackgroundViewClass)];
     if(self.implementsBackgroundViewClass)
         self.backgroundViewClass = self.menuController.pullNavigationMenuBackgroundViewClass;
-    
+    self.implementsLightboxEffectColor = [self.menuController respondsToSelector:@selector(pullNavigationLightboxEffectColor)];
     self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
     self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
     self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
@@ -564,8 +565,8 @@ typedef struct
                 completion();
             
             // If we just finished our collapse, tell the controller now
-            if(self.implementsDidDisappear && !self.menuOpen)
-                [self.menuController pullNavMenuDidDisappear];
+            if(!self.menuOpen)
+                [self notifyPullNavMenuDidDisappear];
 
         }];
     }
@@ -577,10 +578,35 @@ typedef struct
     }
 }
 
-- (void)expandMenu
+- (void)notifyPullNavMenuWillAppear
 {
     if(self.implementsWillAppear)
         [self.menuController pullNavMenuWillAppear];
+    [self.menuBottomAdornmentView pullNavigationMenuWillAppear];
+}
+
+- (void)notifyPullNavMenuDidAppear
+{
+    if(self.implementsDidAppear)
+        [self.menuController pullNavMenuDidAppear];
+}
+
+- (void)notifyPullNavMenuWillDisappear
+{
+    if(self.implementsWillDisappear)
+        [self.menuController pullNavMenuWillDisappear];
+}
+
+- (void)notifyPullNavMenuDidDisappear
+{
+    if(self.implementsDidDisappear)
+        [self.menuController pullNavMenuDidDisappear];
+    [self.menuBottomAdornmentView pullNavigationMenuDidDisappear];
+}
+
+- (void)expandMenu
+{
+    [self notifyPullNavMenuWillAppear];
 
     [self centerViewsToOrientation];
 
@@ -593,21 +619,19 @@ typedef struct
 
     self.menuOpen = YES;
 
-    if(self.implementsDidAppear)
-        [self.menuController pullNavMenuDidAppear];
+    [self notifyPullNavMenuDidAppear];
 }
 
 - (void)collapseMenu
 {
-    if(self.implementsWillDisappear)
-        [self.menuController pullNavMenuWillDisappear];
+    [self notifyPullNavMenuWillDisappear];
 
     [self collapseMenuWithCompletion:^
     {
         // If we're animating, then firing did disappear here is a lie. Hold
         //  off until we're actually done animating.
-        if(self.implementsDidDisappear && !self.animating)
-            [self.menuController pullNavMenuDidDisappear];
+        if(!self.animating)
+            [self notifyPullNavMenuDidDisappear];
     }];
 }
 
@@ -639,7 +663,7 @@ typedef struct
     {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-            self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+            self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         }
         completion:^(BOOL finished)
         {
@@ -649,10 +673,22 @@ typedef struct
     }
     else
     {
-        self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         if(completion)
             completion();
     }
+}
+
+- (UIColor *) backgroundEffectsBackgroundColor
+{
+    UIColor *backgroundColor = [@"#00000033" uicolor];
+    
+    if(self.implementsLightboxEffectColor)
+    {
+        backgroundColor = [self.menuController pullNavigationLightboxEffectColor];
+    }
+    
+    return backgroundColor;
 }
 
 - (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
