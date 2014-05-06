@@ -332,41 +332,40 @@
 - (void)setPlaceholderViewImage:(UIImage*)image
 {
     NSAssert(image, @"Seeting a nil image for the credit card image.");
-
+    
     {
-        if (image == _placeholderView.image)
+        if (image != _placeholderView.image)
         {
-            return;
+            __block UIView* previousPlaceholderView = _placeholderView;
+            [UIView animateWithDuration:0.25
+                                  delay:0
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^
+             {
+                 _placeholderView.layer.opacity = 0.0f;
+                 _placeholderView.layer.transform = CATransform3DMakeScale(1.2f, 1.2f, 1.2f);
+             }
+                             completion:^(BOOL finished)
+             {
+                 [previousPlaceholderView removeFromSuperview];
+             }];
+            
+            _placeholderView = nil;
+            
+            [self setupPlaceholderView];
+            _placeholderView.image = image;
+            _placeholderView.layer.opacity = 0.0f;
+            _placeholderView.layer.transform = CATransform3DMakeScale(0.8f, 0.8f, 0.8f);
+            [self insertSubview:_placeholderView belowSubview:previousPlaceholderView];
+            [UIView animateWithDuration:0.25
+                                  delay:0
+                                options:UIViewAnimationOptionCurveEaseInOut
+                             animations:^
+             {
+                 _placeholderView.layer.opacity = 1.0f;
+                 _placeholderView.layer.transform = CATransform3DIdentity;
+             } completion:^(BOOL finished) {}];
         }
-        __block UIView* previousPlaceholderView = _placeholderView;
-        [UIView animateWithDuration:0.25
-                              delay:0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^
-        {
-             _placeholderView.layer.opacity = 0.0f;
-             _placeholderView.layer.transform = CATransform3DMakeScale(1.2f, 1.2f, 1.2f);
-        }
-        completion:^(BOOL finished)
-        {
-             [previousPlaceholderView removeFromSuperview];
-        }];
-
-        _placeholderView = nil;
-        
-        [self setupPlaceholderView];
-        _placeholderView.image = image;
-        _placeholderView.layer.opacity = 0.0f;
-        _placeholderView.layer.transform = CATransform3DMakeScale(0.8f, 0.8f, 0.8f);
-        [self insertSubview:_placeholderView belowSubview:previousPlaceholderView];
-        [UIView animateWithDuration:0.25
-                              delay:0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^
-        {
-            _placeholderView.layer.opacity = 1.0f;
-            _placeholderView.layer.transform = CATransform3DIdentity;
-        } completion:^(BOOL finished) {}];
     }
 }
 
