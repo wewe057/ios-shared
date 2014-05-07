@@ -51,6 +51,43 @@
 
 @end
 
+/**
+ Macros to make defined maps work better with Xcode's refactor tools.
+ */
+
+/**
+ sdmo_key performs class inspection to generate the proper string format for a given property via class inspection.
+ 
+ ie: NSArray<MyObject> *myProp via sdmo_key(self.myProp) would become @"(NSArray<MyObject>)myProp"
+ 
+ Note: A reference to 'self' is implicit.  This is for use in SDModelObject's mappingDictionaryWithData: method.  To
+ do manual mappings with SDDataMap, use sdmo_key_withobject instead.
+ */
+#define sdmo_key(property) \
+    _sdmo_key(self, variable_name(property))
+
+#define sdmo_key_withobject(object, property) \
+    _sdmo_key(object, variable_name(property))
+
+
+/**
+ sdmo_selector validates a selector against an object and converts it to the string format used by SDDataMap.
+ 
+ ie: sdmo_selector(@selector(setSomething:)) becomes @"@selector(setSomething:)"
+ 
+ Note: A reference to 'self' is implicit.  This is for use in SDModelObject's mappingDictionaryWithData: method.  To
+ do manual mappings with SDDataMap, use sdmo_selector_withobject instead.
+ */
+#define sdmo_selector(selector) \
+    _sdmo_selector(self, selector)
+
+#define sdmo_selector_withobject(object, selector) \
+    _sdmo_selector(object, selector)
+
+// do not call these directly.
+NSString *_sdmo_key(id object, NSString *propertyName);
+NSString *_sdmo_selector(id object, SEL selector);
+
 
 /**
  SDDataMap provides a mechanism by which to assign keypaths from one object to another.
