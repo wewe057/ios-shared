@@ -26,6 +26,7 @@
 {
     self.label = [[UILabel alloc] initWithFrame:CGRectZero];
     self.label.translatesAutoresizingMaskIntoConstraints = NO;
+    self.label.backgroundColor = [UIColor clearColor]; // Thanks, iOS 6!
     [self addSubview:self.label];
 
     [self setNeedsUpdateConstraints];

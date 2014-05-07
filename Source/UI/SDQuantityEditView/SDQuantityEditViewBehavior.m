@@ -105,13 +105,13 @@ static char kObserveQuantityContext;
         [defaultFormatter setGeneratesDecimalNumbers:YES];
         _priceFormatter = defaultFormatter;
         
-        [self updateTotalCost];
+        [self updateTotalWeightAndCost];
         [self updateQuantityLabel];
         [self updateButtonState];
         
         // observe our quantity to update the displayed quantity and expanded price
         [self addObserver:self forKeyPath:@"currentQuantity" options:NSKeyValueObservingOptionNew context:&kObserveQuantityContext];
-        [self updateTotalWeight];
+        [self updateTotalWeightAndCost];
     }
     return self;
 }
@@ -203,8 +203,7 @@ static char kObserveQuantityContext;
     // When server adjusts quantity based on average, the step can be 2 decimal places, round it to 1
     self.currentQuantity = [self.currentQuantity decimalNumberByRoundingAccordingToBehavior:self.roundingBehavior];
     [self updateButtonState];
-    [self updateTotalCost];
-    [self updateTotalWeight];
+    [self updateTotalWeightAndCost];
     [self updateQuantityLabel];
     
     if (self.didChangeQuantity)
@@ -229,8 +228,7 @@ static char kObserveQuantityContext;
         self.currentQuantity = [NSDecimalNumber zero];
     }
     [self updateButtonState];
-    [self updateTotalCost];
-    [self updateTotalWeight];
+    [self updateTotalWeightAndCost];
     [self updateQuantityLabel];
     
     if (self.didChangeQuantity)
@@ -245,12 +243,14 @@ static char kObserveQuantityContext;
     if (priceFormatter != _priceFormatter)
     {
         _priceFormatter = priceFormatter;
-        [self updateTotalCost];
+        [self updateTotalWeightAndCost];
     }
 }
 
--(void)updateTotalCost
+- (NSString *) totalCostString
 {
+    NSString *totalCostString = nil;
+    
     if (self.pricePerUnit && self.currentQuantity) {
         // We may have empty(NaN) ppu, so guard against an exception in decimalNumberBy…
         if ([self.pricePerUnit isEqualToNumber:[NSDecimalNumber notANumber]] || [self.pricePerUnit isEqualToNumber:[NSDecimalNumber maximumDecimalNumber]] || [self.currentQuantity isEqualToNumber:[NSDecimalNumber notANumber]] || [self.currentQuantity isEqualToNumber:[NSDecimalNumber maximumDecimalNumber]]) {
@@ -261,20 +261,75 @@ static char kObserveQuantityContext;
         else
         {
             NSDecimalNumber *total = [self.pricePerUnit decimalNumberByMultiplyingBy:self.currentQuantity];
-            self.quantityViewDelegate.totalPriceLabel.text = [self.priceFormatter stringFromNumber:total];
+            totalCostString = [self.priceFormatter stringFromNumber:total];
         }
         
     }
+    return totalCostString;
 }
 
--(void)updateTotalWeight {
+-(void)updateTotalCost
+{
+    NSString *totalCostString = [self totalCostString];
+    if (totalCostString != nil) {
+        self.quantityViewDelegate.totalPriceLabel.text = totalCostString;
+    }
+}
+
+-(NSString *)totalWeightString
+{
+    NSString *totalWeightString = nil;
+    
     if (self.adjustQuantityMethod == kAdjustableItemQuantityMethod_Both) {
-        @strongify(_quantityViewDelegate, viewDelegate);
         NSDecimalNumber *totalWeight = [self.currentQuantity decimalNumberByMultiplyingBy:self.avgWeight];
         //push totalWeight to IQV's totalWeightLabel
         SDLog(@"total weight is now %@ kg", [totalWeight stringValue]);
-        viewDelegate.totalWeightLabel.text = [NSString stringWithFormat:@"~%@ kg", [totalWeight stringValue]];
+        totalWeightString = [NSString stringWithFormat:@"~%@ kg", [totalWeight stringValue]];
     }
+    
+    return totalWeightString;
+}
+
+-(void)updateTotalWeight
+{
+    NSString *totalWeightString = [self totalWeightString];
+    if (totalWeightString != nil) {
+        @strongify(_quantityViewDelegate, viewDelegate);
+        viewDelegate.totalWeightLabel.text = totalWeightString;
+    }
+}
+
+-(void)updateTotalWeightAndCost
+{
+    if ([self areTotalCostAndTotalWeightTheSameLabel]) {
+        NSString *totalCostString = [self totalCostString];
+        NSString *totalWeightString = [self totalWeightString];
+        NSString *combinedString = nil;
+        
+        if ( totalCostString != nil && totalWeightString != nil ) {
+            combinedString = [NSString stringWithFormat:@"%@ / %@", totalCostString, totalWeightString];
+        } else if ( totalCostString == nil && totalWeightString != nil ) {
+            combinedString = totalWeightString;
+        } else if ( totalCostString != nil && totalWeightString == nil ) {
+            combinedString = totalCostString;
+        }
+        
+        @strongify(_quantityViewDelegate, viewDelegate);
+        viewDelegate.totalWeightLabel.text = combinedString;
+    } else {
+        [self updateTotalCost];
+        [self updateTotalWeight];
+    }
+}
+
+-(BOOL)areTotalCostAndTotalWeightTheSameLabel
+{
+    if (self.adjustQuantityMethod == kAdjustableItemQuantityMethod_Counted) {
+        return NO;
+    }
+    
+    @strongify(_quantityViewDelegate, viewDelegate);
+    return viewDelegate.totalWeightLabel == self.quantityViewDelegate.totalPriceLabel;
 }
 
 /// Returns the new quantity if it has been updated, or nil if it hasn't
@@ -303,8 +358,14 @@ static char kObserveQuantityContext;
 {
     self.originalQuantity = [NSDecimalNumber zero];
     self.currentQuantity = [self.originalQuantity decimalNumberByAdding:self.stepAmount];
-    [self updateTotalCost];
-    [self updateTotalWeight];
+    [self updateTotalWeightAndCost];
+    [self updateButtonState];
+}
+
+- (void)resetCurrentQuantity
+{
+    self.currentQuantity = self.originalQuantity;
+    [self updateTotalWeightAndCost];
     [self updateButtonState];
 }
 
@@ -317,8 +378,7 @@ static char kObserveQuantityContext;
     {
         self.currentQuantity = [self.originalQuantity decimalNumberByAdding:self.stepAmount];
     }
-    [self updateTotalCost];
-    [self updateTotalWeight];
+    [self updateTotalWeightAndCost];
     [self updateButtonState];
 }
 

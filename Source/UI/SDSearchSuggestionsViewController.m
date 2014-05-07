@@ -41,7 +41,7 @@
             [self.tableView reloadData];
         }];
 
-        self.titleLabel.text = NSLocalizedString(@"Search Suggestions", @"Search Panel Search Suggestions Title");
+        self.titleLabel.text = NSLocalizedString(@"Suggested Searches", @"Search Panel Search Suggestions Title");
         self.clearButton.hidden = YES;
     }
     else

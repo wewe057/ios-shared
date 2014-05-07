@@ -30,6 +30,8 @@
 
 @property (nonatomic) BOOL collapseRegardlessIfEmpty;
 
+- (void) clear; // manually clear the field + animations
+
 // Override points for subclasses
 - (CGRect) textFieldFrame;
 - (CGRect) textFieldExpandedFrame;
