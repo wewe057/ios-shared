@@ -34,7 +34,8 @@
 
 - (NSDictionary *)mappingDictionaryForData:(id)data
 {
-    return @{@"blah1": sdmo_key(self.blah1),
+    return @{
+             @"blah1": sdmo_key(self.blah1),
              @"blah2": sdmo_key(self.blah2),
              @"blah7": sdmo_key(self.blah7),
              @"subBlah8": sdmo_selector(@selector(setSubBlah8:))
@@ -283,7 +284,7 @@
     
     MyObject *outputObject = [[MyObject alloc] init];
     
-    NSDictionary *mappingDictionary = @{@"blah2" : sdmo_selector_withobject(outputObject, @selector(setSubBlah8:))};
+    NSDictionary *mappingDictionary = @{@"blah2" : sddm_selector(outputObject, @selector(setSubBlah8:))};
     
     SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
     [mapper mapObject:inputObject toObject:outputObject];

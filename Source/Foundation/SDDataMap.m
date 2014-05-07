@@ -903,7 +903,7 @@ static dispatch_once_t __formatterOnceToken = 0;
 
 #pragma mark - SDDataModelProtocol map helpers
 
-NSString *_sdmo_key(id object, NSString *propertyName)
+NSString *_sddm_key(id object, NSString *propertyName)
 {
     NSMutableArray *kvoParts = [[propertyName componentsSeparatedByString:@"."] mutableCopy];
     if (kvoParts.count < 2)
@@ -937,7 +937,7 @@ NSString *_sdmo_key(id object, NSString *propertyName)
     return propertyString;
 }
 
-NSString *_sdmo_selector(id object, SEL selector)
+NSString *_sddm_selector(id object, SEL selector)
 {
     const char *selectorName = sel_getName(selector);
 

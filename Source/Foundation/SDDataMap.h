@@ -56,37 +56,25 @@
  */
 
 /**
- sdmo_key performs class inspection to generate the proper string format for a given property via class inspection.
+ sddm_key performs class inspection on 'object' to generate the proper string format for a given property via class inspection.
  
- ie: NSArray<MyObject> *myProp via sdmo_key(self.myProp) would become @"(NSArray<MyObject>)myProp"
- 
- Note: A reference to 'self' is implicit.  This is for use in SDModelObject's mappingDictionaryWithData: method.  To
- do manual mappings with SDDataMap, use sdmo_key_withobject instead.
+ ie: NSArray<MyObject> *myProp via sddm_key(self, self.myProp) would become @"(NSArray<MyObject>)myProp"
  */
-#define sdmo_key(property) \
-    _sdmo_key(self, variable_name(property))
-
-#define sdmo_key_withobject(object, property) \
-    _sdmo_key(object, variable_name(property))
+#define sddm_key(object, property) \
+    _sddm_key(object, variable_name(property))
 
 
 /**
- sdmo_selector validates a selector against an object and converts it to the string format used by SDDataMap.
+ sddm_selector validates a selector against 'object' and converts it to the string format used by SDDataMap.
  
- ie: sdmo_selector(@selector(setSomething:)) becomes @"@selector(setSomething:)"
- 
- Note: A reference to 'self' is implicit.  This is for use in SDModelObject's mappingDictionaryWithData: method.  To
- do manual mappings with SDDataMap, use sdmo_selector_withobject instead.
+ ie: sddm_selector(self, @selector(setSomething:)) becomes @"@selector(setSomething:)"
  */
-#define sdmo_selector(selector) \
-    _sdmo_selector(self, selector)
-
-#define sdmo_selector_withobject(object, selector) \
-    _sdmo_selector(object, selector)
+#define sddm_selector(object, selector) \
+    _sddm_selector(object, selector)
 
 // do not call these directly.
-NSString *_sdmo_key(id object, NSString *propertyName);
-NSString *_sdmo_selector(id object, SEL selector);
+NSString *_sddm_key(id object, NSString *propertyName);
+NSString *_sddm_selector(id object, SEL selector);
 
 
 /**
