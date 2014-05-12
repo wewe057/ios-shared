@@ -172,7 +172,8 @@ typedef struct
             self.menuContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuContainer.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuContainer.opaque = NO;
-            self.menuContainer.hidden = NO;
+//            self.menuContainer.hidden = NO;
+            [self hideMenuContainer];
             
             if([SDPullNavigationManager sharedInstance].disableShadowOnMenuContainer == NO)
             {
@@ -559,14 +560,15 @@ typedef struct
             self.animating = NO;
 
             [self.tabButton setNeedsDisplay];
-            self.menuContainer.hidden = !self.menuOpen;
 
             if(completion)
                 completion();
             
             // If we just finished our collapse, tell the controller now
-            if(!self.menuOpen)
+            if(!self.menuOpen) {
+                [self hideMenuContainer];
                 [self notifyPullNavMenuDidDisappear];
+            }
 
         }];
     }
@@ -649,12 +651,16 @@ typedef struct
 
 - (void)showMenuContainer
 {
-    self.menuContainer.hidden = NO;
+    // Using alpha instead of hidden fixes a bug that is only evident on the iPad 3.
+    // The menu container would remain visible even when hidden.
+    self.menuContainer.alpha = 1;
 }
 
 - (void)hideMenuContainer
 {
-    self.menuContainer.hidden = YES;
+    // Using alpha instead of hidden fixes a bug that is only evident on the iPad 3.
+    // The menu container would remain visible even when hidden.
+    self.menuContainer.alpha = 0;
 }
 
 - (void)showBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
