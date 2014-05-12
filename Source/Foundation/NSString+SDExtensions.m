@@ -434,5 +434,14 @@ GENERICSABLE_IMPLEMENTATION(NSString)
     return valid;
 }
 
++ (BOOL) isEmpty:(NSString *)string {
+    return (string && [string length] > 0);
+}
+
++ (BOOL) isNotEmpty:(NSString *)string {
+    return NO == [self isEmpty:string];
+}
+
+
 @end
 
