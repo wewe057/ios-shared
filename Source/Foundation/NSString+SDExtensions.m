@@ -435,11 +435,11 @@ GENERICSABLE_IMPLEMENTATION(NSString)
 }
 
 + (BOOL) isEmpty:(NSString *)string {
-    return (string && [string length] > 0);
+    return NO == [self isNotEmpty:string];
 }
 
 + (BOOL) isNotEmpty:(NSString *)string {
-    return NO == [self isEmpty:string];
+    return (string && [string length] > 0);
 }
 
 

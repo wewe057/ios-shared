@@ -201,7 +201,7 @@ Returns a deepCopy of an array. It will recursively deepCopy contained arrays to
 	NSUInteger length = [indexPath length];
 	for (NSUInteger i = 0; i < length; i++) {
 		NSUInteger index = [indexPath indexAtPosition:i];
-		if ([object isKindOfClass:[NSArray class]] && index < [object count]) {
+		if ([object respondsToSelector:@selector(count)] && index < [object count] && [object respondsToSelector:@selector(objectAtIndex:)]) {
 			object = [object objectAtIndex:index];
 		}
 		else {
@@ -220,7 +220,7 @@ Returns a deepCopy of an array. It will recursively deepCopy contained arrays to
 			indexPath = [indexPath indexPathByAddingIndex:idx];
 			*stop = YES;
 		}
-		else if ([child isKindOfClass:[NSArray class]]) {
+		else if ([child respondsToSelector:_cmd]) {
 			NSIndexPath *childIndexPath = [child indexPathForObject:object];
 			NSUInteger length = [childIndexPath length];
 			if (length > 0) {
