@@ -45,7 +45,6 @@
         _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
 
         _showGlobalNavControls = YES;
-        _menuAdornmentImageOverlapHeight = 5;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(statusBarDidChangeRotationNotification:)

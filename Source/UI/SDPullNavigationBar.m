@@ -172,7 +172,7 @@ typedef struct
             self.menuContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuContainer.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuContainer.opaque = NO;
-//            self.menuContainer.hidden = NO;
+
             [self hideMenuContainer];
             
             if([SDPullNavigationManager sharedInstance].disableShadowOnMenuContainer == NO)
@@ -565,7 +565,8 @@ typedef struct
                 completion();
             
             // If we just finished our collapse, tell the controller now
-            if(!self.menuOpen) {
+            if(!self.menuOpen)
+            {
                 [self hideMenuContainer];
                 [self notifyPullNavMenuDidDisappear];
             }
