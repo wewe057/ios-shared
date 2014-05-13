@@ -106,4 +106,13 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
  */
 - (void)setCurrentAsBaseline;
 
+/**
+ *  resets the original qty to 0.  Does a little bit of bookkeeping as well, reseting the currentQty to 1 (so 0 never shows in the
+ *  SDQuantityEditViewProtocol and updating the buttons.
+ *
+ *  TODO: it may make sense to put this logic in the setOriginalQuantity method.  I need to see how it is being used first.
+ */
+- (void)resetOriginalQuantity;
+- (void)resetCurrentQuantity;
+
 @end

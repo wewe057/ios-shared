@@ -236,6 +236,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 @property (nonatomic, strong, readwrite) SDCircularMinusButton *decrementButton;
 @property (nonatomic, strong, readwrite) UIImageView *rightImageView;
 @property (nonatomic, strong, readwrite) UILabel *quantityLabel;
+@property (nonatomic, strong) NSLayoutConstraint *labelWidthConstraint;
 @end
 
 @implementation SDQuantityView
@@ -272,6 +273,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     [_quantityLabel setContentHuggingPriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisHorizontal];
     [_quantityLabel setContentCompressionResistancePriority:1000 forAxis:UILayoutConstraintAxisHorizontal];
     [_quantityLabel setFont:[UIFont systemFontOfSize:14]];
+	[_quantityLabel setBackgroundColor:[UIColor clearColor]];
     [self addSubview:_quantityLabel];
     
     _rightImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
@@ -321,7 +323,12 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         if (self.rightImageView.image)
         {
             [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_rightImageView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_rightImageView)]];
-            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:|[_decrementButton(29)][_quantityLabel]-(2)-[_rightImageView(%tu)]-(2)-[_incrementButton(29)]|", (NSUInteger)self.rightImageView.image.size.width] options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton, _quantityLabel, _rightImageView, _incrementButton)]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_decrementButton(29)]" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton)]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_incrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_incrementButton)]];
+            
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"H:[_quantityLabel]-(2)-[_rightImageView(%tu)]", (NSUInteger)self.rightImageView.image.size.width] options:0 metrics:nil views:NSDictionaryOfVariableBindings(_quantityLabel, _rightImageView)]];
+            
+            [self addConstraint:[NSLayoutConstraint constraintWithItem:self.quantityLabel attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1 constant:-self.rightImageView.image.size.width/2.0]];
         }
         else
         {
@@ -332,7 +339,27 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         
         self.hasSetupConstraints = YES;
     }
+    [self updateLabelWidthConstraint];
     [super updateConstraints];
+}
+
+- (void) updateLabelWidthConstraint
+{
+    if (self.labelWidthConstraint != nil)
+    {
+        [self removeConstraint:self.labelWidthConstraint];
+        self.labelWidthConstraint = nil;
+    }
+    
+    if (self.rightImageView.image)
+    {
+        static const CGFloat kSDQuantityViewLabelMargin = 2.0;
+        CGFloat maxLabelWidth = CGRectGetWidth(self.bounds) - (kCircularButtonWidth + 2.0 + self.rightImageView.image.size.width + kCircularButtonWidth + 2 * kSDQuantityViewLabelMargin);
+        if ( maxLabelWidth > 1.0 ) {
+            self.labelWidthConstraint = [NSLayoutConstraint constraintWithItem:self.quantityLabel attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationLessThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:maxLabelWidth];
+            [self addConstraint:self.labelWidthConstraint];
+        }
+    }
 }
 
 - (void)layoutSubviews
@@ -354,6 +381,13 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     
     layer.fillColor = self.fillColor.CGColor;
     layer.strokeColor = self.fillColor.CGColor;
+}
+
+- (void) setBounds:(CGRect)bounds
+{
+    [super setBounds:bounds];
+    if (self.rightImageView.image)
+        [self setNeedsUpdateConstraints];
 }
 
 @end

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+typedef id (^SDSectionKeyBlock)(id blockObject);
+
 /**
  A number of these typeForKey type methods came into being to extract a specific type from a given object, e.g. in the case of badly typed data in a JSON response.
  So, if intForKey is provided a key that points to a string, then the method will try and convert the string into an int and return that using standard underlying data type conversion methods.
@@ -176,5 +178,10 @@
  Returns the dictionary as an URL-encoded HTTP query string
  */
 - (NSString*)queryString;
+
+/**
+ Returns a  given inputArray as a dictionary of arrays split by critera defined in sortBlock. Used for grouping by month or other section interval.
+ */
++ (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSectionKeyBlock:(SDSectionKeyBlock)keyBlock;
 
 @end

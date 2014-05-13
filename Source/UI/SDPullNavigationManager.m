@@ -281,10 +281,14 @@
 
     if([self.navigationController.navigationBar isKindOfClass: [SDPullNavigationBar class]])
     {
-        [item setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@""
-                                                                    style:UIBarButtonItemStyleBordered
-                                                                   target:self
-                                                                   action:@selector(sdBackAction:)]];
+        // If this is ipad or if this is iphone and iOS 7, set the back button title to "" to hide it. Keep it on 6 or the back button disappears ...
+        if ( [UIDevice iPad] || (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) )
+        {
+            [item setBackBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@""
+                                                                        style:UIBarButtonItemStyleBordered
+                                                                       target:self
+                                                                       action:@selector(sdBackAction:)]];
+        }
     }
 
     return item;

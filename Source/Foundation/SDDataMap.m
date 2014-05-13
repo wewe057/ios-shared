@@ -17,7 +17,11 @@
 @property (nonatomic, strong) NSString *propertySubtype;
 @property (nonatomic, assign) SEL propertySelector;
 
+@property (nonatomic, readonly) Class propertyTypeClass;
+@property (nonatomic, readonly) Class propertySubtypeClass;
+
 + (NSArray *)propertiesForObject:(id)object;
++ (instancetype)propertyFromClass:(Class)aClass named:(NSString *)name;
 + (instancetype)propertyFromObject:(NSObject *)object named:(NSString *)name;
 + (instancetype)propertyFromString:(NSString *)propertyString;
 - (BOOL)isValid;
@@ -25,15 +29,21 @@
 
 @end
 
-// used for typechecking.  expensive to create.
-static NSNumberFormatter *__internalformatter = nil;
-
 #pragma mark - SDDataMap definition
 
 @implementation SDDataMap
 {
     NSDictionary *_mapDictionary;
 }
+
+/**
+ This is *NOT* thread-safe.  Do not mutate it under any circumstances!
+ 
+ This is used for the number formatting aspects of data mappings.
+ */
+static NSNumberFormatter *__internalFormatter = nil;
+static dispatch_once_t __formatterOnceToken = 0;
+
 
 #pragma mark - Initializers
 
@@ -57,12 +67,11 @@ static NSNumberFormatter *__internalformatter = nil;
 	result = [[SDDataMap alloc] init];
 	result->_mapDictionary = [dictionary copy];
     
-	if (!__internalformatter)
-    {
-        __internalformatter = [[NSNumberFormatter alloc] init];
-        [__internalformatter setNumberStyle:NSNumberFormatterNoStyle];
-    }
-    
+    dispatch_once(&__formatterOnceToken, ^{
+        __internalFormatter = [[NSNumberFormatter alloc] init];
+        [__internalFormatter setNumberStyle:NSNumberFormatterNoStyle];
+    });
+                  
 	return result;
 }
 
@@ -90,7 +99,7 @@ static NSNumberFormatter *__internalformatter = nil;
     if ([object2 respondsToSelector:@selector(initialKeyPath)])
     {
         NSString *initialKeyPath = [object2 initialKeyPath];
-        id newObject1 = [object1 valueForKeyPath:initialKeyPath];
+        id newObject1 = [self valueFromObject:object1 forKeyPath:initialKeyPath];
         if (newObject1)
             tempObject1 = newObject1;
     }
@@ -108,11 +117,15 @@ static NSNumberFormatter *__internalformatter = nil;
     }
     
     [_mapDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        id value = [object1 valueForKeyPath:key];
+        id value = [self valueFromObject:object1 forKeyPath:key];
         if (!value)
             return;
         
         NSString *destPropertyString = (NSString *)obj;
+        // check the destPropertyString to make sure it's not a keyPath.
+        if ([destPropertyString rangeOfString:@"."].location != NSNotFound)
+            [NSException raise:@"SDException" format:@"Destionation maps do not support key paths (%@)", destPropertyString];
+        
         SDObjectProperty *destProperty = [SDObjectProperty propertyFromString:destPropertyString];
         
         // if we don't have a destination property type, do some introspection on the destination
@@ -170,6 +183,13 @@ static NSNumberFormatter *__internalformatter = nil;
             }
         }
     }];
+    
+    // Now that the object has been mapped, let's tell the
+    // target object that the model has been loaded
+    if ([object2 respondsToSelector:@selector(modelDidLoad)])
+    {
+        [object2 modelDidLoad];
+    }
 }
 
 #pragma mark - Collection and Model handling
@@ -186,9 +206,30 @@ static NSNumberFormatter *__internalformatter = nil;
     else
     if ([outputObject isKindOfClass:[NSArray class]])
         outputObject = [NSMutableArray array];
+    
+    BOOL respondsToCreateWithData = [outputClass respondsToSelector:@selector(createWithData:)];
+    BOOL respondsToMappingDictionaryForData = [outputObject respondsToSelector:@selector(mappingDictionaryForData:)];
+    
+    /*if (respondsToCreateWithData && respondsToMappingDictionaryForData)
+        [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];*/
+    
+    if (respondsToCreateWithData)
+    {
+        // if the model object class responds to createWithData, use that.
+        outputObject = [[outputObject class] createWithData:value];
 
-    if ([outputObject respondsToSelector:@selector(mappingDictionaryForData:)] ||
-        [value respondsToSelector:@selector(exportMappingDictionary)])
+        // assume models are valid unless model explicitly says no.
+        BOOL validModel = YES;
+        if ([outputObject respondsToSelector:@selector(validModel)])
+        {
+            validModel = [outputObject validModel];
+        }
+        
+        if (validModel)
+            [self setValue:outputObject destProperty:destProperty targetObject:targetObject];
+    }
+    else
+    if (respondsToMappingDictionaryForData || [value respondsToSelector:@selector(exportMappingDictionary)])
     {
         SDDataMap *newMap = [SDDataMap map];
         [newMap mapObject:value toObject:outputObject strict:YES];
@@ -243,11 +284,31 @@ static NSNumberFormatter *__internalformatter = nil;
             if ([outputObject isKindOfClass:[NSArray class]])
                 outputObject = [NSMutableArray array];
             
-            // if the model object or item doesn't support the protocol, we don't know how
-            // to map the objects, if it does, let's do it.
-            if ([outputObject respondsToSelector:@selector(mappingDictionaryForData:)] ||
-                [item respondsToSelector:@selector(exportMappingDictionary)])
+            BOOL respondsToCreateWithData = [outputClass respondsToSelector:@selector(createWithData:)];
+            BOOL respondsToMappingDictionaryForData = [outputObject respondsToSelector:@selector(mappingDictionaryForData:)];
+            
+            /*if (respondsToCreateWithData && respondsToMappingDictionaryForData)
+                [NSException raise:@"SDException" format:@"Model objects must not implement both createWithData: and mappingDictionaryForData:.  See documentation."];*/
+            
+            if (respondsToCreateWithData)
             {
+                // if the model object class responds to createWithData, use that.
+                outputObject = [[outputObject class] createWithData:item];
+                
+                // assume models are valid unless model explicitly says NO.
+                BOOL validModel = YES;
+                if ([outputObject respondsToSelector:@selector(validModel)])
+                    validModel = [outputObject validModel];
+                
+                if (validModel && outputObject)
+                    [workArray addObject:outputObject];
+            }
+            else
+            if (respondsToMappingDictionaryForData || [item respondsToSelector:@selector(exportMappingDictionary)])
+            {
+                // if the model object or item doesn't support the protocol, we don't know how
+                // to map the objects, if it does, let's do it.
+
                 SDDataMap *newMap = [SDDataMap map];
                 [newMap mapObject:item toObject:outputObject strict:YES];
                 
@@ -289,6 +350,79 @@ static NSNumberFormatter *__internalformatter = nil;
 
 #pragma mark - Utilities
 
+/// This is a classwide replacement for [NSObject valueForKeyPath:]
+/// it adds array notation to the standard valueForKeyPath
+/// such that a mapping dictionary entry @"foo[1].bar": @"fooBar" works properly
+- (id)valueFromObject:(NSObject *)sourceObject forKeyPath:(NSString *)keyPath
+{
+    id value = NULL;
+    
+    NSRange leftBrace = [keyPath rangeOfString:@"["];
+    if (leftBrace.location==NSNotFound) {
+        // It have no array, default to KVO
+        value = [sourceObject valueForKeyPath:keyPath];
+    } else {
+        // Let's traverse the object using the index in the braces
+        NSRange rightBrace = [keyPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, keyPath.length - leftBrace.location)];
+        if (rightBrace.location==NSNotFound) {
+            // Fall back to KVO if unmatched braces
+            value = [sourceObject valueForKeyPath:keyPath];
+        } else {
+            NSString *currentPath = [keyPath copy];
+            NSObject *currentObject = sourceObject;
+            while (leftBrace.location!=NSNotFound) {
+                // Make sure that there is content within the braces
+                if (leftBrace.location==(rightBrace.location-1)) {
+                    // it was a [], fall back to KVO
+                    value = [sourceObject valueForKeyPath:keyPath];
+                    break;
+                }
+                
+                NSString *parentPath = [currentPath substringToIndex:leftBrace.location];
+                NSUInteger arrayIndex = (NSUInteger)[[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
+                NSArray *parentArray = [currentObject valueForKeyPath:parentPath];
+                
+                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex) {
+                    // Fall back to KVO if it's not an array or the index doesn't exist
+                    value = [sourceObject valueForKeyPath:keyPath];
+                    break;
+                }
+                
+                currentObject = [parentArray objectAtIndex:arrayIndex];
+                currentPath = [currentPath substringFromIndex:rightBrace.location + 1];
+                
+                
+                if (currentPath.length>0 && [currentPath characterAtIndex:0]=='.') {
+                    currentPath = [currentPath substringFromIndex:1];
+                }
+                
+                // If currentPath is an emptyString, current object is the correct value
+                if (currentPath.length==0) {
+                    value = currentObject;
+                    break;
+                }
+                
+                // Let's look for more
+                leftBrace = [currentPath rangeOfString:@"["];
+                
+                if (leftBrace.location==NSNotFound) {
+                    // The remaining path is standard KVO
+                    value = [currentObject valueForKeyPath:currentPath];
+                } else {
+                    // more array, let's find the right brace
+                    rightBrace = [currentPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, currentPath.length - leftBrace.location)];
+                    if (rightBrace.location==NSNotFound) {
+                        // Fall back to KVO if unmatched braces
+                        value = [sourceObject valueForKeyPath:keyPath];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return value;
+}
+
 - (void)setValue:(id)value destProperty:(SDObjectProperty *)destProperty targetObject:(id)targetObject
 {
     NSString *basePath = destProperty.propertyName;
@@ -301,17 +435,15 @@ static NSNumberFormatter *__internalformatter = nil;
     
     if ([targetObject keyPathExists:parentPath])
     {
-        id targetParent = [targetObject valueForKeyPath:parentPath];
+        id targetParent = [self valueFromObject:targetObject forKeyPath:parentPath];
         if (![parentPath isEqualToString:propName])
+        {
             destProperty = [SDObjectProperty propertyFromObject:targetParent named:propName];
+        }
     }
     
     value = [self convertValue:value forType:destProperty.propertyType];
     [targetObject setValue:value forKeyPath:parentPath];
-    if ([targetObject respondsToSelector:@selector(modelDidLoad)])
-    {
-        [targetObject modelDidLoad];
-    }
 }
 
 - (id)convertValue:(id)value forType:(NSString *)type
@@ -345,7 +477,7 @@ static NSNumberFormatter *__internalformatter = nil;
         {
             if ([type isEqualToString:@"NSNumber"])
             {
-                result = [__internalformatter numberFromString:value];
+                result = [__internalFormatter numberFromString:value];
             }
         }
     }
@@ -379,7 +511,7 @@ static NSNumberFormatter *__internalformatter = nil;
     
     if ([targetObject keyPathExists:parentPath])
     {
-        id targetParent = [targetObject valueForKeyPath:parentPath];
+        id targetParent = [self valueFromObject:targetObject forKeyPath:parentPath];
         if (![parentPath isEqualToString:propName] && targetParent)
             targetObject = targetParent;
     }
@@ -428,6 +560,49 @@ static NSNumberFormatter *__internalformatter = nil;
     
     // returning a copy here to make sure the dictionary is immutable
     return [NSArray arrayWithArray:results];
+}
+
++ (instancetype)propertyFromClass:(Class)class named:(NSString *)name
+{
+    NSArray *nameParts = [name componentsSeparatedByString:@"."];
+    Class aClass = class;
+    
+    NSString *propertyType = nil;
+    NSString *propertySubtype = nil;
+    
+    for (NSUInteger i = 0; i < nameParts.count; i++)
+    {
+        NSString *propertyName = [nameParts objectAtIndex:i];
+        objc_property_t property = class_getProperty(aClass, [propertyName UTF8String]);
+        propertyType = [SDObjectProperty propertyType:property];
+        if (propertyType.length > 2)
+        {
+            Class nextClass = NSClassFromString(propertyType);
+            if (nextClass)
+                aClass = nextClass;
+        }
+        else
+            propertyType = nil;
+    }
+    
+    SDObjectProperty *objectProperty = [SDObjectProperty property];
+
+    if (propertyType)
+    {
+        propertyType = [propertyType stringByReplacingOccurrencesOfString:@">" withString:@""];
+        NSArray *typeParts = [propertyType componentsSeparatedByString:@"<"];
+        if (typeParts.count > 1)
+        {
+            propertyType = [typeParts objectAtIndex:0];
+            propertySubtype = [typeParts objectAtIndex:1];
+        }
+    }
+    
+    objectProperty.propertyType = propertyType;
+    objectProperty.propertySubtype = propertySubtype;
+    objectProperty.propertyName = name;
+    
+    return objectProperty;
 }
 
 + (instancetype)propertyFromObject:(NSObject *)object named:(NSString *)name
@@ -499,6 +674,20 @@ static NSNumberFormatter *__internalformatter = nil;
     }
     
     return @"";
+}
+                
+- (Class)propertyTypeClass
+{
+    if (self.propertyType.length > 1)
+        return NSClassFromString(self.propertyType);
+    return nil;
+}
+
+- (Class)propertySubtypeClass
+{
+    if (self.propertySubtype.length > 1)
+        return NSClassFromString(self.propertyType);
+    return nil;
 }
 
 - (void)interpretPropertyString:(NSString *)propertyString
@@ -605,13 +794,12 @@ static NSNumberFormatter *__internalformatter = nil;
 
 - (NSNumber *)numberValue
 {
-    if (!__internalformatter)
-    {
-        __internalformatter = [[NSNumberFormatter alloc] init];
-        [__internalformatter setNumberStyle:NSNumberFormatterNoStyle];
-    }
+    dispatch_once(&__formatterOnceToken, ^{
+        __internalFormatter = [[NSNumberFormatter alloc] init];
+        [__internalFormatter setNumberStyle:NSNumberFormatterNoStyle];
+    });
     
-    return [__internalformatter numberFromString:self];
+    return [__internalFormatter numberFromString:self];
 }
 
 - (char)charValue
@@ -712,3 +900,50 @@ static NSNumberFormatter *__internalformatter = nil;
 }
 
 @end
+
+#pragma mark - SDDataModelProtocol map helpers
+
+NSString *_sddm_key(id object, NSString *propertyName)
+{
+    NSMutableArray *kvoParts = [[propertyName componentsSeparatedByString:@"."] mutableCopy];
+    if (kvoParts.count < 2)
+        [NSException raise:@"sdmo_key" format:@"%@ is not properly being used with sdmo_key().", propertyName];
+    
+    // remove the first one, as it's almost certainly the same as "object", ie: self.
+    [kvoParts removeObjectAtIndex:0];
+
+    NSMutableString *keyPath = [[NSMutableString alloc] init];
+    for (NSUInteger i = 0; i < kvoParts.count; i++)
+    {
+        if (i > 0)
+            [keyPath appendString:@"."];
+        [keyPath appendString:[kvoParts objectAtIndex:i]];
+    }
+    
+    SDObjectProperty *property = [SDObjectProperty propertyFromClass:[object class] named:keyPath];
+    
+    NSString *propertyType = property.propertyType;
+    NSString *propertySubtype = property.propertySubtype;
+    NSString *propertyString = nil;
+    
+    if (propertyType.length > 1 && propertySubtype.length > 1)
+        propertyString = [NSString stringWithFormat:@"(%@<%@>)%@", propertyType, propertySubtype, keyPath];
+    else
+    if (propertyType.length > 1)
+        propertyString = [NSString stringWithFormat:@"(%@)%@", propertyType, keyPath];
+    else
+        propertyString = [NSString stringWithString:keyPath];
+    
+    return propertyString;
+}
+
+NSString *_sddm_selector(id object, SEL selector)
+{
+    const char *selectorName = sel_getName(selector);
+
+    if (![object respondsToSelector:selector])
+        [NSException raise:@"sdmo_selector" format:@"%@ does not respond to %s", NSStringFromClass([object class]), selectorName];
+    
+    NSString *selectorString = [NSString stringWithFormat:@"@selector(%s)", selectorName];
+    return selectorString;
+}

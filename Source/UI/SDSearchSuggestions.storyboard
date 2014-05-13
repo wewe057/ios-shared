@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="IlM-WD-3li">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+    </dependencies>
+    <scenes>
+        <!--Search Suggestions View Controller-->
+        <scene sceneID="n4v-Or-7Dk">
+            <objects>
+                <tableViewController id="IlM-WD-3li" customClass="SDSearchSuggestionsViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="F6T-QV-6rW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="dwC-VV-BWj" userLabel="Header">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="45"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Em8-th-XpM" userLabel="Container">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recent Searches" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l8C-Wq-2e8">
+                                            <rect key="frame" x="15" y="11" width="290" height="21"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" priority="500" constant="21" id="wJX-WG-xHD"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.32941176470588235" green="0.32941176470588235" blue="0.32941176470588235" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZXG-1a-vBm">
+                                            <rect key="frame" x="259" y="7" width="46" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" priority="500" constant="46" id="BKO-M3-mAC"/>
+                                                <constraint firstAttribute="height" priority="500" constant="30" id="x7e-le-PjH"/>
+                                            </constraints>
+                                            <state key="normal" title="Clear"/>
+                                            <connections>
+                                                <action selector="clearButtonTapped:" destination="IlM-WD-3li" eventType="touchUpInside" id="VmR-9Y-sFP"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.90588235289999997" green="0.91372549020000005" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="ZXG-1a-vBm" secondAttribute="trailing" constant="15" id="0M0-Vl-1dP"/>
+                                        <constraint firstAttribute="trailing" secondItem="l8C-Wq-2e8" secondAttribute="trailing" constant="15" id="3s8-r3-5B8"/>
+                                        <constraint firstAttribute="centerY" secondItem="l8C-Wq-2e8" secondAttribute="centerY" id="IYk-15-8FY"/>
+                                        <constraint firstItem="l8C-Wq-2e8" firstAttribute="leading" secondItem="Em8-th-XpM" secondAttribute="leading" constant="15" id="LPe-6X-3EN"/>
+                                        <constraint firstItem="l8C-Wq-2e8" firstAttribute="baseline" secondItem="ZXG-1a-vBm" secondAttribute="baseline" id="xfX-ck-MT8"/>
+                                    </constraints>
+                                </view>
+                            </subviews>
+                            <color key="backgroundColor" red="0.69803921568627447" green="0.69803921568627447" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstItem="Em8-th-XpM" firstAttribute="top" secondItem="dwC-VV-BWj" secondAttribute="top" id="VU3-vF-TCE"/>
+                                <constraint firstAttribute="trailing" secondItem="Em8-th-XpM" secondAttribute="trailing" id="ahL-sc-gRZ"/>
+                                <constraint firstAttribute="bottom" secondItem="Em8-th-XpM" secondAttribute="bottom" constant="1" id="dtY-rk-zoP"/>
+                                <constraint firstItem="Em8-th-XpM" firstAttribute="leading" secondItem="dwC-VV-BWj" secondAttribute="leading" id="oim-BM-iSe"/>
+                            </constraints>
+                        </view>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="gQT-eu-ZRF">
+                                <rect key="frame" x="0.0" y="67" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gQT-eu-ZRF" id="UoZ-m1-oST">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <color key="tintColor" red="0.0" green="0.56862745098039214" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="IlM-WD-3li" id="gnu-r4-kuL"/>
+                            <outlet property="delegate" destination="IlM-WD-3li" id="lgv-N0-BpX"/>
+                        </connections>
+                    </tableView>
+                    <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="clearButton" destination="ZXG-1a-vBm" id="2ta-pT-ZnT"/>
+                        <outlet property="titleLabel" destination="l8C-Wq-2e8" id="Eah-UP-iHU"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="B6A-PD-9DK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-53" y="-317"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar" statusBarStyle="lightContent"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
+</document>

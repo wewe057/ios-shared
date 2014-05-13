@@ -30,4 +30,12 @@
     return color;
 }
 
++ (UIColor *)randomColor
+{
+    NSUInteger red = arc4random() % 256;
+    NSUInteger green = arc4random() % 256;
+    NSUInteger blue = arc4random() % 256;
+    UIColor *color = [self colorWith8BitRed:red green:green blue:blue alpha:1.0];
+    return color;
+}
 @end

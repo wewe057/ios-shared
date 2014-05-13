@@ -66,6 +66,7 @@ typedef struct
 @property (nonatomic, assign) CGFloat menuWidthForPortrait;
 @property (nonatomic, assign) CGFloat menuWidthForLandscape;
 @property (nonatomic, assign) CGFloat menuWidthForCurrentOrientation;
+@property (nonatomic, assign) Class backgroundViewClass;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
@@ -78,6 +79,8 @@ typedef struct
 
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
+@property (nonatomic, assign) BOOL implementsBackgroundViewClass;
+@property (nonatomic, assign) BOOL implementsLightboxEffectColor;
 
 @end
 
@@ -222,6 +225,8 @@ typedef struct
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
                 self.menuBottomAdornmentView.adornmentImage = self.adornmentImageForCurrentOrientation;
+            if(self.implementsBackgroundViewClass)
+                self.menuBottomAdornmentView.backgroundViewClass = self.backgroundViewClass;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
         }
         
@@ -325,13 +330,17 @@ typedef struct
     if(self.implementsMenuWidth)
     {
         self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidth;
+        self.menuWidthForLandscape = self.menuWidthForPortrait;
     }
     else if(self.implementsMenuWidthForOrientations)
     {
         self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidthForPortrait;
         self.menuWidthForLandscape = self.menuController.pullNavigationMenuWidthForLandscape;
     }
-
+    self.implementsBackgroundViewClass = [self.menuController respondsToSelector:@selector(pullNavigationMenuBackgroundViewClass)];
+    if(self.implementsBackgroundViewClass)
+        self.backgroundViewClass = self.menuController.pullNavigationMenuBackgroundViewClass;
+    self.implementsLightboxEffectColor = [self.menuController respondsToSelector:@selector(pullNavigationLightboxEffectColor)];
     self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
     self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
     self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
@@ -554,6 +563,11 @@ typedef struct
 
             if(completion)
                 completion();
+            
+            // If we just finished our collapse, tell the controller now
+            if(self.implementsDidDisappear && !self.menuOpen)
+                [self.menuController pullNavMenuDidDisappear];
+
         }];
     }
     else
@@ -591,7 +605,9 @@ typedef struct
 
     [self collapseMenuWithCompletion:^
     {
-        if(self.implementsDidDisappear)
+        // If we're animating, then firing did disappear here is a lie. Hold
+        //  off until we're actually done animating.
+        if(self.implementsDidDisappear && !self.animating)
             [self.menuController pullNavMenuDidDisappear];
     }];
 }
@@ -624,7 +640,7 @@ typedef struct
     {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-            self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+            self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         }
         completion:^(BOOL finished)
         {
@@ -634,10 +650,22 @@ typedef struct
     }
     else
     {
-        self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         if(completion)
             completion();
     }
+}
+
+- (UIColor *) backgroundEffectsBackgroundColor
+{
+    UIColor *backgroundColor = [@"#00000033" uicolor];
+    
+    if(self.implementsLightboxEffectColor)
+    {
+        backgroundColor = [self.menuController pullNavigationLightboxEffectColor];
+    }
+    
+    return backgroundColor;
 }
 
 - (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
@@ -713,7 +741,12 @@ typedef struct
     }
 
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    UIWindow* topMostWindow = [UIApplication sharedApplication].windows.lastObject;
+    UIWindow *topMostWindow = self.window;
+    if ( topMostWindow == nil )
+    {
+        topMostWindow = [UIApplication sharedApplication].windows.lastObject;
+    }
+
     CGSize topMostWindowSize = topMostWindow.bounds.size;
     CGFloat height = UIInterfaceOrientationIsPortrait(orientation) ? MAX(topMostWindowSize.height, topMostWindowSize.width) : MIN(topMostWindowSize.height, topMostWindowSize.width);
 

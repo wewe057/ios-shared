@@ -6,6 +6,16 @@
 //  Copyright (c) 2013 SetDirection. All rights reserved.
 //
 
+
+/**
+ Turns the variable you pass in into an NSString.
+ 
+ ie:  NSLog(variable_name(self.blah);  results in "self.blah" being printed to the console.
+ */
+
+#define variable_name(x) (@""#x)
+
+
 /**
  The __deprecated__ macro saves a little bit of typing around marking classes and methods as deprecated.
  It also provides a compile-time warning which can be used to direct developers elsewhere.
