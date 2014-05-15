@@ -74,20 +74,6 @@
     [self stateCardNumber];
 }
 
-- (void)setDelegate:(id<SDCreditCardFieldDelegate>)delegate
-{
-    _delegate = delegate;
-    if(self.placeholderView == nil)
-    {
-        [self setupPlaceholderView];
-        [self addSubview:self.placeholderView];
-
-        UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { self.placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, self.innerView.frame.size.height } }];
-        line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
-        [self addSubview:line];
-    }
-}
-
 // TODO: This needs to be broken up so that each time the credit card number is set, this is applied.
 
 - (void)setSecureDisplay:(BOOL)flag
@@ -214,6 +200,16 @@
 
 - (void)layoutSubviews
 {
+    if(self.placeholderView == nil)
+    {
+        [self setupPlaceholderView];
+        [self addSubview:self.placeholderView];
+
+        UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { self.placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, self.innerView.frame.size.height } }];
+        line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
+        [self addSubview:line];
+    }
+
     _placeholderView.frame = CGRectMake(0.0f, ceil((self.frame.size.height - 32.0f) * 0.5f), 51.0f, 32.0f);
 
     NSDictionary* attributes = self.defaultTextAttributes;
@@ -325,6 +321,7 @@
 - (void)reset
 {
     [[self subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    self.placeholderView = nil;
     [self commonInit];
     [self layoutSubviews];
 }
