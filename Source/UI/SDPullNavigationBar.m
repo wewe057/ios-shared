@@ -132,7 +132,7 @@ typedef struct
 // Superview is known, start setting up our subviews.
 - (void)willMoveToSuperview:(UIView*)newSuperview
 {
-    if([UIDevice iPad] && self.implementsAdornmentImages)
+    if(self.implementsAdornmentImages)
         self.showAdornment = YES;
     
     if(newSuperview && nil == self.menuContainer)
@@ -737,6 +737,9 @@ typedef struct
         if([UIDevice iPad])
         {
             sBottomSafetyGap = MAX([SDPullNavigationManager sharedInstance].menuAdornmentBottomGap, kDefaultMenuHeightBuffer);
+        }
+        else {
+            sBottomSafetyGap = MAX([SDPullNavigationManager sharedInstance].menuAdornmentBottomGap, sBottomSafetyGap);
         }
     }
 
