@@ -111,4 +111,16 @@ typedef void (^SDContentAlertViewCompletionBlock)(BOOL cancelled);
  */
 + (SDContentAlertView *)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelTitle:(NSString *)cancelTitle otherTitle:(NSString *)otherTitle contentView:(UIView *)view completion:(SDContentAlertViewCompletionBlock)completion;
 
+/**
+ *  Current value of the default windowLevel used when creating new SDContentAlertView instances
+ */
++ (UIWindowLevel) defaultAlertWindowLevel;
+
+/**
+ *  Change default windowLevel used for newly created or hidden SDContentAlertView instances
+ *  to allow user of the class enough control to avoid conflicts with other uses of secondary
+ *  UIWindow instances
+ */
++ (void) setDefaultAlertWindowLevel:(UIWindowLevel) defaultAlertWindowLevel;
+
 @end
