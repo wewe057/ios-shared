@@ -74,4 +74,14 @@
  */
 - (NSArray *)arrayByRemovingObject:(id)anObject;
 
+/** Returns the object stored in the receiver and its child arrays represented by the supplied index path.
+ *  @returns nil if any part of the index path returns an object that is not an array or if the index path is longer than the dimensions of the receiver.
+ */
+- (id) objectAtIndexPath:(NSIndexPath *)indexPath;
+
+/** Queries the receiver and each of its child arrays in turn for the object at each index in the index path. 
+ *  @returns nil if the object is not found.
+ */
+- (NSIndexPath *) indexPathForObject:(id)object;
+
 @end

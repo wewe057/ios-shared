@@ -60,6 +60,11 @@
 - (id)firstSubviewOfClass:(Class)aViewClass;
 
 /**
+ Returns the subview of the recieving view that is an ancestor of distantSubview.
+ */
+- (UIView*)nearestAncestor:(UIView*)distantSubview;
+
+/**
  Returns a visual stand-in for the current view that can be shown in it's place.
  On iOS7 it does snapshotViewAfterScreenUpdates: without waiting for updates.
  */

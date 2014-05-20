@@ -196,4 +196,50 @@ Returns a deepCopy of an array. It will recursively deepCopy contained arrays to
     return editedArray;
 }
 
+- (id) objectAtIndexPath:(NSIndexPath *)indexPath {
+	id object = self;
+	NSUInteger length = [indexPath length];
+	for (NSUInteger i = 0; i < length; i++) {
+		NSUInteger index = [indexPath indexAtPosition:i];
+		if ([object respondsToSelector:@selector(count)] && index < [object count] && [object respondsToSelector:@selector(objectAtIndex:)]) {
+			object = [object objectAtIndex:index];
+		}
+		else {
+			object = nil;
+            break;
+		}
+	}
+	return object;
+}
+
+- (NSIndexPath *) indexPathForObject:(id)object {
+	NSIndexPath *indexPathForObject = nil;
+	__block NSIndexPath *indexPath = [NSIndexPath new];
+	[self enumerateObjectsUsingBlock:^(id child, NSUInteger idx, BOOL *stop) {
+		if (object == child) {
+			indexPath = [indexPath indexPathByAddingIndex:idx];
+			*stop = YES;
+		}
+		else if ([child respondsToSelector:_cmd]) {
+			NSIndexPath *childIndexPath = [child indexPathForObject:object];
+			NSUInteger length = [childIndexPath length];
+			if (length > 0) {
+				indexPath = [indexPath indexPathByAddingIndex:idx];
+				NSUInteger *indexes = malloc(sizeof(NSUInteger)*length);
+				[childIndexPath getIndexes:indexes];
+				for (NSUInteger i = 0; i < length; i++) {
+					indexPath = [indexPath indexPathByAddingIndex:indexes[i]];
+				}
+				free(indexes);
+				*stop = YES;
+			}
+		}
+	}];
+	if (indexPath.length) {
+		indexPathForObject = indexPath;
+	}
+	return indexPathForObject;
+}
+
+
 @end

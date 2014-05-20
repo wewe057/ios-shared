@@ -136,4 +136,34 @@ static const CGFloat kMinimumHeightForTapArea = 44.0f;
     return imageViewRect;
 }
 
+- (void) pullNavigationMenuWillAppear
+{
+    id<SDPullNavigationBackgroundView> backgroundView = [self backgroundViewProtocol];
+    if([backgroundView respondsToSelector:@selector(pullNavigationMenuWillAppear)])
+    {
+        [backgroundView pullNavigationMenuWillAppear];
+    }
+}
+
+- (void) pullNavigationMenuDidDisappear
+{
+    id<SDPullNavigationBackgroundView> backgroundView = [self backgroundViewProtocol];
+    if([backgroundView respondsToSelector:@selector(pullNavigationMenuDidDisappear)])
+    {
+        [backgroundView pullNavigationMenuDidDisappear];
+    }
+}
+
+- (id<SDPullNavigationBackgroundView>) backgroundViewProtocol
+{
+    id<SDPullNavigationBackgroundView> backgroundView = nil;
+    
+    if (self.backgroundView && _backgroundViewClass && [_backgroundViewClass conformsToProtocol:@protocol(SDPullNavigationBackgroundView)])
+    {
+        backgroundView = (id<SDPullNavigationBackgroundView>)self.backgroundView;
+    }
+    
+    return backgroundView;
+}
+
 @end
