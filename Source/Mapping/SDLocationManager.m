@@ -286,12 +286,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         delegateRegistration.distanceFilter = distanceFilter;
         [_delegateRegistrations addObject:delegateRegistration];
 
-        [super setDesiredAccuracy:[self _greatestDesiredAccuracy]];
-        [super setDistanceFilter:[self _finestDistanceFilter]];
+        [self _updateDesiredAccuracyAndDistanceFilter];
 
         LocTrace(@"*ADDED* delegate:%@",delegate);
-        LocTrace(@"self.desiredAccuracy:%@",@(self.desiredAccuracy));
-        LocTrace(@"self.distanceFilter:%@",@(self.distanceFilter));
     });
 }
 
@@ -303,12 +300,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         if (existingRegistration) {
             [_delegateRegistrations removeObject:existingRegistration];
 
-            [super setDesiredAccuracy:[self _greatestDesiredAccuracy]];
-            [super setDistanceFilter:[self _finestDistanceFilter]];
-
             LocTrace(@"*REMOVED* delegate:%@",delegate);
-            LocTrace(@"self.desiredAccuracy:%@",@(self.desiredAccuracy));
-            LocTrace(@"self.distanceFilter:%@",@(self.distanceFilter));
+            
+            [self _updateDesiredAccuracyAndDistanceFilter];
         }
     });
 }
@@ -322,6 +316,19 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         isRegistered = (nil != existingRegistration);
     });
     return isRegistered;
+}
+
+- (void) _updateDesiredAccuracyAndDistanceFilter
+{
+    // Only call these things outside of a barrier block in order to avoid
+    //  deadlocks.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [super setDesiredAccuracy:[self _greatestDesiredAccuracy]];
+        [super setDistanceFilter:[self _finestDistanceFilter]];
+
+        LocTrace(@"self.desiredAccuracy:%@",@(self.desiredAccuracy));
+        LocTrace(@"self.distanceFilter:%@",@(self.distanceFilter));
+    });
 }
 
 - (CLLocationAccuracy) _greatestDesiredAccuracy {
