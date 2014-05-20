@@ -62,7 +62,7 @@
 /**
  Returns the subview of the recieving view that is an ancestor of distantSubview.
  */
-- (UIView*)asdaNearestAncestor:(UIView*)distantSubview;
+- (UIView*)nearestAncestor:(UIView*)distantSubview;
 
 /**
  Returns a visual stand-in for the current view that can be shown in it's place.

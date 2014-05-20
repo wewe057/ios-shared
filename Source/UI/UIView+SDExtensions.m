@@ -69,7 +69,7 @@
 	return nil;
 }
 
-- (UIView*)asdaNearestAncestor:(UIView*)distantSubview
+- (UIView*)nearestAncestor:(UIView*)distantSubview
 {
     for (UIView *view in [self subviews]) {
         if ([distantSubview isDescendantOfView:view]) {
