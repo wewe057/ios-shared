@@ -431,7 +431,7 @@ typedef struct
                 }
 
                 if(action == SDPullNavigationStateEndExpand)    [self expandMenu];
-                if(action == SDPullNavigationStateEndCollapse)  [self collapseMenu];
+                if(action == SDPullNavigationStateEndCollapse)  [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
             }
             completion:^(BOOL finished) {}];
 
