@@ -95,8 +95,10 @@ typedef enum
  "status": 1
  }
 
+ If you wish to test both happy and error paths in the same suite, set useErrorMocksIfAvailable to TRUE before the error cases.
  */
 @property (nonatomic, assign) BOOL useMocksIfAvailable;
+@property (nonatomic, assign) BOOL useErrorMocksIfAvailable;
 
 #ifdef DEBUG
 @property (nonatomic, assign) BOOL disableCaching;

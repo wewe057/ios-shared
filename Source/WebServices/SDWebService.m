@@ -179,11 +179,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     NSData *mockData = nil;
     if (errorPath && [fileManager fileExistsAtPath:errorPath])
         path = errorPath;
-    if (happyPath && [fileManager fileExistsAtPath:happyPath])
-        path = happyPath;
-
-    // we prefer the happy path.  removing the happy path json from the bundle will cause us to load
+    // we prefer the happy path (unless forcably told otherwise).  removing the happy path json from the bundle will cause us to load
     // the error path instead.
+    if (happyPath && [fileManager fileExistsAtPath:happyPath] &&!self.useErrorMocksIfAvailable)
+        path = happyPath;
     
     if (path)
     {
