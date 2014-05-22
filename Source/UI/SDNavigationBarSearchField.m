@@ -8,8 +8,12 @@
 
 #import "SDNavigationBarSearchField.h"
 #import "SDSearchSuggestionsViewController.h"
+#import "SDTouchCaptureView.h"
 
 @interface SDNavigationBarSearchField () <UITextFieldDelegate, SDSearchSuggestionsViewControllerDelegate, UIPopoverControllerDelegate>
+
+@property (nonatomic, strong) SDTouchCaptureView *touchCapture;
+
 @end
 
 @implementation SDNavigationBarSearchField
@@ -36,6 +40,8 @@
 
 - (void) commonInit
 {
+    self.touchCapture = [[SDTouchCaptureView alloc] init];
+    
     // Load and configure the text field
     self.textField = [[UITextField alloc] initWithFrame:[self textFieldFrame]];
     [self configureTextField];
@@ -112,6 +118,11 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
+    UIView *clippingView = self.superview.superview;
+    [self.touchCapture beginModalWithView:textField clippingView:clippingView touchOutsideBlock:^{
+        [textField resignFirstResponder];
+    }];
+    
     [self configureForExpand];
     
     return YES;
@@ -119,6 +130,8 @@
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+    [self.touchCapture endModal];
+    
     if ( self.canCollapse )
         [self configureForCollapse];
     
@@ -233,7 +246,7 @@
 {
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^
      {
-         self.textField.frame = [self textFieldFrame];
+         [self setTextFieldFrame:[self textFieldFrame]];
      } completion:nil];
 }
 
@@ -241,8 +254,13 @@
 {
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseInOut animations:^
      {
-         self.textField.frame = [self textFieldExpandedFrame];
+         [self setTextFieldFrame:[self textFieldExpandedFrame]];
      } completion:nil];
+}
+
+- (void) setTextFieldFrame:(CGRect)frame
+{
+    self.textField.frame = [self.touchCapture convertFrame:frame];
 }
 
 - (void) setUsageDelegate:(id<SDSearchUsageDelegate>)usageDelegate
