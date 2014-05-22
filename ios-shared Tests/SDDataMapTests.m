@@ -425,4 +425,18 @@
     XCTAssertTrue(outputDictionary.count==0, @"the mapping returned results when they should have failed!");
 }
 
+- (void)testValueForKeyOddity
+{
+    NSDictionary *mappingDictionary = @{@"error": @"error"};
+    NSDictionary *outputDictionary = [NSMutableDictionary dictionary];
+    NSArray *testArray = @[
+                           @{@"blah": @"1"},
+                           @{@"blah": @"2"},
+                           @{@"blah": @"3"},
+                           ];
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:testArray toObject:outputDictionary];
+}
+
 @end

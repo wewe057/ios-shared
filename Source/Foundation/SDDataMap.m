@@ -358,21 +358,30 @@ static dispatch_once_t __formatterOnceToken = 0;
     id value = NULL;
     
     NSRange leftBrace = [keyPath rangeOfString:@"["];
-    if (leftBrace.location==NSNotFound) {
-        // It have no array, default to KVO
-        value = [sourceObject valueForKeyPath:keyPath];
-    } else {
+    if (leftBrace.location==NSNotFound)
+    {
+        // It has no array, default to KVO
+        if ([sourceObject keyPathExists:keyPath])
+            value = [sourceObject valueForKeyPath:keyPath];
+    }
+    else
+    {
         // Let's traverse the object using the index in the braces
         NSRange rightBrace = [keyPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, keyPath.length - leftBrace.location)];
-        if (rightBrace.location==NSNotFound) {
+        if (rightBrace.location==NSNotFound)
+        {
             // Fall back to KVO if unmatched braces
             value = [sourceObject valueForKeyPath:keyPath];
-        } else {
+        }
+        else
+        {
             NSString *currentPath = [keyPath copy];
             NSObject *currentObject = sourceObject;
-            while (leftBrace.location!=NSNotFound) {
+            while (leftBrace.location!=NSNotFound)
+            {
                 // Make sure that there is content within the braces
-                if (leftBrace.location==(rightBrace.location-1)) {
+                if (leftBrace.location==(rightBrace.location-1))
+                {
                     // it was a [], fall back to KVO
                     value = [sourceObject valueForKeyPath:keyPath];
                     break;
@@ -382,7 +391,8 @@ static dispatch_once_t __formatterOnceToken = 0;
                 NSUInteger arrayIndex = (NSUInteger)[[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
                 NSArray *parentArray = [currentObject valueForKeyPath:parentPath];
                 
-                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex) {
+                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex)
+                {
                     // Fall back to KVO if it's not an array or the index doesn't exist
                     value = [sourceObject valueForKeyPath:keyPath];
                     break;
@@ -392,12 +402,12 @@ static dispatch_once_t __formatterOnceToken = 0;
                 currentPath = [currentPath substringFromIndex:rightBrace.location + 1];
                 
                 
-                if (currentPath.length>0 && [currentPath characterAtIndex:0]=='.') {
+                if (currentPath.length>0 && [currentPath characterAtIndex:0]=='.')
                     currentPath = [currentPath substringFromIndex:1];
-                }
                 
                 // If currentPath is an emptyString, current object is the correct value
-                if (currentPath.length==0) {
+                if (currentPath.length==0)
+                {
                     value = currentObject;
                     break;
                 }
@@ -405,7 +415,8 @@ static dispatch_once_t __formatterOnceToken = 0;
                 // Let's look for more
                 leftBrace = [currentPath rangeOfString:@"["];
                 
-                if (leftBrace.location==NSNotFound) {
+                if (leftBrace.location==NSNotFound)
+                {
                     // The remaining path is standard KVO
                     value = [currentObject valueForKeyPath:currentPath];
                 } else {
