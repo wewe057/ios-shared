@@ -355,9 +355,67 @@ static dispatch_once_t __formatterOnceToken = 0;
 /// such that a mapping dictionary entry @"foo[1].bar": @"fooBar" works properly
 - (id)valueFromObject:(NSObject *)sourceObject forKeyPath:(NSString *)keyPath
 {
-    id value = NULL;
+    id value = nil;
     
-    NSRange leftBrace = [keyPath rangeOfString:@"["];
+    NSRegularExpression *indexRegex = [NSRegularExpression regularExpressionWithPattern:@"(?<=\\().*(?=\\))|(?<=\\[).*(?=\\])" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRegularExpression *pathRegex = [NSRegularExpression regularExpressionWithPattern:@"^[^\\[]*" options:NSRegularExpressionCaseInsensitive error:nil];
+
+    id tempValue = sourceObject;
+    
+    NSArray *keyPaths = [keyPath componentsSeparatedByString:@"."];
+    for (NSUInteger i = 0; i < keyPaths.count; i++)
+    {
+        // ie: blah[123]
+        NSString *fullPath = [keyPaths objectAtIndex:i];
+        
+        // find the index, ie: 123
+        NSTextCheckingResult *match = [indexRegex firstMatchInString:fullPath options:0 range:NSMakeRange(0, fullPath.length)];
+        NSString *stringIndex = [fullPath substringWithRange:[match rangeAtIndex:0]];
+        if (stringIndex.length == 0)
+            stringIndex = nil;
+
+        // get the actual path without the index, ie: blah
+        match = [pathRegex firstMatchInString:fullPath options:0 range:NSMakeRange(0, fullPath.length)];
+        NSString *path = [fullPath substringWithRange:[match rangeAtIndex:0]];
+        if (path.length == 0)
+            path = nil;
+
+        if (stringIndex && path)
+        {
+            NSUInteger index = [stringIndex unsignedIntegerValue];
+            
+            tempValue = [tempValue valueForKey:path];
+            if (tempValue && [tempValue isKindOfClass:[NSArray class]])
+            {
+                // make sure we don't blast past the end of the array.
+                NSArray *array = (NSArray *)tempValue;
+                if (index < array.count)
+                    tempValue = [tempValue objectAtIndex:index];
+                else
+                {
+                    // there's nothing to query for a value, return nil.
+                    tempValue = nil;
+                }
+            }
+        }
+        else
+        {
+            if (path && [tempValue keyPathExists:path])
+                tempValue = [tempValue valueForKey:path];
+            else
+            {
+                // there's nothing to query for a value, return nil.
+                tempValue = nil;
+            }
+        }
+    }
+    
+    if (tempValue != sourceObject)
+        value = tempValue;
+    
+    return value;
+    
+    /*NSRange leftBrace = [keyPath rangeOfString:@"["];
     if (leftBrace.location==NSNotFound)
     {
         // It has no array, default to KVO
@@ -431,7 +489,7 @@ static dispatch_once_t __formatterOnceToken = 0;
             }
         }
     }
-    return value;
+    return value;*/
 }
 
 - (void)setValue:(id)value destProperty:(SDObjectProperty *)destProperty targetObject:(id)targetObject
