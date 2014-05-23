@@ -10,6 +10,17 @@
 static const CGFloat kCircularButtonWidth = 29.0f;
 static const CGFloat kCircularButtonHeight = 29.0f;
 
+@interface SDShapeView : UIView;
+@end
+
+@implementation SDShapeView
++ (Class)layerClass
+{
+    return [CAShapeLayer class];
+}
+
+@end
+
 @interface SDCircularMinusButton()
 @end
 
@@ -237,14 +248,10 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 @property (nonatomic, strong, readwrite) UIImageView *rightImageView;
 @property (nonatomic, strong, readwrite) UILabel *quantityLabel;
 @property (nonatomic, strong) NSLayoutConstraint *labelWidthConstraint;
+@property (nonatomic, strong) SDShapeView *shapeView;
 @end
 
 @implementation SDQuantityView
-
-+ (Class)layerClass
-{
-    return [CAShapeLayer class];
-}
 
 + (instancetype)quantityView
 {
@@ -255,6 +262,9 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)setup
 {
+    _shapeView = [[SDShapeView alloc] init];
+    [self addSubview:_shapeView];
+
     _incrementButton = [SDCircularPlusButton circularPlusButtonWithStrokeColor:_fillColor];
     _incrementButton.highlightedColor = [UIColor lightGrayColor];
     
@@ -370,7 +380,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)setupLayer
 {
-    CAShapeLayer *layer = (CAShapeLayer *)self.layer;
+    CAShapeLayer *layer = (CAShapeLayer *)self.shapeView.layer;
     CGRect bgRect = CGRectInset(self.bounds, kSDQuantityViewBackgroundWidthInset, 0.0f);
     bgRect.origin.y += 0.5f;
     bgRect.size.height -= 1.0f;
@@ -388,6 +398,25 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     [super setBounds:bounds];
     if (self.rightImageView.image)
         [self setNeedsUpdateConstraints];
+}
+
+#pragma mark - alpha override for ios 6
+
+- (void) setAlpha:(CGFloat)alpha;
+{
+    if( floor( NSFoundationVersionNumber ) > NSFoundationVersionNumber_iOS_6_1 ) {
+        [super setAlpha:alpha];
+    } else {
+        self.shapeView.alpha = alpha;
+        self.quantityLabel.alpha = alpha;
+
+        // Override alpha handling for ios 6
+        // using CAShapeLayer and paint code buttons appear to have an issue with combined opacity.
+        CGFloat r, g, b, a;
+        [self.fillColor getRed:&r green:&g blue:&b alpha:&a];
+        self.incrementButton.strokeColor = [UIColor colorWithRed:r green:g blue:b alpha:alpha];
+        self.decrementButton.strokeColor = [UIColor colorWithRed:r green:g blue:b alpha:alpha];
+    }
 }
 
 @end
