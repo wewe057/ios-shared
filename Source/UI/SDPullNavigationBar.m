@@ -433,7 +433,14 @@ typedef struct
                 if(action == SDPullNavigationStateEndExpand)    [self expandMenu];
                 if(action == SDPullNavigationStateEndCollapse)  [self collapseMenuWithCompletion:^{ [self hideMenuContainer]; }];
             }
-            completion:^(BOOL finished) {}];
+            completion:^(BOOL finished)
+            {
+                if(self.menuOpen == NO)
+                {
+                    self.tabButton.tuckedTab = NO;
+                    [self.tabButton setNeedsDisplay];
+                }
+            }];
 
             // Falling through on purpose...
         }
