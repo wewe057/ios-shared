@@ -44,8 +44,9 @@
         [visualClippingView addGestureRecognizer:[self dismissRecognizer]];
         [touchCaptureView addSubview:visualClippingView];
         
-        CGRect frame = [modalView convertRect:[modalView bounds] toView:clippingView];
+        CGRect rootFrame = [modalView convertRect:[modalView bounds] toView:rootView];
         [visualClippingView addSubview:modalView];
+        CGRect frame = [rootView convertRect:rootFrame toView:visualClippingView];
         
         if ( self.modalViewTranslateAutoresizeMasksIntoConstraints )
         {
