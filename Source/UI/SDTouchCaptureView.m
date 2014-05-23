@@ -30,7 +30,7 @@
     {
         [self saveParentViewState:modalView];
         
-        UIView *rootView = [[[modalView window] rootViewController] view];
+        UIView *rootView = [[[modalView window] subviews] lastObject];
         
         UIView *touchCaptureView = [[UIView alloc] initWithFrame:[rootView bounds]];
         [touchCaptureView setBackgroundColor:[UIColor clearColor]];
