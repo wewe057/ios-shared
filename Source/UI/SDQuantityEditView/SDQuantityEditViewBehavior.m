@@ -130,7 +130,7 @@ static char kObserveQuantityContext;
     NSMutableString *weightLabelText = [NSMutableString stringWithString:value.stringValue];
     if ([self.weightSuffix length])
     {
-        [weightLabelText appendFormat:@" %@", self.weightSuffix];
+        [weightLabelText appendFormat:@"%@", self.weightSuffix];
     }
     if ([self.quantitySuffix length])
     {
