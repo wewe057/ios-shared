@@ -7,6 +7,9 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void (^PaintCodeDrawingBlock)();
+
 @interface UIView(PaintCode)
-- (UIImage*)imageForSelector:(SEL)selector;
+- (UIImage *)imageWithBlock:(PaintCodeDrawingBlock)paintCodeBlock;
+- (UIImage *)imageForSelector:(SEL)selector;
 @end
