@@ -145,11 +145,32 @@ typedef void (^SDUpdateTableDataBlock)();
  *  A method to compare snapshots of a table's data and issue the proper update commands (insert/remove sections and insert/remove/update rows) to the tableView.
  *
  *  @param updateDataSource     The data source that will supply the before and after snapshots of the table's data.
+ *  @param animationTypes       A dictionary that defines the animation type for each update type (row refresh/removal/addition, section removal/addition)
+ *  @param updateBlock          The block that actually performs the update of the table's data.  The methods of SDTableViewAutoUpdateDataSource will be called once before this block
+ *                              is run to get the "before" snapshot.  After the block is run the methods will be called again to get the "after" snapshot
+ */
+- (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationTypes:(NSDictionary *)animationTypes updateBlock:(SDUpdateTableDataBlock)updateBlock;
+
+/**
+ *  A method to compare snapshots of a table's data and issue the proper update commands (insert/remove sections and insert/remove/update rows) to the tableView.
+ *
+ *  @param updateDataSource     The data source that will supply the before and after snapshots of the table's data.
  *  @param animationType        The type of animation to perform when issuing update commands.
  *  @param updateBlock          The block that actually performs the update of the table's data.  The methods of SDTableViewAutoUpdateDataSource will be called once before this block
  *                              is run to get the "before" snapshot.  After the block is run the methods will be called again to get the "after" snapshot
  *  @param commandCallbackBlock This block is called right after each SDTableViewCommand is run.  It is a chance for the client to react to the call.
  */
 - (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationType:(UITableViewRowAnimation)animationType updateBlock:(SDUpdateTableDataBlock)updateBlock commandCallbackblock:(SDTableCommandCallbackBlock)commandCallbackBlock;
+
+/**
+ *  A method to compare snapshots of a table's data and issue the proper update commands (insert/remove sections and insert/remove/update rows) to the tableView.
+ *
+ *  @param updateDataSource     The data source that will supply the before and after snapshots of the table's data.
+ *  @param animationTypes       A dictionary that defines the animation type for each update type (row refresh/removal/addition, section removal/addition)
+ *  @param updateBlock          The block that actually performs the update of the table's data.  The methods of SDTableViewAutoUpdateDataSource will be called once before this block
+ *                              is run to get the "before" snapshot.  After the block is run the methods will be called again to get the "after" snapshot
+ *  @param commandCallbackBlock This block is called right after each SDTableViewCommand is run.  It is a chance for the client to react to the call.
+ */
+- (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationTypes:(NSDictionary *)animationTypes updateBlock:(SDUpdateTableDataBlock)updateBlock commandCallbackblock:(SDTableCommandCallbackBlock)commandCallbackBlock;
 
 @end
