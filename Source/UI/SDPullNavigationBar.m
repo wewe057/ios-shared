@@ -585,6 +585,29 @@ typedef struct
     }
 }
 
+- (void)bouncePullMenu
+{
+    [UIView animateWithDuration:0.45f delay:0.0f usingSpringWithDamping:0.99f initialSpringVelocity:10.0f options:0 animations:^{
+        [self.superview insertSubview:self.menuContainer belowSubview:self];
+        self.menuContainer.hidden = NO;
+        self.tabButton.tuckedTab = YES;
+        [self.tabButton setNeedsDisplay];
+        CGRect f = self.menuBottomAdornmentView.frame;
+        f.origin.y += 85.0f;
+        self.menuBottomAdornmentView.frame = f;
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.3f delay:0.1f usingSpringWithDamping:0.8f initialSpringVelocity:8.0f options:0 animations:^{
+            CGRect f = self.menuBottomAdornmentView.frame;
+            f.origin.y -= 85.0f;
+            self.menuBottomAdornmentView.frame = f;
+            self.tabButton.tuckedTab = NO;
+        } completion:^(BOOL secondFinished) {
+            [self.tabButton setNeedsDisplay];
+            [self.menuContainer removeFromSuperview];
+        }];
+    }];
+}
+
 - (void)expandMenu
 {
     if(self.implementsWillAppear)

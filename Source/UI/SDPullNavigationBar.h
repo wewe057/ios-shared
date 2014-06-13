@@ -52,5 +52,5 @@
 
 - (IBAction)tapAction:(id)sender;
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion;
-
+- (void)bouncePullMenu;
 @end
