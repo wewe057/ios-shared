@@ -97,3 +97,5 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 - (void)setFloatingLabelsVisible:(BOOL)visible;
 
 @end
+
+extern SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock;

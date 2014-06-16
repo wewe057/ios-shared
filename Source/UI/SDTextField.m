@@ -27,6 +27,8 @@
 
 #import "SDTextField.h"
 
+SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextField *textField){ return YES; };
+
 @interface SDTextField ()
 @property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @property (nonatomic, strong, readonly) UIToolbar *accessoryToolbar;
