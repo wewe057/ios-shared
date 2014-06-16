@@ -587,6 +587,12 @@ typedef struct
 
 - (void)bouncePullMenu
 {
+    if (self.menuOpen != NO || self.animating != NO || _menuInteraction.isInteracting != NO)
+    {
+        return;
+    }
+    self.userInteractionEnabled = NO;
+    self.menuController.tableView.contentOffset = CGPointMake(0.0f, self.availableHeight - 85.0f);
     [UIView animateWithDuration:0.45f delay:0.0f usingSpringWithDamping:0.99f initialSpringVelocity:10.0f options:0 animations:^{
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         self.menuContainer.hidden = NO;
@@ -604,6 +610,8 @@ typedef struct
         } completion:^(BOOL secondFinished) {
             [self.tabButton setNeedsDisplay];
             [self.menuContainer removeFromSuperview];
+            self.menuController.tableView.contentOffset = CGPointZero;
+            self.userInteractionEnabled = YES;
         }];
     }];
 }
