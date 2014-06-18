@@ -90,9 +90,13 @@
     return [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissGesture:)];
 }
 
-- (void) dismissGesture:(id)sender
+- (void) dismissGesture:(UITapGestureRecognizer *)gestureRecognizer
 {
-    if ( self.dismissBlock != nil )
+    @strongify(self.modalView, modalView);
+    
+    CGPoint location = [gestureRecognizer locationInView:modalView.superview];
+    
+    if ( !CGRectContainsPoint(modalView.frame, location) && self.dismissBlock != nil )
     {
         self.dismissBlock();
     }
