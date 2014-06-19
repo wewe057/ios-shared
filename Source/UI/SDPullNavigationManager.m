@@ -45,7 +45,7 @@
         _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
 
         _showGlobalNavControls = YES;
-
+        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(statusBarDidChangeRotationNotification:)
                                                      name:UIApplicationDidChangeStatusBarOrientationNotification

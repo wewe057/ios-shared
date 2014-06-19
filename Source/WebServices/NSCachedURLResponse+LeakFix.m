@@ -3,11 +3,12 @@
 //  SetDirection
 //
 //  Created by Brandon Sneed on 4/29/12.
-//  Copyright (c) 2012-2013 SetDirection. All rights reserved.
+//  Copyright (c) 2012-2014 SetDirection. All rights reserved.
 //
 
 #import "NSCachedURLResponse+LeakFix.h"
 #import "UIDevice+machine.h"
+
 
 @implementation NSCachedURLResponse (LeakFix)
 
@@ -21,6 +22,7 @@
 {
     NSData *result = nil;
 
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_7_0
     if ([UIDevice bcdSystemVersion] < 0x070000)
     {
         __unsafe_unretained NSData *first = self.data;
@@ -42,6 +44,7 @@
         }
     }
     else
+#endif
         result = self.data;
 
     return result;

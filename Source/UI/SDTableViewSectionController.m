@@ -20,6 +20,7 @@
     BOOL _sectionsImplementViewForFooter;
     BOOL _sectionsImplementHeightForFooter;
     BOOL _sectionsImplementEditingStyleForRow;
+    BOOL _sectionsImplementShouldIndentWhileEditingRow;
     BOOL _sectionsImplementCommitEditingStyleForRow;
     BOOL _sectionsImplementWillDisplayCellForRow;
     BOOL _sectionsImplementDidEndDisplayingCellForRow;
@@ -265,6 +266,21 @@
     return editingStyle;
 }
 
+- (BOOL) tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath;
+{
+    BOOL shouldIndent = YES;
+
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
+    if ([sectionController respondsToSelector:@selector(sectionController:shouldIndentWhileEditingRow:)])
+    {
+        shouldIndent =[sectionController sectionController:self shouldIndentWhileEditingRow:row];
+    }
+
+    return shouldIndent;
+}
+
 #pragma mark Tracking the Removal of Views
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -499,6 +515,9 @@
     } else if (aSelector == @selector(tableView:editingStyleForRowAtIndexPath:))
     {
         result = _sectionsImplementEditingStyleForRow;
+    } else if (aSelector == @selector(tableView:shouldIndentWhileEditingRowAtIndexPath:))
+    {
+        result = _sectionsImplementShouldIndentWhileEditingRow;
     } else if (aSelector == @selector(tableView:commitEditingStyle:forRowAtIndexPath:))
     {
         result = _sectionsImplementCommitEditingStyleForRow;
@@ -535,6 +554,7 @@
     _sectionsImplementHeightForFooter = NO;
     _sectionsImplementCommitEditingStyleForRow = NO;
     _sectionsImplementEditingStyleForRow = NO;
+    _sectionsImplementShouldIndentWhileEditingRow = NO;
     _sectionsImplementWillDisplayCellForRow = NO;
     _sectionsImplementDidEndDisplayingCellForRow = NO;
     _sectionsImplementScrollViewDidScroll = NO;
@@ -567,6 +587,7 @@
         _sectionsImplementViewForFooter |= [sectionController respondsToSelector:@selector(sectionControllerViewForFooter:)];
         _sectionsImplementHeightForFooter |= [sectionController respondsToSelector:@selector(sectionControllerHeightForFooter:)];
         _sectionsImplementEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:editingStyleForRow:)];
+        _sectionsImplementShouldIndentWhileEditingRow |= [sectionController respondsToSelector:@selector(sectionController:shouldIndentWhileEditingRow:)];
         _sectionsImplementCommitEditingStyleForRow |= [sectionController respondsToSelector:@selector(sectionController:commitEditingStyle:forRow:)];
         _sectionsImplementWillDisplayCellForRow |= [sectionController respondsToSelector:@selector(sectionController:willDisplayCell:forRow:)];
         _sectionsImplementDidEndDisplayingCellForRow |= [sectionController respondsToSelector:@selector(sectionController:didEndDisplayingCell:forRow:)];

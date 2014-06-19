@@ -10,6 +10,26 @@
 #import "SDDataMap.h"
 
 /**
+ sdmo_key performs class inspection to generate the proper string format for a given property via class inspection.
+ 
+ ie: NSArray<MyObject> *myProp via sdmo_key(self.myProp) would become @"(NSArray<MyObject>)myProp"
+ 
+ Note: A reference to 'self' is implicit.
+ */
+#define sdmo_key(property) \
+    _sddm_key(self, variable_name(property))
+
+/**
+ sdmo_selector validates a selector against an object and converts it to the string format used by SDDataMap.
+ 
+ ie: sdmo_selector(@selector(setSomething:)) becomes @"@selector(setSomething:)"
+ 
+ Note: A reference to 'self' is implicit. 
+ */
+#define sdmo_selector(selector) \
+    _sddm_selector(self, selector)
+
+/**
  *  SDModelObject is a base modeling class which ideally works in conjunction with SDDataMap.
  *  
  *  SDModelObject's mapFromObject will generate a new instance of this class/subclass and then

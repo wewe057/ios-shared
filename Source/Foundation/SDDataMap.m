@@ -17,7 +17,11 @@
 @property (nonatomic, strong) NSString *propertySubtype;
 @property (nonatomic, assign) SEL propertySelector;
 
+@property (nonatomic, readonly) Class propertyTypeClass;
+@property (nonatomic, readonly) Class propertySubtypeClass;
+
 + (NSArray *)propertiesForObject:(id)object;
++ (instancetype)propertyFromClass:(Class)aClass named:(NSString *)name;
 + (instancetype)propertyFromObject:(NSObject *)object named:(NSString *)name;
 + (instancetype)propertyFromString:(NSString *)propertyString;
 - (BOOL)isValid;
@@ -25,15 +29,21 @@
 
 @end
 
-// used for typechecking.  expensive to create.
-static NSNumberFormatter *__internalformatter = nil;
-
 #pragma mark - SDDataMap definition
 
 @implementation SDDataMap
 {
     NSDictionary *_mapDictionary;
 }
+
+/**
+ This is *NOT* thread-safe.  Do not mutate it under any circumstances!
+ 
+ This is used for the number formatting aspects of data mappings.
+ */
+static NSNumberFormatter *__internalFormatter = nil;
+static dispatch_once_t __formatterOnceToken = 0;
+
 
 #pragma mark - Initializers
 
@@ -57,12 +67,11 @@ static NSNumberFormatter *__internalformatter = nil;
 	result = [[SDDataMap alloc] init];
 	result->_mapDictionary = [dictionary copy];
     
-	if (!__internalformatter)
-    {
-        __internalformatter = [[NSNumberFormatter alloc] init];
-        [__internalformatter setNumberStyle:NSNumberFormatterNoStyle];
-    }
-    
+    dispatch_once(&__formatterOnceToken, ^{
+        __internalFormatter = [[NSNumberFormatter alloc] init];
+        [__internalFormatter setNumberStyle:NSNumberFormatterNoStyle];
+    });
+                  
 	return result;
 }
 
@@ -113,7 +122,9 @@ static NSNumberFormatter *__internalformatter = nil;
             return;
         
         NSString *destPropertyString = (NSString *)obj;
-        
+        // check the destPropertyString to make sure it's not a keyPath.
+        if ([destPropertyString rangeOfString:@"."].location != NSNotFound)
+            [NSException raise:@"SDException" format:@"Destionation maps do not support key paths (%@)", destPropertyString];
         
         SDObjectProperty *destProperty = [SDObjectProperty propertyFromString:destPropertyString];
         
@@ -344,24 +355,91 @@ static NSNumberFormatter *__internalformatter = nil;
 /// such that a mapping dictionary entry @"foo[1].bar": @"fooBar" works properly
 - (id)valueFromObject:(NSObject *)sourceObject forKeyPath:(NSString *)keyPath
 {
-    id value = NULL;
+    id value = nil;
     
-    NSRange leftBrace = [keyPath rangeOfString:@"["];
-    if (leftBrace.location==NSNotFound) {
-        // It have no array, default to KVO
-        value = [sourceObject valueForKeyPath:keyPath];
-    } else {
+    NSRegularExpression *indexRegex = [NSRegularExpression regularExpressionWithPattern:@"(?<=\\().*(?=\\))|(?<=\\[).*(?=\\])" options:NSRegularExpressionCaseInsensitive error:nil];
+    NSRegularExpression *pathRegex = [NSRegularExpression regularExpressionWithPattern:@"^[^\\[]*" options:NSRegularExpressionCaseInsensitive error:nil];
+
+    id tempValue = sourceObject;
+    
+    NSArray *keyPaths = [keyPath componentsSeparatedByString:@"."];
+    for (NSUInteger i = 0; i < keyPaths.count; i++)
+    {
+        // ie: blah[123]
+        NSString *fullPath = [keyPaths objectAtIndex:i];
+        
+        // find the index, ie: 123
+        NSTextCheckingResult *match = [indexRegex firstMatchInString:fullPath options:0 range:NSMakeRange(0, fullPath.length)];
+        NSString *stringIndex = [fullPath substringWithRange:[match rangeAtIndex:0]];
+        if (stringIndex.length == 0)
+            stringIndex = nil;
+
+        // get the actual path without the index, ie: blah
+        match = [pathRegex firstMatchInString:fullPath options:0 range:NSMakeRange(0, fullPath.length)];
+        NSString *path = [fullPath substringWithRange:[match rangeAtIndex:0]];
+        if (path.length == 0)
+            path = nil;
+
+        if (stringIndex && path)
+        {
+            NSUInteger index = [stringIndex unsignedIntegerValue];
+            
+            tempValue = [tempValue valueForKey:path];
+            if (tempValue && [tempValue isKindOfClass:[NSArray class]])
+            {
+                // make sure we don't blast past the end of the array.
+                NSArray *array = (NSArray *)tempValue;
+                if (index < array.count)
+                    tempValue = [tempValue objectAtIndex:index];
+                else
+                {
+                    // there's nothing to query for a value, return nil.
+                    tempValue = nil;
+                }
+            }
+        }
+        else
+        {
+            if (path && [tempValue keyPathExists:path])
+                tempValue = [tempValue valueForKey:path];
+            else
+            {
+                // there's nothing to query for a value, return nil.
+                tempValue = nil;
+            }
+        }
+    }
+    
+    if (tempValue != sourceObject)
+        value = tempValue;
+    
+    return value;
+    
+    /*NSRange leftBrace = [keyPath rangeOfString:@"["];
+    if (leftBrace.location==NSNotFound)
+    {
+        // It has no array, default to KVO
+        if ([sourceObject keyPathExists:keyPath])
+            value = [sourceObject valueForKeyPath:keyPath];
+    }
+    else
+    {
         // Let's traverse the object using the index in the braces
         NSRange rightBrace = [keyPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, keyPath.length - leftBrace.location)];
-        if (rightBrace.location==NSNotFound) {
+        if (rightBrace.location==NSNotFound)
+        {
             // Fall back to KVO if unmatched braces
             value = [sourceObject valueForKeyPath:keyPath];
-        } else {
+        }
+        else
+        {
             NSString *currentPath = [keyPath copy];
             NSObject *currentObject = sourceObject;
-            while (leftBrace.location!=NSNotFound) {
+            while (leftBrace.location!=NSNotFound)
+            {
                 // Make sure that there is content within the braces
-                if (leftBrace.location==(rightBrace.location-1)) {
+                if (leftBrace.location==(rightBrace.location-1))
+                {
                     // it was a [], fall back to KVO
                     value = [sourceObject valueForKeyPath:keyPath];
                     break;
@@ -371,7 +449,8 @@ static NSNumberFormatter *__internalformatter = nil;
                 NSUInteger arrayIndex = (NSUInteger)[[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
                 NSArray *parentArray = [currentObject valueForKeyPath:parentPath];
                 
-                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex) {
+                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex)
+                {
                     // Fall back to KVO if it's not an array or the index doesn't exist
                     value = [sourceObject valueForKeyPath:keyPath];
                     break;
@@ -381,12 +460,12 @@ static NSNumberFormatter *__internalformatter = nil;
                 currentPath = [currentPath substringFromIndex:rightBrace.location + 1];
                 
                 
-                if (currentPath.length>0 && [currentPath characterAtIndex:0]=='.') {
+                if (currentPath.length>0 && [currentPath characterAtIndex:0]=='.')
                     currentPath = [currentPath substringFromIndex:1];
-                }
                 
                 // If currentPath is an emptyString, current object is the correct value
-                if (currentPath.length==0) {
+                if (currentPath.length==0)
+                {
                     value = currentObject;
                     break;
                 }
@@ -394,7 +473,8 @@ static NSNumberFormatter *__internalformatter = nil;
                 // Let's look for more
                 leftBrace = [currentPath rangeOfString:@"["];
                 
-                if (leftBrace.location==NSNotFound) {
+                if (leftBrace.location==NSNotFound)
+                {
                     // The remaining path is standard KVO
                     value = [currentObject valueForKeyPath:currentPath];
                 } else {
@@ -409,7 +489,7 @@ static NSNumberFormatter *__internalformatter = nil;
             }
         }
     }
-    return value;
+    return value;*/
 }
 
 - (void)setValue:(id)value destProperty:(SDObjectProperty *)destProperty targetObject:(id)targetObject
@@ -426,7 +506,9 @@ static NSNumberFormatter *__internalformatter = nil;
     {
         id targetParent = [self valueFromObject:targetObject forKeyPath:parentPath];
         if (![parentPath isEqualToString:propName])
+        {
             destProperty = [SDObjectProperty propertyFromObject:targetParent named:propName];
+        }
     }
     
     value = [self convertValue:value forType:destProperty.propertyType];
@@ -464,7 +546,7 @@ static NSNumberFormatter *__internalformatter = nil;
         {
             if ([type isEqualToString:@"NSNumber"])
             {
-                result = [__internalformatter numberFromString:value];
+                result = [__internalFormatter numberFromString:value];
             }
         }
     }
@@ -549,6 +631,49 @@ static NSNumberFormatter *__internalformatter = nil;
     return [NSArray arrayWithArray:results];
 }
 
++ (instancetype)propertyFromClass:(Class)class named:(NSString *)name
+{
+    NSArray *nameParts = [name componentsSeparatedByString:@"."];
+    Class aClass = class;
+    
+    NSString *propertyType = nil;
+    NSString *propertySubtype = nil;
+    
+    for (NSUInteger i = 0; i < nameParts.count; i++)
+    {
+        NSString *propertyName = [nameParts objectAtIndex:i];
+        objc_property_t property = class_getProperty(aClass, [propertyName UTF8String]);
+        propertyType = [SDObjectProperty propertyType:property];
+        if (propertyType.length > 2)
+        {
+            Class nextClass = NSClassFromString(propertyType);
+            if (nextClass)
+                aClass = nextClass;
+        }
+        else
+            propertyType = nil;
+    }
+    
+    SDObjectProperty *objectProperty = [SDObjectProperty property];
+
+    if (propertyType)
+    {
+        propertyType = [propertyType stringByReplacingOccurrencesOfString:@">" withString:@""];
+        NSArray *typeParts = [propertyType componentsSeparatedByString:@"<"];
+        if (typeParts.count > 1)
+        {
+            propertyType = [typeParts objectAtIndex:0];
+            propertySubtype = [typeParts objectAtIndex:1];
+        }
+    }
+    
+    objectProperty.propertyType = propertyType;
+    objectProperty.propertySubtype = propertySubtype;
+    objectProperty.propertyName = name;
+    
+    return objectProperty;
+}
+
 + (instancetype)propertyFromObject:(NSObject *)object named:(NSString *)name
 {
     if (!object || !name)
@@ -618,6 +743,20 @@ static NSNumberFormatter *__internalformatter = nil;
     }
     
     return @"";
+}
+                
+- (Class)propertyTypeClass
+{
+    if (self.propertyType.length > 1)
+        return NSClassFromString(self.propertyType);
+    return nil;
+}
+
+- (Class)propertySubtypeClass
+{
+    if (self.propertySubtype.length > 1)
+        return NSClassFromString(self.propertyType);
+    return nil;
 }
 
 - (void)interpretPropertyString:(NSString *)propertyString
@@ -724,13 +863,12 @@ static NSNumberFormatter *__internalformatter = nil;
 
 - (NSNumber *)numberValue
 {
-    if (!__internalformatter)
-    {
-        __internalformatter = [[NSNumberFormatter alloc] init];
-        [__internalformatter setNumberStyle:NSNumberFormatterNoStyle];
-    }
+    dispatch_once(&__formatterOnceToken, ^{
+        __internalFormatter = [[NSNumberFormatter alloc] init];
+        [__internalFormatter setNumberStyle:NSNumberFormatterNoStyle];
+    });
     
-    return [__internalformatter numberFromString:self];
+    return [__internalFormatter numberFromString:self];
 }
 
 - (char)charValue
@@ -831,3 +969,50 @@ static NSNumberFormatter *__internalformatter = nil;
 }
 
 @end
+
+#pragma mark - SDDataModelProtocol map helpers
+
+NSString *_sddm_key(id object, NSString *propertyName)
+{
+    NSMutableArray *kvoParts = [[propertyName componentsSeparatedByString:@"."] mutableCopy];
+    if (kvoParts.count < 2)
+        [NSException raise:@"sdmo_key" format:@"%@ is not properly being used with sdmo_key().", propertyName];
+    
+    // remove the first one, as it's almost certainly the same as "object", ie: self.
+    [kvoParts removeObjectAtIndex:0];
+
+    NSMutableString *keyPath = [[NSMutableString alloc] init];
+    for (NSUInteger i = 0; i < kvoParts.count; i++)
+    {
+        if (i > 0)
+            [keyPath appendString:@"."];
+        [keyPath appendString:[kvoParts objectAtIndex:i]];
+    }
+    
+    SDObjectProperty *property = [SDObjectProperty propertyFromClass:[object class] named:keyPath];
+    
+    NSString *propertyType = property.propertyType;
+    NSString *propertySubtype = property.propertySubtype;
+    NSString *propertyString = nil;
+    
+    if (propertyType.length > 1 && propertySubtype.length > 1)
+        propertyString = [NSString stringWithFormat:@"(%@<%@>)%@", propertyType, propertySubtype, keyPath];
+    else
+    if (propertyType.length > 1)
+        propertyString = [NSString stringWithFormat:@"(%@)%@", propertyType, keyPath];
+    else
+        propertyString = [NSString stringWithString:keyPath];
+    
+    return propertyString;
+}
+
+NSString *_sddm_selector(id object, SEL selector)
+{
+    const char *selectorName = sel_getName(selector);
+
+    if (![object respondsToSelector:selector])
+        [NSException raise:@"sdmo_selector" format:@"%@ does not respond to %s", NSStringFromClass([object class]), selectorName];
+    
+    NSString *selectorString = [NSString stringWithFormat:@"@selector(%s)", selectorName];
+    return selectorString;
+}

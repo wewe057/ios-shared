@@ -30,6 +30,8 @@
 @interface SDTextField ()
 @property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @property (nonatomic, strong, readonly) UIToolbar *accessoryToolbar;
+@property (nonatomic, getter = isTextManuallySet) BOOL textManuallySet;
+
 @end
 
 @implementation SDTextField
@@ -129,6 +131,11 @@
     }
 }
 
+- (BOOL)resignFirstResponderWithoutValidate
+{
+    return [super resignFirstResponder];
+}
+
 - (BOOL)resignFirstResponder
 {
     BOOL result = [super resignFirstResponder];
@@ -140,10 +147,17 @@
     return result;
 }
 
+- (void)setFloatingLabelsVisible:(BOOL)visible
+{
+    _floatingLabel.hidden = !visible;
+}
+
 - (BOOL)becomeFirstResponder
 {
     BOOL result = [super becomeFirstResponder];
     
+    self.textManuallySet = NO; // user is about to enter text
+        
     [self stripInvalidLabelChar];
     /*BOOL valid = [self internalValidate];
     if (!valid)
@@ -163,6 +177,7 @@
     rect = CGRectMake(rect.origin.x, rect.origin.y + (_floatingLabel.font.lineHeight / 2.0) + (_floatingLabelYPadding.floatValue / 2.0f), rect.size.width, rect.size.height);
     return rect;
 }
+
 
 - (void)showFloatingLabel
 {
@@ -402,7 +417,7 @@
     BOOL result = YES;
     
     SDTextFieldValidationBlock validationBlock = self.validationBlock;
-    if (validationBlock)
+    if (validationBlock && !self.isTextManuallySet)
     {
         result = validationBlock(self);
         if (!result)
@@ -439,6 +454,12 @@
     }
     
     return fieldsAreValid;
+}
+
+- (void)resetTextWithoutValidate
+{
+    self.textManuallySet = YES;
+    self.text = @"";
 }
 
 @end

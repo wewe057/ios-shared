@@ -51,6 +51,31 @@
 
 @end
 
+/**
+ Macros to make defined maps work better with Xcode's refactor tools.
+ */
+
+/**
+ sddm_key performs class inspection on 'object' to generate the proper string format for a given property via class inspection.
+ 
+ ie: NSArray<MyObject> *myProp via sddm_key(self, self.myProp) would become @"(NSArray<MyObject>)myProp"
+ */
+#define sddm_key(object, property) \
+    _sddm_key(object, variable_name(property))
+
+
+/**
+ sddm_selector validates a selector against 'object' and converts it to the string format used by SDDataMap.
+ 
+ ie: sddm_selector(self, @selector(setSomething:)) becomes @"@selector(setSomething:)"
+ */
+#define sddm_selector(object, selector) \
+    _sddm_selector(object, selector)
+
+// do not call these directly.
+NSString *_sddm_key(id object, NSString *propertyName);
+NSString *_sddm_selector(id object, SEL selector);
+
 
 /**
  SDDataMap provides a mechanism by which to assign keypaths from one object to another.
