@@ -511,8 +511,23 @@ static dispatch_once_t __formatterOnceToken = 0;
         }
     }
     
-    value = [self convertValue:value forType:destProperty.propertyType];
+    value = [self convertValue:value forProperty:destProperty];
     [targetObject setValue:value forKeyPath:parentPath];
+}
+
+- (id)convertValue:(id)value forProperty:(SDObjectProperty *)property
+{
+    id newValue = value;
+    
+    if ([property.propertyType isEqualToString:@"NSDecimalNumber"])
+    {
+        if ([value isKindOfClass:[NSNumber class]])
+        {
+            newValue = [NSDecimalNumber decimalNumberWithDecimal:[value decimalValue]];
+        }
+    }
+    
+    return [self convertValue:newValue forType:property.propertyType];
 }
 
 - (id)convertValue:(id)value forType:(NSString *)type
