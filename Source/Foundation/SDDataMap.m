@@ -653,16 +653,13 @@ static dispatch_once_t __formatterOnceToken = 0;
     
     Class objectClass = [object class];
     [results addObjectsFromArray:[self propertiesForClass:objectClass]];
-     
-    if ([objectClass isSubclassOfClass:[SDModelObject class]])
+
+    // enumerate superclasses and get their properties as well.
+    objectClass = [objectClass superclass];
+    while ([objectClass isSubclassOfClass:[NSObject class]] && ![[objectClass className] isEqualToString:[NSObject className]])
     {
+        [results addObjectsFromArray:[self propertiesForClass:objectClass]];
         objectClass = [objectClass superclass];
-        // If object is a subclass of SDModelObject, but there is another class in the hierarchy, let's grab the super's classes too.
-        while ([objectClass isSubclassOfClass:[SDModelObject class]] && ![[objectClass className] isEqualToString:[SDModelObject className]])
-        {
-            [results addObjectsFromArray:[self propertiesForClass:objectClass]];
-            objectClass = [objectClass superclass];
-        }
     }
     
     // returning a copy here to make sure the dictionary is immutable
