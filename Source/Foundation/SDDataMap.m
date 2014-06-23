@@ -616,16 +616,13 @@ static dispatch_once_t __formatterOnceToken = 0;
     return [[[self class] alloc] init];
 }
 
-+ (NSArray *)propertiesForObject:(id)object
++ (NSArray *)propertiesForClass:(id)objectClass
 {
-    if (!object)
-        return nil;
-    
     NSMutableArray *results = [NSMutableArray array];
     
     unsigned int outCount;
     NSUInteger i;
-    objc_property_t *properties = class_copyPropertyList([object class], &outCount);
+    objc_property_t *properties = class_copyPropertyList(objectClass, &outCount);
     for (i = 0; i < outCount; i++)
     {
         objc_property_t property = properties[i];
@@ -641,6 +638,32 @@ static dispatch_once_t __formatterOnceToken = 0;
         }
     }
     free(properties);
+    
+    // returning a copy here to make sure the dictionary is immutable
+    return [NSArray arrayWithArray:results];
+}
+
+
++ (NSArray *)propertiesForObject:(id)object
+{
+    if (!object)
+        return nil;
+    
+    NSMutableArray *results = [NSMutableArray array];
+    
+    Class objectClass = [object class];
+    [results addObjectsFromArray:[self propertiesForClass:objectClass]];
+     
+    if ([objectClass isSubclassOfClass:[SDModelObject class]])
+    {
+        objectClass = [objectClass superclass];
+        // If object is a subclass of SDModelObject, but there is another class in the hierarchy, let's grab the super's classes too.
+        while ([objectClass isSubclassOfClass:[SDModelObject class]] && ![[objectClass className] isEqualToString:[SDModelObject className]])
+        {
+            [results addObjectsFromArray:[self propertiesForClass:objectClass]];
+            objectClass = [objectClass superclass];
+        }
+    }
     
     // returning a copy here to make sure the dictionary is immutable
     return [NSArray arrayWithArray:results];
