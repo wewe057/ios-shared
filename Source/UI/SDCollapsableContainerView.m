@@ -22,6 +22,17 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self)
+    {
+        self.clipsToBounds = YES; // This is needed to clip when collapsed
+    }
+    return self;
+}
+
+
 - (void)didAddSubview:(UIView *)subview
 {
     NSAssert(self.subviews.count < 2, @"Cannot add more than 1 subview to this view");
