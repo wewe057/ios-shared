@@ -151,7 +151,6 @@
 		CABD745018AAB4180083A097 /* SDBase64Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CABD744F18AAB4180083A097 /* SDBase64Tests.m */; };
 		CABD745218AAB5420083A097 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CABD745118AAB5420083A097 /* SystemConfiguration.framework */; };
 		CAC1ED091954B4EB0023F706 /* SDTouchID.m in Sources */ = {isa = PBXBuildFile; fileRef = CAC1ED081954B4EB0023F706 /* SDTouchID.m */; };
-		CAC1ED0B1954B50C0023F706 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAC1ED0A1954B50C0023F706 /* LocalAuthentication.framework */; };
 		E205781918872F2600A1BA81 /* SDPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780818872F2600A1BA81 /* SDPickerView.m */; };
 		E205781A18872F2600A1BA81 /* SDPaintCodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780C18872F2600A1BA81 /* SDPaintCodeButton.m */; };
 		E205781B18872F2600A1BA81 /* SDQuantityEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780E18872F2600A1BA81 /* SDQuantityEditView.m */; };
@@ -465,7 +464,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CAC1ED0B1954B50C0023F706 /* LocalAuthentication.framework in Frameworks */,
 				CABD745218AAB5420083A097 /* SystemConfiguration.framework in Frameworks */,
 				CA01F1B117D7A6F000E7C553 /* Foundation.framework in Frameworks */,
 				CA0E77E5182850D500B4398F /* UIKit.framework in Frameworks */,
