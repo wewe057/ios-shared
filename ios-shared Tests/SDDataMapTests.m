@@ -14,7 +14,7 @@
 
 @interface MyObject : SDModelObject
 
-@property (nonatomic, strong) NSArray *blah1;
+@property (nonatomic, strong) NSArray<NSString> *blah1;
 @property (nonatomic, strong) NSString *blah2;
 @property (nonatomic, strong) MyObject *blah3;
 @property (nonatomic, strong) MyObject *blah4;
@@ -34,7 +34,12 @@
 
 - (NSDictionary *)mappingDictionaryForData:(id)data
 {
-    return @{@"blah2": @"blah2"};
+    return @{
+             @"blah1": sdmo_key(self.blah1),
+             @"blah2": sdmo_key(self.blah2),
+             @"blah7": sdmo_key(self.blah7),
+             @"subBlah8": sdmo_selector(@selector(setSubBlah8:))
+             };
 }
 
 - (BOOL)validModel
@@ -74,6 +79,25 @@
     XCTAssert([dummyObject1 keyPathExists:@"blah2"], @"it says blah2 doesn't exist and it does!");
     XCTAssert([dummyObject1 keyPathExists:@"blah3.blah2"], @"it says blah3.blah2 doesn't exist and it does!");
     XCTAssert(![dummyObject1 keyPathExists:@"blah3blah2"], @"it says blah3blah2 exists and it doesn't!");
+}
+
+- (void)testSDMOMacros
+{
+    MyObject *inputObject = [[MyObject alloc] init];
+    inputObject.blah1 = (NSArray<NSString> *)@[@"blah1", @"blah2", @"blah3"];
+    inputObject.blah2 = @"this is blah2";
+    inputObject.blah3 = [[MyObject alloc] init];
+    inputObject.blah7 = 1337;
+    inputObject.subBlah8 = @"this is subBlah8";
+    
+    MyObject *outputObject = [[MyObject alloc] init];
+    
+    [[SDDataMap map] mapObject:inputObject toObject:outputObject];
+    
+    XCTAssertTrue(outputObject.blah1.count == 3, "outputObject.blah1 is supposed to have 3 items!");
+    XCTAssertTrue([outputObject.blah2 isEqualToString:@"this is blah2"], "outputObject.blah1 is supposed to have 3 items!");
+    XCTAssertTrue(outputObject.blah7 == 1337, "outputObject.blah7 has the wrong value!");
+    XCTAssertTrue([outputObject.subBlah8 isEqualToString:@"this is subBlah8"], @"outputObject.subBlah8 isn't set right!");
 }
 
 - (void)testBasicMappingNamesMatch
@@ -260,7 +284,7 @@
     
     MyObject *outputObject = [[MyObject alloc] init];
     
-    NSDictionary *mappingDictionary = @{@"blah2" : @"@selector(setSubBlah8:)"};
+    NSDictionary *mappingDictionary = @{@"blah2" : sddm_selector(outputObject, @selector(setSubBlah8:))};
     
     SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
     [mapper mapObject:inputObject toObject:outputObject];
@@ -326,7 +350,8 @@
 
 - (void)testTraverseArrayToFindMappedFields
 {
-    NSDictionary *inputDictionary = @{@"topLevel": @[
+    NSDictionary *inputDictionary = @{@"blah": @"someString",
+                                      @"topLevel": @[
                                               @{@"itemName" : @"item0", @"itemValue" : @"A Horse"},
                                               @{@"itemName" : @"item1", @"itemValue" : @"Leprocy"},
                                               @{@"itemName" : @"item2", @"itemValue" : @"Three Hamburgers"},
@@ -341,6 +366,7 @@
     NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
     
     NSDictionary *mappingDictionary = @{
+                                        @"blah" : @"blah",
                                         @"topLevel[0].itemValue" : @"value0",
                                         @"topLevel[2].itemName" : @"name2",
                                         @"topLevel[3].sources[0].city" : @"pdx",
@@ -386,19 +412,35 @@
                                               ]};
     NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
     
-    NSDictionary *mappingDictionary = @{
-                                        @"topLevel[400].itemValue" : @"value0", // beyond the end of the array
-                                        @"topLevel[0.itemValue" : @"value1",
-                                        @"topLevel0].itemValue" : @"value2",
-                                        @"topLevel[].itemValue" : @"value3",
-                                        @"topLevel.[0].itemValue" : @"value4",
-                                        @"topLevel.[0]itemValue" : @"value5"
+    NSDictionary *mappingDictionary1 = @{
+                                         @"topLevel[400].itemValue" : @"value0", // beyond the end of the array
+                                         @"topLevel[0.itemValue" : @"value1",
+                                         @"topLevel0].itemValue" : @"value2",
+                                         @"topLevel[].itemValue" : @"value3",
+                                         @"topLevel.[0].itemValue" : @"value4",
+                                         @"topLevel.[0]itemValue" : @"value5"
                                         };
+
+    SDDataMap *mapper = nil;
     
-    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    mapper = [SDDataMap mapForDictionary:mappingDictionary1];
     [mapper mapObject:inputDictionary toObject:outputDictionary];
     
     XCTAssertTrue(outputDictionary.count==0, @"the mapping returned results when they should have failed!");
+}
+
+- (void)testValueForKeyOddity
+{
+    NSDictionary *mappingDictionary = @{@"error": @"error"};
+    NSDictionary *outputDictionary = [NSMutableDictionary dictionary];
+    NSArray *testArray = @[
+                           @{@"blah": @"1"},
+                           @{@"blah": @"2"},
+                           @{@"blah": @"3"},
+                           ];
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:testArray toObject:outputDictionary];
 }
 
 @end

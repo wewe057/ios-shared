@@ -154,6 +154,7 @@
 @optional
 // Editing support
 - (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
+- (BOOL)sectionController:(SDTableViewSectionController *)sectionController shouldIndentWhileEditingRow:(NSInteger)row;
 - (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
 
 @optional

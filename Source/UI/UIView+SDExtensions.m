@@ -69,6 +69,16 @@
 	return nil;
 }
 
+- (UIView*)nearestAncestor:(UIView*)distantSubview
+{
+    for (UIView *view in [self subviews]) {
+        if ([distantSubview isDescendantOfView:view]) {
+            return view;
+        }
+    }
+    return nil;
+}
+
 - (void)setX:(CGFloat)x
 {
     CGRect f = self.frame;

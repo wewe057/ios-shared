@@ -66,6 +66,7 @@ typedef struct
 @property (nonatomic, assign) CGFloat menuWidthForPortrait;
 @property (nonatomic, assign) CGFloat menuWidthForLandscape;
 @property (nonatomic, assign) CGFloat menuWidthForCurrentOrientation;
+@property (nonatomic, assign) Class backgroundViewClass;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* revealPanGestureRecognizer;
 @property (nonatomic, strong, readwrite) UIPanGestureRecognizer* dismissPanGestureRecognizer;
 @property (nonatomic, assign, readwrite) SDMenuControllerInteractionFlags menuInteraction;
@@ -78,6 +79,8 @@ typedef struct
 
 @property (nonatomic, assign) BOOL implementsMenuWidth;
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
+@property (nonatomic, assign) BOOL implementsBackgroundViewClass;
+@property (nonatomic, assign) BOOL implementsLightboxEffectColor;
 
 @end
 
@@ -169,7 +172,8 @@ typedef struct
             self.menuContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuContainer.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuContainer.opaque = NO;
-            self.menuContainer.hidden = NO;
+
+            [self hideMenuContainer];
             
             if([SDPullNavigationManager sharedInstance].disableShadowOnMenuContainer == NO)
             {
@@ -222,6 +226,8 @@ typedef struct
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
                 self.menuBottomAdornmentView.adornmentImage = self.adornmentImageForCurrentOrientation;
+            if(self.implementsBackgroundViewClass)
+                self.menuBottomAdornmentView.backgroundViewClass = self.backgroundViewClass;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
         }
         
@@ -325,13 +331,17 @@ typedef struct
     if(self.implementsMenuWidth)
     {
         self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidth;
+        self.menuWidthForLandscape = self.menuWidthForPortrait;
     }
     else if(self.implementsMenuWidthForOrientations)
     {
         self.menuWidthForPortrait = self.menuController.pullNavigationMenuWidthForPortrait;
         self.menuWidthForLandscape = self.menuController.pullNavigationMenuWidthForLandscape;
     }
-
+    self.implementsBackgroundViewClass = [self.menuController respondsToSelector:@selector(pullNavigationMenuBackgroundViewClass)];
+    if(self.implementsBackgroundViewClass)
+        self.backgroundViewClass = self.menuController.pullNavigationMenuBackgroundViewClass;
+    self.implementsLightboxEffectColor = [self.menuController respondsToSelector:@selector(pullNavigationLightboxEffectColor)];
     self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
     self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
     self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
@@ -550,10 +560,17 @@ typedef struct
             self.animating = NO;
 
             [self.tabButton setNeedsDisplay];
-            self.menuContainer.hidden = !self.menuOpen;
 
             if(completion)
                 completion();
+            
+            // If we just finished our collapse, tell the controller now
+            if(!self.menuOpen)
+            {
+                [self hideMenuContainer];
+                [self notifyPullNavMenuDidDisappear];
+            }
+
         }];
     }
     else
@@ -564,10 +581,35 @@ typedef struct
     }
 }
 
-- (void)expandMenu
+- (void)notifyPullNavMenuWillAppear
 {
     if(self.implementsWillAppear)
         [self.menuController pullNavMenuWillAppear];
+    [self.menuBottomAdornmentView pullNavigationMenuWillAppear];
+}
+
+- (void)notifyPullNavMenuDidAppear
+{
+    if(self.implementsDidAppear)
+        [self.menuController pullNavMenuDidAppear];
+}
+
+- (void)notifyPullNavMenuWillDisappear
+{
+    if(self.implementsWillDisappear)
+        [self.menuController pullNavMenuWillDisappear];
+}
+
+- (void)notifyPullNavMenuDidDisappear
+{
+    if(self.implementsDidDisappear)
+        [self.menuController pullNavMenuDidDisappear];
+    [self.menuBottomAdornmentView pullNavigationMenuDidDisappear];
+}
+
+- (void)expandMenu
+{
+    [self notifyPullNavMenuWillAppear];
 
     [self centerViewsToOrientation];
 
@@ -580,19 +622,19 @@ typedef struct
 
     self.menuOpen = YES;
 
-    if(self.implementsDidAppear)
-        [self.menuController pullNavMenuDidAppear];
+    [self notifyPullNavMenuDidAppear];
 }
 
 - (void)collapseMenu
 {
-    if(self.implementsWillDisappear)
-        [self.menuController pullNavMenuWillDisappear];
+    [self notifyPullNavMenuWillDisappear];
 
     [self collapseMenuWithCompletion:^
     {
-        if(self.implementsDidDisappear)
-            [self.menuController pullNavMenuDidDisappear];
+        // If we're animating, then firing did disappear here is a lie. Hold
+        //  off until we're actually done animating.
+        if(!self.animating)
+            [self notifyPullNavMenuDidDisappear];
     }];
 }
 
@@ -610,12 +652,16 @@ typedef struct
 
 - (void)showMenuContainer
 {
-    self.menuContainer.hidden = NO;
+    // Using alpha instead of hidden fixes a bug that is only evident on the iPad 3.
+    // The menu container would remain visible even when hidden.
+    self.menuContainer.alpha = 1;
 }
 
 - (void)hideMenuContainer
 {
-    self.menuContainer.hidden = YES;
+    // Using alpha instead of hidden fixes a bug that is only evident on the iPad 3.
+    // The menu container would remain visible even when hidden.
+    self.menuContainer.alpha = 0;
 }
 
 - (void)showBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
@@ -624,7 +670,7 @@ typedef struct
     {
         [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
         {
-            self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+            self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         }
         completion:^(BOOL finished)
         {
@@ -634,10 +680,22 @@ typedef struct
     }
     else
     {
-        self.backgroundEffectsView.backgroundColor = [@"#00000033" uicolor];
+        self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         if(completion)
             completion();
     }
+}
+
+- (UIColor *) backgroundEffectsBackgroundColor
+{
+    UIColor *backgroundColor = [@"#00000033" uicolor];
+    
+    if(self.implementsLightboxEffectColor)
+    {
+        backgroundColor = [self.menuController pullNavigationLightboxEffectColor];
+    }
+    
+    return backgroundColor;
 }
 
 - (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
@@ -713,7 +771,12 @@ typedef struct
     }
 
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    UIWindow* topMostWindow = [UIApplication sharedApplication].windows.lastObject;
+    UIWindow *topMostWindow = self.window;
+    if ( topMostWindow == nil )
+    {
+        topMostWindow = [UIApplication sharedApplication].windows.lastObject;
+    }
+
     CGSize topMostWindowSize = topMostWindow.bounds.size;
     CGFloat height = UIInterfaceOrientationIsPortrait(orientation) ? MAX(topMostWindowSize.height, topMostWindowSize.width) : MIN(topMostWindowSize.height, topMostWindowSize.width);
 

@@ -18,11 +18,13 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
 @interface SDContentAlertViewQueue : NSObject
 
 @property (nonatomic, strong) NSMutableArray *alertViews;
+@property (nonatomic, assign, readonly) BOOL anyAlertViewsVisible;
 
 + (SDContentAlertViewQueue *)sharedInstance;
 
 - (void)add:(SDContentAlertView *)alertView;
 - (void)remove:(SDContentAlertView *)alertView;
+- (void)setAlertWindowLevel:(UIWindowLevel) alertWindowLevel;
 
 @end
 
@@ -72,7 +74,7 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     if (!_alertWindow)
     {
         _alertWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        _alertWindow.windowLevel = UIWindowLevelAlert;
+        _alertWindow.windowLevel = [[self class] defaultAlertWindowLevel];
     }
 
     self.frame = _alertWindow.bounds;
@@ -541,6 +543,28 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     return alertView;
 }
 
+static BOOL sDefaultAlertWindowLevelEverSet;
+static UIWindowLevel sDefaultAlertWindowLevel;
+
++ (UIWindowLevel) defaultAlertWindowLevel;
+{
+    if (!sDefaultAlertWindowLevelEverSet) {
+        sDefaultAlertWindowLevel = UIWindowLevelAlert;
+        sDefaultAlertWindowLevelEverSet = YES;
+    }
+    return sDefaultAlertWindowLevel;
+}
+
++ (void) setDefaultAlertWindowLevel:(UIWindowLevel) defaultAlertWindowLevel;
+{
+    if ([SDContentAlertViewQueue sharedInstance].anyAlertViewsVisible) {
+        SDLog(@"***** WARNING: Cannot change defaultAlertWindowLevel while an alert is visible, ignoring change");
+        return;
+    }
+    sDefaultAlertWindowLevel = defaultAlertWindowLevel;
+    [[SDContentAlertViewQueue sharedInstance] setAlertWindowLevel:defaultAlertWindowLevel];
+}
+
 @end
 
 
@@ -578,6 +602,25 @@ static const CGFloat kSDContentAlertViewButtonHeight = 44;
     SDContentAlertView *last = [self.alertViews lastObject];
     if (last)
         [last internalShow];
+}
+
+- (void)setAlertWindowLevel:(UIWindowLevel) alertWindowLevel;
+{
+    for (SDContentAlertView *contentAlertView in self.alertViews) {
+        contentAlertView.alertWindow.windowLevel = alertWindowLevel;
+    }
+}
+
+- (BOOL)anyAlertViewsVisible;
+{
+    BOOL result = NO;
+    for (SDContentAlertView *contentAlertView in self.alertViews) {
+        if (contentAlertView.visible) {
+            result = YES;
+            break;
+        }
+    }
+    return result;
 }
 
 @end

@@ -135,4 +135,10 @@ GENERICSABLE(NSString)
 
 - (BOOL)isValidWithRegex:(NSString*)regexString;
 
+/** A convenience test that checks for both nil and zero length of the supplied string. */
++ (BOOL) isEmpty:(NSString *)string;
+
+/** Returns the inverse of #isEmpty:. */
++ (BOOL) isNotEmpty:(NSString *)string;
+
 @end
