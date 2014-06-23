@@ -16,7 +16,6 @@
 
 @end
 
-
 #pragma mark - UITableView(SDAutoUpdate)
 @implementation UITableView(SDAutoUpdate)
 
@@ -30,7 +29,22 @@
     [self updateWithAutoUpdateDataSource:updateDataSource withRowAnimationType:animationType updateBlock:updateBlock commandCallbackblock:nil];
 }
 
+- (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationTypes:(NSDictionary *)animationTypes updateBlock:(SDUpdateTableDataBlock)updateBlock
+{
+    [self updateWithAutoUpdateDataSource:updateDataSource withRowAnimationTypes:animationTypes updateBlock:updateBlock commandCallbackblock:nil];
+}
+
 - (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationType:(UITableViewRowAnimation)animationType updateBlock:(SDUpdateTableDataBlock)updateBlock commandCallbackblock:(SDTableCommandCallbackBlock)commandCallbackBlock
+{
+    NSDictionary *animationTypes = @{SDTableCommandAddRowAnimationKey : @(animationType),
+                                     SDTableCommandAddSectionAnimationKey : @(animationType),
+                                     SDTableCommandRemoveRowAnimationKey : @(animationType),
+                                     SDTableCommandRemoveSectionAnimationKey : @(animationType),
+                                     SDTableCommandUpdateRowAnimationKey : @(animationType)};
+    [self updateWithAutoUpdateDataSource:updateDataSource withRowAnimationTypes:animationTypes updateBlock:updateBlock commandCallbackblock:commandCallbackBlock];
+}
+
+- (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationTypes:(NSDictionary *)animationTypes updateBlock:(SDUpdateTableDataBlock)updateBlock commandCallbackblock:(SDTableCommandCallbackBlock)commandCallbackBlock
 {
     // get the data that is about to be updated
     NSArray *outdatedSections = [[updateDataSource sectionsForPass:kSDTableViewAutoUpdatePassBeforeUpdate] copy];
@@ -68,9 +82,8 @@
     }
     
     [self beginUpdates];
-    [manager runCommands:self withRowAnimation:animationType callback:commandCallbackBlock];
+    [manager runCommands:self withAnimationTypes:animationTypes callback:commandCallbackBlock];
     [self endUpdates];
 }
-
 
 @end
