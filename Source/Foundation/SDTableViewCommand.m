@@ -240,6 +240,18 @@
     //
     // In this case that means we'll use the old section controller array to get section indexes for delete
     
+    // Update command use the old indexes just like delete
+    // update rows
+    for (SDTableViewCommand *command in self.updateRowCommands)
+    {
+        [updateRowIndexPaths addObject:command.resolvedIndexPath];
+        if (callbackBlock)
+        {
+            callbackBlock(command);
+        }
+    }
+    [tableView reloadRowsAtIndexPaths:updateRowIndexPaths withRowAnimation:animationType];
+
     // remove sections
     for (SDTableViewCommand *command in self.removeSectionCommands)
     {
@@ -254,26 +266,18 @@
     // remove rows
     for (SDTableViewCommand *command in self.removeRowCommands)
     {
-        [removeRowIndexPaths addObject:command.resolvedIndexPath];
+        // If we've removed the entire section, don't bother with the individual
+        //  rows
+        if ( ![removeSectionIndexes containsIndex:command.resolvedIndexPath.section] )
+            [removeRowIndexPaths addObject:command.resolvedIndexPath];
         if (callbackBlock)
         {
             callbackBlock(command);
         }
     }
     [tableView deleteRowsAtIndexPaths:removeRowIndexPaths withRowAnimation:animationType];
-    
-    // Update command use the old indexes just like delete
-    // update rows
-    for (SDTableViewCommand *command in self.updateRowCommands)
-    {
-        [updateRowIndexPaths addObject:command.resolvedIndexPath];
-        if (callbackBlock)
-        {
-            callbackBlock(command);
-        }
-    }
-    [tableView reloadRowsAtIndexPaths:updateRowIndexPaths withRowAnimation:animationType];
-    
+
+
     // Insert commands use the new indexes.  For example say that you had a table with 3 sections:
     // A
     // B
@@ -296,18 +300,21 @@
         }
     }
     [tableView insertSections:insertSectionIndexes withRowAnimation:animationType];
-    
+
     // insert rows
     for (SDTableViewCommand *command in self.insertRowCommands)
     {
-        [insertRowIndexPaths addObject:command.resolvedIndexPath];
+        // If we've insert the entire section, don't bother with the individual
+        //  rows because the TableView will deal with that
+        if ( ![insertSectionIndexes containsIndex:command.resolvedIndexPath.section] )
+            [insertRowIndexPaths addObject:command.resolvedIndexPath];
         if (callbackBlock)
         {
             callbackBlock(command);
         }
     }
     [tableView insertRowsAtIndexPaths:insertRowIndexPaths withRowAnimation:animationType];
-    
+
     self.insertRowCommands = self.insertSectionCommands = self.updateRowCommands = self.removeRowCommands = self.removeSectionCommands = nil;
 }
 
