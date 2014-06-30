@@ -288,6 +288,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SDTableViewCommand/SDTableViewCommand-Prefix.pch";
 				INFOPLIST_FILE = "SDTableViewCommand/SDTableViewCommand-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = SDTableViewCommand;
 				WRAPPER_EXTENSION = app;
 			};
@@ -301,6 +302,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SDTableViewCommand/SDTableViewCommand-Prefix.pch";
 				INFOPLIST_FILE = "SDTableViewCommand/SDTableViewCommand-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = SDTableViewCommand;
 				WRAPPER_EXTENSION = app;
 			};

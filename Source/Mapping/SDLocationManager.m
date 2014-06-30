@@ -467,10 +467,13 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
                 if ([delegate respondsToSelector:@selector(locationManager:didUpdateLocations:)]) {
                     [delegate locationManager:self didUpdateLocations:locations];
                 }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 //REMOVE: when all usages of the now deprecated locationManager:didUpdateToLocation:fromLocation: are cleared.
                 if ([delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)]) {
-                    objc_msgSend/* avoid deprecation warnings */(delegate,@selector(locationManager:didUpdateToLocation:fromLocation:),self,newLocation,oldLocation);
+                    [delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
                 }
+#pragma clang diagnostic pop
             }
         });
     }

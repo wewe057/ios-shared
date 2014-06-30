@@ -350,7 +350,8 @@
 
 - (void)testTraverseArrayToFindMappedFields
 {
-    NSDictionary *inputDictionary = @{@"topLevel": @[
+    NSDictionary *inputDictionary = @{@"blah": @"someString",
+                                      @"topLevel": @[
                                               @{@"itemName" : @"item0", @"itemValue" : @"A Horse"},
                                               @{@"itemName" : @"item1", @"itemValue" : @"Leprocy"},
                                               @{@"itemName" : @"item2", @"itemValue" : @"Three Hamburgers"},
@@ -365,6 +366,7 @@
     NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
     
     NSDictionary *mappingDictionary = @{
+                                        @"blah" : @"blah",
                                         @"topLevel[0].itemValue" : @"value0",
                                         @"topLevel[2].itemName" : @"name2",
                                         @"topLevel[3].sources[0].city" : @"pdx",
@@ -410,19 +412,35 @@
                                               ]};
     NSMutableDictionary *outputDictionary = [NSMutableDictionary dictionary];
     
-    NSDictionary *mappingDictionary = @{
-                                        @"topLevel[400].itemValue" : @"value0", // beyond the end of the array
-                                        @"topLevel[0.itemValue" : @"value1",
-                                        @"topLevel0].itemValue" : @"value2",
-                                        @"topLevel[].itemValue" : @"value3",
-                                        @"topLevel.[0].itemValue" : @"value4",
-                                        @"topLevel.[0]itemValue" : @"value5"
+    NSDictionary *mappingDictionary1 = @{
+                                         @"topLevel[400].itemValue" : @"value0", // beyond the end of the array
+                                         @"topLevel[0.itemValue" : @"value1",
+                                         @"topLevel0].itemValue" : @"value2",
+                                         @"topLevel[].itemValue" : @"value3",
+                                         @"topLevel.[0].itemValue" : @"value4",
+                                         @"topLevel.[0]itemValue" : @"value5"
                                         };
+
+    SDDataMap *mapper = nil;
     
-    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    mapper = [SDDataMap mapForDictionary:mappingDictionary1];
     [mapper mapObject:inputDictionary toObject:outputDictionary];
     
     XCTAssertTrue(outputDictionary.count==0, @"the mapping returned results when they should have failed!");
+}
+
+- (void)testValueForKeyOddity
+{
+    NSDictionary *mappingDictionary = @{@"error": @"error"};
+    NSDictionary *outputDictionary = [NSMutableDictionary dictionary];
+    NSArray *testArray = @[
+                           @{@"blah": @"1"},
+                           @{@"blah": @"2"},
+                           @{@"blah": @"3"},
+                           ];
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:testArray toObject:outputDictionary];
 }
 
 @end

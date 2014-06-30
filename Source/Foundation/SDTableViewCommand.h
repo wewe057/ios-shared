@@ -17,6 +17,13 @@ typedef NS_ENUM (NSUInteger, SDTableCommandType)
     kSDTableCommandAddSection,
 };
 
+
+extern NSString * const SDTableCommandUpdateRowAnimationKey;
+extern NSString * const SDTableCommandRemoveRowAnimationKey;
+extern NSString * const SDTableCommandAddRowAnimationKey;
+extern NSString * const SDTableCommandRemoveSectionAnimationKey;
+extern NSString * const SDTableCommandAddSectionAnimationKey;
+
 /**
  *  Category to return an array of index paths from largest section, largest row to smallest section smallest row.
  *  This will allow for a table's data model to delete without worrying about indexes shifting by removing
@@ -72,7 +79,7 @@ typedef void (^SDTableCommandCallbackBlock)(SDTableViewCommand *command);
 - (id)initWithOutdatedSections:(NSArray *)outdatedSections updatedSections:(NSArray *)updatedSections;
 
 - (void)addCommandsForOutdatedData:(NSArray *)outdatedData newData:(NSArray *)newData forSectionIdentifier:(NSString *)identifier;
-- (void)runCommands:(UITableView *)tableView withRowAnimation:(UITableViewRowAnimation)animationType callback:(SDTableCommandCallbackBlock)callbackBlock;
+- (void)runCommands:(UITableView *)tableView withAnimationTypes:(NSDictionary *)animationTypes callback:(SDTableCommandCallbackBlock)callbackBlock;
 
 @end
 

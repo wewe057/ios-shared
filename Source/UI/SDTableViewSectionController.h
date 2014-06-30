@@ -68,14 +68,6 @@
 - (void)sectionController:(SDTableViewSectionController *)sectionController popViewController: (BOOL)animated;
 
 /**
- *  A section controller is asking you to pop to navigation stack back to yourself
- *
- *  @param sectionController The section controller making the request
- *  @param animated          YES if the section controller wants the pop animated
- */
-- (void)sectionController:(SDTableViewSectionController *)sectionController popToSelfAnimated:(BOOL)animated;
-
-/**
  *  A section controller is asking you to pop to the root view controller
  *
  *  @param sectionController The section controller making the request
@@ -128,6 +120,26 @@
 - (UIView *)sectionControllerViewForHeader:(SDTableViewSectionController *)sectionController;
 
 - (CGFloat)sectionControllerHeightForHeader:(SDTableViewSectionController *)sectionController;
+
+/**
+ *  Return a title for the footer for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a title for the footer for this section
+ */
+- (NSString *)sectionControllerTitleForFooter:(SDTableViewSectionController *)sectionController;
+
+/**
+ *  Return a view for the footer for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a view for the footer for this section
+ */
+- (UIView *)sectionControllerViewForFooter:(SDTableViewSectionController *)sectionController;
+
+- (CGFloat)sectionControllerHeightForFooter:(SDTableViewSectionController *)sectionController;
 
 // "Delegate" methods
 @optional

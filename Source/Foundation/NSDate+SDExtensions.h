@@ -70,4 +70,9 @@
  */
 - (BOOL)happenedLessThanNDaysAgo:(NSInteger)numDays;
 
+/**
+ Returns `YES` if the date is today.
+ */
+- (BOOL)isToday;
+
 @end
