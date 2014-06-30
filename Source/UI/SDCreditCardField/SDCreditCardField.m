@@ -316,6 +316,7 @@
     self.cardNumberField.text = [number formattedString];
     [self setPlaceholderToCardType];
     self.initialState = NO;
+    [self checkValid];
 }
 
 - (void)reset
