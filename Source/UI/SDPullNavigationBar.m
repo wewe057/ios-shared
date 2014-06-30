@@ -585,7 +585,7 @@ typedef struct
     }
 }
 
-- (void)bouncePullMenu
+- (void)bouncePullMenuWithCompletion:(void (^)(void))completion
 {
     if (self.menuOpen != NO || self.animating != NO || _menuInteraction.isInteracting != NO)
     {
@@ -612,6 +612,10 @@ typedef struct
             [self.menuContainer removeFromSuperview];
             self.menuController.tableView.contentOffset = CGPointZero;
             self.userInteractionEnabled = YES;
+            if (completion != NULL)
+            {
+                completion();
+            }
         }];
     }];
 }
