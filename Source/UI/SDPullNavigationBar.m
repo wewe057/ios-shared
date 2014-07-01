@@ -18,6 +18,7 @@
 
 static const CGFloat kDefaultMenuWidth = 320.0f;
 static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
+static const CGFloat kDrawerBounceHeight = 85.0f;
 
 static NSCache* sMenuAdornmentImageCache = nil;
 
@@ -587,24 +588,24 @@ typedef struct
 
 - (void)bouncePullMenuWithCompletion:(void (^)(void))completion
 {
-    if (self.menuOpen != NO || self.animating != NO || _menuInteraction.isInteracting != NO)
+    if (self.menuOpen || self.animating || _menuInteraction.isInteracting)
     {
         return;
     }
     self.userInteractionEnabled = NO;
-    self.menuController.tableView.contentOffset = CGPointMake(0.0f, self.availableHeight - 85.0f);
+    self.menuController.tableView.contentOffset = CGPointMake(0.0f, self.availableHeight - kDrawerBounceHeight);
     [UIView animateWithDuration:0.45f delay:0.0f usingSpringWithDamping:0.99f initialSpringVelocity:10.0f options:0 animations:^{
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         self.menuContainer.hidden = NO;
         self.tabButton.tuckedTab = YES;
         [self.tabButton setNeedsDisplay];
         CGRect f = self.menuBottomAdornmentView.frame;
-        f.origin.y += 85.0f;
+        f.origin.y += kDrawerBounceHeight;
         self.menuBottomAdornmentView.frame = f;
     } completion:^(BOOL finished) {
         [UIView animateWithDuration:0.3f delay:0.1f usingSpringWithDamping:0.8f initialSpringVelocity:8.0f options:0 animations:^{
             CGRect f = self.menuBottomAdornmentView.frame;
-            f.origin.y -= 85.0f;
+            f.origin.y -= kDrawerBounceHeight;
             self.menuBottomAdornmentView.frame = f;
             self.tabButton.tuckedTab = NO;
         } completion:^(BOOL secondFinished) {
