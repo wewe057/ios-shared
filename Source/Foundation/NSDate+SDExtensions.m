@@ -59,7 +59,7 @@
 + (NSDate *)dateAtBeginningOfMonthForDate:(NSDate *)inputDate
 {
     // Use the user's current calendar and time zone
-    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSCalendar *calendar = [[NSCalendar alloc ] initWithCalendarIdentifier:NSGregorianCalendar];
     NSTimeZone *timeZone = [NSTimeZone systemTimeZone];
     [calendar setTimeZone:timeZone];
     
@@ -127,6 +127,30 @@
 -(BOOL)happenedLessThanNDaysAgo:(NSInteger)numDays
 {
 	return [self happenedLessThanNHoursAgo: numDays * 24];
+}
+
+// Compares this date with the current time and returns YES if they are
+// the same
+- (BOOL)isToday
+{
+    BOOL isToday = NO;
+    
+    NSCalendar *calendar = [[NSCalendar alloc ] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSTimeZone *timeZone = [NSTimeZone systemTimeZone];
+    [calendar setTimeZone:timeZone];
+
+    NSDateComponents *components = [calendar components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:[NSDate date]];
+    NSDate *today = [calendar dateFromComponents:components];
+    
+    components = [calendar components:NSEraCalendarUnit|NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit fromDate:self];
+    NSDate *thisDate = [calendar dateFromComponents:components];
+    
+    if ([thisDate isEqualToDate:today])
+    {
+        isToday = YES;
+    }
+    
+    return isToday;
 }
 
 @end

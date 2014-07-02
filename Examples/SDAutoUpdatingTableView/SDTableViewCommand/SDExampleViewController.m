@@ -88,11 +88,22 @@ typedef void (^TableModelChangeBlock)();
     [self.tableView reloadData];
 }
 
++ (NSDictionary *)animationTypes
+{
+    return @{SDTableCommandAddRowAnimationKey : @(UITableViewRowAnimationAutomatic),
+             SDTableCommandAddSectionAnimationKey : @(UITableViewRowAnimationAutomatic),
+             SDTableCommandRemoveRowAnimationKey : @(UITableViewRowAnimationFade),  // bug in iOS 7 that makes removals funky if left as automatic
+             SDTableCommandRemoveSectionAnimationKey : @(UITableViewRowAnimationAutomatic),
+             SDTableCommandUpdateRowAnimationKey : @(UITableViewRowAnimationAutomatic)};
+}
+
 - (void)deleteSelectedRowsAction:(id)sender
 {
     @weakify(self);
     
-    [self.tableView updateWithAutoUpdateDataSource:self updateBlock:^{
+    [self.tableView updateWithAutoUpdateDataSource:self
+                             withRowAnimationTypes:[SDExampleViewController animationTypes]
+                                       updateBlock:^{
         @strongify(self);
         NSArray *selectedRows = [self.selectedRows allObjects];
         for (NSIndexPath *indexPath in [selectedRows deleteFriendlySortedArray])
@@ -116,7 +127,9 @@ typedef void (^TableModelChangeBlock)();
 - (void)addRowAction:(id)sender
 {
     @weakify(self);
-    [self.tableView updateWithAutoUpdateDataSource:self updateBlock:^{
+    [self.tableView updateWithAutoUpdateDataSource:self
+                             withRowAnimationTypes:[SDExampleViewController animationTypes]
+                                       updateBlock:^{
         @strongify(self);
         // insert the new row
         NSUInteger sectionIndex = rand() % [self numberOfSectionsInTableView:self.tableView];

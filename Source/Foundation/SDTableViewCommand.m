@@ -7,6 +7,12 @@
 #import "SDTableViewCommand.h"
 #import "UITableView+SDAutoUpdate.h"
 
+NSString * const SDTableCommandUpdateRowAnimationKey = @"SDTableCommandUpdateRowAnimationKey";
+NSString * const SDTableCommandRemoveRowAnimationKey = @"SDTableCommandRemoveRowAnimationKey";
+NSString * const SDTableCommandAddRowAnimationKey = @"SDTableCommandAddRowAnimationKey";
+NSString * const SDTableCommandRemoveSectionAnimationKey = @"SDTableCommandRemoveSectionAnimationKey";
+NSString * const SDTableCommandAddSectionAnimationKey = @"SDTableCommandAddSectionAnimationKey";
+
 @implementation NSArray(NSIndexPath)
 - (NSArray *)deleteFriendlySortedArray
 {
@@ -187,7 +193,17 @@
     return self;
 }
 
-- (void)runCommands:(UITableView *)tableView withRowAnimation:(UITableViewRowAnimation)animationType callback:(SDTableCommandCallbackBlock)callbackBlock;
+- (UITableViewRowAnimation)animationForKey:(NSString *)key inDictionary:(NSDictionary *)animationTypes
+{
+    UITableViewRowAnimation animationType = UITableViewRowAnimationAutomatic;
+    if ([animationTypes objectForKey:key])
+    {
+        animationType = [[animationTypes objectForKey:key] intValue];
+    }
+    return animationType;
+}
+
+- (void)runCommands:(UITableView *)tableView withAnimationTypes:(NSDictionary *)animationTypes callback:(SDTableCommandCallbackBlock)callbackBlock;
 {
     
     NSMutableIndexSet *insertSectionIndexes = [NSMutableIndexSet indexSet];
@@ -249,7 +265,7 @@
             callbackBlock(command);
         }
     }
-    [tableView deleteSections:removeSectionIndexes withRowAnimation:animationType];
+    [tableView deleteSections:removeSectionIndexes withRowAnimation:[self animationForKey:SDTableCommandRemoveSectionAnimationKey inDictionary:animationTypes]];
     
     // remove rows
     for (SDTableViewCommand *command in self.removeRowCommands)
@@ -260,7 +276,7 @@
             callbackBlock(command);
         }
     }
-    [tableView deleteRowsAtIndexPaths:removeRowIndexPaths withRowAnimation:animationType];
+    [tableView deleteRowsAtIndexPaths:removeRowIndexPaths withRowAnimation:[self animationForKey:SDTableCommandRemoveRowAnimationKey inDictionary:animationTypes]];
     
     // Update command use the old indexes just like delete
     // update rows
@@ -272,7 +288,7 @@
             callbackBlock(command);
         }
     }
-    [tableView reloadRowsAtIndexPaths:updateRowIndexPaths withRowAnimation:animationType];
+    [tableView reloadRowsAtIndexPaths:updateRowIndexPaths withRowAnimation:[self animationForKey:SDTableCommandUpdateRowAnimationKey inDictionary:animationTypes]];
     
     // Insert commands use the new indexes.  For example say that you had a table with 3 sections:
     // A
@@ -295,7 +311,7 @@
             callbackBlock(command);
         }
     }
-    [tableView insertSections:insertSectionIndexes withRowAnimation:animationType];
+    [tableView insertSections:insertSectionIndexes withRowAnimation:[self animationForKey:SDTableCommandAddSectionAnimationKey inDictionary:animationTypes]];
     
     // insert rows
     for (SDTableViewCommand *command in self.insertRowCommands)
@@ -306,7 +322,7 @@
             callbackBlock(command);
         }
     }
-    [tableView insertRowsAtIndexPaths:insertRowIndexPaths withRowAnimation:animationType];
+    [tableView insertRowsAtIndexPaths:insertRowIndexPaths withRowAnimation:[self animationForKey:SDTableCommandAddRowAnimationKey inDictionary:animationTypes]];
     
     self.insertRowCommands = self.insertSectionCommands = self.updateRowCommands = self.removeRowCommands = self.removeSectionCommands = nil;
 }
