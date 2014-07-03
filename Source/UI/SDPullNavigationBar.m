@@ -593,6 +593,7 @@ typedef struct
         return;
     }
     self.userInteractionEnabled = NO;
+    [self centerViewsToOrientation];
     if (self.availableHeight < self.menuController.tableView.contentSize.height)
     {
         self.menuController.tableView.contentOffset = CGPointMake(0.0f, self.availableHeight - kDrawerBounceHeight);
