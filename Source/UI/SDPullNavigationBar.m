@@ -593,7 +593,11 @@ typedef struct
         return;
     }
     self.userInteractionEnabled = NO;
-    self.menuController.tableView.contentOffset = CGPointMake(0.0f, self.availableHeight - kDrawerBounceHeight);
+    [self centerViewsToOrientation];
+    if (self.availableHeight < self.menuController.tableView.contentSize.height)
+    {
+        self.menuController.tableView.contentOffset = CGPointMake(0.0f, self.availableHeight - kDrawerBounceHeight);
+    }
     [UIView animateWithDuration:0.45f delay:0.0f usingSpringWithDamping:0.99f initialSpringVelocity:10.0f options:0 animations:^{
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         self.menuContainer.hidden = NO;
