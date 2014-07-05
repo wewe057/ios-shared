@@ -223,28 +223,39 @@
         _accessoryToolbar.frame = (CGRect){CGPointZero, [_accessoryToolbar sizeThatFits:CGSizeZero]};
         _accessoryToolbar.translucent = YES;
         _accessoryToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-
+        
         if ([UIDevice systemMajorVersion] >= 7)
             _accessoryToolbar.barStyle = UIBarStyleDefault;
         else
             _accessoryToolbar.barStyle = UIBarStyleBlack;
-
+        
         UIBarButtonItem *spaceItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         _doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEditing:)];
-
+        
+        @strongify(self.previousTextField, previousTextField);
+        @strongify(self.nextTextField, nextTextField);
+        
         if ([UIDevice systemMajorVersion] < 7)
         {
             // handle ios6.
-            _segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Previous", nil), NSLocalizedString(@"Next", nil)]];
+            if (previousTextField || nextTextField)
+            {
+                _segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Previous", nil), NSLocalizedString(@"Next", nil)]];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+                _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
 #pragma clang diagnostic pop
-            _segmentedControl.momentary = YES;
-            [_segmentedControl addTarget:self action:@selector(selectAdjacentResponder:) forControlEvents:UIControlEventValueChanged];
-            UIBarButtonItem *segmentedControlBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_segmentedControl];
-
-            [_accessoryToolbar setItems:@[segmentedControlBarButtonItem, spaceItem, _doneItem]];
+                _segmentedControl.momentary = YES;
+                [_segmentedControl addTarget:self action:@selector(selectAdjacentResponder:) forControlEvents:UIControlEventValueChanged];
+                UIBarButtonItem *segmentedControlBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_segmentedControl];
+                
+                [_accessoryToolbar setItems:@[segmentedControlBarButtonItem, spaceItem, _doneItem]];
+            }
+            else
+            {
+                [_accessoryToolbar setItems:@[spaceItem, _doneItem]];
+            }
+            
         }
         else
         {
@@ -252,7 +263,7 @@
             _prevItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❮  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousTextField:)];
             _nextItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❯  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextTextField:)];
             NSArray *toolbarItems;
-            if (self.previousTextField || self.nextTextField)
+            if (previousTextField || nextTextField)
             {
                 toolbarItems = @[_prevItem, _nextItem, spaceItem, _doneItem];
             }
