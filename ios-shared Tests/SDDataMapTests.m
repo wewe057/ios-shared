@@ -443,4 +443,20 @@
     [mapper mapObject:testArray toObject:outputDictionary];
 }
 
+- (void)testArrayErrorBehavior
+{
+    NSMutableDictionary *dummyObject = [NSMutableDictionary dictionary];
+
+    // purposefully see how it handles bad data.
+    // NSString is not a MyObject and isn't an array.
+    NSDictionary *dummyDictionary = @{@"blah1" : @"NSString"};
+    NSDictionary *mappingDictionary = @{@"blah1" : @"(NSArray<MyObject>)blah1"};
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:dummyDictionary toObject:dummyObject];
+    
+    NSArray *output = (NSArray *)[dummyObject objectForKey:@"blah1"];
+    XCTAssertTrue(output == nil, @"we gave it bad data, there should be NO output!");
+}
+
 @end
