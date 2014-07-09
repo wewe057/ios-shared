@@ -848,6 +848,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 #pragma mark - Unit Testing
 
+#ifdef DEBUG
 - (NSData *)getNextMockResponse
 {
     @synchronized(self)
@@ -894,6 +895,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             [_mockStack removeObjectAtIndex:0];
     }
 }
+#endif
 
 
 @end
