@@ -235,13 +235,28 @@ typedef enum
 - (void)hideNetworkActivity;
 
 #pragma mark - Unit Testing
+#ifdef DEBUG
 
+/**
+ Returns the correct NSBundle for the current test case.
+ */
 #define NSBundleForTestCase [NSBundle bundleForClass:[self class]]
 
+/**
+ Enables/Disables auto-popping of the mocks stack.  The default value is YES.
+ */
 @property (atomic, assign) BOOL autoPopMocks;
 
+/**
+ Push mock data onto the stack.  These are accessed sequentially.  Each service call
+ will use index 0.  If autoPopMocks is enabled, they'll be automatically pulled off
+ of the stack as tey are accessed.  If autoPopMocks is disabled, one needs to manually
+ call popMockResponseFile as appropriate.
+ */
 - (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle;
 
 - (void)popMockResponseFile;
+
+#endif
 
 @end
