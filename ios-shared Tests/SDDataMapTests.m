@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSDictionary *blah6;
 @property (nonatomic, assign) NSInteger blah7;
 @property (nonatomic, strong) NSString *subBlah8;
+@property (nonatomic, assign) BOOL shouldBeInvalid;
 
 @end
 
@@ -38,12 +39,15 @@
              @"blah1": sdmo_key(self.blah1),
              @"blah2": sdmo_key(self.blah2),
              @"blah7": sdmo_key(self.blah7),
-             @"subBlah8": sdmo_selector(@selector(setSubBlah8:))
+             @"subBlah8": sdmo_selector(@selector(setSubBlah8:)),
+             @"shouldBeInvalid": sdmo_key(self.shouldBeInvalid)
              };
 }
 
 - (BOOL)validModel
 {
+    if (self.shouldBeInvalid)
+        return NO;
     return YES;
 }
 
@@ -457,6 +461,27 @@
     
     NSArray *output = (NSArray *)[dummyObject objectForKey:@"blah1"];
     XCTAssertTrue(output == nil, @"we gave it bad data, there should be NO output!");
+}
+
+- (void)testArrayErrorBehavior2
+{
+    NSMutableDictionary *dummyObject = [NSMutableDictionary dictionary];
+    NSDictionary *object1 = @{@"blah2": @"object1"};
+    NSDictionary *object2 = @{@"blah2": @"object2", @"shouldBeInvalid": @YES }; // make this guy return that he's invalid.
+    NSDictionary *object3 = @{@"blah2": @"object3"};
+    NSArray *blah1 = @[object1, object2, object3];
+    
+    NSDictionary *dummyDictionary = @{@"blah1" : blah1};
+    
+    NSDictionary *mappingDictionary = @{@"blah1" : @"(NSArray<MyObject>)blah1"};
+    
+    SDDataMap *mapper = [SDDataMap mapForDictionary:mappingDictionary];
+    [mapper mapObject:dummyDictionary toObject:dummyObject];
+    
+    NSArray *output = (NSArray *)[dummyObject objectForKey:@"blah1"];
+    XCTAssertTrue((output.count == 2), @"dummyObject should only have 2 items!");
+    XCTAssertTrue([[output objectAtIndex:0] isKindOfClass:[MyObject class]], @"The items in the output array aren't of MyObject!");
+    XCTAssertTrue([[[output objectAtIndex:1] valueForKey:@"blah2"] isEqualToString:@"object3"], @"blah2 on item 1 should be 'object3'!");
 }
 
 @end

@@ -77,32 +77,13 @@ typedef enum
 
 @interface SDWebService : NSObject
 
-/**
- Instructs SDWebService to use mock service responses if available.
-
- Mock service responses should be .json files included in the bundle and consist of just the response payload.  The filename
- should match the method specified in the plist.  You can also include .errorjson files to test error paths.  You can use this
- to test error handling within the application.  Simply un-include the happy path .json from the bundle and include the .errorjson
- instead.
- 
- Example:
- 
- plist method name: prescriptions
- file name: prescriptions.json
- contents:
-
- {
- "status": 1
- }
-
- If you wish to test both happy and error paths in the same suite, set useErrorMocksIfAvailable to TRUE before the error cases.
- */
-@property (nonatomic, assign) BOOL useMocksIfAvailable;
-@property (nonatomic, assign) BOOL useErrorMocksIfAvailable;
-
 #ifdef DEBUG
+/**
+ Disable service call caching.
+ */
 @property (nonatomic, assign) BOOL disableCaching;
 #endif
+
 /**
  The timeout, in seconds, for calls made to this service. Default is `60.0`.
  */
@@ -253,5 +234,12 @@ typedef enum
  */
 - (void)hideNetworkActivity;
 
+#pragma mark - Unit Testing
+
+@property (atomic, assign) BOOL autoPopMocks;
+
+- (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle;
+
+- (void)popMockResponseFile;
 
 @end
