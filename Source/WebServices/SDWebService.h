@@ -236,6 +236,8 @@ typedef enum
 
 #pragma mark - Unit Testing
 
+#define NSBundleForTestCase [NSBundle bundleForClass:[self class]]
+
 @property (atomic, assign) BOOL autoPopMocks;
 
 - (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle;
