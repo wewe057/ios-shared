@@ -255,6 +255,14 @@ typedef enum
  */
 - (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle;
 
+/**
+ Adds several mock response files at once.
+ */
+- (void)pushMockResponseFiles:(NSArray *)filenames bundle:(NSBundle *)bundle;
+
+/**
+ Pops the index 0 mock off of the stack.
+ */
 - (void)popMockResponseFile;
 
 #endif
