@@ -72,8 +72,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     _normalRequests = [[NSMutableDictionary alloc] init];
     _dictionaryLock = [[NSLock alloc] init];
     
+#ifdef DEBUG
     _autoPopMocks = YES;
-
+#endif
+    
     self.timeout = 60; // 1-minute default.
 	
     NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
@@ -758,7 +760,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     // attempt to find any mock data if available.
     NSData *mockData = nil;
 #ifdef DEBUG
-    [self getNextMockResponse];
+    mockData = [self getNextMockResponse];
 #endif
     
     if (!mockData)
