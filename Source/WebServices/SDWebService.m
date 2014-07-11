@@ -756,8 +756,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     }
 
     // attempt to find any mock data if available.
-    NSData *mockData = [self getNextMockResponse];
-
+    NSData *mockData = nil;
+#ifdef DEBUG
+    [self getNextMockResponse];
+#endif
+    
     if (!mockData)
     {
         // no mock data was found, or we don't want to use mocks.  send out the request.
