@@ -756,8 +756,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     }
 
     // attempt to find any mock data if available.
-    NSData *mockData = [self getNextMockResponse];
-
+    NSData *mockData = nil;
+#ifdef DEBUG
+    [self getNextMockResponse];
+#endif
+    
     if (!mockData)
     {
         // no mock data was found, or we don't want to use mocks.  send out the request.
@@ -884,6 +887,38 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
         if (mockData)
             [_mockStack addObject:mockData];
+    }
+}
+
+- (void)pushMockResponseFiles:(NSArray *)filenames bundle:(NSBundle *)bundle
+{
+    @synchronized(self)
+    {
+        for (NSUInteger index = 0; index < filenames.count; index++)
+        {
+            id object = [filenames objectAtIndex:index];
+            if (object && [object isKindOfClass:[NSString class]])
+            {
+                NSString *filename = object;
+                
+                // remove a any prepended paths in case they can't read the documentation.
+                NSString *safeFilename = [filename lastPathComponent];
+                NSString *finalPath = [bundle pathForResource:safeFilename ofType:nil];
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                NSData *mockData = nil;
+        
+                if (finalPath && [fileManager fileExistsAtPath:finalPath])
+                {
+                    SDLog(@"*** Using mock data file '%@'", safeFilename);
+                    mockData = [NSData dataWithContentsOfFile:finalPath];
+                }
+                else
+                    SDLog(@"*** Unable to find mock file '%@'", safeFilename);
+                
+                if (mockData)
+                    [_mockStack addObject:mockData];
+            }
+        }
     }
 }
 

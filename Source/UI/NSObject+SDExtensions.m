@@ -84,6 +84,26 @@
     return exists;
 }
 
+static dispatch_semaphore_t __asyncSemaphore = nil;
+
+- (void)waitForAsynchronousTask
+{
+    if (!__asyncSemaphore)
+        __asyncSemaphore = dispatch_semaphore_create(0);
+    
+    // we're waiting briefly so the runloop can run.
+    // if wait returns 0, that means it was signaled so we can gtfo.
+    while (0 != dispatch_semaphore_wait(__asyncSemaphore, DISPATCH_TIME_NOW))
+    {
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate date]];
+    }
+}
+
+- (void)completeAsynchronousTask
+{
+    dispatch_semaphore_signal(__asyncSemaphore);
+}
+
 // This is tightly tied to the implementation found in NSArray+SDExtensions.m
 // These is a reason that the implementation is duplicated and not called into NSObject's version.
 // Please keep them duplicated otherwise the recursion bug that is being solved will happen again.
