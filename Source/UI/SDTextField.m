@@ -31,7 +31,6 @@
 @property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @property (nonatomic, strong, readonly) UIToolbar *accessoryToolbar;
 @property (nonatomic, getter = isTextManuallySet) BOOL textManuallySet;
-
 @end
 
 @implementation SDTextField
@@ -49,6 +48,7 @@
 {
     self = [super initWithFrame:frame];
     [self configureView];
+    
     return self;
 }
 
@@ -83,6 +83,9 @@
     _floatingLabelActiveTextColor = [UIColor blueColor];
     if ([self respondsToSelector:@selector(tintColor)])
         _floatingLabelActiveTextColor = self.tintColor;
+    
+    _hitInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+    _minimumHitSize = CGSizeMake(0, 0);
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds
@@ -472,5 +475,39 @@
     self.textManuallySet = YES;
     self.text = @"";
 }
+
+#pragma mark - Hit Testing
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    BOOL pointInside = NO;
+    
+    if (!self.enabled || self.hidden)
+    {
+        pointInside = [super pointInside:point withEvent:event];
+    }
+    else if(UIEdgeInsetsEqualToEdgeInsets(self.hitInsets, UIEdgeInsetsZero) && (CGSizeEqualToSize(self.minimumHitSize, CGSizeZero)))
+    {
+        pointInside = [super pointInside:point withEvent:event];
+    }
+    else if (!UIEdgeInsetsEqualToEdgeInsets(self.hitInsets, UIEdgeInsetsZero))
+    {
+        
+        CGRect hitFrame = UIEdgeInsetsInsetRect(self.bounds, self.hitInsets);
+        pointInside = CGRectContainsPoint(hitFrame, point);
+    }
+    else
+    {
+        CGFloat minW = MAX(self.width, self.minimumHitSize.width);
+        CGFloat minH = MAX(self.height, self.minimumHitSize.height);
+        
+        CGFloat insetW = (self.width - minW) / 2.0;
+        CGFloat insetH = (self.height - minH) / 2.0;
+        CGRect hitFrame = CGRectInset(self.bounds, insetW, insetH);
+        pointInside = CGRectContainsPoint(hitFrame, point);
+    }
+    
+    return pointInside;
+}
+
 
 @end

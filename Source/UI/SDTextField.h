@@ -96,4 +96,16 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 
 - (void)setFloatingLabelsVisible:(BOOL)visible;
 
+/**
+ *  Setting the hitInsets to anything other than UIEdgeInsetsZero overrides minimumHitSize
+ *  Specify negative values to increase the hit area
+ */
+@property (nonatomic, assign) UIEdgeInsets hitInsets;
+
+/**
+ *  If hitInsets is not set, then calculate a hit area that is at least this large
+ */
+@property (nonatomic, assign) CGSize minimumHitSize;
+
+
 @end
