@@ -8,6 +8,19 @@
 
 @import UIKit;
 
+extern NSString* const SDAuthenticationErrorDomain;
+
+NS_ENUM(NSUInteger, SDAuthenticationError)
+{
+    SDAuthenticationErrorPasswordMismatch // The stored password didn't match the password entered by the user.
+};
+
+/**
+ *  A reply indicating the result of an authentication request.
+ *
+ *  @param success Returns YES if the authentication was successful, NO otherwise.
+ *  @param error Output parameter that returns the appropriate error object in case of failure. The error domain can be 
+ */
 typedef void(^SDAuthenticationReply)(BOOL success, NSError* error);
 
 /**

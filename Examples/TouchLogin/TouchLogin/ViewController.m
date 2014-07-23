@@ -36,15 +36,23 @@
 - (IBAction)saveButtonTapped:(id)sender
 {
     self.password = self.passwordField.text;
+    NSError* keyChainError = nil;
     [SDKeychain storeUsername:self.username
                   andPassword:self.password
                forServiceName:self.serviceName
                updateExisting:YES
-                        error:nil];
+                        error:&keyChainError];
+    if (keyChainError) {
+        SDLog(@"There was an error in storing the password: %@", keyChainError);
+    } else {
+        SDLog(@"Updated password to: %@", self.password);
+    }
 }
 
 - (IBAction)retrieveButtonTapped:(id)sender
 {
+    [self.usernameField resignFirstResponder];
+    [self.passwordField resignFirstResponder];
     [self requestAccess];
 }
 
@@ -63,7 +71,7 @@
         }
         else
         {
-            SDLog(@"AUTHENTICATION FAILED!");
+            SDLog(@"AUTHENTICATION FAILED! Error: %@", error);
         }
     }];
 }
