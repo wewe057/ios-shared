@@ -85,6 +85,15 @@
         _floatingLabelActiveTextColor = self.tintColor;
 }
 
+- (void)insertText:(NSString *)text
+{
+    [super insertText:text];
+    if (self.validateWhileTyping && self.validationBlock)
+    {
+        self.validationBlock(self);
+    }
+}
+
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
     if (self.disableFloatingLabels)
