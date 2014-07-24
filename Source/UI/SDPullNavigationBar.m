@@ -555,27 +555,23 @@ typedef struct
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         [self showMenuContainer];
 
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
-        {
+        [UIView animateWithDuration:(self.menuOpen ? 0.5 : 0.35) delay:0 usingSpringWithDamping:0.75 initialSpringVelocity:1 options:0 animations:^{
             if(self.menuOpen)
                 [self collapseMenu];
             else
                 [self expandMenu];
-        }
-        completion:^(BOOL finished)
-        {
+        } completion:^(BOOL finished) {
             self.animating = NO;
-
+            
             [self.tabButton setNeedsDisplay];
             self.menuContainer.hidden = !self.menuOpen;
-
+            
             if(completion)
                 completion();
             
             // If we just finished our collapse, tell the controller now
             if(self.implementsDidDisappear && !self.menuOpen)
                 [self.menuController pullNavMenuDidDisappear];
-
         }];
     }
     else
