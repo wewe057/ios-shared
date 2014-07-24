@@ -83,6 +83,7 @@ typedef struct
 @property (nonatomic, assign) BOOL implementsMenuWidthForOrientations;
 @property (nonatomic, assign) BOOL implementsBackgroundViewClass;
 @property (nonatomic, assign) BOOL implementsLightboxEffectColor;
+@property (nonatomic, assign) BOOL implementsTopExtensionBackgroundColor;
 
 @end
 
@@ -221,17 +222,19 @@ typedef struct
             self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
             
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            CGRect frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight + kDrawerTopExtension) },
+            CGRect frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight + kDrawerTopExtension + self.menuAdornmentImageOverlapHeight) },
                                      { self.menuWidthForCurrentOrientation, menuHeight + kDrawerTopExtension } };
-            
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
                 self.menuBottomAdornmentView.adornmentImage = self.adornmentImageForCurrentOrientation;
             if(self.implementsBackgroundViewClass)
                 self.menuBottomAdornmentView.backgroundViewClass = self.backgroundViewClass;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
+            
+            // This could also be inserted in negative coordinate space, but that would require SDPullNavigationBarAdornmentView
+            // not to clip to bounds. It would be nicer to not include the extension in origin calculations everywhere
             UIView *menuAdornmentTopExtension = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, kDrawerTopExtension)];
-            menuAdornmentTopExtension.backgroundColor = [UIColor whiteColor];
+            menuAdornmentTopExtension.backgroundColor = [self topExtensionBackgroundColor];
             [self.menuBottomAdornmentView addSubview:menuAdornmentTopExtension];
         }
         
@@ -287,7 +290,7 @@ typedef struct
 - (void)centerViewsToOrientation
 {
     CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight + kDrawerTopExtension) },
+    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight + kDrawerTopExtension + self.menuAdornmentImageOverlapHeight) },
                                                        { self.menuWidthForCurrentOrientation, menuHeight + kDrawerTopExtension } };
 }
 
@@ -346,6 +349,7 @@ typedef struct
     if(self.implementsBackgroundViewClass)
         self.backgroundViewClass = self.menuController.pullNavigationMenuBackgroundViewClass;
     self.implementsLightboxEffectColor = [self.menuController respondsToSelector:@selector(pullNavigationLightboxEffectColor)];
+    self.implementsTopExtensionBackgroundColor = [self.menuController respondsToSelector:@selector(pullNavigationMenuTopExtensionBackgroundColor)];
     self.implementsWillAppear = [self.menuController respondsToSelector:@selector(pullNavMenuWillAppear)];
     self.implementsDidAppear = [self.menuController respondsToSelector:@selector(pullNavMenuDidAppear)];
     self.implementsWillDisappear = [self.menuController respondsToSelector:@selector(pullNavMenuWillDisappear)];
@@ -406,7 +410,7 @@ typedef struct
             
             // Peg to the bottom value.
             newY = MAX(newY, _menuInteraction.minMenuY);
-            
+
             self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.baseFrame.origin.x, newY }, self.menuBottomAdornmentView.baseFrame.size };
             break;
         }
@@ -738,6 +742,14 @@ typedef struct
     }
     
     return backgroundColor;
+}
+
+- (UIColor *) topExtensionBackgroundColor {
+    UIColor *extensionColor = [UIColor whiteColor];
+    if (self.implementsTopExtensionBackgroundColor) {
+        extensionColor = [self.menuController pullNavigationMenuTopExtensionBackgroundColor];
+    }
+    return extensionColor;
 }
 
 - (void)hideBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion
