@@ -19,6 +19,7 @@
 static const CGFloat kDefaultMenuWidth = 320.0f;
 static const CGFloat kDefaultMenuHeightBuffer = 44.0f;  // Keeps the bottom of the menu from getting too close to the bottom of the screen
 static const CGFloat kDrawerBounceHeight = 85.0f;
+static const CGFloat kDrawerTopExtension = 50.0f; // keeps the menu from disconnecting from the nav bar
 
 static NSCache* sMenuAdornmentImageCache = nil;
 
@@ -43,8 +44,8 @@ typedef struct
 {
     CGPoint initialTouchPoint;
     CGPoint currentTouchPoint;
-    CGFloat maxMenuHeight;
-    CGFloat minMenuHeight;
+    CGFloat maxMenuY;
+    CGFloat minMenuY;
     CGFloat velocity;
     BOOL    isInteracting;
 } SDMenuControllerInteractionFlags;
@@ -194,7 +195,7 @@ typedef struct
             [self setupProtocolHelpers];
             
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            self.menuController.view.frame = (CGRect){ CGPointZero, { self.menuWidthForCurrentOrientation, menuHeight } };
+            self.menuController.view.frame = (CGRect){ {0, kDrawerTopExtension}, { self.menuWidthForCurrentOrientation, menuHeight } };
             
             self.menuController.view.clipsToBounds = YES;
             self.menuController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -220,8 +221,8 @@ typedef struct
             self.menuAdornmentImageOverlapHeight = [SDPullNavigationManager sharedInstance].menuAdornmentImageOverlapHeight;
             
             CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            CGRect frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                     { self.menuWidthForCurrentOrientation, menuHeight } };
+            CGRect frame = (CGRect){ { newSuperview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight + kDrawerTopExtension) },
+                                     { self.menuWidthForCurrentOrientation, menuHeight + kDrawerTopExtension } };
             
             self.menuBottomAdornmentView = [[SDPullNavigationBarAdornmentView alloc] initWithFrame:frame];
             if(self.showAdornment)
@@ -229,6 +230,9 @@ typedef struct
             if(self.implementsBackgroundViewClass)
                 self.menuBottomAdornmentView.backgroundViewClass = self.backgroundViewClass;
             self.menuBottomAdornmentView.tag = SDPullNavigationAdornmentView;
+            UIView *menuAdornmentTopExtension = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, kDrawerTopExtension)];
+            menuAdornmentTopExtension.backgroundColor = [UIColor whiteColor];
+            [self.menuBottomAdornmentView addSubview:menuAdornmentTopExtension];
         }
         
         [self insertSubview:self.navbarBackgroundView atIndex:1];
@@ -283,8 +287,8 @@ typedef struct
 - (void)centerViewsToOrientation
 {
     CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight) },
-                                                       { self.menuWidthForCurrentOrientation, menuHeight } };
+    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.superview.frame.size.width * 0.5f - self.menuWidthForCurrentOrientation * 0.5f, -(menuHeight - self.navigationBarHeight + kDrawerTopExtension) },
+                                                       { self.menuWidthForCurrentOrientation, menuHeight + kDrawerTopExtension } };
 }
 
 - (void)setFrame:(CGRect)frame
@@ -383,8 +387,8 @@ typedef struct
             _menuInteraction.initialTouchPoint = [recognizer translationInView:self];
             _menuInteraction.isInteracting = YES;
             _menuInteraction.velocity = 0.0f;
-            _menuInteraction.minMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
-            _menuInteraction.maxMenuHeight = self.navigationBarHeight;
+            _menuInteraction.minMenuY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + kDrawerTopExtension + self.menuAdornmentImageOverlapHeight);
+            _menuInteraction.maxMenuY = self.navigationBarHeight - kDrawerTopExtension;
 
             [recognizer setTranslation:CGPointZero inView:self];
 
@@ -397,7 +401,12 @@ typedef struct
         {
             _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
 
-            CGFloat newY = MIN(_menuInteraction.minMenuHeight + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
+            // Peg to the top value
+            CGFloat newY = MIN(_menuInteraction.minMenuY + _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuY);
+            
+            // Peg to the bottom value.
+            newY = MAX(newY, _menuInteraction.minMenuY);
+            
             self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.baseFrame.origin.x, newY }, self.menuBottomAdornmentView.baseFrame.size };
             break;
         }
@@ -406,7 +415,12 @@ typedef struct
         {
             _menuInteraction.velocity = [recognizer velocityInView:self].y;
 
-            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
+            [UIView animateWithDuration:0.35
+                                  delay:0
+                 usingSpringWithDamping:0.75
+                  initialSpringVelocity:(self.menuOpen ? 5 : 1)
+                                options:UIViewAnimationOptionBeginFromCurrentState
+                             animations:^
             {
                 SDPullNavigationStateEndAction action = SDPullNavigationStateEndNone;
 
@@ -414,7 +428,7 @@ typedef struct
                 {
                     // Slow drag
 
-                    CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                    CGFloat panArea = _menuInteraction.maxMenuY - _menuInteraction.minMenuY;
                     if(_menuInteraction.velocity < 0.0f)
                     {
                         action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f ? SDPullNavigationStateEndExpand : SDPullNavigationStateEndCollapse;
@@ -467,10 +481,10 @@ typedef struct
             _menuInteraction.initialTouchPoint = [recognizer translationInView:self];
             _menuInteraction.isInteracting = YES;
             _menuInteraction.velocity = 0.0f;
-            _menuInteraction.minMenuHeight = self.navigationBarHeight;
-            _menuInteraction.maxMenuHeight = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight);
+            _menuInteraction.minMenuY = self.navigationBarHeight - kDrawerTopExtension;
+            _menuInteraction.maxMenuY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + kDrawerTopExtension);
 
-            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, _menuInteraction.minMenuHeight }, self.menuBottomAdornmentView.baseFrame.size };
+            self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, _menuInteraction.minMenuY }, self.menuBottomAdornmentView.baseFrame.size };
 
             [recognizer setTranslation:CGPointZero inView:self];
             break;
@@ -481,10 +495,10 @@ typedef struct
             _menuInteraction.currentTouchPoint = [recognizer translationInView:self];
 
             // Peg to the top value
-            CGFloat newY = MAX(_menuInteraction.minMenuHeight - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuHeight);
+            CGFloat newY = MAX(_menuInteraction.minMenuY - _menuInteraction.initialTouchPoint.y + _menuInteraction.currentTouchPoint.y, _menuInteraction.maxMenuY);
 
             // Peg to the bottom value.
-            newY = MIN(newY, _menuInteraction.minMenuHeight);
+            newY = MIN(newY, _menuInteraction.minMenuY);
 
             self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.baseFrame.origin.x, newY }, self.menuBottomAdornmentView.baseFrame.size };
             break;
@@ -494,7 +508,12 @@ typedef struct
         {
             _menuInteraction.velocity = [recognizer velocityInView:self].y;
 
-            [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
+            [UIView animateWithDuration:0.35
+                                  delay:0
+                 usingSpringWithDamping:0.75
+                  initialSpringVelocity:(self.menuOpen ? 5 : 1)
+                                options:UIViewAnimationOptionBeginFromCurrentState
+                             animations:^
             {
                 SDPullNavigationStateEndAction action = SDPullNavigationStateEndNone;
 
@@ -502,7 +521,7 @@ typedef struct
                 {
                     // Slow drag
 
-                    CGFloat panArea = _menuInteraction.maxMenuHeight - _menuInteraction.minMenuHeight;
+                    CGFloat panArea = _menuInteraction.maxMenuY - _menuInteraction.minMenuY;
                     if(_menuInteraction.velocity < 0)
                     {
                         action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
@@ -555,7 +574,12 @@ typedef struct
         [self.superview insertSubview:self.menuContainer belowSubview:self];
         [self showMenuContainer];
 
-        [UIView animateWithDuration:(self.menuOpen ? 0.5 : 0.35) delay:0 usingSpringWithDamping:0.75 initialSpringVelocity:1 options:0 animations:^{
+        [UIView animateWithDuration:0.35
+                              delay:0
+             usingSpringWithDamping:0.75
+              initialSpringVelocity:(self.menuOpen ? 5 : 1)
+                            options:0
+                         animations:^{
             if(self.menuOpen)
                 [self collapseMenu];
             else
@@ -633,7 +657,7 @@ typedef struct
     self.tabButton.tuckedTab = YES;
     [self.tabButton setNeedsDisplay];   // During expand, hide the tab now
 
-    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, self.navigationBarHeight }, self.menuBottomAdornmentView.baseFrame.size };
+    self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, self.navigationBarHeight - kDrawerTopExtension }, self.menuBottomAdornmentView.baseFrame.size };
 
     self.menuOpen = YES;
 
@@ -661,7 +685,7 @@ typedef struct
     
     self.tabButton.tuckedTab = NO;  // During collapse, hide the tab at animation completion (hence no setNeedsDisplay).
     
-    CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight);
+    CGFloat menuPositionY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + self.menuAdornmentImageOverlapHeight + kDrawerTopExtension);
     self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, menuPositionY }, self.menuBottomAdornmentView.baseFrame.size };
 
     self.menuOpen = NO;
@@ -681,7 +705,12 @@ typedef struct
 {
     if(animate)
     {
-        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        [UIView animateWithDuration:0.35
+                              delay:0
+             usingSpringWithDamping:0.75
+              initialSpringVelocity:1
+                            options:0
+                         animations:^
         {
             self.backgroundEffectsView.backgroundColor = [self backgroundEffectsBackgroundColor];
         }
@@ -715,7 +744,12 @@ typedef struct
 {
     if(animate)
     {
-        [UIView animateWithDuration:0.25 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^
+        [UIView animateWithDuration:0.35
+                              delay:0
+             usingSpringWithDamping:0.75
+              initialSpringVelocity:1
+                            options:0
+                         animations:^
         {
              self.backgroundEffectsView.backgroundColor = [UIColor clearColor];
         }
