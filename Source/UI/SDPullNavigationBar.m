@@ -432,14 +432,15 @@ typedef struct
                 {
                     // Slow drag
 
-                    CGFloat panArea = _menuInteraction.maxMenuY - _menuInteraction.minMenuY;
+                    CGFloat panArea = fabs(_menuInteraction.maxMenuY - _menuInteraction.minMenuY);
+                    CGFloat yPositionInPanArea = fabs(_menuInteraction.currentTouchPoint.y - _menuInteraction.initialTouchPoint.y);
                     if(_menuInteraction.velocity < 0.0f)
                     {
-                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f ? SDPullNavigationStateEndExpand : SDPullNavigationStateEndCollapse;
+                        action = yPositionInPanArea < panArea * 0.66f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
                     }
                     else
                     {
-                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f ? SDPullNavigationStateEndExpand : SDPullNavigationStateEndCollapse;
+                        action = yPositionInPanArea < panArea * 0.33f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
                     }
                 }
                 else
@@ -486,7 +487,7 @@ typedef struct
             _menuInteraction.isInteracting = YES;
             _menuInteraction.velocity = 0.0f;
             _menuInteraction.minMenuY = self.navigationBarHeight - kDrawerTopExtension;
-            _menuInteraction.maxMenuY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + kDrawerTopExtension);
+            _menuInteraction.maxMenuY = -(MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight) - self.navigationBarHeight + kDrawerTopExtension + self.menuAdornmentImageOverlapHeight);
 
             self.menuBottomAdornmentView.baseFrame = (CGRect){ { self.menuBottomAdornmentView.frame.origin.x, _menuInteraction.minMenuY }, self.menuBottomAdornmentView.baseFrame.size };
 
@@ -525,14 +526,15 @@ typedef struct
                 {
                     // Slow drag
 
-                    CGFloat panArea = _menuInteraction.maxMenuY - _menuInteraction.minMenuY;
+                    CGFloat panArea = fabs(_menuInteraction.maxMenuY - _menuInteraction.minMenuY);
+                    CGFloat yPositionInPanArea = fabs(_menuInteraction.currentTouchPoint.y - _menuInteraction.initialTouchPoint.y);
                     if(_menuInteraction.velocity < 0)
                     {
-                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.66f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
+                        action = yPositionInPanArea < panArea * 0.66f ? SDPullNavigationStateEndExpand : SDPullNavigationStateEndCollapse;
                     }
                     else
                     {
-                        action = self.menuBottomAdornmentView.frame.origin.y < panArea * 0.33f ? SDPullNavigationStateEndCollapse : SDPullNavigationStateEndExpand;
+                        action = yPositionInPanArea < panArea * 0.33f ? SDPullNavigationStateEndExpand : SDPullNavigationStateEndCollapse;
                     }
                 }
                 else
