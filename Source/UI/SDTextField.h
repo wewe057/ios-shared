@@ -81,6 +81,11 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 @property (nonatomic, copy) SDTextFieldValidationBlock validationBlock;
 
 /**
+ * Perform validation for this field as typing occurs.
+ */
+@property (nonatomic, assign) BOOL validateWhileTyping;
+
+/**
  * Performs validation using the validation block on this field and any associated fields (see nextTextField).  If
  * any return FALSE, validateFields will return FALSE as well.  Otherwise, this returns TRUE.
  */

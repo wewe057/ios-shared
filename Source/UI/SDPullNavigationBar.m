@@ -180,7 +180,8 @@ typedef struct
             self.menuContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuContainer.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuContainer.opaque = NO;
-            self.menuContainer.hidden = NO;
+
+            [self hideMenuContainer];
             
             if([SDPullNavigationManager sharedInstance].disableShadowOnMenuContainer == NO)
             {
@@ -603,14 +604,17 @@ typedef struct
             self.animating = NO;
             
             [self.tabButton setNeedsDisplay];
-            self.menuContainer.hidden = !self.menuOpen;
             
             if(completion)
                 completion();
             
             // If we just finished our collapse, tell the controller now
-            if(self.implementsDidDisappear && !self.menuOpen)
-                [self.menuController pullNavMenuDidDisappear];
+            if(!self.menuOpen)
+            {
+                [self hideMenuContainer];
+                [self notifyPullNavMenuDidDisappear];
+            }
+
         }];
     }
     else
@@ -619,6 +623,32 @@ typedef struct
         if(completion)
             completion();
     }
+}
+
+- (void)notifyPullNavMenuWillAppear
+{
+    if(self.implementsWillAppear)
+        [self.menuController pullNavMenuWillAppear];
+    [self.menuBottomAdornmentView pullNavigationMenuWillAppear];
+}
+
+- (void)notifyPullNavMenuDidAppear
+{
+    if(self.implementsDidAppear)
+        [self.menuController pullNavMenuDidAppear];
+}
+
+- (void)notifyPullNavMenuWillDisappear
+{
+    if(self.implementsWillDisappear)
+        [self.menuController pullNavMenuWillDisappear];
+}
+
+- (void)notifyPullNavMenuDidDisappear
+{
+    if(self.implementsDidDisappear)
+        [self.menuController pullNavMenuDidDisappear];
+    [self.menuBottomAdornmentView pullNavigationMenuDidDisappear];
 }
 
 - (void)bouncePullMenuWithCompletion:(void (^)(void))completion
@@ -655,11 +685,9 @@ typedef struct
         }];
     }];
 }
-
 - (void)expandMenu
 {
-    if(self.implementsWillAppear)
-        [self.menuController pullNavMenuWillAppear];
+    [self notifyPullNavMenuWillAppear];
 
     [self centerViewsToOrientation];
 
@@ -672,21 +700,19 @@ typedef struct
 
     self.menuOpen = YES;
 
-    if(self.implementsDidAppear)
-        [self.menuController pullNavMenuDidAppear];
+    [self notifyPullNavMenuDidAppear];
 }
 
 - (void)collapseMenu
 {
-    if(self.implementsWillDisappear)
-        [self.menuController pullNavMenuWillDisappear];
+    [self notifyPullNavMenuWillDisappear];
 
     [self collapseMenuWithCompletion:^
     {
         // If we're animating, then firing did disappear here is a lie. Hold
         //  off until we're actually done animating.
-        if(self.implementsDidDisappear && !self.animating)
-            [self.menuController pullNavMenuDidDisappear];
+        if(!self.animating)
+            [self notifyPullNavMenuDidDisappear];
     }];
 }
 
@@ -704,12 +730,16 @@ typedef struct
 
 - (void)showMenuContainer
 {
-    self.menuContainer.hidden = NO;
+    // Using alpha instead of hidden fixes a bug that is only evident on the iPad 3.
+    // The menu container would remain visible even when hidden.
+    self.menuContainer.alpha = 1;
 }
 
 - (void)hideMenuContainer
 {
-    self.menuContainer.hidden = YES;
+    // Using alpha instead of hidden fixes a bug that is only evident on the iPad 3.
+    // The menu container would remain visible even when hidden.
+    self.menuContainer.alpha = 0;
 }
 
 - (void)showBackgroundEffectWithAnimation:(BOOL)animate completion:(void (^)(void))completion

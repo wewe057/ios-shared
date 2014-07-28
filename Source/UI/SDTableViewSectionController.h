@@ -68,14 +68,6 @@
 - (void)sectionController:(SDTableViewSectionController *)sectionController popViewController: (BOOL)animated;
 
 /**
- *  A section controller is asking you to pop to navigation stack back to yourself
- *
- *  @param sectionController The section controller making the request
- *  @param animated          YES if the section controller wants the pop animated
- */
-- (void)sectionController:(SDTableViewSectionController *)sectionController popToSelfAnimated:(BOOL)animated;
-
-/**
  *  A section controller is asking you to pop to the root view controller
  *
  *  @param sectionController The section controller making the request
@@ -129,6 +121,26 @@
 
 - (CGFloat)sectionControllerHeightForHeader:(SDTableViewSectionController *)sectionController;
 
+/**
+ *  Return a title for the footer for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a title for the footer for this section
+ */
+- (NSString *)sectionControllerTitleForFooter:(SDTableViewSectionController *)sectionController;
+
+/**
+ *  Return a view for the footer for this section
+ *
+ *  @param sectionController The section controller making the request
+ *
+ *  @return a view for the footer for this section
+ */
+- (UIView *)sectionControllerViewForFooter:(SDTableViewSectionController *)sectionController;
+
+- (CGFloat)sectionControllerHeightForFooter:(SDTableViewSectionController *)sectionController;
+
 // "Delegate" methods
 @optional
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
@@ -142,6 +154,7 @@
 @optional
 // Editing support
 - (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
+- (BOOL)sectionController:(SDTableViewSectionController *)sectionController shouldIndentWhileEditingRow:(NSInteger)row;
 - (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
 
 @optional

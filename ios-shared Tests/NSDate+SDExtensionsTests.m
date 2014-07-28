@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "NSData+SDExtensions.h"
 
 @interface NSDateTests : XCTestCase
 {
@@ -24,4 +25,24 @@
     XCTAssertTrue([convertedFirstDayOfMonth isEqualToDate:aprilFoolsDay]);
 }
 
+- (void)testIsToday
+{
+    NSDate *now = [NSDate date];
+    
+    XCTAssertTrue([now isToday]);
+}
+
+- (void)testIsNotTodayAndInDistantPast
+{
+    NSDate *past = [NSDate distantPast];
+    
+    XCTAssertFalse([past isToday]);
+}
+
+- (void)testIsNotTodayAndInDistantFuture
+{
+    NSDate *future = [NSDate distantFuture];
+    
+    XCTAssertFalse([future isToday]);
+}
 @end

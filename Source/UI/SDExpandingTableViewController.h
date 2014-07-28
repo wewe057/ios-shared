@@ -117,7 +117,12 @@
 /**
  *  The padding, if any, between all the tables and self.view (note, this is not the padding between each tableView)
  */
-@property (nonatomic, assign) UIEdgeInsets tableViewsPaddingInsets;
+@property (nonatomic, assign) UIEdgeInsets tableContainerPaddingInsets;
+
+/**
+ *  The padding, if any, between 2 tableviews
+ */
+@property (nonatomic, assign) CGFloat tableViewHorizontalPadding;
 
 /**
  *  The max size that the view can grow in both portrait

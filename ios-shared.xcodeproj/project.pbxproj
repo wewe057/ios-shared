@@ -137,6 +137,7 @@
 		CA0E77E5182850D500B4398F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0E77E3182850CB00B4398F /* UIKit.framework */; };
 		CA0E791B1829B7A700B4398F /* SDContentAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E791A1829B7A700B4398F /* SDContentAlertView.m */; };
 		CA80792D17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
+		CA888875196F08930022DA14 /* NSObject+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA888874196F08930022DA14 /* NSObject+SDExtensionsTests.m */; };
 		CAA3E935182C15F500602210 /* SDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E934182C15F500602210 /* SDTextField.m */; };
 		CAA3E936182C183E00602210 /* SDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E934182C15F500602210 /* SDTextField.m */; };
 		CAA3E93E182D516E00602210 /* SDSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E93D182D516E00602210 /* SDSwitch.m */; };
@@ -150,6 +151,7 @@
 		CAAB5A3818564CEE006737D4 /* RxRefillsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */; };
 		CABD745018AAB4180083A097 /* SDBase64Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = CABD744F18AAB4180083A097 /* SDBase64Tests.m */; };
 		CABD745218AAB5420083A097 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CABD745118AAB5420083A097 /* SystemConfiguration.framework */; };
+		CAC1ED091954B4EB0023F706 /* SDTouchID.m in Sources */ = {isa = PBXBuildFile; fileRef = CAC1ED081954B4EB0023F706 /* SDTouchID.m */; };
 		E205781918872F2600A1BA81 /* SDPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780818872F2600A1BA81 /* SDPickerView.m */; };
 		E205781A18872F2600A1BA81 /* SDPaintCodeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780C18872F2600A1BA81 /* SDPaintCodeButton.m */; };
 		E205781B18872F2600A1BA81 /* SDQuantityEditView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205780E18872F2600A1BA81 /* SDQuantityEditView.m */; };
@@ -357,6 +359,7 @@
 		CA80792917C94199009574BB /* libios-shared.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-shared.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA80792C17C94199009574BB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CA80793A17C94199009574BB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		CA888874196F08930022DA14 /* NSObject+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		CAA3E933182C15F500602210 /* SDTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTextField.h; sourceTree = "<group>"; };
 		CAA3E934182C15F500602210 /* SDTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTextField.m; sourceTree = "<group>"; };
 		CAA3E93C182D516E00602210 /* SDSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDSwitch.h; sourceTree = "<group>"; };
@@ -375,6 +378,9 @@
 		CAAB5A3218564CEE006737D4 /* RxRefillsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RxRefillsModel.m; sourceTree = "<group>"; };
 		CABD744F18AAB4180083A097 /* SDBase64Tests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDBase64Tests.m; sourceTree = "<group>"; };
 		CABD745118AAB5420083A097 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		CAC1ED071954B4EB0023F706 /* SDTouchID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTouchID.h; sourceTree = "<group>"; };
+		CAC1ED081954B4EB0023F706 /* SDTouchID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTouchID.m; sourceTree = "<group>"; };
+		CAC1ED0A1954B50C0023F706 /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		E205780718872F2600A1BA81 /* SDPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDPickerView.h; sourceTree = "<group>"; };
 		E205780818872F2600A1BA81 /* SDPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDPickerView.m; sourceTree = "<group>"; };
 		E205780A18872F2600A1BA81 /* SDAdjustableItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDAdjustableItem.h; sourceTree = "<group>"; };
@@ -484,6 +490,7 @@
 			children = (
 				CA01F1B917D7A6F000E7C553 /* ios_shared_Tests.m */,
 				E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */,
+				CA888874196F08930022DA14 /* NSObject+SDExtensionsTests.m */,
 				08EFCA2118FDCB70006547E0 /* NSDate+SDExtensionsTests.m */,
 				08EFCA2718FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m */,
 				E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */,
@@ -616,6 +623,8 @@
 			children = (
 				CA0E771518284DD500B4398F /* SDKeychain.h */,
 				CA0E771618284DD500B4398F /* SDKeychain.m */,
+				CAC1ED071954B4EB0023F706 /* SDTouchID.h */,
+				CAC1ED081954B4EB0023F706 /* SDTouchID.m */,
 			);
 			path = Security;
 			sourceTree = "<group>";
@@ -799,6 +808,7 @@
 		CA80792B17C94199009574BB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CAC1ED0A1954B50C0023F706 /* LocalAuthentication.framework */,
 				CABD745118AAB5420083A097 /* SystemConfiguration.framework */,
 				E2CADC73185649FF0018A704 /* Accelerate.framework */,
 				CA80792C17C94199009574BB /* Foundation.framework */,
@@ -905,7 +915,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = SD;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = SetDirection;
 				TargetAttributes = {
 					CA01F1AE17D7A6EF00E7C553 = {
@@ -1008,6 +1018,7 @@
 				E2136B5E18A466F700000D1B /* SDLog.m in Sources */,
 				CA0E77C518284DD600B4398F /* UIScreen+SDExtensions.m in Sources */,
 				CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */,
+				CA888875196F08930022DA14 /* NSObject+SDExtensionsTests.m in Sources */,
 				CA0E77D118284DD600B4398F /* NSURLRequest+SDExtensions.m in Sources */,
 				CA0E77A618284DD600B4398F /* SDNumberTextField.m in Sources */,
 				CA0E778E18284DD600B4398F /* MKMapView+SDExtensions.m in Sources */,
@@ -1047,6 +1058,7 @@
 				CA0E778D18284DD600B4398F /* MKMapView+SDExtensions.m in Sources */,
 				CA0E776F18284DD600B4398F /* NSDate+SDExtensions.m in Sources */,
 				E28923B4189970CB009C78CA /* SDAutolayoutStackView.m in Sources */,
+				CAC1ED091954B4EB0023F706 /* SDTouchID.m in Sources */,
 				CA0E77B118284DD600B4398F /* SDSearchDisplayController.m in Sources */,
 				E2DF06901891A1A900BA7021 /* SDButton.m in Sources */,
 				E205781B18872F2600A1BA81 /* SDQuantityEditView.m in Sources */,
@@ -1207,9 +1219,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1246,9 +1260,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
