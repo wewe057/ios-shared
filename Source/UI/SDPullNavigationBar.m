@@ -200,13 +200,13 @@ typedef struct
             
             [self setupProtocolHelpers];
             
-            CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
-            self.menuController.view.frame = (CGRect){ {0, kDrawerTopExtension}, { self.menuWidthForCurrentOrientation, menuHeight } };
-            
             self.menuController.view.clipsToBounds = YES;
             self.menuController.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             self.menuController.view.translatesAutoresizingMaskIntoConstraints = YES;
             self.menuController.view.tag = SDPullNavigationClientViewTag;
+            
+            CGFloat menuHeight = MIN(self.menuController.pullNavigationMenuHeight, self.availableHeight);
+            self.menuController.view.frame = (CGRect){ {0, kDrawerTopExtension}, { self.menuWidthForCurrentOrientation, menuHeight } };
         }
         
         // View that darkens the views behind and to the side of the menu.
@@ -629,13 +629,10 @@ typedef struct
     }
     self.userInteractionEnabled = NO;
     [self centerViewsToOrientation];
-    if (self.availableHeight < self.menuController.tableView.contentSize.height)
-    {
-        self.menuController.tableView.contentOffset = CGPointMake(0.0f, self.availableHeight - kDrawerBounceHeight);
-    }
+
     [UIView animateWithDuration:0.45f delay:0.0f usingSpringWithDamping:0.99f initialSpringVelocity:10.0f options:0 animations:^{
         [self.superview insertSubview:self.menuContainer belowSubview:self];
-        self.menuContainer.hidden = NO;
+        [self showMenuContainer];
         self.tabButton.tuckedTab = YES;
         [self.tabButton setNeedsDisplay];
         CGRect f = self.menuBottomAdornmentView.frame;
@@ -650,7 +647,6 @@ typedef struct
         } completion:^(BOOL secondFinished) {
             [self.tabButton setNeedsDisplay];
             [self.menuContainer removeFromSuperview];
-            self.menuController.tableView.contentOffset = CGPointZero;
             self.userInteractionEnabled = YES;
             if (completion != NULL)
             {

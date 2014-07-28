@@ -46,7 +46,7 @@
 
 @interface SDPullNavigationBar : UINavigationBar
 
-@property (nonatomic, strong) IBOutlet UITableViewController<SDPullNavigationBarDelegate>* menuController;
+@property (nonatomic, strong) IBOutlet UIViewController <SDPullNavigationBarDelegate>* menuController;
 
 + (void)setupDefaults;
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController;
