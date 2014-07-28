@@ -204,10 +204,6 @@
     {
         [self setupPlaceholderView];
         [self addSubview:self.placeholderView];
-
-        UIView* line = [[UIView alloc] initWithFrame:(CGRect){ { self.placeholderView.frame.size.width - 0.5f, 0.0f }, { 0.5f, self.innerView.frame.size.height } }];
-        line.backgroundColor = [UIColor colorWithRed:0.5f green:0.5f blue:0.5f alpha:0.3f];
-        [self addSubview:line];
     }
 
     _placeholderView.frame = CGRectMake(0.0f, ceil((self.frame.size.height - 32.0f) * 0.5f), 51.0f, 32.0f);
