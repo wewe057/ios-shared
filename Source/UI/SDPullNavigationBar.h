@@ -25,6 +25,7 @@
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuHeight;
 
 @optional
+@property (nonatomic, strong, readonly) UIColor *pullNavigationMenuTopExtensionBackgroundColor; // Defaults to whiteColor
 @property (nonatomic, assign, readonly) CGFloat pullNavigationMenuWidth;                // Defaults to 320.0f
 
 // If you implement the two following calls, pullnav will allow different widths per orientation and overrides the single width one.
@@ -45,12 +46,12 @@
 
 @interface SDPullNavigationBar : UINavigationBar
 
-@property (nonatomic, strong) IBOutlet UITableViewController<SDPullNavigationBarDelegate>* menuController;
+@property (nonatomic, strong) IBOutlet UIViewController <SDPullNavigationBarDelegate>* menuController;
 
 + (void)setupDefaults;
 + (UINavigationController*)navControllerWithViewController:(UIViewController*)viewController;
 
 - (IBAction)tapAction:(id)sender;
 - (void)dismissPullMenuWithCompletionBlock:(void (^)(void))completion;
-
+- (void)bouncePullMenuWithCompletion:(void (^)(void))completion;
 @end
