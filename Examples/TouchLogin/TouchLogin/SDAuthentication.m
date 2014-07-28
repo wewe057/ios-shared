@@ -13,6 +13,8 @@
 #import "SDAuthentication.h"
 #import "SDKeychain.h"
 
+NSString* const SDAuthenticationErrorDomain = @"SDAuthenticationErrorDomain";
+
 @implementation SDAuthentication
 
 + (void)authenticateUsername:(NSString*)username
@@ -23,7 +25,6 @@
                        reply:(SDAuthenticationReply)reply
 {
     void (^passwordPromptFallbackBlock)() = ^{
-        NSError* promptError = nil;
         UIAlertController* alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Enter Password", @"Enter Password")
                                                                                  message:localizedReason
                                                                           preferredStyle:UIAlertControllerStyleAlert];
@@ -39,14 +40,26 @@
                                                               handler:^(UIAlertAction * action)
         {
             @strongify(alertController);
+            NSError* promptError = nil;
             UITextField* passwordField = alertController.textFields[0];
             NSString* enteredPassword = passwordField.text;
-            NSString* storedPassword = [SDKeychain getPasswordForUsername:username andServiceName:serviceName error:nil];
+            NSString* storedPassword = [SDKeychain getPasswordForUsername:username andServiceName:serviceName error:&promptError];
+            if (promptError) {
+                // Compare to password in keychain and call completion block
+                if (reply)
+                {
+                    reply(NO, promptError);
+                }
+            }
+            
             BOOL validPassword = [storedPassword isEqualToString:enteredPassword];
             
             // Compare to password in keychain and call completion block
             if (reply)
             {
+                promptError = [NSError errorWithDomain:SDAuthenticationErrorDomain
+                                                  code:SDAuthenticationErrorPasswordMismatch
+                                              userInfo:@{ NSLocalizedDescriptionKey: NSLocalizedString(@"Entered password does not match stored password.", @"SDAuthentication: password mismatch error") }];
                 reply(validPassword, promptError);
             }
             
@@ -60,17 +73,20 @@
 #if !TARGET_IPHONE_SIMULATOR
     if (useTouchID)
     {
-        LAContext *context = [[LAContext alloc] init];
-        NSError *authError = nil;
+        LAContext* context = [[LAContext alloc] init];
+        NSError* authError = nil;
         
         if ([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&authError])
         {
             [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
                     localizedReason:localizedReason
-                              reply:^(BOOL success, NSError *error)
+                              reply:^(BOOL success, NSError* error)
             {
                 if (success)
                 {
+                    NSString* storedPassword = [SDKeychain getPasswordForUsername:username andServiceName:serviceName error:nil];
+                    SDLog(@"Authentication succeeded. Password is: %@", storedPassword);
+                    
                     if (reply)
                     {
                         reply(YES, error);
