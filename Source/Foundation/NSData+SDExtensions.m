@@ -83,4 +83,10 @@
     return nil;
 }
 
+- (NSString *)stringRepresentation
+{
+    NSString *result = [[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding];
+    return result;
+}
+
 @end
