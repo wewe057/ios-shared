@@ -88,6 +88,15 @@
     _minimumHitSize = CGSizeMake(0, 0);
 }
 
+- (void)insertText:(NSString *)text
+{
+    [super insertText:text];
+    if (self.validateWhileTyping && self.validationBlock)
+    {
+        self.validationBlock(self);
+    }
+}
+
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
     if (self.disableFloatingLabels)

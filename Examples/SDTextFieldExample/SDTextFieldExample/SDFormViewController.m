@@ -54,6 +54,15 @@
     
     self.number1Field.format = @"##/##/####";
     self.number2Field.format = @"(###) ###-####";
+    self.number2Field.validateWhileTyping = YES;
+    self.number2Field.validationBlock = ^BOOL (SDTextField *textField) {
+        BOOL result = (textField.text.length == 14);
+        if (result)
+            self.submitButton.enabled = YES;
+        else
+            self.submitButton.enabled = NO;
+        return result;
+    };
 
     self.number3Field.format = @"#.##.###";
     self.number3Field.validationBlock = ^BOOL (SDTextField *textField) {
