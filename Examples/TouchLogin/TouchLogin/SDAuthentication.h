@@ -64,7 +64,7 @@ typedef void(^SDAuthenticationFallbackBlock)(NSError* error);
 /**
  *  Authenticate a user with TouchID. If TouchID is unavailable, execute the provided fallback block.
  *
- *  @param localizedReason The reason for authentication. This is shown in the TouchID prompt and also the fallback password prompt.
+ *  @param localizedReason The reason for authentication. This is shown in the TouchID prompt.
  *  @param replyBlock The authentication response block.
  *  @param fallbackBlock The fallback block in case TouchID is unavailable.
  *
