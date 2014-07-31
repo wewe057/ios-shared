@@ -62,6 +62,7 @@
 
 @property (nonatomic, assign) CGFloat menuAdornmentImageOverlapHeight;
 
+
 /**
  This is the offset to make the bottom adornment doesn't get too close to the bottom of the screen.
  Measured in pts from the bottom of the screen. The default is 44pts.

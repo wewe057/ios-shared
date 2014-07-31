@@ -62,8 +62,7 @@
                                serviceName:self.serviceName
                            localizedReason:@"access plz. kthnxbye."
                   presentingViewController:self
-                                useTouchID:YES
-                                     reply:^(BOOL success, NSError *error)
+                                replyBlock:^(BOOL success, NSError *error)
     {
         if (success)
         {

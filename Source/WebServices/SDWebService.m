@@ -150,8 +150,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)showNetworkActivityIfNeeded
 {
-    if (_requestCount > 0)
+    if (_requestCount > 0) {
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNetworkActivity) object:nil];
         [self showNetworkActivity];
+    }
 }
 
 - (void)hideNetworkActivityIfNeeded
@@ -171,7 +173,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)decrementRequests
 {
-	_requestCount--;
+	if (_requestCount > 0) _requestCount--;
 	[self hideNetworkActivityIfNeeded];
 }
 
@@ -752,7 +754,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                 [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
 				[_singleRequests removeObjectForKey:requestName];
                 [_dictionaryLock unlock];
-				[self decrementRequests];
 			}
         }
     }

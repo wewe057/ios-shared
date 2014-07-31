@@ -19,9 +19,20 @@ NS_ENUM(NSUInteger, SDAuthenticationError)
  *  A reply indicating the result of an authentication request.
  *
  *  @param success Returns YES if the authentication was successful, NO otherwise.
- *  @param error Output parameter that returns the appropriate error object in case of failure. The error domain can be 
+ *  @param error The appropriate error object in case of failure.
  */
 typedef void(^SDAuthenticationReply)(BOOL success, NSError* error);
+
+/**
+ *  A fallback block for showing an alternative authentication mechanism, such as a login view controller.
+ *  e.g. SDAuthenticationFallbackBlock fallbackBlock = ^(NSError* error) {
+ *           [myViewController presentViewController:loginViewController animated:YES completion:nil];
+ *       };
+ *
+ *
+ *  @param error The appropriate error object so you know what caused authentication to fail and can then show an appropriate fallback.
+ */
+typedef void(^SDAuthenticationFallbackBlock)(NSError* error);
 
 /**
  * The purpose of this class is to provide a mechanism to authenticate the user during a flow in an application.
@@ -35,21 +46,31 @@ typedef void(^SDAuthenticationReply)(BOOL success, NSError* error);
 
 
 /**
- *  Authenticate a user.
+ *  Authenticate a user with TouchID. If TouchID is unavailable, present a fallback prompt to let the user enter a password that is compared against a stored password.
  *
  *  @param username The username whose account needs to be authenticated. Must match the saved previously password.
  *  @param serviceName The service name used to store the username and password in the keychain.
  *  @param localizedReason The reason for authentication. This is shown in the TouchID prompt and also the fallback password prompt.
  *  @param presentingViewController The view controller from which to present the fallback prompt.
- *  @param useTouchID A bool to indicate whether to use TouchID or not.
- *  @param reply The authentication response block.
+ *  @param replyBlock The authentication response block.
  *
  */
 + (void)authenticateUsername:(NSString*)username
                  serviceName:(NSString*)serviceName
              localizedReason:(NSString*)localizedReason
     presentingViewController:(UIViewController*)presentingViewController
-                  useTouchID:(BOOL)useTouchID
-                       reply:(SDAuthenticationReply)reply;
+                  replyBlock:(SDAuthenticationReply)replyBlock;
+
+/**
+ *  Authenticate a user with TouchID. If TouchID is unavailable, execute the provided fallback block.
+ *
+ *  @param localizedReason The reason for authentication. This is shown in the TouchID prompt.
+ *  @param replyBlock The authentication response block.
+ *  @param fallbackBlock The fallback block in case TouchID is unavailable.
+ *
+ */
++ (void)authenticateForLocalizedReason:(NSString*)localizedReason
+                            replyBlock:(SDAuthenticationReply)replyBlock
+                         fallbackBlock:(SDAuthenticationFallbackBlock)fallbackBlock;
 
 @end
