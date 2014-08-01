@@ -78,6 +78,8 @@
  */
 + (instancetype)mapFromObject:(id)sourceObject;
 
+- (NSString *)modelDescription;
+
 @end
 
 
