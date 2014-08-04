@@ -186,7 +186,7 @@ static char kObserveQuantityContext;
     // if originalQuantity is zero, that means we are adding a new item
     // if so, it does not make sense to allow stepper to be lower than one
     // "Add zero items" is a useless concept
-    NSDecimalNumber *minimumQuantity = [self.originalQuantity isEqual:[NSDecimalNumber zero]] ? [NSDecimalNumber one] : [NSDecimalNumber zero];
+    NSDecimalNumber *minimumQuantity = [self.originalQuantity isEqual:[NSDecimalNumber zero]] && viewDelegate.limitMinimumQuantityOnNewItemsToStepAmount ? self.stepAmount : [NSDecimalNumber zero];
     // minus on only if quantity is more than the min
     NSComparisonResult minResult = [minimumQuantity compare:self.currentQuantity];
     viewDelegate.minusButton.enabled = ( minResult == NSOrderedAscending);
