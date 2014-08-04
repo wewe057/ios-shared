@@ -85,6 +85,7 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
  * any return FALSE, validateFields will return FALSE as well.  Otherwise, this returns TRUE.
  */
 - (BOOL)validateFields;
+- (BOOL)validate; // validates just this field, and optionally shows the error label
 
 /**
  * Useful for subclasses that wish to do view configuration after instantiating the view.

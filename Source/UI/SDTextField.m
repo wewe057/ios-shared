@@ -458,6 +458,14 @@ SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextFie
     return fieldsAreValid;
 }
 
+- (BOOL) validate
+{
+    BOOL isValid = [self internalValidate];
+    if (!isValid)
+        [self showFloatingLabel];
+    return isValid;
+}
+
 - (void)resetTextWithoutValidate
 {
     self.textManuallySet = YES;
