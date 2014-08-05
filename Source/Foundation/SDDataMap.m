@@ -548,6 +548,11 @@ static dispatch_once_t __formatterOnceToken = 0;
     return [[[self class] alloc] init];
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"propertyName = %@, propertyType = %@, propertySubType = %@", self.propertyName, self.propertyType, self.propertySubtype];
+}
+
 + (NSArray *)propertiesForClass:(id)objectClass
 {
     NSMutableArray *results = [NSMutableArray array];
@@ -562,7 +567,7 @@ static dispatch_once_t __formatterOnceToken = 0;
         if (propName)
         {
             SDObjectProperty *objectProperty = [SDObjectProperty property];
-            objectProperty.propertyName = [NSString stringWithUTF8String:propName];
+            objectProperty.propertyName = [NSString stringWithCString:propName encoding:NSUTF8StringEncoding];
             objectProperty.propertyType = [SDObjectProperty propertyType:property];
 
             if (objectProperty.isValid)
@@ -672,6 +677,25 @@ static dispatch_once_t __formatterOnceToken = 0;
         return property;
     
     return nil;
+}
+
+- (void)setPropertyType:(NSString *)propertyType
+{
+    if (propertyType && [propertyType rangeOfString:@"<"].location != NSNotFound)
+    {
+        NSRegularExpression *typeRegex = [NSRegularExpression regularExpressionWithPattern:@"(?<=\\().*(?=\\))|(?<=\\<).*(?=\\>)" options:0 error:nil];
+        NSString *propertySubtype = nil;
+        if (propertyType && [typeRegex numberOfMatchesInString:propertyType options:0 range:NSMakeRange(0, propertyType.length)])
+        {
+            propertySubtype = [propertyType substringWithRange:[typeRegex rangeOfFirstMatchInString:propertyType options:0 range:NSMakeRange(0, propertyType.length)]];
+            if (propertySubtype)
+            {
+                propertyType = [propertyType stringByReplacingOccurrencesOfString:@"\\((.*)(<.*>)\\)|<(.*)>|\\((.*)\\)" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, propertyType.length)];
+                _propertySubtype = propertySubtype;
+            }
+        }
+    }
+    _propertyType = propertyType;
 }
 
 + (NSString *)propertyType:(objc_property_t)property
