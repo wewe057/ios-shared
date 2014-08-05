@@ -123,8 +123,6 @@
 		CA0E77D318284DD600B4398F /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775A18284DD600B4398F /* Reachability.m */; };
 		CA0E77D418284DD600B4398F /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775C18284DD600B4398F /* SDImageCache.m */; };
 		CA0E77D518284DD600B4398F /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775C18284DD600B4398F /* SDImageCache.m */; };
-		CA0E77D618284DD600B4398F /* SDMockService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775E18284DD600B4398F /* SDMockService.m */; };
-		CA0E77D718284DD600B4398F /* SDMockService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775E18284DD600B4398F /* SDMockService.m */; };
 		CA0E77D818284DD600B4398F /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776018284DD600B4398F /* SDURLConnection.m */; };
 		CA0E77D918284DD600B4398F /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776018284DD600B4398F /* SDURLConnection.m */; };
 		CA0E77DA18284DD600B4398F /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776218284DD600B4398F /* SDWebService+SDProcessingBlocks.m */; };
@@ -343,8 +341,6 @@
 		CA0E775A18284DD600B4398F /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		CA0E775B18284DD600B4398F /* SDImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
 		CA0E775C18284DD600B4398F /* SDImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
-		CA0E775D18284DD600B4398F /* SDMockService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMockService.h; sourceTree = "<group>"; };
-		CA0E775E18284DD600B4398F /* SDMockService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDMockService.m; sourceTree = "<group>"; };
 		CA0E775F18284DD600B4398F /* SDURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDURLConnection.h; sourceTree = "<group>"; };
 		CA0E776018284DD600B4398F /* SDURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDURLConnection.m; sourceTree = "<group>"; };
 		CA0E776118284DD600B4398F /* SDWebService+SDProcessingBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SDWebService+SDProcessingBlocks.h"; sourceTree = "<group>"; };
@@ -772,8 +768,6 @@
 				CA0E775A18284DD600B4398F /* Reachability.m */,
 				CA0E775B18284DD600B4398F /* SDImageCache.h */,
 				CA0E775C18284DD600B4398F /* SDImageCache.m */,
-				CA0E775D18284DD600B4398F /* SDMockService.h */,
-				CA0E775E18284DD600B4398F /* SDMockService.m */,
 				CA0E775F18284DD600B4398F /* SDURLConnection.h */,
 				CA0E776018284DD600B4398F /* SDURLConnection.m */,
 				CA0E776118284DD600B4398F /* SDWebService+SDProcessingBlocks.h */,
@@ -973,7 +967,6 @@
 				CAAB5A3418564CEE006737D4 /* RxAddressModel.m in Sources */,
 				CA0E77D918284DD600B4398F /* SDURLConnection.m in Sources */,
 				CA0E778218284DD600B4398F /* SDDataMap.m in Sources */,
-				CA0E77D718284DD600B4398F /* SDMockService.m in Sources */,
 				CA0E778618284DD600B4398F /* SDPoser.m in Sources */,
 				CA0E77DF18284DD600B4398F /* UIImageView+SDExtensions.m in Sources */,
 				CA0E77B418284DD600B4398F /* SDStackView.m in Sources */,
@@ -1046,7 +1039,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA0E77D818284DD600B4398F /* SDURLConnection.m in Sources */,
-				CA0E77D618284DD600B4398F /* SDMockService.m in Sources */,
 				CA0E778318284DD600B4398F /* SDModelObject.m in Sources */,
 				CA0E776B18284DD600B4398F /* NSArray+SDExtensions.m in Sources */,
 				CA0E77B818284DD600B4398F /* UIActivityIndicatorView+SDExtensions.m in Sources */,
