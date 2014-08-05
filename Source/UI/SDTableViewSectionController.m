@@ -49,6 +49,12 @@
 
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
 {
+    NSArray *outgoingSectionControllers = self.sectionControllers;  // Hold onto until we are at the end of this method so when the delegate is swapped, they are not immediately dealloced
+                                                                    // This is an attempt to "fix" the unreproducible crashes:
+                                                                    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ad53ae3de5099ba56db1e
+                                                                    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539a7a35e3de5099ba568723
+                                                                    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ab68ee3de5099ba56bd4e
+    
     @strongify(self.tableView, strongTableView);
     
     [self p_sendSectionDidUnload:self.sectionControllers];
@@ -73,6 +79,8 @@
     {
         [strongTableView reloadData];
     }
+    
+    outgoingSectionControllers = nil; // Just to shut up the compiler
 }
 
 #pragma mark - UITableView DataSource

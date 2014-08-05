@@ -155,6 +155,12 @@ typedef NS_ENUM(NSUInteger, SDPickerViewMode)
     self.modalScreenView.alpha = 0.0f;
     [mainWindow addSubview:self.modalScreenView];
     
+    @strongify(self.delegate, strongDelegate);
+    if ([strongDelegate respondsToSelector:@selector(pickerViewWillShow:)])
+    {
+        [strongDelegate performSelector:@selector(pickerViewWillShow:) withObject:self];
+    }
+    
     // First fade in
     [UIView animateWithDuration:0.2f animations:^{
         self.modalScreenView.alpha = 1.0f;
@@ -165,6 +171,11 @@ typedef NS_ENUM(NSUInteger, SDPickerViewMode)
                                                         mainWindow.frame.size.height - self.pickerContainerView.frame.size.height,
                                                         mainWindow.frame.size.width,
                                                         self.pickerContainerView.frame.size.height);
+        } completion:^(BOOL finished2) {
+            if ([strongDelegate respondsToSelector:@selector(pickerViewDidShow:)])
+            {
+                [strongDelegate performSelector:@selector(pickerViewDidShow:) withObject:self];
+            }
         }];
     }];
     

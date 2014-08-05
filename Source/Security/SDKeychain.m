@@ -116,7 +116,7 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 
 	NSMutableDictionary *attributeQuery = [query mutableCopy];
 	[attributeQuery setObject:(id) kCFBooleanTrue forKey:(__bridge id)kSecReturnAttributes];
-	CFTypeRef cfResult = nil;
+	CFTypeRef cfResult = NULL;
 	OSStatus status = SecItemCopyMatching( (__bridge CFDictionaryRef)attributeQuery, &cfResult);
 	if (cfResult)
 		CFRelease(cfResult);
@@ -140,7 +140,7 @@ static NSString *SDKeychainErrorDomain = @"SDKeychainErrorDomain";
 	NSMutableDictionary *passwordQuery = [query mutableCopy];
 	[passwordQuery setObject:(id) kCFBooleanTrue forKey:(__bridge id)kSecReturnData];
 
-	CFTypeRef cfResultData;
+	CFTypeRef cfResultData = NULL;
 	status = SecItemCopyMatching( (__bridge CFDictionaryRef)passwordQuery, &cfResultData );
 	resultData = (__bridge NSData*)cfResultData;
 
