@@ -329,14 +329,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     return result;
 }
 
-- (NSString *)responseFromData:(NSData *)data
-{
-    NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    if (!responseString)
-        responseString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-    return responseString;
-}
-
 - (NSString *)buildBaseURLForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
 {
 	NSString *baseURL;
