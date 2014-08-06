@@ -184,4 +184,11 @@ typedef id (^SDSectionKeyBlock)(id blockObject);
  */
 + (NSDictionary*)sectionDictionaryFromArray:(NSArray*)inputArray withSectionKeyBlock:(SDSectionKeyBlock)keyBlock;
 
+/**
+ Merges multiple dictionaries into a single dictionary.  If the dictionaries contain duplicate keys,
+ the latter dictionary values will overwrite the former values.
+ */
++ (NSDictionary *)mergeDictionaries:(NSArray *)dictionaries;
+
+
 @end

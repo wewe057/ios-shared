@@ -86,6 +86,8 @@
 - (NSString *)stringRepresentation
 {
     NSString *result = [[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding];
+    if (!result)
+        result = [[NSString alloc] initWithData:self encoding:NSASCIIStringEncoding];
     return result;
 }
 
