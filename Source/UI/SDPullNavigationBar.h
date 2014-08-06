@@ -12,10 +12,22 @@
 
 @class SDPullNavigationBar;
 
+typedef NS_ENUM(NSUInteger, SDPullNavigationBarSide) {
+    SDPullNavigationBarSideLeft,
+    SDPullNavigationBarSideRight
+};
+
 @protocol SDPullNavigationSetupProtocol <NSObject, UITabBarControllerDelegate>
 @required
-- (void)setupNavigationBar;
-- (void)setupNavigationBarItems;
+/** Method for supplying global navigation button items whenever a new view controller
+ * is pushed or popped onto/off the stack
+ *
+ * @param SDPullNavigationBarSide side is just a simple param for which side you are supplying buttons for
+ * @param UIViewController viewController provides the view controller being displayed in case that 
+ * affects your selection of buttons
+ * @return NSArray of UIBarButtonItems in the appropriate order for whichever side you are supplying
+ **/
+- (NSArray*)globalNavigationBarItemsForSide:(SDPullNavigationBarSide)side withViewController:(UIViewController*)viewController;
 - (SDContainerViewController*)setupGlobalContainerViewController;
 @end
 

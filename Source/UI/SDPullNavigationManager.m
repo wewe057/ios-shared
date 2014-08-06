@@ -39,11 +39,6 @@
     self = [super init];
     if(self != nil)
     {
-        _leftBarItemsView = [[[SDPullNavigationBarControlsView class] alloc] initWithEdge:UIRectEdgeLeft];
-        _leftBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftBarItemsView];
-        _rightBarItemsView = [[[SDPullNavigationBarControlsView class] alloc] initWithEdge:UIRectEdgeRight];
-        _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
-
         _showGlobalNavControls = YES;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -64,23 +59,14 @@
 {
     if(delegate)
     {
-        [delegate setupNavigationBar];
-        [delegate setupNavigationBarItems];
         _globalPullNavController = [delegate setupGlobalContainerViewController];
+        _delegate = delegate;
     }
     else
     {
         _globalPullNavController = nil;
         _delegate = nil;
     }
-}
-
-- (void)setPullNavigationBarViewClass:(Class)overrideClass
-{
-    _leftBarItemsView = [[overrideClass alloc] initWithEdge:UIRectEdgeLeft];
-    _leftBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftBarItemsView];
-    _rightBarItemsView = [[overrideClass alloc] initWithEdge:UIRectEdgeRight];
-    _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
 }
 
 // Called when the navigation controller shows a new top view controller via a push, pop or setting of the view controller stack.
@@ -94,30 +80,11 @@
 
     if(self.showGlobalNavControls)
     {
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
-        {
-            if(viewController.navigationItem.leftBarButtonItems)
-            {
-                viewController.navigationItem.leftBarButtonItems = nil;
-            }
-            if(viewController.navigationItem.leftBarButtonItems == nil && [self.leftBarItemsView barItems].count > 0)
-            {
-                [self.leftBarItemsView removeFromSuperview];
-				[self.leftBarItemsView sizeToFit];
-                viewController.navigationItem.leftBarButtonItems = @[self.leftBarItemsView.owningBarButtonItem];
-            }
-        }
-        completion:^(BOOL finished) {}];
-
-        if(viewController.navigationItem.rightBarButtonItems)
-        {
-            viewController.navigationItem.rightBarButtonItems = nil;
-        }
-        if(viewController.navigationItem.rightBarButtonItems == nil && [self.rightBarItemsView barItems].count > 0)
-        {
-            [self.rightBarItemsView removeFromSuperview];
-			[self.rightBarItemsView sizeToFit];
-            viewController.navigationItem.rightBarButtonItems = @[self.rightBarItemsView.owningBarButtonItem];
+        // grab a strong reference to the weak delegate
+        id <SDPullNavigationSetupProtocol> theDelegate = self.delegate;
+        if ([theDelegate respondsToSelector:@selector(globalNavigationBarItemsForSide:withViewController:)]) {
+            viewController.navigationItem.leftBarButtonItems = [theDelegate globalNavigationBarItemsForSide:SDPullNavigationBarSideLeft withViewController:viewController];
+            viewController.navigationItem.rightBarButtonItems = [theDelegate globalNavigationBarItemsForSide:SDPullNavigationBarSideRight withViewController:viewController];
         }
     }
 }
@@ -226,8 +193,9 @@
 - (UIControl*)barItemController:(id)controller
 {
     UIControl* foundControl = nil;
-
-    NSArray* barItems = [self.leftBarItemsView.barItems arrayByAddingObjectsFromArray:self.rightBarItemsView.barItems];
+    
+    UINavigationItem *navigationItem = [self topLevelViewController:controller].navigationItem;
+    NSArray* barItems = [navigationItem.leftBarButtonItems arrayByAddingObjectsFromArray:navigationItem.rightBarButtonItems];
     for(UIView* item in barItems)
     {
         Class pullNavigationAutomationClass = item.pullNavigationAutomationClass;

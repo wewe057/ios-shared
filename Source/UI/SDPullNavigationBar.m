@@ -268,29 +268,6 @@ typedef struct
     self.tabButton.frame = CGRectIntegral(tabFrame);
     
     [self addSubview:self.tabButton];
-    
-    if (NO == [UIDevice iPad]) {
-        UIView *customTitleView = self.topItem.titleView;
-        if (customTitleView) {
-            CGRect titleViewFrame = customTitleView.frame;
-            CGRect leftItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].leftBarItemsView frame];
-            CGRect rightItemsFrame = [(UIView *)[SDPullNavigationManager sharedInstance].rightBarItemsView frame];
-            
-            CGFloat leftItemsMax = CGRectGetMaxX(leftItemsFrame);
-            CGFloat rightItemsMin = rightItemsFrame.origin.x;
-            
-            CGFloat midX = CGRectGetMidX(self.bounds);
-            CGFloat leftSpan = midX-leftItemsMax;
-            CGFloat rightSpan = rightItemsMin-midX;
-            CGFloat titleWidth = (leftSpan < rightSpan ? : rightSpan)*2.;
-            CGFloat titleOriginX = midX-(titleWidth/2.);
-            
-            titleViewFrame.origin.x = titleOriginX;
-            titleViewFrame.size.width = titleWidth;
-            
-            customTitleView.frame = titleViewFrame;
-        }
-    }
 }
 
 - (void)centerViewsToOrientation
