@@ -708,24 +708,34 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
         [self decrementRequests];
 	};
+    
+    // attempt to find any mock data if available, we need it going forward.
+    NSData *mockData = nil;
+#ifdef DEBUG
+    mockData = [self getNextMockResponse];
+#endif
 
-	NSURLCache *urlCache = [NSURLCache sharedURLCache];
-	NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue] removeIfInvalid:YES];
-	if ([cache boolValue] && cachedResponse && cachedResponse.response)
-	{
-		NSString *cachedString = [self responseFromData:cachedResponse.responseData];
-		if (cachedString)
-		{
-			SDLog(@"***USING CACHED RESPONSE***");
+    // check the cache if we're not working with a mock.
+    if (!mockData)
+    {
+        NSURLCache *urlCache = [NSURLCache sharedURLCache];
+        NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue] removeIfInvalid:YES];
+        if ([cache boolValue] && cachedResponse && cachedResponse.response)
+        {
+            NSString *cachedString = [cachedResponse.responseData stringRepresentation];
+            if (cachedString)
+            {
+                SDLog(@"***USING CACHED RESPONSE***");
 
-			[self incrementRequests];
+                [self incrementRequests];
 
-            urlCompletionBlock(nil, cachedResponse.response, cachedResponse.responseData, nil);
+                urlCompletionBlock(nil, cachedResponse.response, cachedResponse.responseData, nil);
 
-			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
-		}
-	}
-
+                return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
+            }
+        }
+    }
+    
 	[self incrementRequests];
 
 	// see if this is a singleton request.
@@ -749,12 +759,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 			}
         }
     }
-
-    // attempt to find any mock data if available.
-    NSData *mockData = nil;
-#ifdef DEBUG
-    mockData = [self getNextMockResponse];
-#endif
     
     if (!mockData)
     {
