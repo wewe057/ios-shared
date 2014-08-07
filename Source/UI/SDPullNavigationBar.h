@@ -20,12 +20,13 @@ typedef NS_ENUM(NSUInteger, SDPullNavigationBarSide) {
 @protocol SDPullNavigationSetupProtocol <NSObject, UITabBarControllerDelegate>
 @required
 /** Method for supplying global navigation button items whenever a new view controller
- * is pushed or popped onto/off the stack
+ * is pushed onto the stack.
  *
  * @param SDPullNavigationBarSide side is just a simple param for which side you are supplying buttons for
  * @param UIViewController viewController provides the view controller being displayed in case that 
  * affects your selection of buttons
- * @return NSArray of UIBarButtonItems in the appropriate order for whichever side you are supplying
+ * @return NSArray of UIBarButtonItems in the appropriate order for whichever side you are supplying.
+ * @warning Note that global navigation is only set on push, which means buttons on previous view controllers should stay functional
  **/
 - (NSArray*)globalNavigationBarItemsForSide:(SDPullNavigationBarSide)side withViewController:(UIViewController*)viewController;
 - (SDContainerViewController*)setupGlobalContainerViewController;
