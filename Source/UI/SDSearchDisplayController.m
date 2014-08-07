@@ -184,6 +184,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         {
             recentSearchTableView.alpha = 1.0;
         }
+        recentSearchTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
     }
     else {
 		if (!visible && recentSearchTableView)
