@@ -80,7 +80,7 @@
 
     // Since we don't know the direction of the nav controller movement (push/pop) we use the hasGlobalNavigation
     // which is added via a category to know if we've already added global navigation
-    // We do this because resetting the navigation items on a "pop" messes with the animation
+    // We do this because resetting the navigation items on a "pop" messes with the animation, and unnecessary
     if(self.showGlobalNavControls && !viewController.hasGlobalNavigation)
     {
         viewController.hasGlobalNavigation = YES;
