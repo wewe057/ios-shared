@@ -10,6 +10,9 @@
 
 #import "NSObject+SDExtensions.h"
 #import "UIDevice+machine.h"
+#import <objc/runtime.h>
+
+static char const *const kSDViewControllerHasGlobalNavigation = "kSDViewControllerHasGlobalNavigation";
 
 @implementation UIViewController (SDExtensions)
 
@@ -207,6 +210,18 @@
 {
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle: @"Back" style: UIBarButtonItemStyleBordered target: nil action: nil];
     [self.navigationItem setBackBarButtonItem:backButton];
+}
+
+- (void) setHasGlobalNavigation:(BOOL)hasGlobalNavigation
+{
+    NSNumber *number = [NSNumber numberWithBool: hasGlobalNavigation];
+    objc_setAssociatedObject(self, kSDViewControllerHasGlobalNavigation, number , OBJC_ASSOCIATION_RETAIN);
+}
+
+- (BOOL) hasGlobalNavigation
+{
+    NSNumber *number = objc_getAssociatedObject(self, kSDViewControllerHasGlobalNavigation);
+    return [number boolValue];
 }
 
 @end

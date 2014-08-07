@@ -80,4 +80,10 @@
  */
 - (void)useGenericBackButton;
 
+/**
+ Property for whether or not the view controller already has global navigation set. (Helps avoid resetting the navigation items
+ in "pop" scenarios which messes with the animations
+ */
+@property (nonatomic, assign) BOOL hasGlobalNavigation;
+
 @end
