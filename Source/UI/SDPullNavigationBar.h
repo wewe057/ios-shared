@@ -26,6 +26,8 @@ typedef NS_ENUM(NSUInteger, SDPullNavigationBarSide) {
  * @param UIViewController viewController provides the view controller being displayed in case that 
  * affects your selection of buttons
  * @return NSArray of UIBarButtonItems in the appropriate order for whichever side you are supplying.
+ * @warning Note that if your global buttons are always staying in the same position, you can reuse the same button. But
+ * if your buttons move around position wise at all, you will want to provide a new copy each time (e.g. leftItemsSupplementBackButton)
  * @warning Note that global navigation is only set on push, which means buttons on previous view controllers should stay functional
  **/
 - (NSArray*)globalNavigationBarItemsForSide:(SDPullNavigationBarSide)side withViewController:(UIViewController*)viewController;
