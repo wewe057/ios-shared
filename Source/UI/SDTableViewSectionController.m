@@ -57,8 +57,9 @@
 
 - (void)dealloc
 {
-    self.tableView.delegate = nil; // Due to strange crashes, let's just be sure we're not getting called after we're tossed
-    self.tableView.dataSource = nil; // See above
+    @strongify(self.tableView, strongTableView);
+    strongTableView.delegate = nil; // Due to strange crashes, let's just be sure we're not getting called after we're tossed
+    strongTableView.dataSource = nil; // See above
 }
 
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
