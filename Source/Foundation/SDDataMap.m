@@ -344,17 +344,7 @@ static dispatch_once_t __formatterOnceToken = 0;
     if (itsAnNSSet)
         outputArray = [NSSet setWithArray:workArray];
     
-    if ([outputArray count] > 0)
-    {
-        // if it's not empty, then set it.
-        [self setValue:outputArray destProperty:destProperty targetObject:targetObject];
-    }
-    else
-    {
-        // we'll try and set the value.
-        [self setValue:array destProperty:destProperty targetObject:targetObject];
-        //SDLog(@"SDDataMap: why does it get here? %@, %@, %@", array, destProperty, targetObject);
-    }
+    [self setValue:outputArray destProperty:destProperty targetObject:targetObject];
 }
 
 #pragma mark - Utilities
