@@ -55,6 +55,12 @@
     return self;
 }
 
+- (void)dealloc
+{
+    self.tableView.delegate = nil; // Due to strange crashes, let's just be sure we're not getting called after we're tossed
+    self.tableView.dataSource = nil; // See above
+}
+
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
 {
     NSArray *outgoingSectionControllers = self.sectionControllers;  // Hold onto until we are at the end of this method so when the delegate is swapped, they are not immediately dealloced
