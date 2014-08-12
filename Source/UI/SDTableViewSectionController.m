@@ -214,6 +214,10 @@
     {
         estimatedRowHeight = [sectionController sectionController:self estimatedHeightForRow:row];
     }
+    else
+    {
+        estimatedRowHeight = [self tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
     return estimatedRowHeight;
 }
 
