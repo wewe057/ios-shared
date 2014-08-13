@@ -9,11 +9,14 @@
 
 #import "SDTableViewSectionController.h"
 
-// Define this to have SDTableViewSectionController figure out which methods are actually implemented by
+// Define USES_RESPONDS_TO_SELECTOR_SHORTCUT in your project to have SDTableViewSectionController figure out which methods are actually implemented by
 // sections.  This code, while more "proper' in terms of what is actually implemented, appears to be causing
 // crashes and other issues because of how it fiddles with tableView's dataSource and delegate.
 
-//#define USES_RESPONDS_TO_SELECTOR_SHORTCUT
+//#define USES_RESPONDS_TO_SELECTOR_SHORTCUT // For debugging
+
+// Define SDTABLEVIEWSECTIONCONTROLLER_INCLUDE_ESTIMATEDHEIGHTFORROW in your project to have SDTableViewSectionController implement
+// estimatedHeightForRow.  This method is flaky, so beware!
 
 @interface SDTableViewSectionController () <UITableViewDataSource, UITableViewDelegate>
 {
@@ -204,18 +207,20 @@
     return rowHeight;
 }
 
+#ifdef SDTABLEVIEWSECTIONCONTROLLER_INCLUDE_ESTIMATEDHEIGHTFORROW
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
-    CGFloat estimatedRowHeight = UITableViewAutomaticDimension;
+    CGFloat estimatedRowHeight = 44.0;
     if ([sectionController respondsToSelector:@selector(sectionController:estimatedHeightForRow:)])
     {
         estimatedRowHeight = [sectionController sectionController:self estimatedHeightForRow:row];
     }
     return estimatedRowHeight;
 }
+#endif
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -584,6 +589,7 @@
     _sectionsImplementWillDisplayCellForRow = NO;
     _sectionsImplementDidEndDisplayingCellForRow = NO;
     _sectionsImplementScrollViewDidScroll = NO;
+    _sectionsImplementEstimatedHeightForRow = NO; // OFF
     
     // Radar: 16266367
     // There appears to be a bug in UITableView that will cause a crash when a UITableViewDelegate that implements estimatedHeightForRow
