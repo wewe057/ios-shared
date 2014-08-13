@@ -9,8 +9,18 @@
 
 #import "SDTableViewSectionController.h"
 
+// Define USES_RESPONDS_TO_SELECTOR_SHORTCUT in your project to have SDTableViewSectionController figure out which methods are actually implemented by
+// sections.  This code, while more "proper' in terms of what is actually implemented, appears to be causing
+// crashes and other issues because of how it fiddles with tableView's dataSource and delegate.
+
+//#define USES_RESPONDS_TO_SELECTOR_SHORTCUT // For debugging
+
+// Define SDTABLEVIEWSECTIONCONTROLLER_INCLUDE_ESTIMATEDHEIGHTFORROW in your project to have SDTableViewSectionController implement
+// estimatedHeightForRow.  This method is flaky, so beware!
+
 @interface SDTableViewSectionController () <UITableViewDataSource, UITableViewDelegate>
 {
+#ifdef USES_RESPONDS_TO_SELECTOR_SHORTCUT
     // Private flags
     BOOL _sectionsImplementHeightForRow;
     BOOL _sectionsImplementTitleForHeader;
@@ -26,6 +36,7 @@
     BOOL _sectionsImplementDidEndDisplayingCellForRow;
     BOOL _sectionsImplementScrollViewDidScroll;
     BOOL _sectionsImplementEstimatedHeightForRow;
+#endif
 }
 
 @property (nonatomic, weak)   UITableView *tableView;
@@ -47,28 +58,37 @@
     return self;
 }
 
+- (void)dealloc
+{
+    @strongify(self.tableView, strongTableView);
+    strongTableView.delegate = nil; // Due to strange crashes, let's just be sure we're not getting called after we're tossed
+    strongTableView.dataSource = nil; // See above
+}
+
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
 {
     NSArray *outgoingSectionControllers = self.sectionControllers;  // Hold onto until we are at the end of this method so when the delegate is swapped, they are not immediately dealloced
-                                                                    // This is an attempt to "fix" the unreproducible crashes:
-                                                                    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ad53ae3de5099ba56db1e
-                                                                    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539a7a35e3de5099ba568723
-                                                                    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ab68ee3de5099ba56bd4e
+    // This is an attempt to "fix" the unreproducible crashes:
+    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ad53ae3de5099ba56db1e
+    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539a7a35e3de5099ba568723
+    //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ab68ee3de5099ba56bd4e
     
     @strongify(self.tableView, strongTableView);
     
     [self p_sendSectionDidUnload:self.sectionControllers];
-
+    
     self.sectionControllers = sectionControllers;
     
     [self p_sendSectionDidLoad:self.sectionControllers];
     
-      // Force caching of our flags and the table view's flags
+#ifdef USES_RESPONDS_TO_SELECTOR_SHORTCUT
+    // Force caching of our flags and the table view's flags
     [self p_updateFlags];
     strongTableView.delegate = nil;
     strongTableView.dataSource = nil;
     strongTableView.delegate = self;
     strongTableView.dataSource = self;
+#endif
     
     if (animated)
     {
@@ -187,18 +207,20 @@
     return rowHeight;
 }
 
+#ifdef SDTABLEVIEWSECTIONCONTROLLER_INCLUDE_ESTIMATEDHEIGHTFORROW
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
-    CGFloat estimatedRowHeight = UITableViewAutomaticDimension;
+    CGFloat estimatedRowHeight = 44.0;
     if ([sectionController respondsToSelector:@selector(sectionController:estimatedHeightForRow:)])
     {
         estimatedRowHeight = [sectionController sectionController:self estimatedHeightForRow:row];
     }
     return estimatedRowHeight;
 }
+#endif
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -262,7 +284,7 @@
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCellEditingStyle editingStyle = UITableViewCellEditingStyleNone;
- 
+    
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
@@ -270,14 +292,14 @@
     {
         editingStyle =[sectionController sectionController:self editingStyleForRow:row];
     }
-   
+    
     return editingStyle;
 }
 
 - (BOOL) tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath;
 {
     BOOL shouldIndent = YES;
-
+    
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
@@ -285,7 +307,7 @@
     {
         shouldIndent =[sectionController sectionController:self shouldIndentWhileEditingRow:row];
     }
-
+    
     return shouldIndent;
 }
 
@@ -302,7 +324,7 @@
     }
 }
 
-#pragma mark Scroll View Delegate 
+#pragma mark Scroll View Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -351,7 +373,7 @@
     if ([delegate respondsToSelector:@selector(sectionController:popViewController:)])
     {
         [delegate sectionController:self popViewController:animated];
-    }   
+    }
 }
 
 - (void)popToRootViewControllerAnimated:(BOOL)animated
@@ -430,7 +452,7 @@
 - (CGFloat)p_heightForSection:(id<SDTableViewSectionDelegate>)section maxHeight:(CGFloat)maxHeight
 {
     CGFloat sectionHeight = 0;
-
+    
     @strongify(self.tableView, strongTableView);
     // Must check selector because section height is optional
     if ([section respondsToSelector:@selector(sectionControllerHeightForHeader:)])
@@ -472,7 +494,7 @@
     {
         sectionHeight = maxHeight;
     }
-
+    
     return sectionHeight;
 }
 
@@ -491,8 +513,9 @@
     return height;
 }
 
-#pragma mark Private methods
+#pragma mark RespondsToSelector methods
 
+#ifdef USES_RESPONDS_TO_SELECTOR_SHORTCUT
 // Based on the results of calling p_updateFlags, let table view know if we do or do not have
 // sections that implement our proxy delegat methods
 // This allows table view behavior to remain the same as if the we had never implemented those methods
@@ -566,6 +589,7 @@
     _sectionsImplementWillDisplayCellForRow = NO;
     _sectionsImplementDidEndDisplayingCellForRow = NO;
     _sectionsImplementScrollViewDidScroll = NO;
+    _sectionsImplementEstimatedHeightForRow = NO; // OFF
     
     // Radar: 16266367
     // There appears to be a bug in UITableView that will cause a crash when a UITableViewDelegate that implements estimatedHeightForRow
@@ -574,7 +598,7 @@
     // to see if the sections actually implement the method.  If they do we return the value computer by the seciton, otherwise we
     // return the default UITableViewAutomaticDimension.
     // Here is an sample app that shows the crash: https://github.com/steveriggins/EstimatedHeight
-
+    
     // Disabled setting _sectionsImplementEstimatedHeightForRow to YES
     
     // Due to other issues with estimated height, such as reloadTable causing a table to scroll if you call it
@@ -615,6 +639,10 @@
     }
 }
 
+#endif
+
+#pragma mark - Section Methods
+
 - (void)addSection:(id<SDTableViewSectionDelegate>)section
 {
     NSUInteger index = [self.sectionControllers count];
@@ -646,14 +674,14 @@
         NSMutableArray *newSectionControllers = [NSMutableArray arrayWithArray:self.sectionControllers];
         [newSectionControllers removeObjectAtIndex:index];
         self.sectionControllers = [newSectionControllers copy];
-
+        
         // Now nuke the section from the tableview
         @strongify(self.tableView, tableView);
         NSIndexSet *setOfSectionsToDelete = [[NSIndexSet alloc] initWithIndex:index];
         [tableView beginUpdates];
         [tableView deleteSections:setOfSectionsToDelete withRowAnimation:UITableViewRowAnimationFade];
         [tableView endUpdates];
-     }
+    }
 }
 
 - (void)reloadSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation
