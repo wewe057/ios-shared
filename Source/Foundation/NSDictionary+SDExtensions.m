@@ -358,4 +358,38 @@
     return [sections copy];
 }
 
++ (NSDictionary *)mergeDictionaries:(NSArray *)dictionaries
+{
+    if (dictionaries.count == 0)
+        return nil;
+    
+    // validate the items given to us and add the ones that match.
+    NSMutableArray *validatedDictionaries = [NSMutableArray array];
+    for (NSUInteger i = 0; i < dictionaries.count; i++)
+    {
+        id item = [dictionaries objectAtIndex:i];
+        if ([item isKindOfClass:[NSDictionary class]])
+            [validatedDictionaries addObject:item];
+    }
+    
+    NSMutableDictionary *tempDictionary = [NSMutableDictionary dictionary];
+    
+    // lets do them in order ...
+    for (NSUInteger i = 0; i < validatedDictionaries.count; i++)
+    {
+        NSDictionary *dictionary = [validatedDictionaries objectAtIndex:i];
+        NSArray *keyList = [dictionary allKeys];
+        
+        for (NSString *key in keyList)
+        {
+            // this takes all the data provided in replacements and overwrites any default
+            // values specified in the plist.
+            NSObject *value = [dictionary objectForKey:key];
+            [tempDictionary setObject:value forKey:key];
+        }
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:tempDictionary];
+}
+
 @end

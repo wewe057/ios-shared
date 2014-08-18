@@ -123,8 +123,6 @@
 		CA0E77D318284DD600B4398F /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775A18284DD600B4398F /* Reachability.m */; };
 		CA0E77D418284DD600B4398F /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775C18284DD600B4398F /* SDImageCache.m */; };
 		CA0E77D518284DD600B4398F /* SDImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775C18284DD600B4398F /* SDImageCache.m */; };
-		CA0E77D618284DD600B4398F /* SDMockService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775E18284DD600B4398F /* SDMockService.m */; };
-		CA0E77D718284DD600B4398F /* SDMockService.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E775E18284DD600B4398F /* SDMockService.m */; };
 		CA0E77D818284DD600B4398F /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776018284DD600B4398F /* SDURLConnection.m */; };
 		CA0E77D918284DD600B4398F /* SDURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776018284DD600B4398F /* SDURLConnection.m */; };
 		CA0E77DA18284DD600B4398F /* SDWebService+SDProcessingBlocks.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E776218284DD600B4398F /* SDWebService+SDProcessingBlocks.m */; };
@@ -137,6 +135,7 @@
 		CA0E77E5182850D500B4398F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA0E77E3182850CB00B4398F /* UIKit.framework */; };
 		CA0E791B1829B7A700B4398F /* SDContentAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA0E791A1829B7A700B4398F /* SDContentAlertView.m */; };
 		CA80792D17C94199009574BB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA80792C17C94199009574BB /* Foundation.framework */; };
+		CA888875196F08930022DA14 /* NSObject+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA888874196F08930022DA14 /* NSObject+SDExtensionsTests.m */; };
 		CAA3E935182C15F500602210 /* SDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E934182C15F500602210 /* SDTextField.m */; };
 		CAA3E936182C183E00602210 /* SDTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E934182C15F500602210 /* SDTextField.m */; };
 		CAA3E93E182D516E00602210 /* SDSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = CAA3E93D182D516E00602210 /* SDSwitch.m */; };
@@ -342,8 +341,6 @@
 		CA0E775A18284DD600B4398F /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		CA0E775B18284DD600B4398F /* SDImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDImageCache.h; sourceTree = "<group>"; };
 		CA0E775C18284DD600B4398F /* SDImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDImageCache.m; sourceTree = "<group>"; };
-		CA0E775D18284DD600B4398F /* SDMockService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDMockService.h; sourceTree = "<group>"; };
-		CA0E775E18284DD600B4398F /* SDMockService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDMockService.m; sourceTree = "<group>"; };
 		CA0E775F18284DD600B4398F /* SDURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDURLConnection.h; sourceTree = "<group>"; };
 		CA0E776018284DD600B4398F /* SDURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDURLConnection.m; sourceTree = "<group>"; };
 		CA0E776118284DD600B4398F /* SDWebService+SDProcessingBlocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SDWebService+SDProcessingBlocks.h"; sourceTree = "<group>"; };
@@ -358,6 +355,7 @@
 		CA80792917C94199009574BB /* libios-shared.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libios-shared.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA80792C17C94199009574BB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CA80793A17C94199009574BB /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		CA888874196F08930022DA14 /* NSObject+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SDExtensionsTests.m"; sourceTree = "<group>"; };
 		CAA3E933182C15F500602210 /* SDTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTextField.h; sourceTree = "<group>"; };
 		CAA3E934182C15F500602210 /* SDTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTextField.m; sourceTree = "<group>"; };
 		CAA3E93C182D516E00602210 /* SDSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDSwitch.h; sourceTree = "<group>"; };
@@ -488,6 +486,7 @@
 			children = (
 				CA01F1B917D7A6F000E7C553 /* ios_shared_Tests.m */,
 				E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */,
+				CA888874196F08930022DA14 /* NSObject+SDExtensionsTests.m */,
 				08EFCA2118FDCB70006547E0 /* NSDate+SDExtensionsTests.m */,
 				08EFCA2718FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m */,
 				E22B37351843F61E00C7CBEE /* NSString+SDExtensionsTests.m */,
@@ -769,8 +768,6 @@
 				CA0E775A18284DD600B4398F /* Reachability.m */,
 				CA0E775B18284DD600B4398F /* SDImageCache.h */,
 				CA0E775C18284DD600B4398F /* SDImageCache.m */,
-				CA0E775D18284DD600B4398F /* SDMockService.h */,
-				CA0E775E18284DD600B4398F /* SDMockService.m */,
 				CA0E775F18284DD600B4398F /* SDURLConnection.h */,
 				CA0E776018284DD600B4398F /* SDURLConnection.m */,
 				CA0E776118284DD600B4398F /* SDWebService+SDProcessingBlocks.h */,
@@ -970,7 +967,6 @@
 				CAAB5A3418564CEE006737D4 /* RxAddressModel.m in Sources */,
 				CA0E77D918284DD600B4398F /* SDURLConnection.m in Sources */,
 				CA0E778218284DD600B4398F /* SDDataMap.m in Sources */,
-				CA0E77D718284DD600B4398F /* SDMockService.m in Sources */,
 				CA0E778618284DD600B4398F /* SDPoser.m in Sources */,
 				CA0E77DF18284DD600B4398F /* UIImageView+SDExtensions.m in Sources */,
 				CA0E77B418284DD600B4398F /* SDStackView.m in Sources */,
@@ -1015,6 +1011,7 @@
 				E2136B5E18A466F700000D1B /* SDLog.m in Sources */,
 				CA0E77C518284DD600B4398F /* UIScreen+SDExtensions.m in Sources */,
 				CA01F1C417D7A72D00E7C553 /* SDABTestingTests.m in Sources */,
+				CA888875196F08930022DA14 /* NSObject+SDExtensionsTests.m in Sources */,
 				CA0E77D118284DD600B4398F /* NSURLRequest+SDExtensions.m in Sources */,
 				CA0E77A618284DD600B4398F /* SDNumberTextField.m in Sources */,
 				CA0E778E18284DD600B4398F /* MKMapView+SDExtensions.m in Sources */,
@@ -1042,7 +1039,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA0E77D818284DD600B4398F /* SDURLConnection.m in Sources */,
-				CA0E77D618284DD600B4398F /* SDMockService.m in Sources */,
 				CA0E778318284DD600B4398F /* SDModelObject.m in Sources */,
 				CA0E776B18284DD600B4398F /* NSArray+SDExtensions.m in Sources */,
 				CA0E77B818284DD600B4398F /* UIActivityIndicatorView+SDExtensions.m in Sources */,

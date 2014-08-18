@@ -56,6 +56,16 @@ typedef void (^NSObjectPerformBlock)();
 - (BOOL)keyPathExists:(NSString *)keyPath;
 
 /**
+ Waits for an asyc task to finish.
+ */
+- (void)waitForAsynchronousTask;
+
+/**
+ Signals that an async task has completed.
+ */
+- (void)completeAsynchronousTask;
+
+/**
  Invoke arbitrary selectors on the receiver with arbitrary arguments and with a place to store the result of the invocation.
  @param aSelector The selector to invoke. It must exist on the receiver.
  @param returnAddress A pointer to the location where the result of the invocation can be stored. Optional.
@@ -99,5 +109,6 @@ typedef void (^NSObjectPerformBlock)();
  Some rights reserved: http://opensource.org/licenses/MIT
  */
 + (BOOL)swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)alternateSelector error:(NSError**)error;
+
 
 @end

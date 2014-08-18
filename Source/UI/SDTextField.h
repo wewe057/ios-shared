@@ -81,6 +81,11 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 @property (nonatomic, copy) SDTextFieldValidationBlock validationBlock;
 
 /**
+ * Perform validation for this field as typing occurs.
+ */
+@property (nonatomic, assign) BOOL validateWhileTyping;
+
+/**
  * Performs validation using the validation block on this field and any associated fields (see nextTextField).  If
  * any return FALSE, validateFields will return FALSE as well.  Otherwise, this returns TRUE.
  */
@@ -96,6 +101,18 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 - (void)resetTextWithoutValidate; // clear the field, but don't allow validation
 
 - (void)setFloatingLabelsVisible:(BOOL)visible;
+
+/**
+ *  Setting the hitInsets to anything other than UIEdgeInsetsZero overrides minimumHitSize
+ *  Specify negative values to increase the hit area
+ */
+@property (nonatomic, assign) UIEdgeInsets hitInsets;
+
+/**
+ *  If hitInsets is not set, then calculate a hit area that is at least this large
+ */
+@property (nonatomic, assign) CGSize minimumHitSize;
+
 
 @end
 

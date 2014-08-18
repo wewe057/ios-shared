@@ -71,7 +71,7 @@
     return nil;
 }
 
-- (NSString *)description
+- (NSString *)modelDescription
 {
     NSDictionary *aDict = [self dictionaryForModel:YES];
     return [NSString stringWithFormat:@"%@", [aDict description]];

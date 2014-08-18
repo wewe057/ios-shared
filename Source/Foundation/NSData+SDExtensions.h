@@ -18,4 +18,6 @@
 - (NSDictionary *)JSONDictionary;
 - (NSMutableDictionary *)JSONMutableDictionary;
 
+- (NSString *)stringRepresentation;
+
 @end

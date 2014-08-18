@@ -33,7 +33,6 @@ SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextFie
 @property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @property (nonatomic, strong, readonly) UIToolbar *accessoryToolbar;
 @property (nonatomic, getter = isTextManuallySet) BOOL textManuallySet;
-
 @end
 
 @implementation SDTextField
@@ -51,6 +50,7 @@ SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextFie
 {
     self = [super initWithFrame:frame];
     [self configureView];
+    
     return self;
 }
 
@@ -85,6 +85,18 @@ SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextFie
     _floatingLabelActiveTextColor = [UIColor blueColor];
     if ([self respondsToSelector:@selector(tintColor)])
         _floatingLabelActiveTextColor = self.tintColor;
+    
+    _hitInsets = UIEdgeInsetsMake(0, 0, 0, 0);
+    _minimumHitSize = CGSizeMake(0, 0);
+}
+
+- (void)insertText:(NSString *)text
+{
+    [super insertText:text];
+    if (self.validateWhileTyping && self.validationBlock)
+    {
+        self.validationBlock(self);
+    }
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds
@@ -225,28 +237,39 @@ SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextFie
         _accessoryToolbar.frame = (CGRect){CGPointZero, [_accessoryToolbar sizeThatFits:CGSizeZero]};
         _accessoryToolbar.translucent = YES;
         _accessoryToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-
+        
         if ([UIDevice systemMajorVersion] >= 7)
             _accessoryToolbar.barStyle = UIBarStyleDefault;
         else
             _accessoryToolbar.barStyle = UIBarStyleBlack;
-
+        
         UIBarButtonItem *spaceItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         _doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneEditing:)];
-
+        
+        @strongify(self.previousTextField, previousTextField);
+        @strongify(self.nextTextField, nextTextField);
+        
         if ([UIDevice systemMajorVersion] < 7)
         {
             // handle ios6.
-            _segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Previous", nil), NSLocalizedString(@"Next", nil)]];
+            if (previousTextField || nextTextField)
+            {
+                _segmentedControl = [[UISegmentedControl alloc] initWithItems:@[NSLocalizedString(@"Previous", nil), NSLocalizedString(@"Next", nil)]];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+                _segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
 #pragma clang diagnostic pop
-            _segmentedControl.momentary = YES;
-            [_segmentedControl addTarget:self action:@selector(selectAdjacentResponder:) forControlEvents:UIControlEventValueChanged];
-            UIBarButtonItem *segmentedControlBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_segmentedControl];
-
-            [_accessoryToolbar setItems:@[segmentedControlBarButtonItem, spaceItem, _doneItem]];
+                _segmentedControl.momentary = YES;
+                [_segmentedControl addTarget:self action:@selector(selectAdjacentResponder:) forControlEvents:UIControlEventValueChanged];
+                UIBarButtonItem *segmentedControlBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_segmentedControl];
+                
+                [_accessoryToolbar setItems:@[segmentedControlBarButtonItem, spaceItem, _doneItem]];
+            }
+            else
+            {
+                [_accessoryToolbar setItems:@[spaceItem, _doneItem]];
+            }
+            
         }
         else
         {
@@ -254,7 +277,7 @@ SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextFie
             _prevItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❮  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoPreviousTextField:)];
             _nextItem = [[UIBarButtonItem alloc] initWithTitle:@"  ❯  " style:UIBarButtonItemStylePlain target:self action:@selector(gotoNextTextField:)];
             NSArray *toolbarItems;
-            if (self.previousTextField || self.nextTextField)
+            if (previousTextField || nextTextField)
             {
                 toolbarItems = @[_prevItem, _nextItem, spaceItem, _doneItem];
             }
@@ -471,5 +494,39 @@ SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextFie
     self.textManuallySet = YES;
     self.text = @"";
 }
+
+#pragma mark - Hit Testing
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    BOOL pointInside = NO;
+    
+    if (!self.enabled || self.hidden)
+    {
+        pointInside = [super pointInside:point withEvent:event];
+    }
+    else if(UIEdgeInsetsEqualToEdgeInsets(self.hitInsets, UIEdgeInsetsZero) && (CGSizeEqualToSize(self.minimumHitSize, CGSizeZero)))
+    {
+        pointInside = [super pointInside:point withEvent:event];
+    }
+    else if (!UIEdgeInsetsEqualToEdgeInsets(self.hitInsets, UIEdgeInsetsZero))
+    {
+        
+        CGRect hitFrame = UIEdgeInsetsInsetRect(self.bounds, self.hitInsets);
+        pointInside = CGRectContainsPoint(hitFrame, point);
+    }
+    else
+    {
+        CGFloat minW = MAX(self.width, self.minimumHitSize.width);
+        CGFloat minH = MAX(self.height, self.minimumHitSize.height);
+        
+        CGFloat insetW = (self.width - minW) / 2.0;
+        CGFloat insetH = (self.height - minH) / 2.0;
+        CGRect hitFrame = CGRectInset(self.bounds, insetW, insetH);
+        pointInside = CGRectContainsPoint(hitFrame, point);
+    }
+    
+    return pointInside;
+}
+
 
 @end

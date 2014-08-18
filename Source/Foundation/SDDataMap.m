@@ -7,6 +7,7 @@
 //
 
 #import "SDDataMap.h"
+#import "SDModelObject.h"
 #import "NSObject+SDExtensions.h"
 #import "objc/runtime.h"
 
@@ -151,7 +152,15 @@ static dispatch_once_t __formatterOnceToken = 0;
             else
             {
                 Class outputClass = [destProperty desiredOutputClass];
-                
+
+                // if we want an array and the value isn't an array or set, then we can't really do
+                // anything here.
+                if ([destProperty.propertyType isEqualToString:@"NSArray"] && ![value isKindOfClass:[NSArray class]] && ![value isKindOfClass:[NSSet class]])
+                {
+                    // we didn't get a match up.  weep silently.
+                    SDLog(@"We didn't get a valid type mapping for the data provided.");
+                }
+                else
                 if ([value isKindOfClass:[NSSet class]])
                 {
                     NSArray *arrayItems = [value allObjects];
@@ -335,17 +344,7 @@ static dispatch_once_t __formatterOnceToken = 0;
     if (itsAnNSSet)
         outputArray = [NSSet setWithArray:workArray];
     
-    if ([outputArray count] > 0)
-    {
-        // if it's not empty, then set it.
-        [self setValue:outputArray destProperty:destProperty targetObject:targetObject];
-    }
-    else
-    {
-        // we'll try and set the value.
-        [self setValue:array destProperty:destProperty targetObject:targetObject];
-        //SDLog(@"SDDataMap: why does it get here? %@, %@, %@", array, destProperty, targetObject);
-    }
+    [self setValue:outputArray destProperty:destProperty targetObject:targetObject];
 }
 
 #pragma mark - Utilities
@@ -414,82 +413,6 @@ static dispatch_once_t __formatterOnceToken = 0;
         value = tempValue;
     
     return value;
-    
-    /*NSRange leftBrace = [keyPath rangeOfString:@"["];
-    if (leftBrace.location==NSNotFound)
-    {
-        // It has no array, default to KVO
-        if ([sourceObject keyPathExists:keyPath])
-            value = [sourceObject valueForKeyPath:keyPath];
-    }
-    else
-    {
-        // Let's traverse the object using the index in the braces
-        NSRange rightBrace = [keyPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, keyPath.length - leftBrace.location)];
-        if (rightBrace.location==NSNotFound)
-        {
-            // Fall back to KVO if unmatched braces
-            value = [sourceObject valueForKeyPath:keyPath];
-        }
-        else
-        {
-            NSString *currentPath = [keyPath copy];
-            NSObject *currentObject = sourceObject;
-            while (leftBrace.location!=NSNotFound)
-            {
-                // Make sure that there is content within the braces
-                if (leftBrace.location==(rightBrace.location-1))
-                {
-                    // it was a [], fall back to KVO
-                    value = [sourceObject valueForKeyPath:keyPath];
-                    break;
-                }
-                
-                NSString *parentPath = [currentPath substringToIndex:leftBrace.location];
-                NSUInteger arrayIndex = (NSUInteger)[[currentPath substringWithRange:NSMakeRange(leftBrace.location + 1, rightBrace.location - (leftBrace.location + 1) )] integerValue];
-                NSArray *parentArray = [currentObject valueForKeyPath:parentPath];
-                
-                if (![parentArray isKindOfClass:[NSArray class]] || parentArray.count<=arrayIndex)
-                {
-                    // Fall back to KVO if it's not an array or the index doesn't exist
-                    value = [sourceObject valueForKeyPath:keyPath];
-                    break;
-                }
-                
-                currentObject = [parentArray objectAtIndex:arrayIndex];
-                currentPath = [currentPath substringFromIndex:rightBrace.location + 1];
-                
-                
-                if (currentPath.length>0 && [currentPath characterAtIndex:0]=='.')
-                    currentPath = [currentPath substringFromIndex:1];
-                
-                // If currentPath is an emptyString, current object is the correct value
-                if (currentPath.length==0)
-                {
-                    value = currentObject;
-                    break;
-                }
-                
-                // Let's look for more
-                leftBrace = [currentPath rangeOfString:@"["];
-                
-                if (leftBrace.location==NSNotFound)
-                {
-                    // The remaining path is standard KVO
-                    value = [currentObject valueForKeyPath:currentPath];
-                } else {
-                    // more array, let's find the right brace
-                    rightBrace = [currentPath rangeOfString:@"]" options:NSLiteralSearch range:NSMakeRange(leftBrace.location, currentPath.length - leftBrace.location)];
-                    if (rightBrace.location==NSNotFound) {
-                        // Fall back to KVO if unmatched braces
-                        value = [sourceObject valueForKeyPath:keyPath];
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    return value;*/
 }
 
 - (void)setValue:(id)value destProperty:(SDObjectProperty *)destProperty targetObject:(id)targetObject
@@ -616,6 +539,11 @@ static dispatch_once_t __formatterOnceToken = 0;
     return [[[self class] alloc] init];
 }
 
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"propertyName = %@, propertyType = %@, propertySubType = %@", self.propertyName, self.propertyType, self.propertySubtype];
+}
+
 + (NSArray *)propertiesForClass:(id)objectClass
 {
     NSMutableArray *results = [NSMutableArray array];
@@ -630,7 +558,7 @@ static dispatch_once_t __formatterOnceToken = 0;
         if (propName)
         {
             SDObjectProperty *objectProperty = [SDObjectProperty property];
-            objectProperty.propertyName = [NSString stringWithUTF8String:propName];
+            objectProperty.propertyName = [NSString stringWithCString:propName encoding:NSUTF8StringEncoding];
             objectProperty.propertyType = [SDObjectProperty propertyType:property];
 
             if (objectProperty.isValid)
@@ -653,13 +581,16 @@ static dispatch_once_t __formatterOnceToken = 0;
     
     Class objectClass = [object class];
     [results addObjectsFromArray:[self propertiesForClass:objectClass]];
-
-    // enumerate superclasses and get their properties as well.
-    objectClass = [objectClass superclass];
-    while ([objectClass isSubclassOfClass:[NSObject class]] && ![[objectClass className] isEqualToString:[NSObject className]])
+    
+    // enumerate superclasses if it's a model object and get their properties as well.
+    if ([object isKindOfClass:[SDModelObject class]])
     {
-        [results addObjectsFromArray:[self propertiesForClass:objectClass]];
         objectClass = [objectClass superclass];
+        while ([objectClass isSubclassOfClass:[SDModelObject class]] && ![[objectClass className] isEqualToString:[SDModelObject className]])
+        {
+            [results addObjectsFromArray:[self propertiesForClass:objectClass]];
+            objectClass = [objectClass superclass];
+        }
     }
     
     // returning a copy here to make sure the dictionary is immutable
@@ -740,6 +671,25 @@ static dispatch_once_t __formatterOnceToken = 0;
         return property;
     
     return nil;
+}
+
+- (void)setPropertyType:(NSString *)propertyType
+{
+    if (propertyType && [propertyType rangeOfString:@"<"].location != NSNotFound)
+    {
+        NSRegularExpression *typeRegex = [NSRegularExpression regularExpressionWithPattern:@"(?<=\\().*(?=\\))|(?<=\\<).*(?=\\>)" options:0 error:nil];
+        NSString *propertySubtype = nil;
+        if (propertyType && [typeRegex numberOfMatchesInString:propertyType options:0 range:NSMakeRange(0, propertyType.length)])
+        {
+            propertySubtype = [propertyType substringWithRange:[typeRegex rangeOfFirstMatchInString:propertyType options:0 range:NSMakeRange(0, propertyType.length)]];
+            if (propertySubtype)
+            {
+                propertyType = [propertyType stringByReplacingOccurrencesOfString:@"\\((.*)(<.*>)\\)|<(.*)>|\\((.*)\\)" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, propertyType.length)];
+                _propertySubtype = propertySubtype;
+            }
+        }
+    }
+    _propertyType = propertyType;
 }
 
 + (NSString *)propertyType:(objc_property_t)property
@@ -853,7 +803,7 @@ static dispatch_once_t __formatterOnceToken = 0;
 
 - (Class)desiredOutputClass
 {
-    if (self.propertySubtype)
+    if ([self.propertyType isEqualToString:@"NSArray"])
         return NSClassFromString(self.propertySubtype);
     if (self.propertyType)
         return NSClassFromString(self.propertyType);

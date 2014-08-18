@@ -77,32 +77,13 @@ typedef enum
 
 @interface SDWebService : NSObject
 
-/**
- Instructs SDWebService to use mock service responses if available.
-
- Mock service responses should be .json files included in the bundle and consist of just the response payload.  The filename
- should match the method specified in the plist.  You can also include .errorjson files to test error paths.  You can use this
- to test error handling within the application.  Simply un-include the happy path .json from the bundle and include the .errorjson
- instead.
- 
- Example:
- 
- plist method name: prescriptions
- file name: prescriptions.json
- contents:
-
- {
- "status": 1
- }
-
- If you wish to test both happy and error paths in the same suite, set useErrorMocksIfAvailable to TRUE before the error cases.
- */
-@property (nonatomic, assign) BOOL useMocksIfAvailable;
-@property (nonatomic, assign) BOOL useErrorMocksIfAvailable;
-
 #ifdef DEBUG
+/**
+ Disable service call caching.
+ */
 @property (nonatomic, assign) BOOL disableCaching;
 #endif
+
 /**
  The timeout, in seconds, for calls made to this service. Default is `60.0`.
  */
@@ -253,5 +234,37 @@ typedef enum
  */
 - (void)hideNetworkActivity;
 
+#pragma mark - Unit Testing
+#ifdef DEBUG
+
+/**
+ Returns the correct NSBundle for the current test case.
+ */
+#define NSBundleForTestCase [NSBundle bundleForClass:[self class]]
+
+/**
+ Enables/Disables auto-popping of the mocks stack.  The default value is YES.
+ */
+@property (atomic, assign) BOOL autoPopMocks;
+
+/**
+ Push mock data onto the stack.  These are accessed sequentially.  Each service call
+ will use index 0.  If autoPopMocks is enabled, they'll be automatically pulled off
+ of the stack as tey are accessed.  If autoPopMocks is disabled, one needs to manually
+ call popMockResponseFile as appropriate.
+ */
+- (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle;
+
+/**
+ Adds several mock response files at once.
+ */
+- (void)pushMockResponseFiles:(NSArray *)filenames bundle:(NSBundle *)bundle;
+
+/**
+ Pops the index 0 mock off of the stack.
+ */
+- (void)popMockResponseFile;
+
+#endif
 
 @end

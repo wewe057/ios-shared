@@ -50,6 +50,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSDictionary *_serviceSpecification;
     NSUInteger _requestCount;
     NSOperationQueue *_dataProcessingQueue;
+    
+    NSMutableArray *_mockStack;
 }
 
 #pragma mark - Singleton bits
@@ -69,7 +71,11 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     _singleRequests = [[NSMutableDictionary alloc] init];
     _normalRequests = [[NSMutableDictionary alloc] init];
     _dictionaryLock = [[NSLock alloc] init];
-
+    
+#ifdef DEBUG
+    _autoPopMocks = YES;
+#endif
+    
     self.timeout = 60; // 1-minute default.
 	
     NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
@@ -84,6 +90,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     _cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 
+    _mockStack = [NSMutableArray array];
+    
 	return self;
 }
 
@@ -142,8 +150,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)showNetworkActivityIfNeeded
 {
-    if (_requestCount > 0)
+    if (_requestCount > 0) {
+        [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNetworkActivity) object:nil];
         [self showNetworkActivity];
+    }
 }
 
 - (void)hideNetworkActivityIfNeeded
@@ -163,38 +173,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)decrementRequests
 {
-	_requestCount--;
+	if (_requestCount > 0) _requestCount--;
 	[self hideNetworkActivityIfNeeded];
-}
-
-#pragma mark - Mock Data utilities
-
-- (NSData *)loadMockDataForRequestName:(NSString *)requestName
-{
-    NSString *happyPath = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"json"];
-    NSString *errorPath = [[NSBundle bundleForClass:[self class]] pathForResource:requestName ofType:@"errorjson"];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-
-    NSString *path = nil;
-    NSData *mockData = nil;
-    if (errorPath && [fileManager fileExistsAtPath:errorPath])
-        path = errorPath;
-    // we prefer the happy path (unless forcably told otherwise).  removing the happy path json from the bundle will cause us to load
-    // the error path instead.
-    if (happyPath && [fileManager fileExistsAtPath:happyPath] &&!self.useErrorMocksIfAvailable)
-        path = happyPath;
-    
-    if (path)
-    {
-        SDLog(@"*** Mocks Enabled: Using mock data in '%@.json'", requestName);
-        mockData = [NSData dataWithContentsOfFile:path];
-    }
-    else
-    {
-        SDLog(@"*** Mocks Enabled: Unable to find '%@.json'", requestName);
-    }
-
-    return mockData;
 }
 
 #pragma mark - URL building utilities
@@ -347,14 +327,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     actualReplacements = nil;
 
     return result;
-}
-
-- (NSString *)responseFromData:(NSData *)data
-{
-    NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    if (!responseString)
-        responseString = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-    return responseString;
 }
 
 - (NSString *)buildBaseURLForScheme:(NSString *)baseScheme host:(NSString *)baseHost path:(NSString *)basePath details:(NSDictionary *)requestDetails replacements:(NSDictionary *)replacements
@@ -736,24 +708,34 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
         [self decrementRequests];
 	};
+    
+    // attempt to find any mock data if available, we need it going forward.
+    NSData *mockData = nil;
+#ifdef DEBUG
+    mockData = [self getNextMockResponse];
+#endif
 
-	NSURLCache *urlCache = [NSURLCache sharedURLCache];
-	NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue] removeIfInvalid:YES];
-	if ([cache boolValue] && cachedResponse && cachedResponse.response)
-	{
-		NSString *cachedString = [self responseFromData:cachedResponse.responseData];
-		if (cachedString)
-		{
-			SDLog(@"***USING CACHED RESPONSE***");
+    // check the cache if we're not working with a mock.
+    if (!mockData)
+    {
+        NSURLCache *urlCache = [NSURLCache sharedURLCache];
+        NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:[cacheTTL unsignedLongValue] removeIfInvalid:YES];
+        if ([cache boolValue] && cachedResponse && cachedResponse.response)
+        {
+            NSString *cachedString = [cachedResponse.responseData stringRepresentation];
+            if (cachedString)
+            {
+                SDLog(@"***USING CACHED RESPONSE***");
 
-			[self incrementRequests];
+                [self incrementRequests];
 
-            urlCompletionBlock(nil, cachedResponse.response, cachedResponse.responseData, nil);
+                urlCompletionBlock(nil, cachedResponse.response, cachedResponse.responseData, nil);
 
-			return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
-		}
-	}
-
+                return [SDRequestResult objectForResult:SDWebServiceResultCached identifier:nil request:request];
+            }
+        }
+    }
+    
 	[self incrementRequests];
 
 	// see if this is a singleton request.
@@ -774,17 +756,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
                 [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
 				[_singleRequests removeObjectForKey:requestName];
                 [_dictionaryLock unlock];
-				[self decrementRequests];
 			}
         }
     }
-
-    // attempt to find any mock data if available.
-
-    NSData *mockData = nil;
-    if (self.useMocksIfAvailable)
-        mockData = [self loadMockDataForRequestName:requestName];
-
+    
     if (!mockData)
     {
         // no mock data was found, or we don't want to use mocks.  send out the request.
@@ -872,5 +847,89 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     return FALSE;
 }
+
+#pragma mark - Unit Testing
+
+#ifdef DEBUG
+- (NSData *)getNextMockResponse
+{
+    @synchronized(self)
+    {
+        if (_mockStack.count == 0)
+            return nil;
+        
+        NSData *result = [_mockStack objectAtIndex:0];
+        if (self.autoPopMocks)
+            [self popMockResponseFile];
+        
+        return result;
+    }
+}
+
+- (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle
+{
+    @synchronized(self)
+    {
+        // remove a any prepended paths in case they can't read the documentation.
+        NSString *safeFilename = [filename lastPathComponent];
+        NSString *finalPath = [bundle pathForResource:safeFilename ofType:nil];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSData *mockData = nil;
+        
+        if (finalPath && [fileManager fileExistsAtPath:finalPath])
+        {
+            SDLog(@"*** Using mock data file '%@'", safeFilename);
+            mockData = [NSData dataWithContentsOfFile:finalPath];
+        }
+        else
+            SDLog(@"*** Unable to find mock file '%@'", safeFilename);
+
+        if (mockData)
+            [_mockStack addObject:mockData];
+    }
+}
+
+- (void)pushMockResponseFiles:(NSArray *)filenames bundle:(NSBundle *)bundle
+{
+    @synchronized(self)
+    {
+        for (NSUInteger index = 0; index < filenames.count; index++)
+        {
+            id object = [filenames objectAtIndex:index];
+            if (object && [object isKindOfClass:[NSString class]])
+            {
+                NSString *filename = object;
+                
+                // remove a any prepended paths in case they can't read the documentation.
+                NSString *safeFilename = [filename lastPathComponent];
+                NSString *finalPath = [bundle pathForResource:safeFilename ofType:nil];
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                NSData *mockData = nil;
+        
+                if (finalPath && [fileManager fileExistsAtPath:finalPath])
+                {
+                    SDLog(@"*** Using mock data file '%@'", safeFilename);
+                    mockData = [NSData dataWithContentsOfFile:finalPath];
+                }
+                else
+                    SDLog(@"*** Unable to find mock file '%@'", safeFilename);
+                
+                if (mockData)
+                    [_mockStack addObject:mockData];
+            }
+        }
+    }
+}
+
+- (void)popMockResponseFile
+{
+    @synchronized(self)
+    {
+        if (_mockStack.count > 0)
+            [_mockStack removeObjectAtIndex:0];
+    }
+}
+#endif
+
 
 @end
