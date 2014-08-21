@@ -223,6 +223,18 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 //}
 
 
+- (void)requestAlwaysAuthorization
+{
+#ifdef __IPHONE_8_0
+    // Must request permission here
+    if ([UIDevice systemMajorVersion] >= 8.0)
+    {
+        [self.locationManager requestAlwaysAuthorization];
+    }
+#endif
+
+}
+
 
 // ========================================================================== //
 
@@ -247,7 +259,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     }
 
     _timestamp = [NSDate date];
-
+    
+    [self requestAlwaysAuthorization];
+    
     [self.locationManager startUpdatingLocation];
 
     _isUpdatingLocation = YES;

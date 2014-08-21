@@ -34,6 +34,8 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 
 + (SDLocationManager *)sharedInstance;
 
+/// Forwards requestAlwaysAuthorization to internal CLLocationManager instance
+- (void)requestAlwaysAuthorization;
 
 - (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy;
 - (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter;
