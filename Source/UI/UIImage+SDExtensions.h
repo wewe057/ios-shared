@@ -63,4 +63,11 @@ typedef NS_OPTIONS(NSUInteger, SDImageCompositionOptions)
 
 - (UIImage *)applyBlurWithRadius:(CGFloat)blurRadius tintColor:(UIColor *)tintColor saturationDeltaFactor:(CGFloat)saturationDeltaFactor maskImage:(UIImage *)maskImage;
 
+/**
+ Given a black image with an alpha mask, produces a color version of the image
+ @param UIColor color - The desired color of the image
+ @return A colorized version of the image
+ */
+- (UIImage *)maskedImageWithColor:(UIColor *)color;
+
 @end
