@@ -13,16 +13,16 @@
 - (void)didAddSubview:(UIView *)subview
 {
     [super didAddSubview:subview];
-    [self setNeedsUpdateConstraints];
+    [self p_applyConstraints];
 }
 
 - (void)willRemoveSubview:(UIView *)subview
 {
     [super willRemoveSubview:subview];
-    [self setNeedsUpdateConstraints];
+    [self p_applyConstraints];
 }
 
-- (void)updateConstraints
+- (void)p_applyConstraints
 {
     // Remove all constraints on this container view.
     [self removeConstraints:self.constraints];
@@ -143,7 +143,7 @@
         previousView = view;
     }
     
-    [super updateConstraints];
+    [self setNeedsUpdateConstraints];
 }
 
 @end
