@@ -37,13 +37,13 @@
 {
     NSAssert(self.subviews.count < 2, @"Cannot add more than 1 subview to this view");
     [super didAddSubview:subview];
-    [self setNeedsUpdateConstraints];
+    [self p_applyContraints];
 }
 
 - (void)willRemoveSubview:(UIView *)subview
 {
     [super willRemoveSubview:subview];
-    [self setNeedsUpdateConstraints];
+    [self p_applyContraints];
 }
 
 - (void)setCollapsed:(BOOL)collapsed
@@ -51,11 +51,11 @@
     if (collapsed != _collapsed)
     {
         _collapsed = collapsed;
-        [self setNeedsUpdateConstraints];
+        [self p_applyContraints];
     }
 }
 
-- (void)updateConstraints
+- (void)p_applyContraints
 {
     // Remove all constraints on this container view.
     [self removeConstraints:self.constraints];
@@ -90,7 +90,7 @@
                                                                             views:NSDictionaryOfVariableBindings(view)]];
         }
     }
-    [super updateConstraints];
+    [self setNeedsUpdateConstraints];
 }
 
 @end
