@@ -111,6 +111,10 @@
 - (BOOL)navigateToTopLevelController:(Class)topLevelViewControllerClass
 {
     UINavigationController* foundNavController = [self.globalPullNavController navigationControllerForViewControllerClass:topLevelViewControllerClass];
+    
+    // We reset the hasGlobalNavigation flag because although sharing navigation across VC's in a nav
+    // controller works, sharing them across multiple nav controllers doesn't. Want it to reset
+    ((UIViewController *)foundNavController.viewControllers.firstObject).hasGlobalNavigation = NO;
 
     if(foundNavController)
         self.globalPullNavController.selectedViewController = foundNavController;
