@@ -77,6 +77,8 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 @property (nonatomic, readonly) CLAuthorizationStatus authorizationStatus;
 
+@property (nonatomic) SDLocationManagerAuthorizationScheme authorizationScheme;
+
 @end
 
 
@@ -90,10 +92,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 @dynamic isLocationAllowed;
 - (BOOL)isLocationAllowed {
-    if (self.authorizationStatus == kCLAuthorizationStatusAuthorized || self.authorizationStatus == kCLAuthorizationStatusNotDetermined) {
-        return YES;
-    }
-    return NO;
+    return ((self.authorizationStatus != kCLAuthorizationStatusDenied) && (self.authorizationStatus != kCLAuthorizationStatusRestricted));
 }
 
 @dynamic hasReceivedLocationUpdate;
@@ -161,12 +160,20 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 
 
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy {
-    return [self startUpdatingLocationWithDelegate:delegate desiredAccuracy:accuracy distanceFilter:kCLDistanceFilterNone];
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy
+{
+    return [self startUpdatingLocationWithDelegate:delegate desiredAccuracy:accuracy authorization:SDLocationManagerAuthorizationAlways];
 }
 
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter {
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy authorization:(SDLocationManagerAuthorizationScheme)authorization
+{
+    return [self startUpdatingLocationWithDelegate:delegate desiredAccuracy:accuracy distanceFilter:kCLDistanceFilterNone authorization:authorization];
+}
+
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter authorization:(SDLocationManagerAuthorizationScheme)authorization
+{
     LocLog(@"startUpdatingLocationWithDelegate:%@ desiredAccuracy:%@ distanceFilter:%@",delegate,@(accuracy),@(distanceFilter));
+    _authorizationScheme = authorization;
     if (NO == [self _delegate:delegate isRegisteredForDesiredAccuracy:accuracy distanceFilter:distanceFilter]) {
         [self _deregisterDelegate:delegate]; // In case it's registered for another accuracy or distance filter
         [self _registerDelegate:delegate forDesiredAccuracy:accuracy distanceFilter:distanceFilter];
@@ -235,6 +242,17 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 }
 
+- (void)requestWhenInUseAuthorization
+{
+#ifdef __IPHONE_8_0
+    // Must request permission here
+    if ([UIDevice systemMajorVersion] >= 8.0)
+    {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+#endif
+}
+
 
 // ========================================================================== //
 
@@ -259,9 +277,16 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     }
 
     _timestamp = [NSDate date];
-    
-    [self requestAlwaysAuthorization];
-    
+
+    if (_authorizationScheme == SDLocationManagerAuthorizationWhenInUse)
+    {
+        [self requestWhenInUseAuthorization];
+    }
+    else
+    {
+        [self requestAlwaysAuthorization];
+    }
+
     [self.locationManager startUpdatingLocation];
 
     _isUpdatingLocation = YES;
