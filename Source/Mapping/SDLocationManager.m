@@ -114,7 +114,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     return [CLLocationManager authorizationStatus];
 }
 
-
+- (CLLocation *)currentLocation {
+    return (self.locationManager.location);
+}
 
 // ========================================================================== //
 

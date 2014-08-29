@@ -35,7 +35,7 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 @property (nonatomic, readonly) BOOL isUpdatingLocation;
 @property (nonatomic, readonly) BOOL isUpdatingHeading;
 @property (nonatomic, readonly) BOOL isLocationAllowed;
-
+@property (nonatomic, readonly) CLLocation *currentLocation;
 
 + (SDLocationManager *)sharedInstance;
 
