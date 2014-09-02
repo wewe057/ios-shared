@@ -17,4 +17,7 @@
 - (void) searchSuggestionWithTerm:(NSString *)term;
 - (void) searchRecentWithTerm:(NSString *)term;
 
+- (void) showSuggestionsPopover;
+- (void) dismissSuggestionsPopover;
+
 @end

@@ -161,10 +161,31 @@
     BOOL isShowing = self.suggestionsPopover != nil && self.suggestionsPopover.isPopoverVisible;
     
     if ( shouldShow && !isShowing ) {
-        [self.suggestionsPopover presentPopoverFromRect:self.frame inView:self.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+        [self showSuggestionsPopover];
     } else if ( !shouldShow && isShowing ) {
-        [self.suggestionsPopover dismissPopoverAnimated:YES];
+        [self dismissSuggestionsPopover];
     }
+}
+
+- (void) showSuggestionsPopover;
+{
+    @strongify(self.usageDelegate, usageDelegate);
+    [usageDelegate showSuggestionsPopover];
+
+    [self.suggestionsPopover presentPopoverFromRect:self.frame inView:self.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+}
+
+- (void) sendUsageDelegateDismissSuggestionsPopoverMessage;
+{
+    @strongify(self.usageDelegate, usageDelegate);
+    [usageDelegate dismissSuggestionsPopover];
+}
+
+- (void) dismissSuggestionsPopover;
+{
+    [self sendUsageDelegateDismissSuggestionsPopoverMessage];
+
+    [self.suggestionsPopover dismissPopoverAnimated:YES];
 }
 
 - (void)searchFieldEditingDidBegin:(UITextField*)searchTextField;
@@ -220,6 +241,7 @@
 
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
 {
+    [self sendUsageDelegateDismissSuggestionsPopoverMessage];
     [self.textField resignFirstResponder];
 }
 
@@ -238,7 +260,7 @@
     @strongify(self.delegate, delegate);
     [delegate searchField:self performSearch:keyword];
     
-    [self.suggestionsPopover dismissPopoverAnimated:YES];
+    [self dismissSuggestionsPopover];
     [self.textField resignFirstResponder];
 }
 
