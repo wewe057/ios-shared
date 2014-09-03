@@ -7,6 +7,7 @@
 //
 
 #import "SDDataMap.h"
+#import "SDModelObject.h"
 #import "NSObject+SDExtensions.h"
 #import "objc/runtime.h"
 
@@ -343,17 +344,7 @@ static dispatch_once_t __formatterOnceToken = 0;
     if (itsAnNSSet)
         outputArray = [NSSet setWithArray:workArray];
     
-    if ([outputArray count] > 0)
-    {
-        // if it's not empty, then set it.
-        [self setValue:outputArray destProperty:destProperty targetObject:targetObject];
-    }
-    else
-    {
-        // we'll try and set the value.
-        [self setValue:array destProperty:destProperty targetObject:targetObject];
-        //SDLog(@"SDDataMap: why does it get here? %@, %@, %@", array, destProperty, targetObject);
-    }
+    [self setValue:outputArray destProperty:destProperty targetObject:targetObject];
 }
 
 #pragma mark - Utilities
@@ -590,13 +581,16 @@ static dispatch_once_t __formatterOnceToken = 0;
     
     Class objectClass = [object class];
     [results addObjectsFromArray:[self propertiesForClass:objectClass]];
-
-    // enumerate superclasses and get their properties as well.
-    objectClass = [objectClass superclass];
-    while ([objectClass isSubclassOfClass:[NSObject class]] && ![[objectClass className] isEqualToString:[NSObject className]])
+    
+    // enumerate superclasses if it's a model object and get their properties as well.
+    if ([object isKindOfClass:[SDModelObject class]])
     {
-        [results addObjectsFromArray:[self propertiesForClass:objectClass]];
         objectClass = [objectClass superclass];
+        while ([objectClass isSubclassOfClass:[SDModelObject class]] && ![[objectClass className] isEqualToString:[SDModelObject className]])
+        {
+            [results addObjectsFromArray:[self propertiesForClass:objectClass]];
+            objectClass = [objectClass superclass];
+        }
     }
     
     // returning a copy here to make sure the dictionary is immutable
