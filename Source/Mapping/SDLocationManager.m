@@ -58,6 +58,8 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 @interface SDLocationManager ()
 
+@property (nonatomic, readwrite, strong) CLLocationManager *locationManager;
+
 @property (nonatomic, readwrite) BOOL isUpdatingLocation;
 @property (nonatomic, readwrite) BOOL isUpdatingHeading;
 
@@ -66,6 +68,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 @property (nonatomic, strong) dispatch_queue_t delegatesAccessQueue;
 @property (nonatomic, readonly) NSArray *delegates;
 
+@property (nonatomic, assign) NSTimeInterval timeout;
 @property (nonatomic,weak) NSTimer *timeoutTimer;
 @property (nonatomic, strong) NSDate *timestamp;
 @property (nonatomic) BOOL gotFirstLocationUpdate;
@@ -120,7 +123,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 
 
-+ (SDLocationManager *) instance {
++ (SDLocationManager *) sharedInstance {
     static SDLocationManager *sdLocationManagerInstance = nil;
     static dispatch_once_t locationManagerInitToken;
     dispatch_once(&locationManagerInitToken, ^{
@@ -137,7 +140,8 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         _timeout = 60;
         _delegateRegistrations = [[NSMutableSet alloc] init];
         _delegatesAccessQueue = dispatch_queue_create("com.sd.SDLocationManager.delegatesAccessQueue", DISPATCH_QUEUE_CONCURRENT);
-        [super setDelegate:self];
+        _locationManager = [CLLocationManager new];
+        _locationManager.delegate = self;
     }
 
 	return self;
@@ -191,33 +195,45 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     }
 }
 
-- (BOOL)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate {
-    //FIXME: These don't actually work with the delegates mechanism
-    [self unsupported:_cmd];
-    return NO;
-}
+//- (BOOL)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate {
+//    //FIXME: These don't actually work with the delegates mechanism
+//    [self unsupported:_cmd];
+//    return NO;
+//}
+//
+//- (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate {
+//    //FIXME: These don't actually work with the delegates mechanism
+//    [self unsupported:_cmd];
+//}
+//
+//- (BOOL) startMonitoringForSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate {
+//	//TODO: implement this in such a way that if any delegate is interested in more active updates this stays off, but comes on when other delegates have resigned their interest
+//	[self unsupported:_cmd];
+//	return NO;
+//}
+//
+//- (void) stopMonitoringSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate {
+//	//TODO: implement this so that it turns off location updates unless other delegates are also interested in this service
+//	[self unsupported:_cmd];
+//}
+//
+//- (void) stopMonitoringSignificantLocationChangesForAllDelegates {
+//	//TODO: implement this so that any delegate that is soley interested in this service is removed, but those interested in active updates are left observing
+//	[self unsupported:_cmd];
+//}
 
-- (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate {
-    //FIXME: These don't actually work with the delegates mechanism
-    [self unsupported:_cmd];
-}
 
-- (BOOL) startMonitoringForSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate {
-	//TODO: implement this in such a way that if any delegate is interested in more active updates this stays off, but comes on when other delegates have resigned their interest
-	[self unsupported:_cmd];
-	return NO;
-}
+- (void)requestAlwaysAuthorization
+{
+#ifdef __IPHONE_8_0
+    // Must request permission here
+    if ([UIDevice systemMajorVersion] >= 8.0)
+    {
+        [self.locationManager requestAlwaysAuthorization];
+    }
+#endif
 
-- (void) stopMonitoringSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate {
-	//TODO: implement this so that it turns off location updates unless other delegates are also interested in this service
-	[self unsupported:_cmd];
 }
-
-- (void) stopMonitoringSignificantLocationChangesForAllDelegates {
-	//TODO: implement this so that any delegate that is soley interested in this service is removed, but those interested in active updates are left observing
-	[self unsupported:_cmd];
-}
-
 
 
 // ========================================================================== //
@@ -233,7 +249,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     if (NO == [self isLocationAllowed]) {
         LocLog(@"[WARN] - Location services not allowed!");
         [self _internalStop];
-        [self locationManager:self didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil]];
+        [self locationManager:self.locationManager didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil]];
         return NO;
     }
 
@@ -243,8 +259,10 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     }
 
     _timestamp = [NSDate date];
-
-    [super startUpdatingLocation];
+    
+    [self requestAlwaysAuthorization];
+    
+    [self.locationManager startUpdatingLocation];
 
     _isUpdatingLocation = YES;
 
@@ -259,7 +277,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 	_timestamp = nil;
 
-    [super stopUpdatingLocation];
+    [self.locationManager stopUpdatingLocation];
 
     _isUpdatingLocation = NO;
     _gotFirstLocationUpdate = NO;
@@ -323,11 +341,17 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     // Only call these things outside of a barrier block in order to avoid
     //  deadlocks.
     dispatch_async(dispatch_get_main_queue(), ^{
-        [super setDesiredAccuracy:[self _greatestDesiredAccuracy]];
-        [super setDistanceFilter:[self _finestDistanceFilter]];
+        BOOL wasUpdating = _isUpdatingLocation;
+        [self _internalStop];
+        [self.locationManager setDesiredAccuracy:[self _greatestDesiredAccuracy]];
+        [self.locationManager setDistanceFilter:[self _finestDistanceFilter]];
+        if (wasUpdating)
+        {
+            [self _internalStart];
+        }
 
-        LocTrace(@"self.desiredAccuracy:%@",@(self.desiredAccuracy));
-        LocTrace(@"self.distanceFilter:%@",@(self.distanceFilter));
+        LocTrace(@"self.desiredAccuracy:%@",@(self.locationManager.desiredAccuracy));
+        LocTrace(@"self.distanceFilter:%@",@(self.locationManager.distanceFilter));
     });
 }
 
@@ -366,8 +390,8 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 	_timeoutTimer = nil;
 
 	// if we have a location, pass it along...
-	if (self.location) {
-        CLLocation *location = self.location;
+	if (self.locationManager.location) {
+        CLLocation *location = self.locationManager.location;
         NSArray *locations = @[location];
         [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateLocations:) argumentAddresses:(void *)&self, &locations];
         //REMOVE: when all usages of the now deprecated locationManager:didUpdateToLocation:fromLocation: are cleared.
@@ -415,8 +439,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     }
     
 	LocTrace(@"newLocation = %@", newLocation);
-	LocTrace(@"desiredAccuracy = %@", @(self.desiredAccuracy));
-	LocTrace(@"distanceFilter = %@", @(self.distanceFilter));
+    LocTrace(@"newLocation horizontalAccuracy: %f", newLocation.horizontalAccuracy);
+	LocTrace(@"desiredAccuracy = %@", @(self.locationManager.desiredAccuracy));
+	LocTrace(@"distanceFilter = %@", @(self.locationManager.distanceFilter));
 	if ([newLocation.timestamp timeIntervalSinceDate:_timestamp] < 0) {
 		LocLog(@"This location was cached.");
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -441,7 +466,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         BOOL passesDelegateRequirements = YES;
 
         CLLocationAccuracy desiredAccuracy = registration.desiredAccuracy;
-        if (newLocation.horizontalAccuracy >= desiredAccuracy) {
+        if ((newLocation.horizontalAccuracy < 0) || (newLocation.horizontalAccuracy > desiredAccuracy)) {
             passesDelegateRequirements = NO;
             LocLog(@"This location didn't meet the accuracy requirements (%f) for delegate %@.", newLocation.horizontalAccuracy, delegate);
         }
@@ -459,19 +484,19 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         dispatch_async(dispatch_get_main_queue(), ^{
             if (NO == passesDelegateRequirements) {
                 if ([delegate respondsToSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:)]) {
-                    [delegate locationManager:self didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
+                    [delegate locationManager:self.locationManager didUpdateToInaccurateLocation:newLocation fromLocation:oldLocation];
                 }
             }
             else {
                 LocLog(@"Location obtained for delegate %@",registration.delegate);
                 if ([delegate respondsToSelector:@selector(locationManager:didUpdateLocations:)]) {
-                    [delegate locationManager:self didUpdateLocations:locations];
+                    [delegate locationManager:self.locationManager didUpdateLocations:locations];
                 }
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
                 //REMOVE: when all usages of the now deprecated locationManager:didUpdateToLocation:fromLocation: are cleared.
                 if ([delegate respondsToSelector:@selector(locationManager:didUpdateToLocation:fromLocation:)]) {
-                    [delegate locationManager:self didUpdateToLocation:newLocation fromLocation:oldLocation];
+                    [delegate locationManager:self.locationManager didUpdateToLocation:newLocation fromLocation:oldLocation];
                 }
 #pragma clang diagnostic pop
             }
@@ -522,11 +547,11 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     });
 }
 
-- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager {
-    LocTrace(@"%@",NSStringFromSelector(_cmd));
-    [self unsupported:_cmd];
-    return FALSE;
-}
+//- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager {
+//    LocTrace(@"%@",NSStringFromSelector(_cmd));
+//    [self unsupported:_cmd];
+//    return FALSE;
+//}
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     LocLog(@"%@",NSStringFromSelector(_cmd));
@@ -537,34 +562,5 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         [self stopUpdatingLocationForAllDelegates];
     }
 }
-
-
-
-
-// ========================================================================== //
-
-#pragma mark - Unsupported CLLocationManager Methods
-
-
-- (void)setDelegate:(id<CLLocationManagerDelegate>)delegate { [self unsupported:_cmd]; }
-- (void)setDesiredAccuracy:(CLLocationAccuracy)desiredAccuracy { [self unsupported:_cmd]; }
-- (void)setDistanceFilter:(CLLocationDistance)distanceFilter { [self unsupported:_cmd]; }
-
-
-//!!!: No longer masking these because it turns out other CLLocationManager methods call these from their implementations. They are still marked deprecated as a way of dsicouraging people from calling them.
-- (void)startUpdatingLocation { [super startUpdatingLocation];[self unsupported:_cmd]; }
-- (void)stopUpdatingLocation { [super stopUpdatingLocation];[self unsupported:_cmd]; }
-- (void)startUpdatingHeading { [super startUpdatingHeading];[self unsupported:_cmd]; }
-- (void)stopUpdatingHeading { [super stopUpdatingHeading];[self unsupported:_cmd]; }
-- (void)startMonitoringSignificantLocationChanges { [super startMonitoringSignificantLocationChanges];[self unsupported:_cmd]; }
-- (void)stopMonitoringSignificantLocationChanges { [super stopMonitoringSignificantLocationChanges];[self unsupported:_cmd]; }
-
-- (void)unsupported:(SEL)sel {
-    // These are commented out because there are legit calls into some publicly unsupported methods from private internal methods, enable them if you want a flood ..
-//	LocTrace(@"Deprecated method called on SDLocationManager instance (%@ - %@)",self,NSStringFromSelector(sel));
-//    LocTrace(@"%@",[NSThread callStackSymbols]);
-    //[[NSException exceptionWithName:@"Unsupported" reason:@"See SDLocationManager.h, as this is deprecated." userInfo:nil] raise];
-}
-
 
 @end
