@@ -170,7 +170,7 @@
 - (void) showSuggestionsPopover;
 {
     @strongify(self.usageDelegate, usageDelegate);
-    [usageDelegate showSuggestionsPopover];
+    [usageDelegate searchField:self willShowSuggestionsPopover:self.suggestionsPopover];
 
     [self.suggestionsPopover presentPopoverFromRect:self.frame inView:self.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
 }
@@ -178,7 +178,7 @@
 - (void) sendUsageDelegateDismissSuggestionsPopoverMessage;
 {
     @strongify(self.usageDelegate, usageDelegate);
-    [usageDelegate dismissSuggestionsPopover];
+    [usageDelegate searchField:self willDismissSuggestionsPopover:self.suggestionsPopover];
 }
 
 - (void) dismissSuggestionsPopover;
