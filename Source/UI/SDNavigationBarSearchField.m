@@ -170,7 +170,9 @@
 - (void) showSuggestionsPopover;
 {
     @strongify(self.usageDelegate, usageDelegate);
-    [usageDelegate searchField:self willShowSuggestionsPopover:self.suggestionsPopover];
+    if ([usageDelegate respondsToSelector:@selector(searchField:willShowSuggestionsPopover:)]) {
+        [usageDelegate searchField:self willShowSuggestionsPopover:self.suggestionsPopover];
+    }
 
     [self.suggestionsPopover presentPopoverFromRect:self.frame inView:self.superview permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
 }
@@ -178,7 +180,9 @@
 - (void) sendUsageDelegateDismissSuggestionsPopoverMessage;
 {
     @strongify(self.usageDelegate, usageDelegate);
-    [usageDelegate searchField:self willDismissSuggestionsPopover:self.suggestionsPopover];
+    if ([usageDelegate respondsToSelector:@selector(searchField:willDismissSuggestionsPopover:)]) {
+        [usageDelegate searchField:self willDismissSuggestionsPopover:self.suggestionsPopover];
+    }
 }
 
 - (void) dismissSuggestionsPopover;
