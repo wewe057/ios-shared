@@ -30,4 +30,6 @@
  */
 + (NSURL *)libraryDirectoryURL;
 
++ (UIWindow *)applicationWindow;
+
 @end
