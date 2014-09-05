@@ -25,6 +25,21 @@
 	return [sFormatter dateFromString:argDateString];
 }
 
++ (NSDate *)dateFromISO8601StringWithMilliseconds:(NSString *)argDateString
+{
+    static NSDateFormatter *sFormatter = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
+    });
+    
+	return [sFormatter dateFromString:argDateString];
+}
+
+
 + (NSDate *)dateFromRFC822String:(NSString *)argDateString
 {
 	static NSDateFormatter *sFormatter = nil;

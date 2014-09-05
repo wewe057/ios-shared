@@ -16,6 +16,11 @@
 + (NSDate *)dateFromISO8601String:(NSString *)argDateString;
 
 /**
+ Creates an NSDate from a given ISO 8601 string date of the format `yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ`.
+ */
++ (NSDate *)dateFromISO8601StringWithMilliseconds:(NSString *)argDateString;
+
+/**
  Creates an NSDate from a given RFC 822 string date of the format `yyyy-MM-dd'T'HH:mm:ssZZZ`.
  */
 + (NSDate *)dateFromRFC822String:(NSString *)argDateString;
