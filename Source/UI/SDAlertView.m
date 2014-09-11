@@ -45,7 +45,7 @@
     // Their punishment if you only provide a message is a really ugly alert.  It looks better if you only
     // provide a title, so we will hijack things here and if title is nil but a message is given, move the message
     // to the title
-    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+    if ([UIDevice systemMajorVersion] >= 8) {
         if (!title && message && message.length > 0) {
             title = message;
             message = nil;
