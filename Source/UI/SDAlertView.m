@@ -41,6 +41,17 @@
 
 + (instancetype)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles completion:(SDAlertViewCompletionBlock)completionBlock
 {
+    // AIOS-570 - iOS 8 hack.  For iOS 8, Apple appears to be pushing us towards always using a title and message.
+    // Their punishment if you only provide a message is a really ugly alert.  It looks better if you only
+    // provide a title, so we will hijack things here and if title is nil but a message is given, move the message
+    // to the title
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+        if (!title && message && message.length > 0) {
+            title = message;
+            message = nil;
+        }
+    }
+
     SDAlertView *alertView = [[[self class] alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
     alertView.delegate = alertView;
 
