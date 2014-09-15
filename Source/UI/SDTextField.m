@@ -97,6 +97,13 @@
     }
 }
 
+- (void)deleteBackward
+{
+    [super deleteBackward];
+    if (self.validateWhileTyping && self.validationBlock)
+        [self internalValidate];
+}
+
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
     if (self.disableFloatingLabels)
@@ -446,8 +453,14 @@
         if (!result)
         {
             [self stripInvalidLabelChar];
-            _floatingLabel.text = [NSString stringWithFormat:@"✖︎ %@", _floatingLabel.text];
-            _floatingLabel.textColor = [UIColor redColor];
+            if (!self.validateWhileTyping)
+            {
+                // if we're validating while typing, there's most likely a button associated with the field.
+                // don't show the error marker if that's the case.
+                
+                _floatingLabel.text = [NSString stringWithFormat:@"✖︎ %@", _floatingLabel.text];
+                _floatingLabel.textColor = [UIColor redColor];
+            }
         }
         else
         {
