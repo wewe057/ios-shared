@@ -195,7 +195,9 @@
     if (touches.count < 1)
         return;
     
-    [_timeoutHandlers makeObjectsPerformSelector:@selector(checkForTimerReset)];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_timeoutHandlers makeObjectsPerformSelector:@selector(checkForTimerReset)];
+    });
 }
 
 #pragma mark - Backgrounding Action methods
