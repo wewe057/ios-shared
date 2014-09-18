@@ -36,4 +36,14 @@
     return [NSURL URLWithString:[self libraryDirectoryPath]];
 }
 
++ (UIWindow *)applicationWindow
+{
+    NSArray *windows = [[UIApplication sharedApplication] windows];
+    for (UIWindow *window in windows)
+        if (window.windowLevel == UIWindowLevelNormal)
+            return window;
+    
+    return nil;
+}
+
 @end
