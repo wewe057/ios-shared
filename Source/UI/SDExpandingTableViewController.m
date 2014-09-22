@@ -55,14 +55,14 @@ static const CGFloat kMaxHeightPadding = 20.f;
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
         _scrollView.translatesAutoresizingMaskIntoConstraints = YES;
         _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        
-        CGRect screenBounds = [UIScreen mainScreen].bounds;
-        _maxSizePortrait = screenBounds.size;
-        _maxSizePortrait.width -= kMaxWidthPadding * 2;
-        _maxSizePortrait.height -= kMaxHeightPadding * 2;
-        
-        _maxSizeLandscape = CGSizeMake(_maxSizePortrait.height, _maxSizePortrait.width);
-    
+
+        // UIScreen bounds doesn't seem to always report what you expect in terms of landscape/portrait
+        CGSize screenSize = [UIScreen mainScreen].bounds.size;
+        CGFloat narrowDimension = MIN(screenSize.width,screenSize.height) - kMaxWidthPadding*2;
+        CGFloat wideDimension = MAX(screenSize.width,screenSize.height) - kMaxHeightPadding*2;
+        _maxSizePortrait = CGSizeMake(narrowDimension,wideDimension);
+        _maxSizeLandscape = CGSizeMake(wideDimension,narrowDimension);
+
     }
     return self;
 }
