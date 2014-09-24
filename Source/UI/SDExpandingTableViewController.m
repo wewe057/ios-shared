@@ -151,7 +151,7 @@ static const CGFloat kMaxHeightPadding = 20.f;
     
     [self.tableViews addObject:tableView];
     self.tableIndexCounter++;
-    tableView.tag = self.tableIndexCounter;
+    tableView.tag = (NSInteger)self.tableIndexCounter;
     
     self.identifierToTableView[column.identifier] = tableView;
     self.tableViewToIdentifier[@(tableView.tag)] = column;
