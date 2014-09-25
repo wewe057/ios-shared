@@ -141,7 +141,7 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(43)-[quantityView]" options:0 metrics:nil views:@{@"quantityView":self.quantityView}]];
         
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[totalLabel]-(10)-[quantityView(>=110)]-(12)-[removeButton]-(13)-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(6)-[totalLabel]-(10)-[quantityView(>=90)]-(8)-[removeButton]-(6)-|"
                                                                      options:0
                                                                      metrics:nil
                                                                        views:@{@"totalLabel":self.totalPriceLabel, @"quantityView":self.quantityView, @"removeButton":self.removeButton}]];
