@@ -7,6 +7,11 @@
 
 #import <CoreLocation/CoreLocation.h>
 
+typedef NS_ENUM(NSUInteger,SDLocationManagerAuthorizationScheme) {
+    SDLocationManagerAuthorizationAlways,
+    SDLocationManagerAuthorizationWhenInUse
+};
+
 extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** Allows the SDLocationManager to persistently record whether it has received at least 1 valid location update during the life of the app. This is useful when other classes need to know whether user has tapped 'OK' on the iOS location permission alert. */
 
 @protocol SDLocationManagerDelegate <NSObject>
@@ -24,39 +29,29 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 
 @end
 
-@interface SDLocationManager: CLLocationManager <CLLocationManagerDelegate>
+@interface SDLocationManager: NSObject <CLLocationManagerDelegate>
 
-@property (nonatomic, assign) NSTimeInterval timeout;
 @property (nonatomic, readonly) BOOL hasReceivedLocationUpdate;
 @property (nonatomic, readonly) BOOL isUpdatingLocation;
 @property (nonatomic, readonly) BOOL isUpdatingHeading;
 @property (nonatomic, readonly) BOOL isLocationAllowed;
+@property (nonatomic, readonly) CLLocation *currentLocation;
 
++ (SDLocationManager *)sharedInstance;
 
-+ (SDLocationManager *)instance;
-
+/// Forwards requestAlwaysAuthorization to internal CLLocationManager instance
+- (void)requestAlwaysAuthorization;
+/// Forwards requestWhenInUseAuthorization to internal CLLocationManager instance
+- (void)requestWhenInUseAuthorization;
 
 - (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy;
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter;
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy authorization:(SDLocationManagerAuthorizationScheme)authorization;
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter authorization:(SDLocationManagerAuthorizationScheme)authorization;
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingLocationForAllDelegates;
 
-- (BOOL) startMonitoringForSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate;
-- (void) stopMonitoringSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate;
-- (void) stopMonitoringSignificantLocationChangesForAllDelegates;
-
-//!!!: These currently ignore the delegate param. Make sure you registered it using startUpdatingLocationWithDelegate: and remove it with stopUpdatingLocationWithDelegate:.
-- (BOOL)startUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
-- (void)stopUpdatingHeadingWithDelegate:(id<SDLocationManagerDelegate>)delegate;
-
-- (void)startUpdatingLocation __deprecated__("Use the withDelegate versions of this method");
-- (void)stopUpdatingLocation __deprecated__("Use the withDelegate versions of this method");
-// The delegate versions of these don't actually work as of yet, you can use the old ones
-//- (void)startUpdatingHeading __deprecated__("Use the withDelegate versions of this method");
-//- (void)stopUpdatingHeading __deprecated__("Use the withDelegate versions of this method");
-- (void)startMonitoringSignificantLocationChanges __deprecated__("Use the withDelegate versions of this method");
-- (void)stopMonitoringSignificantLocationChanges __deprecated__("Use the withDelegate versions of this method");
-- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager __deprecated__("Use the withDelegate versions of this method");
-- (void)setDelegate:(id<CLLocationManagerDelegate>)delegate __deprecated__("Use the withDelegate versions of this method");
+//- (BOOL) startMonitoringForSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+//- (void) stopMonitoringSignificantLocationChangesWithDelegate:(id<SDLocationManagerDelegate>)delegate;
+//- (void) stopMonitoringSignificantLocationChangesForAllDelegates;
 
 @end

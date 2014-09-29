@@ -39,11 +39,6 @@
     self = [super init];
     if(self != nil)
     {
-        _leftBarItemsView = [[[SDPullNavigationBarControlsView class] alloc] initWithEdge:UIRectEdgeLeft];
-        _leftBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftBarItemsView];
-        _rightBarItemsView = [[[SDPullNavigationBarControlsView class] alloc] initWithEdge:UIRectEdgeRight];
-        _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
-
         _showGlobalNavControls = YES;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -64,23 +59,14 @@
 {
     if(delegate)
     {
-        [delegate setupNavigationBar];
-        [delegate setupNavigationBarItems];
         _globalPullNavController = [delegate setupGlobalContainerViewController];
+        _delegate = delegate;
     }
     else
     {
         _globalPullNavController = nil;
         _delegate = nil;
     }
-}
-
-- (void)setPullNavigationBarViewClass:(Class)overrideClass
-{
-    _leftBarItemsView = [[overrideClass alloc] initWithEdge:UIRectEdgeLeft];
-    _leftBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_leftBarItemsView];
-    _rightBarItemsView = [[overrideClass alloc] initWithEdge:UIRectEdgeRight];
-    _rightBarItemsView.owningBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_rightBarItemsView];
 }
 
 // Called when the navigation controller shows a new top view controller via a push, pop or setting of the view controller stack.
@@ -92,32 +78,17 @@
 {
     viewController.navigationItem.leftItemsSupplementBackButton = YES;
 
-    if(self.showGlobalNavControls)
+    // Since we don't know the direction of the nav controller movement (push/pop) we use the hasGlobalNavigation
+    // which is added via a category to know if we've already added global navigation
+    // We do this because resetting the navigation items on a "pop" messes with the animation, and unnecessary
+    if(self.showGlobalNavControls && !viewController.hasGlobalNavigation)
     {
-        [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:^
-        {
-            if(viewController.navigationItem.leftBarButtonItems)
-            {
-                viewController.navigationItem.leftBarButtonItems = nil;
-            }
-            if(viewController.navigationItem.leftBarButtonItems == nil && [self.leftBarItemsView barItems].count > 0)
-            {
-                [self.leftBarItemsView removeFromSuperview];
-				[self.leftBarItemsView sizeToFit];
-                viewController.navigationItem.leftBarButtonItems = @[self.leftBarItemsView.owningBarButtonItem];
-            }
-        }
-        completion:^(BOOL finished) {}];
-
-        if(viewController.navigationItem.rightBarButtonItems)
-        {
-            viewController.navigationItem.rightBarButtonItems = nil;
-        }
-        if(viewController.navigationItem.rightBarButtonItems == nil && [self.rightBarItemsView barItems].count > 0)
-        {
-            [self.rightBarItemsView removeFromSuperview];
-			[self.rightBarItemsView sizeToFit];
-            viewController.navigationItem.rightBarButtonItems = @[self.rightBarItemsView.owningBarButtonItem];
+        viewController.hasGlobalNavigation = YES;
+        // grab a strong reference to the weak delegate
+        id <SDPullNavigationSetupProtocol> theDelegate = self.delegate;
+        if ([theDelegate respondsToSelector:@selector(globalNavigationBarItemsForSide:withViewController:)]) {
+            viewController.navigationItem.leftBarButtonItems = [theDelegate globalNavigationBarItemsForSide:SDPullNavigationBarSideLeft withViewController:viewController];
+            viewController.navigationItem.rightBarButtonItems = [theDelegate globalNavigationBarItemsForSide:SDPullNavigationBarSideRight withViewController:viewController];
         }
     }
 }
@@ -140,6 +111,10 @@
 - (BOOL)navigateToTopLevelController:(Class)topLevelViewControllerClass
 {
     UINavigationController* foundNavController = [self.globalPullNavController navigationControllerForViewControllerClass:topLevelViewControllerClass];
+    
+    // We reset the hasGlobalNavigation flag because although sharing navigation across VC's in a nav
+    // controller works, sharing them across multiple nav controllers doesn't. Want it to reset
+    ((UIViewController *)foundNavController.viewControllers.firstObject).hasGlobalNavigation = NO;
 
     if(foundNavController)
         self.globalPullNavController.selectedViewController = foundNavController;
@@ -226,8 +201,9 @@
 - (UIControl*)barItemController:(id)controller
 {
     UIControl* foundControl = nil;
-
-    NSArray* barItems = [self.leftBarItemsView.barItems arrayByAddingObjectsFromArray:self.rightBarItemsView.barItems];
+    
+    UINavigationItem *navigationItem = [self topLevelViewController:controller].navigationItem;
+    NSArray* barItems = [navigationItem.leftBarButtonItems arrayByAddingObjectsFromArray:navigationItem.rightBarButtonItems];
     for(UIView* item in barItems)
     {
         Class pullNavigationAutomationClass = item.pullNavigationAutomationClass;

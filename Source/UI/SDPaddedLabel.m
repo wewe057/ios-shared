@@ -29,10 +29,10 @@
     self.label.backgroundColor = [UIColor clearColor]; // Thanks, iOS 6!
     [self addSubview:self.label];
 
-    [self setNeedsUpdateConstraints];
+    [self p_applyContraints];
 }
 
-- (void)updateConstraints
+- (void)p_applyContraints
 {
     [self removeConstraints:self.constraints];
 
@@ -68,7 +68,7 @@
                                                     multiplier:1.0
                                                       constant:-self.edgeInsets.right]];
 
-    [super updateConstraints];
+    [self setNeedsUpdateConstraints];
 }
 
 - (CGSize)intrinsicContentSize
@@ -77,6 +77,12 @@
     ics.height += self.edgeInsets.top + self.edgeInsets.bottom;
     ics.width += self.edgeInsets.left + self.edgeInsets.right;
     return ics;
+}
+
+- (void)setEdgeInsets:(UIEdgeInsets)edgeInsets
+{
+    _edgeInsets = edgeInsets;
+    [self p_applyContraints];
 }
 
 @end
