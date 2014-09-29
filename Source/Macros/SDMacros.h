@@ -141,6 +141,24 @@
     macro_dispatcher(strongify, __VA_ARGS__)(__VA_ARGS__)
 
 
+/**
+ @keypath(object.key.path)
+ @keypath(object, key.path)
+
+ This macro returns an NSString representing @"key.path" while also doing compile-time verification that
+ such a keypath exists on `object`. Use this in place of direct string constants to avoid stringly-typed
+ code that is prone to typos or breaking after refactoring.
+ 
+ This macro is roughly based on a version found in EXTobjc but has been adapted to use the macro dispatcher
+ found below instead of relying on the metamacros found in EXTobjc.
+ 
+ https://github.com/ReactiveCocoa/ReactiveCocoa/blob/master/ReactiveCocoaFramework/ReactiveCocoa/extobjc/EXTKeyPathCoding.h
+ 
+ */
+#define keypath(...) \
+    macro_dispatcher(keypath, __VA_ARGS__)(__VA_ARGS__)
+
+
 /****** It's probably best not to call macros below this line directly. *******/
 
 // Support bits for __dontshipthis__
@@ -181,3 +199,12 @@
 
 #define unsafeify2(v_in, v_out) \
     __unsafe_unretained __typeof(v_in) v_out = v_in \
+
+
+// Support macros for @keypath.
+
+#define keypath1(KEYPATH) \
+    (((void)(NO && ((void)KEYPATH, NO)), strchr(# KEYPATH, '.') + 1))
+
+#define keypath2(OBJECT, KEYPATH) \
+    (((void)(NO && ((void)OBJECT.KEYPATH, NO)), # KEYPATH))
