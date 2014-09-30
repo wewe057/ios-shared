@@ -54,6 +54,8 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
 + (NSArray *)arrayBySortingMatches:(NSArray *)matches;
 
 - (instancetype)initWithType:(SRSpanMatchType)type result:(NSTextCheckingResult *)result;
+
+- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string;
 @end
 
 #pragma mark - SDSpanParser
@@ -75,6 +77,7 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
     NSMutableAttributedString *currentStyledString = [[NSMutableAttributedString alloc] init];
     
     NSUInteger currentIndex = 0;
+
     
     if (rawMatches.count == 0)
     {
@@ -100,7 +103,7 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
                 {
                     case SRSpanMatchTypeOpen:
                     {
-                        NSString *styleName = [[string substringWithRange:match.classRange] lowercaseString];
+                        NSString *styleName = [[string substringWithRange:[match properRangeForSpanWithClassOnString:string]] lowercaseString];
                         NSDictionary *styleDictionary = [styles objectForKey:styleName];
                         if (styleDictionary)
                         {
@@ -172,7 +175,8 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
 
 + (NSArray *)matchesIn:(NSString *)string
 {
-    NSString *spanPattern = @"<span class=\"(.+?)\">";
+    // Case Insensitive for speed
+    NSString *spanPattern = @"<span(.+?)>";
     NSRegularExpression *spanRegEx = [[NSRegularExpression alloc] initWithPattern:spanPattern options:NSRegularExpressionCaseInsensitive error:nil];
     
     NSString *endSpanPattern = @"</span>";
@@ -203,6 +207,7 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
     for (NSTextCheckingResult *match in array)
     {
         NSAssert([match isKindOfClass:[NSTextCheckingResult class]],@"array contains a non NSTextCheckingResult object");
+        
         SRSpanMatch *spanMatch = [[SRSpanMatch alloc] initWithType:type result:match];
         [matchArray addObject:spanMatch];
     }
@@ -218,15 +223,12 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
         _result = result;
         
         _spanRange = [_result rangeAtIndex:0];
-        switch (_type)
+        if (_type == SRSpanMatchTypeOpen)
         {
-            case SRSpanMatchTypeOpen:
-                NSAssert(_result.numberOfRanges > 1, @"open span tag missing class ");
-                _classRange = [_result rangeAtIndex:1];
-                break;
-            case SRSpanMatchTypeClose:
-                break;
+            NSAssert(_result.numberOfRanges > 1, @"open span tag missing class ");
+            _classRange = [_result rangeAtIndex:1];
         }
+        // Do nothing with the close as it doesn't have a class to replace with, e.g. </span>
     }
     return self;
 }
@@ -258,6 +260,39 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
     }];
     
     return sortedArray;
+}
+
+- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string
+{
+    NSRange finalRange = self.classRange;
+    
+    // Attempt to get the string from the current class range
+    NSString *foundString = [string substringWithRange:self.classRange];
+    if ([foundString rangeOfString:@"class="].location != NSNotFound)
+    {
+        // Create a new final range offset
+        NSRegularExpression *classExpression = [NSRegularExpression regularExpressionWithPattern:@"class=\"(.+?)\"" options:NSRegularExpressionCaseInsensitive error:nil];
+        NSArray *matches = [classExpression matchesInString:string options:0 range:finalRange];
+
+        // Make sure we found a class, if not just bail with the current class range
+        if ([matches count] > 0)
+        {
+            NSTextCheckingResult *checkingResult = [matches firstObject];
+            if (checkingResult.numberOfRanges > 1)
+            {
+                NSRange tempRange = [checkingResult rangeAtIndex:1];
+                NSLog(@"Temp Range: %d - %d", tempRange.location, tempRange.length);
+                
+                
+                NSString *finalString = [string substringWithRange:tempRange];
+                NSLog(@"final string: %@", finalString);
+                finalRange = tempRange;
+            }
+            
+        }
+    }
+    
+    return finalRange;
 }
 
 @end
