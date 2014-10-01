@@ -281,11 +281,6 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
             if (checkingResult.numberOfRanges > 1)
             {
                 NSRange tempRange = [checkingResult rangeAtIndex:1];
-                NSLog(@"Temp Range: %d - %d", tempRange.location, tempRange.length);
-                
-                
-                NSString *finalString = [string substringWithRange:tempRange];
-                NSLog(@"final string: %@", finalString);
                 finalRange = tempRange;
             }
             
