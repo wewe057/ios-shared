@@ -20,7 +20,7 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
 };
 
 @interface SRSpanMatch : NSObject
-@property (nonatomic, assign, readonly) NSRange               classRange;
+@property (nonatomic, assign, readwrite) NSRange               classRange;
 @property (nonatomic, assign, readonly) NSRange               spanRange;
 @property (nonatomic, assign, readonly) SRSpanMatchType       type;
 + (NSArray *)matchesIn:(NSString *)string;
@@ -75,12 +75,64 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
 
 - (void)testParseWithStyles
 {
+    NSString *stringToTest = [SRSTestHelper stringForMockFile:@"SpanTest_basic.txt"];
     
+    NSDictionary *styles = @{@"homecardsubtitle": @{
+                                 NSFontAttributeName            : [UIFont fontWithName:@"Cochin" size:15],
+                                 NSForegroundColorAttributeName : [UIColor redColor]}};
+
+    
+    NSAttributedString *testString = [SDSpanParser parse:stringToTest withStyles:styles];
+    
+    NSDictionary *attributes = [testString attributesAtIndex:0 effectiveRange:NULL];
+    XCTAssertTrue([((UIFont *)[attributes objectForKey:@"NSFont"]).fontName isEqualToString:@"Cochin"], @"The font should return Cochin");
 }
 
 - (void)testProperRangeForSpanWithClassOnString
 {
+    // Test a good range is coming back
+    NSString *stringToTest = [SRSTestHelper stringForMockFile:@"SpanTest_basic.txt"];
+    if (stringToTest)
+    {
+        NSArray *rawMatches = [SRSpanMatch matchesIn:stringToTest];
+        if ([rawMatches count] > 0)
+        {
+            SRSpanMatch *spanMatch = [rawMatches firstObject];
+            NSRange basicRange = [spanMatch properRangeForSpanWithClassOnString:stringToTest error:nil];
+            XCTAssertTrue(basicRange.location == 13 && basicRange.length == 16, @"The range returned should start at index 13 and have a length of 16");
+        }
+    }
     
+    // Test a multi-line
+    stringToTest = [SRSTestHelper stringForMockFile:@"SpanTest_multispans.txt"];
+    if (stringToTest)
+    {
+        NSArray *rawMatches = [SRSpanMatch matchesIn:stringToTest];
+        if ([rawMatches count] > 1)
+        {
+            SRSpanMatch *spanMatch = [rawMatches objectAtIndex:1];
+            // Manually set the classRange 56/15
+            spanMatch.classRange = NSMakeRange(57, 15);
+            
+            NSRange basicRange = [spanMatch properRangeForSpanWithClassOnString:stringToTest error:nil];
+            XCTAssertTrue(basicRange.location == 65 && basicRange.length == 6, @"The range returned should start at index 13 and have a length of 16");
+        }
+    }
+    
+    // Test nserror is working
+    stringToTest = [SRSTestHelper stringForMockFile:@"SpanTest_missingclass.txt"];
+    if (stringToTest)
+    {
+        NSArray *rawMatches = [SRSpanMatch matchesIn:stringToTest];
+        if ([rawMatches count] > 1)
+        {
+            SRSpanMatch *spanMatch = [rawMatches objectAtIndex:1];
+            
+            NSError *error = nil;
+            [spanMatch properRangeForSpanWithClassOnString:stringToTest error:&error];
+            XCTAssertTrue(error && error.localizedDescription.length > 0, @"An error should return for a class not being found");
+        }
+    }
 }
 
 - (void)testMatchesInBasic
