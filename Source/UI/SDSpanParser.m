@@ -55,6 +55,15 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
 
 - (instancetype)initWithType:(SRSpanMatchType)type result:(NSTextCheckingResult *)result;
 
+/**
+ * Returns the range of the class name within a current classRange that is set.
+ *
+ * @param string - The wholestic string of text with span. Not a fragment.
+ * 
+ * @return The new range that will dictate where the class name is. Make sure to 
+ * have classRange set first since it will only look within that range. classRange 
+ * should be set on initWithType:result:.
+ */
 - (NSRange)properRangeForSpanWithClassOnString:(NSString *)string;
 @end
 
