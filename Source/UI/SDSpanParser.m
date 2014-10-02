@@ -59,12 +59,14 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
  * Returns the range of the class name within a current classRange that is set.
  *
  * @param string - The wholestic string of text with span. Not a fragment.
+ *
+ * @param error - An error is returned if a class is not found.
  * 
  * @return The new range that will dictate where the class name is. Make sure to 
  * have classRange set first since it will only look within that range. classRange 
  * should be set on initWithType:result:.
  */
-- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string;
+- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string error:(NSError **)error;
 @end
 
 #pragma mark - SDSpanParser
@@ -112,13 +114,18 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
                 {
                     case SRSpanMatchTypeOpen:
                     {
-                        NSString *styleName = [[string substringWithRange:[match properRangeForSpanWithClassOnString:string]] lowercaseString];
-                        NSDictionary *styleDictionary = [styles objectForKey:styleName];
-                        if (styleDictionary)
+                        NSError *error = nil;
+                        NSString *styleName = [[string substringWithRange:[match properRangeForSpanWithClassOnString:string error:&error]] lowercaseString];
+                        
+                        if (!error)
                         {
-                            [styleStack addObject:currentAttributes];
-                            currentAttributes = [currentAttributes mutableCopy];
-                            [currentAttributes addEntriesFromDictionary:styleDictionary];
+                            NSDictionary *styleDictionary = [styles objectForKey:styleName];
+                            if (styleDictionary)
+                            {
+                                [styleStack addObject:currentAttributes];
+                                currentAttributes = [currentAttributes mutableCopy];
+                                [currentAttributes addEntriesFromDictionary:styleDictionary];
+                            }
                         }
                         break;
                     }
@@ -271,9 +278,9 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
     return sortedArray;
 }
 
-- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string
+- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string error:(NSError **)error
 {
-    NSRange finalRange = self.classRange;
+    NSRange finalRange = NSMakeRange(0, 0);
     
     // Attempt to get the string from the current class range
     NSString *foundString = [string substringWithRange:self.classRange];
@@ -281,7 +288,7 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
     {
         // Create a new final range offset
         NSRegularExpression *classExpression = [NSRegularExpression regularExpressionWithPattern:@"class=\"(.+?)\"" options:NSRegularExpressionCaseInsensitive error:nil];
-        NSArray *matches = [classExpression matchesInString:string options:0 range:finalRange];
+        NSArray *matches = [classExpression matchesInString:string options:0 range:self.classRange];
 
         // Make sure we found a class, if not just bail with the current class range
         if ([matches count] > 0)
@@ -294,6 +301,10 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
             }
             
         }
+    }
+    else if (error != NULL)
+    {
+        *error = [NSError errorWithDomain:@"Class Not Found on Span" code:NSURLErrorUnknown];
     }
     
     return finalRange;

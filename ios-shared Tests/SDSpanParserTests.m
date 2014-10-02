@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
 @property (nonatomic, assign, readonly) NSRange               spanRange;
 @property (nonatomic, assign, readonly) SRSpanMatchType       type;
 + (NSArray *)matchesIn:(NSString *)string;
-- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string;
+- (NSRange)properRangeForSpanWithClassOnString:(NSString *)string error:(NSError **)error;
 @end
 
 @interface SRSTestHelper : NSObject
@@ -127,9 +127,9 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
     
 }
 
-- (void)testMatchesInMissingClose
+- (void)testMatchesInMultiSpans
 {
-    NSString *stringToTest = [SRSTestHelper stringForMockFile:@"SpanTest_missingclose.txt"];
+    NSString *stringToTest = [SRSTestHelper stringForMockFile:@"SpanTest_multispans.txt"];
     NSArray *verifyArray = [SRSpanMatch matchesIn:stringToTest];
     NSInteger totalOpened = 0;
     NSInteger totalClosed = 0;
@@ -145,8 +145,74 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
         }
     }
     
-    XCTAssertTrue(totalOpened > totalClosed, @"The total SRSpanMatch elements should not be the same, there should be an extra open");
+    XCTAssertTrue(totalOpened == totalClosed, @"The total SRSpanMatch elements should be the same, there should be multi-matches");
     
+}
+
+- (void)testMatchesInMultiSpansNoClass
+{
+    NSString *stringToTest = [SRSTestHelper stringForMockFile:@"SpanTest_multispans_noclass.txt"];
+    NSArray *verifyArray = [SRSpanMatch matchesIn:stringToTest];
+    NSInteger totalOpened = 0;
+    NSInteger totalClosed = 0;
+    for (SRSpanMatch *result in verifyArray)
+    {
+        if (result.type == SRSpanMatchTypeOpen)
+        {
+            ++totalOpened;
+        }
+        else
+        {
+            ++totalClosed;
+        }
+    }
+    
+    XCTAssertTrue(totalOpened == totalClosed, @"The total SRSpanMatch elements should be the same, there should be multi-matches");
+    
+}
+
+- (void)testSpanHasClass
+{
+    NSArray *filenames = @[/*@"SpanTest_basic.txt", @"SpanTest_extraspace.txt", @"SpanTest_multispans.txt", */@"SpanTest_multispans_noclass.txt"];
+    NSArray *acceptableValues = @[@"homecardsubtitle", @"class1", @"class2", @"class3", @"class4"];
+    for (NSString *filename in filenames)
+    {
+        NSString *stringToTest = [SRSTestHelper stringForMockFile:filename];
+        NSArray *rawMatches = [SRSpanMatch matchesIn:stringToTest];
+
+        NSUInteger currentIndex = 0;
+
+        if ([rawMatches count] > 0)
+        {
+            for (SRSpanMatch *match in rawMatches)
+            {
+                NSUInteger spanLocation = match.spanRange.location;
+                if (spanLocation > currentIndex)
+                {
+                    NSRange subRange = NSMakeRange(currentIndex, spanLocation - currentIndex);
+
+                    currentIndex += subRange.length;
+                }
+                
+                if (spanLocation == currentIndex)
+                {
+                    if (match.type == SRSpanMatchTypeOpen)
+                    {
+                        NSError *error = nil;
+                        NSString *styleName = [stringToTest substringWithRange:[match properRangeForSpanWithClassOnString:stringToTest error:&error]];
+                        if (styleName.length > 0 && !error)
+                        {
+                            XCTAssertTrue([acceptableValues indexOfObject:styleName] != NSNotFound, @"The object %@ was not found", styleName);
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            XCTFail(@"There should be matches within this file");
+        }
+    }
 }
 
 @end

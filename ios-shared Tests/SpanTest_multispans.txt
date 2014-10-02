@@ -1,2 +1,2 @@
-<span class="homecardsubtitle">Search and browse items</span>
-<span class="homecardsubtitle">Second line</span>
+<span class="class1">Search and browse items</span>
+<span class="class2">Second line</span>
