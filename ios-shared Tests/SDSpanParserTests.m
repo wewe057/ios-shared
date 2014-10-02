@@ -173,11 +173,17 @@ typedef NS_ENUM(NSUInteger, SRSpanMatchType)
 
 - (void)testSpanHasClass
 {
-    NSArray *filenames = @[/*@"SpanTest_basic.txt", @"SpanTest_extraspace.txt", @"SpanTest_multispans.txt", */@"SpanTest_multispans_noclass.txt"];
+    NSArray *filenames = @[@"SpanTest_basic.txt", @"SpanTest_extraspace.txt", @"SpanTest_multispans.txt", @"SpanTest_multispans_noclass.txt", @"SpanTest_missingclass.txt"];
     NSArray *acceptableValues = @[@"homecardsubtitle", @"class1", @"class2", @"class3", @"class4"];
     for (NSString *filename in filenames)
     {
         NSString *stringToTest = [SRSTestHelper stringForMockFile:filename];
+        
+        if (!stringToTest)
+        {
+            continue;
+        }
+        
         NSArray *rawMatches = [SRSpanMatch matchesIn:stringToTest];
 
         NSUInteger currentIndex = 0;
