@@ -145,6 +145,9 @@
                                                                      options:0
                                                                      metrics:nil
                                                                        views:@{@"totalLabel":self.totalPriceLabel, @"quantityView":self.quantityView, @"removeButton":self.removeButton}]];
+        // This is required for iOS 7 & 7.1 when building for iOS 8.
+        [[self totalPriceLabel] setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+        
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[quantityView]-(20)-[doneButton]-(21)-|"
                                                                      options:0
                                                                      metrics:nil
