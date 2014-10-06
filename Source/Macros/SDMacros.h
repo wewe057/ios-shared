@@ -159,6 +159,26 @@
     macro_dispatcher(keypath, __VA_ARGS__)(__VA_ARGS__)
 
 
+/**
+ Use this macro to adorn an initializer method with the designated attribute.
+
+ This macro is brought in from the iOS 8 SDK to here so that we can begin to use 
+ `NS_DESIGNATED_INITIALIZER` in shared code that still needs to be compatible to older SDK versions.
+ 
+ Example usage:
+ 
+     - (instancetype)initWithProduct:(SWIProduct *)product NS_DESIGNATED_INITIALIZER;
+
+ */
+#ifndef NS_DESIGNATED_INITIALIZER
+#if __has_attribute(objc_designated_initializer)
+#define NS_DESIGNATED_INITIALIZER __attribute__((objc_designated_initializer))
+#else
+#define NS_DESIGNATED_INITIALIZER
+#endif
+#endif
+
+
 /****** It's probably best not to call macros below this line directly. *******/
 
 // Support bits for __dontshipthis__
