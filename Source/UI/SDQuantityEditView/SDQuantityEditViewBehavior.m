@@ -87,7 +87,10 @@ static char kObserveQuantityContext;
         
         if(_adjustQuantityMethod == kAdjustableItemQuantityMethod_Both && [adjustableItem respondsToSelector:@selector(averageWeight)])
         {
-            _avgWeight = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem averageWeight]];
+            // This is a workaround for bad data. This method would otherwise crash the app when averageWeight is not set.
+            // Use an arbitrary value for avgWeight. I've chosen 1.
+            NSDecimalNumber *avg = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem averageWeight]];
+            _avgWeight = ![avg isEqualToNumber:[NSDecimalNumber notANumber]] ? avg : [NSDecimalNumber one];
             _maxQuantity = [_maxQuantity decimalNumberByDividingBy:_avgWeight];
             _pricePerUnit = [_pricePerUnit decimalNumberByMultiplyingBy:_avgWeight];
         }
