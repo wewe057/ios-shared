@@ -54,7 +54,7 @@
     _quantityView.translatesAutoresizingMaskIntoConstraints = NO;
     _quantityView.fillColor = [UIColor lightGrayColor];
     _quantityView.quantityLabel.textColor = [UIColor darkTextColor];
-    
+
     [_doneButton addTarget:self action:@selector(doneTapped:) forControlEvents:UIControlEventTouchUpInside];
     [_removeButton addTarget:self action:@selector(removeTapped:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -105,11 +105,15 @@
     _totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _totalPriceLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [_totalPriceLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
+    _totalPriceLabel.minimumScaleFactor = .65;
+    _totalPriceLabel.adjustsFontSizeToFitWidth = YES;
     [self addSubview:_totalPriceLabel];
     
     _weightLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _weightLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [_weightLabel setFont:[UIFont systemFontOfSize:12.0f]];
+    _weightLabel.minimumScaleFactor = .65;
+    _weightLabel.adjustsFontSizeToFitWidth = YES;
     [self addSubview:_weightLabel];
     
     _quantityView = [SDQuantityView quantityView];
@@ -157,7 +161,7 @@
                                                                      metrics:nil
                                                                        views:@{@"spinner":self.activitingIndicator}]];
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[weightLabel]-(10)-[quantityView]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[weightLabel]-(10)-[quantityView]"
                                                                      options:0
                                                                      metrics:nil
                                                                        views:@{@"weightLabel":self.weightLabel, @"quantityView":self.quantityView}]];
