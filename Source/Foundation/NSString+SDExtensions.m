@@ -105,6 +105,11 @@ GENERICSABLE_IMPLEMENTATION(NSString)
 	return (__bridge_transfer  NSString *) CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)selfCopy, NULL, CFSTR("%￼=,!$&'()*+;@?\n\"<>#\t :/"), kCFStringEncodingUTF8);
 }
 
+- (NSString*)unescapedString
+{
+    return [self stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+}
+
 - (NSString *)removeExcessWhitespace 
 {
     // The NSRegularExpression class is currently only available in the Foundation framework of iOS 4
