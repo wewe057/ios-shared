@@ -17,7 +17,7 @@
     
     self.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableview.bounds), CGRectGetHeight(tableview.bounds));
     
-    CGFloat cellHeight = 44.0f;
+    CGFloat cellHeight;
     if ([UIDevice systemMajorVersion] >= 8.0)
     {
         cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize
