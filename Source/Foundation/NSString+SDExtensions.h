@@ -46,6 +46,11 @@ GENERICSABLE(NSString)
 - (NSString *)escapedString;
 
 /**
+ Remove escape characters in the string and return a new string
+ */
+- (NSString *)unescapedString;
+
+/**
  Replaces all ocurrences of multiple white space characters in the receiver with a single space character.
  */
 - (NSString *)removeExcessWhitespace;

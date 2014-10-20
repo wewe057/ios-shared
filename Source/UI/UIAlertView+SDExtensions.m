@@ -18,7 +18,7 @@
 
 + (UIAlertView *)alertViewWithTitle:(NSString *)title message:(NSString *)message buttonTitle:(NSString *)buttonTitle
 {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title ? title : @""
 													 message:message
 													delegate:nil 
 										   cancelButtonTitle:buttonTitle
