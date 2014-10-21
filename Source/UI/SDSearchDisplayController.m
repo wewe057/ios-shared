@@ -159,7 +159,9 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         [self updateSearchHistory];
         if (!searchHistory)
             searchHistory = [[NSMutableArray alloc] init];
-        
+       
+        self.searchResultsTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
+    
         UITableView *defaultTableView = self.searchResultsTableView;
         
         recentSearchTableView = [[UITableView alloc] initWithFrame:CGRectZero style:defaultTableView.style];
@@ -182,8 +184,9 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         {
             recentSearchTableView.alpha = 1.0;
         }
+        recentSearchTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
     }
-    else
+    else {
 		if (!visible && recentSearchTableView)
 		{
 			if (animated)
@@ -205,6 +208,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 			[masterList removeAllObjects];
 			searchHistory = nil;
 		}
+    }
 }
 
 - (NSUInteger)recentSearchesSectionNumber
