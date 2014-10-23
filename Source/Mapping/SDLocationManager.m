@@ -584,8 +584,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     LocLog(@"%@",NSStringFromSelector(_cmd));
+    NSArray *blockDelegates = [self.delegates copy];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
+        [blockDelegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
     });
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
         [self stopUpdatingLocationForAllDelegates];
