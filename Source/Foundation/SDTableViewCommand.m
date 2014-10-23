@@ -259,7 +259,7 @@ NSString * const SDTableCommandAddSectionAnimationKey = @"SDTableCommandAddSecti
     // remove sections
     for (SDTableViewCommand *command in self.removeSectionCommands)
     {
-        [removeSectionIndexes addIndex:command.resolvedIndexPath.section];
+        [removeSectionIndexes addIndex:(NSUInteger)command.resolvedIndexPath.section];
         if (callbackBlock)
         {
             callbackBlock(command);
@@ -305,7 +305,7 @@ NSString * const SDTableCommandAddSectionAnimationKey = @"SDTableCommandAddSecti
     // insert sections
     for (SDTableViewCommand *command in self.insertSectionCommands)
     {
-        [insertSectionIndexes addIndex:command.resolvedIndexPath.section];
+        [insertSectionIndexes addIndex:(NSUInteger)command.resolvedIndexPath.section];
         if (callbackBlock)
         {
             callbackBlock(command);
@@ -341,31 +341,31 @@ NSString * const SDTableCommandAddSectionAnimationKey = @"SDTableCommandAddSecti
     {
         case kSDTableCommandUpdateRow:
         {
-            NSUInteger section = [[currentSectionLookup objectForKey:command.sectionIdentifier] integerValue];
-            command.resolvedIndexPath = [NSIndexPath indexPathForRow:command.row inSection:section];
+            NSInteger section = [[currentSectionLookup objectForKey:command.sectionIdentifier] integerValue];
+            command.resolvedIndexPath = [NSIndexPath indexPathForRow:(NSInteger)command.row inSection:section];
             [self.updateRowCommands addObject:command];
             break;
         }
             
         case kSDTableCommandRemoveRow:
         {
-            NSUInteger section = [[currentSectionLookup objectForKey:command.sectionIdentifier] integerValue];
-            command.resolvedIndexPath = [NSIndexPath indexPathForRow:command.row inSection:section];
+            NSInteger section = [[currentSectionLookup objectForKey:command.sectionIdentifier] integerValue];
+            command.resolvedIndexPath = [NSIndexPath indexPathForRow:(NSInteger)command.row inSection:section];
             [self.removeRowCommands addObject:command];
             break;
         }
             
         case kSDTableCommandAddRow:
         {
-            NSUInteger section = [[updatedSectionLookup objectForKey:command.sectionIdentifier] integerValue];
-            command.resolvedIndexPath = [NSIndexPath indexPathForRow:command.row inSection:section];
+            NSInteger section = [[updatedSectionLookup objectForKey:command.sectionIdentifier] integerValue];
+            command.resolvedIndexPath = [NSIndexPath indexPathForRow:(NSInteger)command.row inSection:section];
             [self.insertRowCommands addObject:command];
             break;
         }
             
         case kSDTableCommandAddSection:
         {
-            NSUInteger section = [[updatedSectionLookup objectForKey:command.sectionIdentifier] integerValue];
+            NSInteger section = [[updatedSectionLookup objectForKey:command.sectionIdentifier] integerValue];
             command.resolvedIndexPath = [NSIndexPath indexPathForRow:NSNotFound inSection:section];
             [self.insertSectionCommands addObject:command];
             break;
@@ -373,7 +373,7 @@ NSString * const SDTableCommandAddSectionAnimationKey = @"SDTableCommandAddSecti
             
         case kSDTableCommandRemoveSection:
         {
-            NSUInteger section = [[currentSectionLookup objectForKey:command.sectionIdentifier] integerValue];
+            NSInteger section = [[currentSectionLookup objectForKey:command.sectionIdentifier] integerValue];
             command.resolvedIndexPath = [NSIndexPath indexPathForRow:NSNotFound inSection:section];
             [self.removeSectionCommands addObject:command];
             break;

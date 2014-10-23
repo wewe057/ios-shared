@@ -12,10 +12,25 @@
 
 @class SDPullNavigationBar;
 
+typedef NS_ENUM(NSUInteger, SDPullNavigationBarSide) {
+    SDPullNavigationBarSideLeft,
+    SDPullNavigationBarSideRight
+};
+
 @protocol SDPullNavigationSetupProtocol <NSObject, UITabBarControllerDelegate>
 @required
-- (void)setupNavigationBar;
-- (void)setupNavigationBarItems;
+/** Method for supplying global navigation button items whenever a new view controller
+ * is pushed onto the stack.
+ *
+ * @param SDPullNavigationBarSide side is just a simple param for which side you are supplying buttons for
+ * @param UIViewController viewController provides the view controller being displayed in case that 
+ * affects your selection of buttons
+ * @return NSArray of UIBarButtonItems in the appropriate order for whichever side you are supplying.
+ * @warning Note that if your global buttons are always staying in the same position, you can reuse the same button. But
+ * if your buttons move around position wise at all, you will want to provide a new copy each time (e.g. leftItemsSupplementBackButton)
+ * @warning Note that global navigation is only set on push, which means buttons on previous view controllers should stay functional
+ **/
+- (NSArray*)globalNavigationBarItemsForSide:(SDPullNavigationBarSide)side withViewController:(UIViewController*)viewController;
 - (SDContainerViewController*)setupGlobalContainerViewController;
 @end
 

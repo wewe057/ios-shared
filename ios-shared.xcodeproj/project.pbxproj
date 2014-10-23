@@ -165,7 +165,6 @@
 		E205781C18872F2600A1BA81 /* SDQuantityEditViewBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781018872F2600A1BA81 /* SDQuantityEditViewBehavior.m */; };
 		E205781D18872F2600A1BA81 /* SDQuantityView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781218872F2600A1BA81 /* SDQuantityView.m */; };
 		E205781E18872F2600A1BA81 /* UIView+PaintCode.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781418872F2600A1BA81 /* UIView+PaintCode.m */; };
-		E205781F18872F2600A1BA81 /* SDSectionedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781618872F2600A1BA81 /* SDSectionedTableView.m */; };
 		E205782018872F2600A1BA81 /* SDTableViewSectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781818872F2600A1BA81 /* SDTableViewSectionController.m */; };
 		E205784E1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */; };
 		E2136B3318A4387200000D1B /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2136B3218A4387200000D1B /* SDLog.m */; };
@@ -407,8 +406,6 @@
 		E205781218872F2600A1BA81 /* SDQuantityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDQuantityView.m; sourceTree = "<group>"; };
 		E205781318872F2600A1BA81 /* UIView+PaintCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+PaintCode.h"; sourceTree = "<group>"; };
 		E205781418872F2600A1BA81 /* UIView+PaintCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+PaintCode.m"; sourceTree = "<group>"; };
-		E205781518872F2600A1BA81 /* SDSectionedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDSectionedTableView.h; sourceTree = "<group>"; };
-		E205781618872F2600A1BA81 /* SDSectionedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDSectionedTableView.m; sourceTree = "<group>"; };
 		E205781718872F2600A1BA81 /* SDTableViewSectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTableViewSectionController.h; sourceTree = "<group>"; };
 		E205781818872F2600A1BA81 /* SDTableViewSectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTableViewSectionController.m; sourceTree = "<group>"; };
 		E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+SDExtensionsTests.m"; sourceTree = "<group>"; };
@@ -746,8 +743,6 @@
 				E287F5D61900746900989162 /* SDSearchSuggestionsViewController.h */,
 				E287F5D71900746900989162 /* SDSearchSuggestionsViewController.m */,
 				E287F5D81900746900989162 /* SDSearchUsageDelegate.h */,
-				E205781518872F2600A1BA81 /* SDSectionedTableView.h */,
-				E205781618872F2600A1BA81 /* SDSectionedTableView.m */,
 				E2B31B9D189342BF0006970E /* SDSpanParser.h */,
 				E2B31B9E189342BF0006970E /* SDSpanParser.m */,
 				CA0E773918284DD600B4398F /* SDStackView.h */,
@@ -1100,7 +1095,6 @@
 				CA0E791B1829B7A700B4398F /* SDContentAlertView.m in Sources */,
 				CA0E77B318284DD600B4398F /* SDStackView.m in Sources */,
 				CAA3E93E182D516E00602210 /* SDSwitch.m in Sources */,
-				E205781F18872F2600A1BA81 /* SDSectionedTableView.m in Sources */,
 				CA0E77DA18284DD600B4398F /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA0E777518284DD600B4398F /* NSMutableAttributedString+SDExtensions.m in Sources */,
 				E28C6CAB189DAE7D00052C7F /* UIResponder+SDExtensions.m in Sources */,
@@ -1271,7 +1265,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -1305,7 +1299,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};

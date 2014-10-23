@@ -23,8 +23,6 @@
 
 @property (nonatomic, strong) Class pullNavigationBarTabButtonClass;
 
-@property (nonatomic, strong) Class pullNavigationBarViewClass;
-
 /**
  Flag to determine whether the menu gets drawn with a shadow or not.
  */
@@ -84,20 +82,6 @@
  */
 
 @property (nonatomic, assign) BOOL showGlobalNavControls;   // Turn this off and I won't take away your navigationItems
-
-/**
- Controls to present on the navbar on the left hand side all the time (exception being when you set the showGlobalNavControls == YES).
- Items are added from left to right (towards the middle).
- */
-
-@property (nonatomic, strong) SDPullNavigationBarControlsView* leftBarItemsView;
-
-/**
- Controls to present on the navbar on the right hand side all the time (exception being when you set the showGlobalNavControls == YES).
- Items are added from right to left (towards the middle).
- */
-
-@property (nonatomic, strong) SDPullNavigationBarControlsView* rightBarItemsView;
 
 + (instancetype)sharedInstance;
 - (void)navigateWithSteps:(NSArray*)steps;
