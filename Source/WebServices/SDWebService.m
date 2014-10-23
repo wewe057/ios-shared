@@ -92,6 +92,8 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     _mockStack = [NSMutableArray array];
     
+    _disableCaching = [[NSUserDefaults standardUserDefaults] boolForKey:@"kWMDisableCaching"];
+
 	return self;
 }
 
