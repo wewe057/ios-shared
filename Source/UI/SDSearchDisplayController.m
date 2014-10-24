@@ -151,10 +151,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)setActive:(BOOL)visible animated:(BOOL)animated
 {
-    if (self.addingSearchTableView) {
-        return;
-    }
-    
     if (!self.searchResultsDelegate)
         self.searchResultsDelegate = self;
     if (!self.searchResultsDataSource)
@@ -221,11 +217,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 			searchHistory = nil;
 		}
     }
-}
-
-- (void)setAddingSearchTableView:(BOOL)addingSearchTableView
-{
-    _addingSearchTableView = addingSearchTableView;
 }
 
 - (NSUInteger)recentSearchesSectionNumber
