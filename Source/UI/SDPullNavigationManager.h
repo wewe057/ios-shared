@@ -77,6 +77,7 @@
 @property (nonatomic, weak) id<SDPullNavigationSetupProtocol> delegate;
 @property (nonatomic, strong) SDContainerViewController* globalPullNavController;
 
+@property (nonatomic, copy) NSString *navigationBarAccessibilityLabel;
 /**
  Set this on while pushing a new nav. If this is YES then I won't override your nav items with the global ones.
  */
