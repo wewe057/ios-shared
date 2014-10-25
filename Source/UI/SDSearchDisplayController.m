@@ -198,6 +198,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 								 completion:^(BOOL finished){
 									 [recentSearchTableView removeFromSuperview];
 									 recentSearchTableView = nil;
+                                     [self.searchBar.delegate searchBarCancelButtonClicked:self.searchBar];
 								 }];            
 			}
 			else
