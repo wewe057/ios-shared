@@ -191,6 +191,10 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 		{
 			if (animated)
 			{
+                if ([self.searchBar.delegate respondsToSelector:@selector(searchBarCancelButtonClicked:)]) {
+                    [self.searchBar.delegate searchBarCancelButtonClicked:self.searchBar];
+                }
+                
 				[UIView animateWithDuration:0.2 
 								 animations:^{
 									 recentSearchTableView.alpha = 0;
@@ -198,7 +202,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 								 completion:^(BOOL finished){
 									 [recentSearchTableView removeFromSuperview];
 									 recentSearchTableView = nil;
-                                     [self.searchBar.delegate searchBarCancelButtonClicked:self.searchBar];
 								 }];            
 			}
 			else
