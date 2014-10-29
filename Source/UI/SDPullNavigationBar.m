@@ -171,6 +171,7 @@ typedef struct
             
             if ([SDPullNavigationManager sharedInstance].navigationBarAccessibilityLabel) {
                 self.tabButton.isAccessibilityElement = YES;
+                self.tabButton.accessibilityTraits |= UIAccessibilityTraitButton;
                 self.tabButton.accessibilityLabel = [SDPullNavigationManager sharedInstance].navigationBarAccessibilityLabel;
             }
             
