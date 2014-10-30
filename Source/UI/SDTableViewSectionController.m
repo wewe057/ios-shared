@@ -218,6 +218,10 @@
     {
         estimatedRowHeight = [sectionController sectionController:self estimatedHeightForRow:row];
     }
+    else
+    {
+        estimatedRowHeight = [self tableView:tableView heightForRowAtIndexPath:indexPath];
+    }
     return estimatedRowHeight;
 }
 #endif
@@ -337,6 +341,27 @@
     }
 }
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    for (id<SDTableViewSectionDelegate> sectionController in self.sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionController:scrollViewWillBeginDragging:)])
+        {
+            [sectionController sectionController:self scrollViewWillBeginDragging:scrollView];
+        }
+    }
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    for (id<SDTableViewSectionDelegate> sectionController in self.sectionControllers)
+    {
+        if ([sectionController respondsToSelector:@selector(sectionController:scrollViewDidEndDragging:willDecelerate:)])
+        {
+            [sectionController sectionController:self scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+        }
+    }
+}
 
 #pragma mark - SectionController Methods
 

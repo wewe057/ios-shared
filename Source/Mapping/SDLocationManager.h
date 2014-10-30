@@ -7,6 +7,11 @@
 
 #import <CoreLocation/CoreLocation.h>
 
+typedef NS_ENUM(NSUInteger,SDLocationManagerAuthorizationScheme) {
+    SDLocationManagerAuthorizationAlways,
+    SDLocationManagerAuthorizationWhenInUse
+};
+
 extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** Allows the SDLocationManager to persistently record whether it has received at least 1 valid location update during the life of the app. This is useful when other classes need to know whether user has tapped 'OK' on the iOS location permission alert. */
 
 @protocol SDLocationManagerDelegate <NSObject>
@@ -30,15 +35,18 @@ extern NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey; /** All
 @property (nonatomic, readonly) BOOL isUpdatingLocation;
 @property (nonatomic, readonly) BOOL isUpdatingHeading;
 @property (nonatomic, readonly) BOOL isLocationAllowed;
-
+@property (nonatomic, readonly) CLLocation *currentLocation;
 
 + (SDLocationManager *)sharedInstance;
 
 /// Forwards requestAlwaysAuthorization to internal CLLocationManager instance
 - (void)requestAlwaysAuthorization;
+/// Forwards requestWhenInUseAuthorization to internal CLLocationManager instance
+- (void)requestWhenInUseAuthorization;
 
 - (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy;
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter;
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy authorization:(SDLocationManagerAuthorizationScheme)authorization;
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter authorization:(SDLocationManagerAuthorizationScheme)authorization;
 - (void)stopUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate;
 - (void)stopUpdatingLocationForAllDelegates;
 

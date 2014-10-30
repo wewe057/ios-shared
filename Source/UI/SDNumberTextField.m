@@ -10,6 +10,7 @@
 
 @interface SDTextField()
 - (void)configureView;
+- (void)internalValidate;
 @end
 
 @interface SDNumberTextField ()
@@ -69,6 +70,9 @@
             @strongify(self);
             textField.text = [self.unformattedText stringWithNumberFormat:self.format];
             self.currentFormattedText = textField.text;
+            
+            if (self.validateWhileTyping && self.validationBlock)
+                [self internalValidate];
         });
     }
 }
@@ -101,6 +105,9 @@
     
     self.currentFormattedText = self.text;
     [self sendActionsForControlEvents:UIControlEventEditingChanged];
+    
+    if (self.validateWhileTyping && self.validationBlock)
+        [self internalValidate];
 }
 
 - (NSString *)unformattedText
