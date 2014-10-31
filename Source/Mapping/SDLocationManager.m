@@ -12,11 +12,17 @@
 
 #import <objc/message.h>
 
-#define LocLog(frmt,...) SDLog(@"SDLocationManager: %@",[NSString stringWithFormat:frmt, ##__VA_ARGS__])
 
-#define kSDLocationManagerTrace DEBUG && 1
-#if kSDLocationManagerTrace
-    #define LocTrace(frmt,...) LocLog(frmt, ##__VA_ARGS__)
+
+
+#if defined(DEBUG)
+#define LocLog(frmt,...) { if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SDLocationManager_Log"]) SDLog(@"SDLocationManager: %@",[NSString stringWithFormat:frmt, ##__VA_ARGS__]); }
+#else
+#define LocLog(x...)
+#endif
+
+#if defined(DEBUG)
+    #define LocTrace(frmt,...) { if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SDLocationManager_Trace"]) LocLog(frmt, ##__VA_ARGS__) ; }
 #else
     #define LocTrace(frmt,...)
 #endif
