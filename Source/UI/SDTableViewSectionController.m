@@ -718,9 +718,7 @@
         {
             NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sectionIndex];
             @strongify(self.tableView, tableView);
-            [tableView beginUpdates];
             [tableView reloadSections:indexSet withRowAnimation:animation];
-            [tableView endUpdates];
         }
     }
 }
