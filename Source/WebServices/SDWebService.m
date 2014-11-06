@@ -43,14 +43,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 {
     NSHTTPCookieStorage *_cookieStorage;
 
+    // always access these mutable dicts inside of @synchronized(self)
     NSMutableDictionary *_normalRequests;
 	NSMutableDictionary *_singleRequests;
-    NSLock *_dictionaryLock;
 
 	NSDictionary *_serviceSpecification;
     NSUInteger _requestCount;
     NSOperationQueue *_dataProcessingQueue;
-    
+
+    // always access the mutable array inside of @synchronized(self)
     NSMutableArray *_mockStack;
 }
 
@@ -70,7 +71,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     _singleRequests = [[NSMutableDictionary alloc] init];
     _normalRequests = [[NSMutableDictionary alloc] init];
-    _dictionaryLock = [[NSLock alloc] init];
     
 #ifdef DEBUG
     _autoPopMocks = YES;
@@ -92,6 +92,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     _mockStack = [NSMutableArray array];
     
+#ifdef DEBUG
+    _disableCaching = [[NSUserDefaults standardUserDefaults] boolForKey:@"kWMDisableCaching"];
+#endif
+
 	return self;
 }
 
@@ -473,7 +477,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #ifdef HUGE_SERVICES_TIMEOUT
 	[request setTimeoutInterval:120];
 #else
-	[request setTimeoutInterval:_timeout];
+    NSNumber *customTimeout = [requestDetails objectForKey:@"timeout"];
+    if (customTimeout) {
+        [request setTimeoutInterval:[customTimeout integerValue]];
+    } else {
+        [request setTimeoutInterval:_timeout];
+    }
 #endif
 
     // find any applicable cookies and queue them up.
@@ -651,19 +660,21 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
                     SDRequestResult *newObject = [self performRequestWithMethod:requestName headers:headers routeReplacements:replacements dataProcessingBlock:dataProcessingBlock uiUpdateBlock:uiUpdateBlock shouldRetry:NO];
 
-                    // do some sync/cleanup stuff here.
-                    SDURLConnection *newConnection = [_normalRequests objectForKey:newObject.identifier];
-
-                    // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
-                    [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-                    if (newConnection)
-                    {
-                        [_normalRequests setObject:newConnection forKey:identifier];
-                        [_normalRequests removeObjectForKey:newObject.identifier];
+                    @synchronized(self) { // NSMutableDictionary isn't thread-safe
+                        // do some sync/cleanup stuff here.
+                        SDURLConnection *newConnection = [_normalRequests objectForKey:newObject.identifier];
+                        
+                        // If for some unknown reason the second performRequestWithMethod hits the cache, then we'll get a nil identifier, which means a nil newConnection
+                        if (newConnection)
+                        {
+                            [_normalRequests setObject:newConnection forKey:identifier];
+                            [_normalRequests removeObjectForKey:newObject.identifier];
+                        }
+                        else
+                        {
+                            [_normalRequests removeObjectForKey:identifier];
+                        }
                     }
-                    else
-                        [_normalRequests removeObjectForKey:identifier];
-                    [_dictionaryLock unlock];
 
                     [self decrementRequests];
                     return;
@@ -672,10 +683,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         }
 
         // remove from the requests lists
-        [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-        [_singleRequests removeObjectForKey:requestName];
-        [_normalRequests removeObjectForKey:identifier];
-        [_dictionaryLock unlock];
+        @synchronized(self) {
+            [_singleRequests removeObjectForKey:requestName];
+            [_normalRequests removeObjectForKey:identifier];
+        }
 
         // Saw at least one case where response was NSURLResponse, not NSHTTPURLResponse; Test case went away
         // So be defensive and return SDWTFResponseCode if we did not get a NSHTTPURLResponse
@@ -748,15 +759,15 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
         // if it is, lets cancel any with matching names.
         if (singleRequest)
         {
-			SDURLConnection *existingConnection = [_singleRequests objectForKey:requestName];
-			if (existingConnection)
-			{
-				SDLog(@"Cancelling call.");
-				[existingConnection cancel];
-                [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-				[_singleRequests removeObjectForKey:requestName];
-                [_dictionaryLock unlock];
-			}
+            @synchronized(self) {
+                SDURLConnection *existingConnection = [_singleRequests objectForKey:requestName];
+                if (existingConnection)
+                {
+                    SDLog(@"Cancelling call.");
+                    [existingConnection cancel];
+                    [_singleRequests removeObjectForKey:requestName];
+                }
+            }
         }
     }
     
@@ -766,12 +777,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
         SDURLConnection *connection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:urlCompletionBlock];
 
-        [_dictionaryLock lock]; // NSMutableDictionary isn't thread-safe for writing.
-        if (singleRequest)
-            [_singleRequests setObject:connection forKey:requestName];
-        else
-            [_normalRequests setObject:connection forKey:identifier];
-        [_dictionaryLock unlock];
+        @synchronized(self) {
+            if (singleRequest)
+                [_singleRequests setObject:connection forKey:requestName];
+            else
+                [_normalRequests setObject:connection forKey:identifier];
+        }
     }
     else
     {
@@ -794,8 +805,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
 - (void)cancelRequestForIdentifier:(NSString *)identifier
 {
-    SDURLConnection *connection = [_normalRequests objectForKey:identifier];
-    [connection cancel];
+    @synchronized(self) {
+        SDURLConnection *connection = [_normalRequests objectForKey:identifier];
+        [connection cancel];
+    }
 }
 
 #pragma mark - Subclass should override these

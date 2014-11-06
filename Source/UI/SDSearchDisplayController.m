@@ -12,6 +12,10 @@
 - (void)setup;
 @end
 
+@interface SDSearchDisplayController()
+@property (nonatomic, assign) BOOL addingSearchTableView;
+@end
+
 @implementation SDSearchDisplayController
 
 @synthesize userDefaultsKey;
@@ -147,6 +151,10 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)setActive:(BOOL)visible animated:(BOOL)animated
 {
+    if (self.addingSearchTableView) {
+        return;
+    }
+    
     if (!self.searchResultsDelegate)
         self.searchResultsDelegate = self;
     if (!self.searchResultsDataSource)
@@ -156,10 +164,14 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
     
     if (visible && !recentSearchTableView)
     {
+        self.addingSearchTableView = YES;
+        
         [self updateSearchHistory];
         if (!searchHistory)
             searchHistory = [[NSMutableArray alloc] init];
-        
+       
+        self.searchResultsTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
+    
         UITableView *defaultTableView = self.searchResultsTableView;
         
         recentSearchTableView = [[UITableView alloc] initWithFrame:CGRectZero style:defaultTableView.style];
@@ -176,18 +188,26 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         {
             [UIView animateWithDuration:0.2 animations:^{
                 recentSearchTableView.alpha = 1.0;
-            }];   
+            } completion:^(BOOL finished){
+                self.addingSearchTableView = NO;
+            }];
         }
         else
         {
             recentSearchTableView.alpha = 1.0;
+            self.addingSearchTableView = NO;
         }
+        recentSearchTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
     }
-    else
-		if (!visible && recentSearchTableView)
+    else {
+        if (!visible && recentSearchTableView && !self.addingSearchTableView)
 		{
 			if (animated)
 			{
+                if ([self.searchBar.delegate respondsToSelector:@selector(searchBarCancelButtonClicked:)]) {
+                    [self.searchBar.delegate searchBarCancelButtonClicked:self.searchBar];
+                }
+                
 				[UIView animateWithDuration:0.2 
 								 animations:^{
 									 recentSearchTableView.alpha = 0;
@@ -205,6 +225,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 			[masterList removeAllObjects];
 			searchHistory = nil;
 		}
+    }
 }
 
 - (NSUInteger)recentSearchesSectionNumber

@@ -77,6 +77,8 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 @property (nonatomic, readonly) CLAuthorizationStatus authorizationStatus;
 
+@property (nonatomic) SDLocationManagerAuthorizationScheme authorizationScheme;
+
 @end
 
 
@@ -89,11 +91,26 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 
 @dynamic isLocationAllowed;
+// Changing this logic to be explicit about being allowed
+// Previous logic would return true if the status was kCLAuthorizationStatusNotDetermined
+// Which the code in this class relied on.  Changing that code to isLocationRejected
 - (BOOL)isLocationAllowed {
-    if (self.authorizationStatus == kCLAuthorizationStatusAuthorized || self.authorizationStatus == kCLAuthorizationStatusNotDetermined) {
-        return YES;
-    }
-    return NO;
+    BOOL isLocationAllowed = (self.authorizationStatus == kCLAuthorizationStatusAuthorized);
+#ifdef __IPHONE_8_0
+    isLocationAllowed = isLocationAllowed || (self.authorizationStatus == kCLAuthorizationStatusAuthorizedAlways) ||
+                                            (self.authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse);
+#endif
+    return isLocationAllowed;
+}
+
+@dynamic isLocationRejected;
+// Logic here is to explicitly look at any values that means the user has chosen
+// "don't allow" for location services
+- (BOOL)isLocationRejected {
+    BOOL isLocationRejected = (self.authorizationStatus == kCLAuthorizationStatusDenied) ||
+                              (self.authorizationStatus == kCLAuthorizationStatusRestricted);
+    
+    return isLocationRejected;
 }
 
 @dynamic hasReceivedLocationUpdate;
@@ -115,7 +132,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     return [CLLocationManager authorizationStatus];
 }
 
-
+- (CLLocation *)currentLocation {
+    return (self.locationManager.location);
+}
 
 // ========================================================================== //
 
@@ -161,12 +180,20 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 
 
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy {
-    return [self startUpdatingLocationWithDelegate:delegate desiredAccuracy:accuracy distanceFilter:kCLDistanceFilterNone];
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy
+{
+    return [self startUpdatingLocationWithDelegate:delegate desiredAccuracy:accuracy authorization:SDLocationManagerAuthorizationAlways];
 }
 
-- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter {
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy authorization:(SDLocationManagerAuthorizationScheme)authorization
+{
+    return [self startUpdatingLocationWithDelegate:delegate desiredAccuracy:accuracy distanceFilter:kCLDistanceFilterNone authorization:authorization];
+}
+
+- (BOOL)startUpdatingLocationWithDelegate:(id<SDLocationManagerDelegate>)delegate desiredAccuracy:(CLLocationAccuracy)accuracy distanceFilter:(CLLocationDistance)distanceFilter authorization:(SDLocationManagerAuthorizationScheme)authorization
+{
     LocLog(@"startUpdatingLocationWithDelegate:%@ desiredAccuracy:%@ distanceFilter:%@",delegate,@(accuracy),@(distanceFilter));
+    _authorizationScheme = authorization;
     if (NO == [self _delegate:delegate isRegisteredForDesiredAccuracy:accuracy distanceFilter:distanceFilter]) {
         [self _deregisterDelegate:delegate]; // In case it's registered for another accuracy or distance filter
         [self _registerDelegate:delegate forDesiredAccuracy:accuracy distanceFilter:distanceFilter];
@@ -235,6 +262,17 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 }
 
+- (void)requestWhenInUseAuthorization
+{
+#ifdef __IPHONE_8_0
+    // Must request permission here
+    if ([UIDevice systemMajorVersion] >= 8.0)
+    {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+#endif
+}
+
 
 // ========================================================================== //
 
@@ -246,7 +284,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 - (BOOL) _internalStart {
     LocTrace(@"%@",NSStringFromSelector(_cmd));
-    if (NO == [self isLocationAllowed]) {
+    if ([self isLocationRejected]) {
         LocLog(@"[WARN] - Location services not allowed!");
         [self _internalStop];
         [self locationManager:self.locationManager didFailWithError:[NSError errorWithDomain:kCLErrorDomain code:kCLErrorDenied userInfo:nil]];
@@ -259,9 +297,16 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     }
 
     _timestamp = [NSDate date];
-    
-    [self requestAlwaysAuthorization];
-    
+
+    if (_authorizationScheme == SDLocationManagerAuthorizationWhenInUse)
+    {
+        [self requestWhenInUseAuthorization];
+    }
+    else
+    {
+        [self requestAlwaysAuthorization];
+    }
+
     [self.locationManager startUpdatingLocation];
 
     _isUpdatingLocation = YES;
@@ -520,8 +565,10 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     LocLog(@"[ERROR] - %@%@",NSStringFromSelector(_cmd),error);
 	// we're masking out didFail unless they've said NO to the "allow" dialog.
 	if ([error.domain isEqualToString:kCLErrorDomain] && error.code == kCLErrorDenied) {
+        // Make a copy of the delegates just in case some other code deregisters them before this thread has a chance to execute
+        NSArray *blockDelegates = [self.delegates copy];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
+            [blockDelegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
         });
     }
 }
@@ -555,8 +602,9 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     LocLog(@"%@",NSStringFromSelector(_cmd));
+    NSArray *blockDelegates = [self.delegates copy];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
+        [blockDelegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
     });
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
         [self stopUpdatingLocationForAllDelegates];
