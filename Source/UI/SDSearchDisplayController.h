@@ -34,6 +34,9 @@
 @property (nonatomic, readonly, strong) UITableView *recentSearchTableView;
 @property (nonatomic, readwrite) BOOL showsClearRecentSearchResultsRow; /** Shows a 'Clear Search Results' row at the bottom of results. Default is NO. */
 
+/// This overrides the internal addingSearchTableView lock in setActive:animated:. Only use this override if you are certain you need to.
+@property (nonatomic, assign) BOOL shouldOverrideBlock;
+
 - (void)addStringToHistory:(NSString *)string;
 - (void)removeSearchItemFromHistory:(NSString*)string;
 - (NSUInteger)recentSearchesSectionNumber; /** Provides subclass customization if needed */

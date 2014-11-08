@@ -151,7 +151,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)setActive:(BOOL)visible animated:(BOOL)animated
 {
-    if (self.addingSearchTableView) {
+    if (self.addingSearchTableView && !self.shouldOverrideBlock) {
         return;
     }
     
