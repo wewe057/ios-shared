@@ -14,6 +14,10 @@
 
 @interface SDSearchDisplayController()
 @property (nonatomic, assign) BOOL addingSearchTableView;
+
+/// This overrides the internal addingSearchTableView lock in setActive:animated:. Only use this override if you are certain you need to.
+@property (nonatomic, assign) BOOL shouldOverrideBlock;
+
 @end
 
 @implementation SDSearchDisplayController
@@ -226,6 +230,13 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 			searchHistory = nil;
 		}
     }
+}
+
+- (void)forceInactive
+{
+    self.shouldOverrideBlock = YES;
+    self.active = NO;
+    self.shouldOverrideBlock = NO;
 }
 
 - (NSUInteger)recentSearchesSectionNumber
