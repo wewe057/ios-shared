@@ -170,7 +170,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         if (!searchHistory)
             searchHistory = [[NSMutableArray alloc] init];
        
-        self.searchResultsTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
     
         UITableView *defaultTableView = self.searchResultsTableView;
         
@@ -183,6 +182,13 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         recentSearchTableView.frame = CGRectMake(0, 44, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height - 280);
         recentSearchTableView.alpha = 0;
         [superview addSubview:recentSearchTableView];
+        
+        // if our subclass wants to color background of simple results tables, do so with simpleResultsTableBackgroundColor
+        if (self.simpleResultsTableBackgroundColor)
+        {
+            self.searchResultsTableView.backgroundColor = self.simpleResultsTableBackgroundColor;
+            recentSearchTableView.backgroundColor = self.simpleResultsTableBackgroundColor;
+        }
         
         if (animated)
         {
@@ -197,7 +203,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             recentSearchTableView.alpha = 1.0;
             self.addingSearchTableView = NO;
         }
-        recentSearchTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
     }
     else {
         if (!visible && recentSearchTableView && !self.addingSearchTableView)
