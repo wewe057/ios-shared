@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>baseScheme</key>
+	<string>https</string>
+	<key>basePath</key>
+	<string>/api/</string>
+	<key>requests</key>
+	<dict>
+        <key>testGETNoRouteParams</key>
+        <dict>
+            <key>method</key>
+            <string>GET</string>
+            <key>routeFormat</key>
+            <string>route</string>
+        </dict>
+        <key>testGETOneRouteParam</key>
+        <dict>
+            <key>method</key>
+            <string>GET</string>
+            <key>routeFormat</key>
+            <string>route?routeParam1={routeParam1}</string>
+        </dict>
+        <key>testPOSTNoRouteParamsNoBodyParams</key>
+        <dict>
+            <key>method</key>
+            <string>POST</string>
+            <key>routeFormat</key>
+            <string>route</string>
+            <key>postFormat</key>
+            <string>body</string>
+        </dict>
+        <key>testPOSTOneRouteParamNoBodyParams</key>
+        <dict>
+            <key>method</key>
+            <string>POST</string>
+            <key>routeFormat</key>
+            <string>route?routeParam1={routeParam1}</string>
+            <key>postFormat</key>
+            <string>body</string>
+        </dict>
+        <key>testPOSTNoRouteParamsOneBodyParam</key>
+        <dict>
+            <key>method</key>
+            <string>POST</string>
+            <key>routeFormat</key>
+            <string>route</string>
+            <key>postFormat</key>
+            <string>bodyParam1={bodyParam1}</string>
+        </dict>
+        <key>testPOSTOneRouteParamOneBodyParam</key>
+        <dict>
+            <key>method</key>
+            <string>POST</string>
+            <key>routeFormat</key>
+            <string>route?routeParam1={routeParam1}</string>
+            <key>postFormat</key>
+            <string>bodyParam1={bodyParam1}</string>
+        </dict>
+	</dict>
+</dict>
+</plist>

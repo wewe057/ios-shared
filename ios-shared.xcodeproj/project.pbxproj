@@ -188,6 +188,8 @@
 		E2DF06921891A1A900BA7021 /* SDFormFieldContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF068D1891A1A900BA7021 /* SDFormFieldContainer.m */; };
 		E2DF06931891A1A900BA7021 /* SDHitButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E2DF068F1891A1A900BA7021 /* SDHitButton.m */; };
 		E2EDC79218A59D4F00E7E416 /* NSShadow+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */; };
+		F812F9581A11454F00312E52 /* SDWebServiceMockQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */; };
+		F812F95C1A1146CB00312E52 /* SDWebServiceMockTests.plist in Resources */ = {isa = PBXBuildFile; fileRef = F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -454,6 +456,8 @@
 		E2DF068F1891A1A900BA7021 /* SDHitButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDHitButton.m; sourceTree = "<group>"; };
 		E2EDC79018A59D4F00E7E416 /* NSShadow+SDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSShadow+SDExtensions.h"; sourceTree = "<group>"; };
 		E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSShadow+SDExtensions.m"; sourceTree = "<group>"; };
+		F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockQueueTests.m; sourceTree = "<group>"; };
+		F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SDWebServiceMockTests.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -497,6 +501,7 @@
 				E22B373C1844037600C7CBEE /* UIColor+SDExtensionsTests.m */,
 				CA01F1C217D7A72D00E7C553 /* UIDeviceTests.m */,
 				CA01F1C317D7A72D00E7C553 /* UIImageViewTests.m */,
+				F812F9561A11452600312E52 /* SDWebServicesMocks */,
 			);
 			path = "ios-shared Tests";
 			sourceTree = "<group>";
@@ -863,6 +868,15 @@
 			name = SDCreditCardField;
 			sourceTree = "<group>";
 		};
+		F812F9561A11452600312E52 /* SDWebServicesMocks */ = {
+			isa = PBXGroup;
+			children = (
+				F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */,
+				F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */,
+			);
+			path = SDWebServicesMocks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -942,6 +956,7 @@
 				CA0E77AB18284DD600B4398F /* SDPickerModalViewController-iOS7.xib in Resources */,
 				CA0E77B718284DD600B4398F /* SDWebViewCell.xib in Resources */,
 				CA0E77AE18284DD600B4398F /* SDPickerModalViewController.xib in Resources */,
+				F812F95C1A1146CB00312E52 /* SDWebServiceMockTests.plist in Resources */,
 				CA0E776A18284DD600B4398F /* README.md in Resources */,
 				CAAB5A3318564CEE006737D4 /* json1.txt in Resources */,
 				CA01F1B817D7A6F000E7C553 /* InfoPlist.strings in Resources */,
@@ -982,6 +997,7 @@
 				E22B373D1844037600C7CBEE /* UIColor+SDExtensionsTests.m in Sources */,
 				CA0E77B618284DD600B4398F /* SDWebViewCell.m in Sources */,
 				CA0E77BF18284DD600B4398F /* UIColor+SDExtensions.m in Sources */,
+				F812F9581A11454F00312E52 /* SDWebServiceMockQueueTests.m in Sources */,
 				CAAB5A3618564CEE006737D4 /* RxOrderModel.m in Sources */,
 				E205784E1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m in Sources */,
 				CA0E77AD18284DD600B4398F /* SDPickerModalViewController.m in Sources */,
