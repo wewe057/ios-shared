@@ -156,7 +156,6 @@
 		E205781C18872F2600A1BA81 /* SDQuantityEditViewBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781018872F2600A1BA81 /* SDQuantityEditViewBehavior.m */; };
 		E205781D18872F2600A1BA81 /* SDQuantityView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781218872F2600A1BA81 /* SDQuantityView.m */; };
 		E205781E18872F2600A1BA81 /* UIView+PaintCode.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781418872F2600A1BA81 /* UIView+PaintCode.m */; };
-		E205781F18872F2600A1BA81 /* SDSectionedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781618872F2600A1BA81 /* SDSectionedTableView.m */; };
 		E205782018872F2600A1BA81 /* SDTableViewSectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = E205781818872F2600A1BA81 /* SDTableViewSectionController.m */; };
 		E205784E1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E205784D1889DDDD00A1BA81 /* NSArray+SDExtensionsTests.m */; };
 		E2136B3318A4387200000D1B /* SDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = E2136B3218A4387200000D1B /* SDLog.m */; };
@@ -1058,7 +1057,6 @@
 				CA0E791B1829B7A700B4398F /* SDContentAlertView.m in Sources */,
 				CA0E77B318284DD600B4398F /* SDStackView.m in Sources */,
 				CAA3E93E182D516E00602210 /* SDSwitch.m in Sources */,
-				E205781F18872F2600A1BA81 /* SDSectionedTableView.m in Sources */,
 				CA0E77DA18284DD600B4398F /* SDWebService+SDProcessingBlocks.m in Sources */,
 				CA0E777518284DD600B4398F /* NSMutableAttributedString+SDExtensions.m in Sources */,
 				E28C6CAB189DAE7D00052C7F /* UIResponder+SDExtensions.m in Sources */,
