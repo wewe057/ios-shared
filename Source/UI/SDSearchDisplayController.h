@@ -39,6 +39,13 @@
 - (NSUInteger)recentSearchesSectionNumber; /** Provides subclass customization if needed */
 - (void)updateSearchHistory;
 
+/**
+ *
+ * This method forces the searchController into an inactive state, regardless of whether or not there are locks in place.
+ *
+ */
+- (void)forceInactive;
+
 @end
 
 // This is pretty janky, but apple does it, so why not...
