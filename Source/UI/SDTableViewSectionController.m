@@ -714,11 +714,12 @@
     id<SDTableViewSectionDelegate> section = [self sectionWithIdentifier:identifier];
     if (section) {
         NSUInteger sectionIndex = [self indexOfSection:section];
-        NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sectionIndex];
-        @strongify(self.tableView, tableView);
-        [tableView beginUpdates];
-        [tableView reloadSections:indexSet withRowAnimation:animation];
-        [tableView endUpdates];
+        if (sectionIndex != NSNotFound)
+        {
+            NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sectionIndex];
+            @strongify(self.tableView, tableView);
+            [tableView reloadSections:indexSet withRowAnimation:animation];
+        }
     }
 }
 

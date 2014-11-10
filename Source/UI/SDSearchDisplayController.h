@@ -33,6 +33,7 @@
 @property (nonatomic, strong) id selectedSearchItem;
 @property (nonatomic, readonly, strong) UITableView *recentSearchTableView;
 @property (nonatomic, readwrite) BOOL showsClearRecentSearchResultsRow; /** Shows a 'Clear Search Results' row at the bottom of results. Default is NO. */
+@property (nonatomic, strong) UIColor *simpleResultsTableBackgroundColor UI_APPEARANCE_SELECTOR;
 
 - (void)addStringToHistory:(NSString *)string;
 - (void)removeSearchItemFromHistory:(NSString*)string;
