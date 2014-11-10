@@ -234,6 +234,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)forceInactive
 {
+    // To make sure this works, we turn the override on, change the state (which calls setActive:), and then turn the override back off
     self.shouldOverrideBlock = YES;
     self.active = NO;
     self.shouldOverrideBlock = NO;
