@@ -37,8 +37,8 @@
  
  Note: A reference to 'self' is implicit.
  */
-#define sdmo_transformed_key(property, transformer) \
-    _sddm_transformed_key(self, variable_name(property), transformer)
+#define sdmo_transformed_key(property, transformerClassName) \
+    _sddm_transformed_key(self, variable_name(property), transformerClassName)
 
 /**
  *  SDModelObject is a base modeling class which ideally works in conjunction with SDDataMap.

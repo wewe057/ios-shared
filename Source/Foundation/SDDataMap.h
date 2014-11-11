@@ -78,14 +78,14 @@
 
  ie: BOOL myProp via sddm_transformed_key(self, self.myProp, NSNegateBooleanTransformerName) would become @"@transformed(myProp,NSNegateBoolean)"
  */
-#define sddm_transformed_key(object, property, transformer) \
-    _sddm_transformed_key(object, variable_name(property), transformer)
+#define sddm_transformed_key(object, property, transformerClassName) \
+    _sddm_transformed_key(object, variable_name(property), transformerClassName)
 
 
 // do not call these directly.
 NSString *_sddm_key(id object, NSString *propertyName);
 NSString *_sddm_selector(id object, SEL selector);
-NSString *_sddm_transformed_key(id object, NSString *propertyName, NSString *transformerName);
+NSString *_sddm_transformed_key(id object, NSString *propertyName, NSString *transformerClassName);
 
 
 /**

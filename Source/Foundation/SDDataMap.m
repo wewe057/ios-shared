@@ -17,7 +17,7 @@
 @property (nonatomic, strong) NSString *propertyType;
 @property (nonatomic, strong) NSString *propertySubtype;
 @property (nonatomic, assign) SEL propertySelector;
-@property (nonatomic, copy) NSString *transformerName;
+@property (nonatomic, copy) NSString *transformerClassName;
 
 @property (nonatomic, readonly) Class propertyTypeClass;
 @property (nonatomic, readonly) Class propertySubtypeClass;
@@ -145,7 +145,7 @@ static dispatch_once_t __formatterOnceToken = 0;
         }
         else
         {
-            if (!destProperty.propertyType || destProperty.transformerName.length > 0)
+            if (!destProperty.propertyType || destProperty.transformerClassName.length > 0)
             {
                 // it doesn't have a subtype or uses a value transformer, so just set it.
                 [self setValue:value destProperty:destProperty targetObject:object2];
@@ -443,9 +443,9 @@ static dispatch_once_t __formatterOnceToken = 0;
 {
     id newValue = value;
 
-    if (property.transformerName != nil) {
-        NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:property.transformerName];
-        NSAssert(transformer != nil, @"Unabled to find a value transformer with the specified name: %@. Check your data mapping!", property.transformerName);
+    if (property.transformerClassName != nil) {
+        NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:property.transformerClassName];
+        NSAssert(transformer != nil, @"Unabled to find a value transformer with the specified name: %@. Check your data mapping!", property.transformerClassName);
         newValue = [transformer transformedValue:value];
         // no further conversion if we used an NSValueTransformer
         return newValue;
@@ -778,7 +778,7 @@ static dispatch_once_t __formatterOnceToken = 0;
         NSArray *pathComponents = [path componentsSeparatedByString:@","];
         NSAssert(pathComponents.count == 2, @"Expected a string of the form \"@transformed(property,transformerName)\"");
         path = pathComponents[0];
-        self.transformerName = pathComponents[1];
+        self.transformerClassName = pathComponents[1];
     }
 
     NSString *propertyName = [path stringByReplacingOccurrencesOfString:@"\\((.*)(<.*>)\\)|<(.*)>|\\((.*)\\)" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, path.length)];
@@ -1024,7 +1024,7 @@ NSString *_sddm_selector(id object, SEL selector)
     return selectorString;
 }
 
-NSString *_sddm_transformed_key(id object, NSString *propertyName, NSString *transformerName)
+NSString *_sddm_transformed_key(id object, NSString *propertyName, NSString *transformerClassName)
 {
-    return [NSString stringWithFormat:@"@transformed(%@,%@)", _sddm_key(object, propertyName), transformerName];
+    return [NSString stringWithFormat:@"@transformed(%@,%@)", _sddm_key(object, propertyName), transformerClassName];
 }
