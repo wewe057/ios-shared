@@ -81,5 +81,6 @@ typedef void (^SDTableCommandCallbackBlock)(SDTableViewCommand *command);
 - (void)addCommandsForOutdatedData:(NSArray *)outdatedData newData:(NSArray *)newData forSectionIdentifier:(NSString *)identifier;
 - (void)runCommands:(UITableView *)tableView withAnimationTypes:(NSDictionary *)animationTypes callback:(SDTableCommandCallbackBlock)callbackBlock;
 
+- (BOOL)hasCommands;
 @end
 

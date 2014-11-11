@@ -485,4 +485,16 @@ NSString * const SDTableCommandAddSectionAnimationKey = @"SDTableCommandAddSecti
     return desc;
 }
 
+- (BOOL)hasCommands
+{
+    BOOL hasCommands = NO;
+    
+    hasCommands |= (self.updateRowCommands.count > 0);
+    hasCommands |= (self.removeRowCommands.count > 0);
+    hasCommands |= (self.insertRowCommands.count > 0);
+    hasCommands |= (self.removeSectionCommands.count > 0);
+    hasCommands |= (self.insertSectionCommands.count > 0);
+    
+    return hasCommands;
+}
 @end
