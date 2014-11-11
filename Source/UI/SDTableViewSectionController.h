@@ -8,6 +8,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "UITableView+SDAutoUpdate.h"
+#import "SDTableViewSectionControllerAutoUpdateRow.h"
 
 #define SECTIONCONTROLLER_MAX_HEIGHT MAXFLOAT
 
@@ -171,6 +173,14 @@
 // Section Lifecycle support
 - (void)sectionDidLoad:(SDTableViewSectionController *)sectionController;
 - (void)sectionDidUnload:(SDTableViewSectionController *)sectionController;
+
+@optional
+// UITableView+SDAutoUpdate helpers
+
+/// Return an array of objects conforming to SDTableRowProtocol
+/// Use instances of SDTableViewSectionControllerAutoUpdateRow
+- (NSArray *)sectionControllerAutoUpdateRows;
+
 @end
 
 //__________________________________________________________________________

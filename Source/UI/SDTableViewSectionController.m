@@ -18,7 +18,7 @@
 // Define SDTABLEVIEWSECTIONCONTROLLER_INCLUDE_ESTIMATEDHEIGHTFORROW in your project to have SDTableViewSectionController implement
 // estimatedHeightForRow.  This method is flaky, so beware!
 
-@interface SDTableViewSectionController () <UITableViewDataSource, UITableViewDelegate>
+@interface SDTableViewSectionController () <UITableViewDataSource, UITableViewDelegate, SDTableViewAutoUpdateDataSource>
 {
 #ifdef USES_RESPONDS_TO_SELECTOR_SHORTCUT
     // Private flags
@@ -41,6 +41,7 @@
 
 @property (nonatomic, weak)   UITableView *tableView;
 @property (nonatomic, strong) NSArray     *sectionControllers;
+@property (nonatomic, strong) NSArray     *outgoingSectionControllers;
 @end
 
 @implementation SDTableViewSectionController
@@ -67,7 +68,7 @@
 
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
 {
-    NSArray *outgoingSectionControllers = self.sectionControllers;  // Hold onto until we are at the end of this method so when the delegate is swapped, they are not immediately dealloced
+    self.outgoingSectionControllers = self.sectionControllers;  // Hold onto until we are at the end of this method so when the delegate is swapped, they are not immediately dealloced
     // This is an attempt to "fix" the unreproducible crashes:
     //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ad53ae3de5099ba56db1e
     //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539a7a35e3de5099ba568723
@@ -92,15 +93,19 @@
     
     if (animated)
     {
-        // Placeholder for future animated work
-        // Currently allows for people to call reload without a tableView reloadData, but can still get the flags updated
+        // Debug only check to make sure we're doing the right thing
+        [self p_sections:sectionControllers conformToProtocol:@protocol(SDTableSectionProtocol)];
+        
+        [strongTableView updateWithAutoUpdateDataSource:self withRowAnimationType:UITableViewRowAnimationFade updateBlock:^{
+            self.outgoingSectionControllers = nil;
+        }];
     }
     else
     {
         [strongTableView reloadData];
+        self.outgoingSectionControllers = nil;
     }
     
-    outgoingSectionControllers = nil; // Just to shut up the compiler
 }
 
 #pragma mark - UITableView DataSource
@@ -753,6 +758,48 @@
     }
 }
 
+/// This is a runtime check to make sure sections are being passed in properly
+- (void)p_sections:(NSArray *)sections conformToProtocol:(Protocol *)protocol
+{
+#if DEBUG
+    for (id section in sections)
+    {
+        NSAssert([section conformsToProtocol:protocol], @"Section %@ does not implement %@", section, protocol);
+    }
+#endif
+}
 
+#pragma mark - SDTableViewAutoUpdateDataSource methods
+
+- (NSArray *)sectionsForPass:(SDTableViewAutoUpdatePass)pass
+{
+    NSArray *sections;
+    
+    switch (pass)
+    {
+        case kSDTableViewAutoUpdatePassBeforeUpdate:
+            sections = self.outgoingSectionControllers;
+            break;
+        case kSDTableViewAutoUpdatePassAfterUpdate:
+            sections = self.sectionControllers;
+            break;
+    }
+    return sections;
+}
+
+// Section should be a SDTableViewSectionDelegate
+- (NSArray *)rowsForSection:(id<SDTableSectionProtocol>)section pass:(SDTableViewAutoUpdatePass)pass
+{
+    NSArray *rows;
+    
+    NSAssert([section conformsToProtocol:@protocol(SDTableViewSectionDelegate)], @"Section %@ does not conform to SDTableViewSectionDelegate", section);
+    id <SDTableViewSectionDelegate> sectionDelegate = (id<SDTableViewSectionDelegate>)section;
+    
+    rows = [sectionDelegate sectionControllerAutoUpdateRows];
+    
+    NSAssert(rows != nil, @"Rows cannot be nil");
+    
+    return rows;
+}
 
 @end
