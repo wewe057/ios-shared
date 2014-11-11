@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4488.2" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3715.3"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SDPickerModalViewController">
@@ -18,24 +19,22 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view opaque="NO" alpha="0.5" contentMode="scaleToFill" id="16">
+                <view opaque="NO" alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="16">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <view contentMode="scaleToFill" id="HD3-rr-OKl" userLabel="Picker Container">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HD3-rr-OKl" userLabel="Picker Container">
                     <rect key="frame" x="0.0" y="214" width="320" height="266"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <subviews>
-                        <view contentMode="scaleToFill" id="bGO-ul-7K7">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bGO-ul-7K7" userLabel="CancelDoneView">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="sgo-Uj-wE2">
-                                    <rect key="frame" x="0.0" y="1" width="157" height="48"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sgo-Uj-wE2">
+                                    <rect key="frame" x="1" y="1" width="159" height="48"/>
                                     <color key="backgroundColor" red="0.87450987099999999" green="0.89019614459999996" blue="0.89411771299999998" alpha="1" colorSpace="deviceRGB"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="48" id="ZVj-1q-SAS"/>
+                                    </constraints>
                                     <state key="normal" title="Cancel">
                                         <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -44,10 +43,12 @@
                                         <action selector="cancelAction:" destination="-1" eventType="touchUpInside" id="eBf-kz-dgW"/>
                                     </connections>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ge2-rV-Yj9">
-                                    <rect key="frame" x="158" y="1" width="162" height="48"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ge2-rV-Yj9">
+                                    <rect key="frame" x="160" y="1" width="159" height="48"/>
                                     <color key="backgroundColor" red="0.87450987100601196" green="0.89019614458084106" blue="0.89411771297454834" alpha="1" colorSpace="deviceRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="48" id="d2G-CX-Tx8"/>
+                                    </constraints>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                     <state key="normal" title="Done">
                                         <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -59,18 +60,54 @@
                                 </button>
                             </subviews>
                             <color key="backgroundColor" red="0.61568629741668701" green="0.63137257099151611" blue="0.63529413938522339" alpha="1" colorSpace="deviceRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="centerY" secondItem="sgo-Uj-wE2" secondAttribute="centerY" id="FNt-tY-ReF"/>
+                                <constraint firstItem="sgo-Uj-wE2" firstAttribute="centerX" secondItem="bGO-ul-7K7" secondAttribute="centerX" multiplier="0.5" id="Q8E-RL-xh7"/>
+                                <constraint firstItem="ge2-rV-Yj9" firstAttribute="width" secondItem="bGO-ul-7K7" secondAttribute="width" multiplier="0.5" constant="-1" id="QMz-sd-x5F"/>
+                                <constraint firstAttribute="centerY" secondItem="sgo-Uj-wE2" secondAttribute="centerY" id="R02-St-jw7"/>
+                                <constraint firstAttribute="centerY" secondItem="ge2-rV-Yj9" secondAttribute="centerY" id="ckB-B1-a8E"/>
+                                <constraint firstAttribute="centerY" secondItem="ge2-rV-Yj9" secondAttribute="centerY" id="evu-Ee-3iu"/>
+                                <constraint firstAttribute="height" constant="50" id="mT8-r9-Kwf"/>
+                                <constraint firstItem="sgo-Uj-wE2" firstAttribute="width" secondItem="bGO-ul-7K7" secondAttribute="width" multiplier="0.5" constant="-1" id="q0x-Yp-YzT"/>
+                                <constraint firstItem="ge2-rV-Yj9" firstAttribute="centerX" secondItem="bGO-ul-7K7" secondAttribute="centerX" multiplier="1.5" id="qfm-yC-uzc"/>
+                            </constraints>
                         </view>
-                        <pickerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="4">
+                        <pickerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                             <rect key="frame" x="0.0" y="50" width="320" height="216"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="216" id="u5e-bG-WqO"/>
+                            </constraints>
                         </pickerView>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="bGO-ul-7K7" firstAttribute="leading" secondItem="HD3-rr-OKl" secondAttribute="leading" id="3xg-k4-ieC"/>
+                        <constraint firstAttribute="height" constant="266" id="BQO-tD-vYS"/>
+                        <constraint firstAttribute="bottom" secondItem="4" secondAttribute="bottom" id="DJj-YQ-I5t"/>
+                        <constraint firstItem="bGO-ul-7K7" firstAttribute="top" secondItem="HD3-rr-OKl" secondAttribute="top" id="Do8-FO-ngt"/>
+                        <constraint firstAttribute="trailing" secondItem="bGO-ul-7K7" secondAttribute="trailing" id="U4x-c4-yTM"/>
+                        <constraint firstItem="bGO-ul-7K7" firstAttribute="top" secondItem="HD3-rr-OKl" secondAttribute="top" id="dTu-kX-MkI"/>
+                        <constraint firstItem="4" firstAttribute="leading" secondItem="HD3-rr-OKl" secondAttribute="leading" id="tqk-BO-jTr"/>
+                    </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="16" secondAttribute="bottom" id="4Nu-yr-oyZ"/>
+                <constraint firstItem="16" firstAttribute="top" secondItem="1" secondAttribute="top" id="6RU-vF-2F1"/>
+                <constraint firstAttribute="trailing" secondItem="HD3-rr-OKl" secondAttribute="trailing" id="BwO-U5-LY8"/>
+                <constraint firstItem="HD3-rr-OKl" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="ZhX-my-8Qe"/>
+                <constraint firstAttribute="trailing" secondItem="16" secondAttribute="trailing" id="smI-Pd-dRc"/>
+                <constraint firstAttribute="bottom" secondItem="HD3-rr-OKl" secondAttribute="bottom" id="v1e-bQ-yt8"/>
+                <constraint firstItem="16" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="xi8-wk-LEg"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>
     </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

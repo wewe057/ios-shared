@@ -169,6 +169,12 @@ typedef struct
             self.tabButton = [[tabBarButtonClass alloc] initWithNavigationBar:self];
             self.tabButton.tag = SDPullNavigationTabButtonViewTag;
             
+            if ([SDPullNavigationManager sharedInstance].navigationBarAccessibilityLabel) {
+                self.tabButton.isAccessibilityElement = YES;
+                self.tabButton.accessibilityTraits |= UIAccessibilityTraitButton;
+                self.tabButton.accessibilityLabel = [SDPullNavigationManager sharedInstance].navigationBarAccessibilityLabel;
+            }
+            
             NSAssert([self.tabButton isKindOfClass:[SDPullNavigationBarTabButton class]], @"TabBarButton class must be derived from SDPullNavigationBarTabButton");
         }
         

@@ -76,6 +76,7 @@
 	CGFloat stateBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
 	
     CGRect mainFrame = self.view.frame;
+    mainFrame.size.width = window.bounds.size.width;
 	mainFrame.size.height = window.bounds.size.height - stateBarHeight;
     mainFrame.origin.y = stateBarHeight;
     self.view.frame = mainFrame;
