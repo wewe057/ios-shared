@@ -12,7 +12,7 @@
 
 + (BOOL)hasRetinaDisplay
 {
-	if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] == 2)
+	if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] >= 2)
 		return YES;
 	else
 		return NO;
