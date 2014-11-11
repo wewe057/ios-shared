@@ -41,6 +41,21 @@
     return self;
 }
 
+- (BOOL)isEqual:(id)object
+{
+    BOOL isEqual = NO;
+    
+    if (object == self)
+    {
+        isEqual = YES;
+    }
+    else if (object && ([[object class] isEqual:[self class]]) && ([object hash] == [self hash]))
+    {
+        isEqual = YES;
+    }
+    return isEqual;
+}
+
 - (NSUInteger)hash
 {
     return self.internalHash;
