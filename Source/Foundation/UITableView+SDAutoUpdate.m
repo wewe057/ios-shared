@@ -81,9 +81,12 @@
         [manager addCommandsForOutdatedData:outdatedRowData[sectionIdentifier] newData:updatedRowData[sectionIdentifier] forSectionIdentifier:sectionIdentifier];
     }
     
-    [self beginUpdates];
-    [manager runCommands:self withAnimationTypes:animationTypes callback:commandCallbackBlock];
-    [self endUpdates];
+    if ([manager hasCommands])
+    {
+        [self beginUpdates];
+        [manager runCommands:self withAnimationTypes:animationTypes callback:commandCallbackBlock];
+        [self endUpdates];
+    }
 }
 
 @end
