@@ -370,6 +370,16 @@
 
 #pragma mark - SectionController Methods
 
+- (void)refreshTable
+{
+    @strongify(self.delegate, delegate);
+    if ([delegate respondsToSelector:@selector(refreshTableForSectionController:)])
+    {
+        [delegate refreshTableForSectionController:self];
+    }
+}
+
+
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     @strongify(self.delegate, delegate);

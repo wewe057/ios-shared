@@ -40,7 +40,9 @@
  *  @param viewController    The view controller the section controller wants pushed
  *  @param animated          YES if the section controller wants the push animated
  */
-- (void)sectionController:(SDTableViewSectionController *)sectionController pushViewController:(UIViewController *)viewController animated:(BOOL)animated;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+       pushViewController:(UIViewController *)viewController
+                 animated:(BOOL)animated;
 
 /**
  *  A section controller is asking you to present a view controller
@@ -50,7 +52,10 @@
  *  @param animated          YES if the section controller wants the presentation animated
  *  @param completion        A completion block to call when presentation is complete
  */
-- (void)sectionController:(SDTableViewSectionController *)sectionController presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+    presentViewController:(UIViewController *)viewController
+                 animated:(BOOL)animated
+               completion:(void (^)(void))completion;
 
 /**
  *  A section controller is asking you to dismiss the current view controller
@@ -59,7 +64,9 @@
  *  @param animated          YES if the section controller wants the dismiss animated
  *  @param completion        A completion block to call when presentation is complete
  */
-- (void)sectionController:(SDTableViewSectionController *)sectionController dismissViewControllerAnimated: (BOOL)animated completion: (void (^)(void))completion;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+        dismissViewControllerAnimated: (BOOL)animated
+        completion: (void (^)(void))completion;
 
 /**
  *  A section controller is asking you to pop the current view controller
@@ -67,7 +74,8 @@
  *  @param sectionController The section controller making the request
  *  @param animated          YES if the section controller wants the pop animated
  */
-- (void)sectionController:(SDTableViewSectionController *)sectionController popViewController: (BOOL)animated;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+        popViewController: (BOOL)animated;
 
 /**
  *  A section controller is asking you to pop to the root view controller
@@ -75,7 +83,17 @@
  *  @param sectionController The section controller making the request
  *  @param animated          YES if the section controller wants the pop animated
  */
-- (void)sectionController:(SDTableViewSectionController *)sectionController popToRootViewControllerAnimated:(BOOL)animated;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+        popToRootViewControllerAnimated:(BOOL)animated;
+
+@optional
+/**
+ * A section controller is asking you to refresh the table.
+ * This is sent by SDTableViewSectionDelegate objects to the section controller
+ * Typically they have made some change and want you to reload the sections
+ *
+ */
+- (void)refreshTableForSectionController:(SDTableViewSectionController *)sectionController;
 
 @end
 
@@ -99,7 +117,8 @@
 @property (nonatomic, copy, readonly) NSString *identifier;
 
 - (NSInteger)numberOfRowsForSectionController:(SDTableViewSectionController *)sectionController;
-- (UITableViewCell *)sectionController:(SDTableViewSectionController *)sectionController cellForRow:(NSInteger)row;
+- (UITableViewCell *)sectionController:(SDTableViewSectionController *)sectionController
+                            cellForRow:(NSInteger)row;
 
 @optional
 
@@ -145,29 +164,43 @@
 
 // "Delegate" methods
 @optional
-- (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+             didSelectRow:(NSInteger)row;
 
 @optional
 // Configuring Rows for the Table View
-- (CGFloat)sectionController:(SDTableViewSectionController *)sectionController heightForRow:(NSInteger)row;
-- (void)sectionController:(SDTableViewSectionController *)sectionController willDisplayCell:(UITableViewCell *)cell forRow:(NSInteger)row;
-- (CGFloat)sectionController:(SDTableViewSectionController *)sectionController estimatedHeightForRow:(NSInteger)row;
+- (CGFloat)sectionController:(SDTableViewSectionController *)sectionController
+                heightForRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+          willDisplayCell:(UITableViewCell *)cell forRow:(NSInteger)row;
+- (CGFloat)sectionController:(SDTableViewSectionController *)sectionController
+       estimatedHeightForRow:(NSInteger)row;
 
 @optional
 // Editing support
-- (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController editingStyleForRow:(NSInteger)row;
-- (BOOL)sectionController:(SDTableViewSectionController *)sectionController shouldIndentWhileEditingRow:(NSInteger)row;
-- (void)sectionController:(SDTableViewSectionController *)sectionController commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRow:(NSInteger)row;
+- (UITableViewCellEditingStyle)sectionController:(SDTableViewSectionController *)sectionController
+                              editingStyleForRow:(NSInteger)row;
+- (BOOL)sectionController:(SDTableViewSectionController *)sectionController
+        shouldIndentWhileEditingRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+       commitEditingStyle:(UITableViewCellEditingStyle)editingStyle
+                   forRow:(NSInteger)row;
 
 @optional
 // Tracking the Removal of Views
-- (void)sectionController:(SDTableViewSectionController *)sectionController didEndDisplayingCell:(UITableViewCell *)cell forRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+     didEndDisplayingCell:(UITableViewCell *)cell
+                   forRow:(NSInteger)row;
 
 @optional
 // Scroll View Delegate
-- (void)sectionController:(SDTableViewSectionController *)sectionController scrollViewDidScroll:(UIScrollView *)scrollView;
-- (void)sectionController:(SDTableViewSectionController *)sectionController scrollViewWillBeginDragging:(UIScrollView *)scrollView;
-- (void)sectionController:(SDTableViewSectionController *)sectionController scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+      scrollViewDidScroll:(UIScrollView *)scrollView;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+        scrollViewWillBeginDragging:(UIScrollView *)scrollView;
+- (void)sectionController:(SDTableViewSectionController *)sectionController
+ scrollViewDidEndDragging:(UIScrollView *)scrollView
+           willDecelerate:(BOOL)decelerate;
 
 @optional
 // Section Lifecycle support
@@ -227,6 +260,11 @@
  *  @param animated YES if the table should reload with animations (currently unimplemented) or NO if a standard reloadData should occur (implemented)
  */
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated;
+
+/**
+ * Ask the section controller's delegate to refresh the table
+ */
+- (void)refreshTable;
 
 /**
  *  Asks the section controller's delegate to push this view controller.  Use this method
