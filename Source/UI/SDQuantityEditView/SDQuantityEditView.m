@@ -247,7 +247,6 @@
             break;
             
     }
-    [self layoutIfNeeded];
 }
 
 - (void)setCommitting:(BOOL)committing
