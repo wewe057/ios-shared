@@ -19,8 +19,10 @@
  *
  *  @param tableview - The main tableview that the cell is housed in.
  *
+ *  @param separatorHeight - If an added separator has to be added in to the height, make sure to pass in the height of that separator.
+ *
  *  @return CGFloat - The height of the cell after calculation.
  */
-- (CGFloat)calculatedHeightForMultilineCellInTableview:(UITableView *)tableview;
+- (CGFloat)calculatedHeightForCellInTableview:(UITableView *)tableview separatorHeight:(CGFloat)separatorHeight;
 
 @end
