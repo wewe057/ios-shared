@@ -10,7 +10,8 @@
 
 @implementation UITableViewCell (SDExtensions)
 
-- (CGFloat)calculatedHeightForCellInTableview:(UITableView *)tableview separatorHeight:(CGFloat)separatorHeight
+- (CGFloat)calculatedHeightForCellInTableview:(UITableView *)tableview
+                              separatorHeight:(CGFloat)separatorHeight
 {
     [self setNeedsLayout];
     [self layoutIfNeeded];

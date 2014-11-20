@@ -23,6 +23,7 @@
  *
  *  @return CGFloat - The height of the cell after calculation.
  */
-- (CGFloat)calculatedHeightForCellInTableview:(UITableView *)tableview separatorHeight:(CGFloat)separatorHeight;
+- (CGFloat)calculatedHeightForCellInTableview:(UITableView *)tableview
+                              separatorHeight:(CGFloat)separatorHeight;
 
 @end
