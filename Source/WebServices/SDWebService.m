@@ -92,6 +92,10 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     _mockStack = [NSMutableArray array];
     
+#ifdef DEBUG
+    _disableCaching = [[NSUserDefaults standardUserDefaults] boolForKey:@"kWMDisableCaching"];
+#endif
+
 	return self;
 }
 
@@ -473,7 +477,12 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #ifdef HUGE_SERVICES_TIMEOUT
 	[request setTimeoutInterval:120];
 #else
-	[request setTimeoutInterval:_timeout];
+    NSNumber *customTimeout = [requestDetails objectForKey:@"timeout"];
+    if (customTimeout) {
+        [request setTimeoutInterval:[customTimeout integerValue]];
+    } else {
+        [request setTimeoutInterval:_timeout];
+    }
 #endif
 
     // find any applicable cookies and queue them up.

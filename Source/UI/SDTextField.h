@@ -32,7 +32,7 @@
 typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 
 
-@interface SDTextField : UITextField
+@interface SDTextField : UITextField <UITextFieldDelegate>
 
 /**
  *  Always show the toolbar
@@ -102,6 +102,8 @@ typedef BOOL (^SDTextFieldValidationBlock)(SDTextField *textField);
 - (void)resetTextWithoutValidate; // clear the field, but don't allow validation
 
 - (void)setFloatingLabelsVisible:(BOOL)visible;
+
+- (void)backspaceKeypressFired;
 
 /**
  *  Setting the hitInsets to anything other than UIEdgeInsetsZero overrides minimumHitSize

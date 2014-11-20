@@ -62,7 +62,7 @@
         }
     }
 
-    SDAlertView *alertView = [[[self class] alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+    SDAlertView *alertView = [[[self class] alloc] initWithTitle:title ? title : @"" message:message delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
     alertView.delegate = alertView;
 
     for (NSString *buttonTitle in otherButtonTitles)
