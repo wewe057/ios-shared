@@ -23,12 +23,14 @@
         cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize
                                 withHorizontalFittingPriority:UILayoutPriorityDefaultHigh
                                       verticalFittingPriority:UILayoutPriorityFittingSizeLevel].height +
-                      [WalmartStyler tableViewCellSeparatorHeight]);
+                      1.0); // Temporarily workaround reference to WalmartStyler
+//                      [WalmartStyler tableViewCellSeparatorHeight]);
     }
     else
     {
         cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height +
-                      [WalmartStyler tableViewCellSeparatorHeight]);
+                      1.0); // Temporarily workaround reference to WalmartStyler
+//                      [WalmartStyler tableViewCellSeparatorHeight]);
     }
 
     return cellHeight;
