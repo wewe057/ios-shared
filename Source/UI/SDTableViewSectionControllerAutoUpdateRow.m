@@ -61,4 +61,14 @@
     return self.internalHash;
 }
 
+- (NSString *)description
+{
+    NSMutableString *description = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [description appendFormat:@"self.attributeHash=%zd", self.attributeHash];
+    [description appendFormat:@", self.internalHash=%tu", self.internalHash];
+    [description appendString:@">"];
+    return description;
+}
+
+
 @end

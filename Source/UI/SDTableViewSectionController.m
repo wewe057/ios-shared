@@ -39,9 +39,9 @@
 #endif
 }
 
-@property (nonatomic, weak)   UITableView *tableView;
-@property (nonatomic, strong) NSArray     *sectionControllers;
-@property (nonatomic, strong) NSArray     *outgoingSectionControllers;
+@property (nonatomic, weak)   UITableView       *tableView;
+@property (nonatomic, strong) NSArray           *sectionControllers;
+@property (nonatomic, strong) NSArray           *outgoingSectionControllers;
 @end
 
 @implementation SDTableViewSectionController
@@ -95,17 +95,51 @@
     {
         // Debug only check to make sure we're doing the right thing
         [self p_sections:sectionControllers conformToProtocol:@protocol(SDTableSectionProtocol)];
-        
-        [strongTableView updateWithAutoUpdateDataSource:self withRowAnimationType:UITableViewRowAnimationFade updateBlock:^{
-            self.outgoingSectionControllers = nil;
-        }];
-    }
+
+        NSDictionary *animationTypes = @{SDTableCommandAddRowAnimationKey : @(UITableViewRowAnimationTop),
+                                         SDTableCommandAddSectionAnimationKey : @(UITableViewRowAnimationTop),
+                                         SDTableCommandRemoveRowAnimationKey : @(UITableViewRowAnimationBottom),
+                                         SDTableCommandRemoveSectionAnimationKey : @(UITableViewRowAnimationBottom),
+                                         SDTableCommandUpdateRowAnimationKey : @(UITableViewRowAnimationFade)};
+
+        // First copy the outgoing array of controllers into a mutable array, so we can mutate it
+        // Cannot just call mutableCopy because outgoingSectionControllers may be nil
+        NSMutableArray *sectionControllersPrime = [NSMutableArray arrayWithCapacity:10];
+        [sectionControllersPrime addObjectsFromArray:self.outgoingSectionControllers];
+
+        [strongTableView updateWithAutoUpdateDataSource:self
+                       withRowAnimationTypes:animationTypes
+                                 updateBlock:^{
+                                 }
+                        commandCallbackblock:^(SDTableViewCommand *command) {
+                            switch (command.commandType)
+                            {
+                                case kSDTableCommandRemoveSection:
+                                {
+                                    // Remove all the section from prime
+                                    [sectionControllersPrime removeObjectAtIndex:(NSUInteger)command.resolvedIndexPath.section];
+                                    break;
+                                }
+                                case kSDTableCommandAddSection:
+                                {
+                                    id sectionAdded = [self p_sectionInControllers:self.sectionControllers withIdentifier:command.sectionIdentifier];
+                                    [sectionControllersPrime insertObject:sectionAdded atIndex:(NSUInteger)command.resolvedIndexPath.section];
+                                    break;
+                                }
+                                default:
+                                    // Ignore other commands
+                                    break;
+                            }
+                        }];
+        // Set section controllers to the updated array
+        self.sectionControllers = [sectionControllersPrime copy];
+     }
     else
     {
         [strongTableView reloadData];
-        self.outgoingSectionControllers = nil;
     }
-    
+    self.outgoingSectionControllers = nil;
+
 }
 
 #pragma mark - UITableView DataSource
@@ -425,27 +459,45 @@
     }
 }
 
-- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
+- (NSUInteger)p_indexOfSection:(id<SDTableViewSectionDelegate>)section inControllers:(NSArray *)controllers
 {
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [controllers indexOfObject:section];
     return sectionIndex;
 }
 
-- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier
+
+- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger sectionIndex = [self p_indexOfSection:section inControllers:self.sectionControllers];
+    return sectionIndex;
+}
+
+// Private method to find a section within an array of controllers
+- (id<SDTableViewSectionDelegate>)p_sectionInControllers:(NSArray *)controllers withIdentifier:(NSString *)identifier
 {
     id<SDTableViewSectionDelegate>section = nil;
-    
-    NSUInteger indexOfSection = [self.sectionControllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
+
+    NSUInteger indexOfSection = [controllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
         BOOL sectionAlreadyInArray = [obj.identifier isEqualToString: identifier];
         *stop = sectionAlreadyInArray;
         return sectionAlreadyInArray;
     }];
-    
+
     if (indexOfSection != NSNotFound)
     {
-        section = [self.sectionControllers objectAtIndex:indexOfSection];
+        section = controllers[indexOfSection];
     }
-    
+
+    return section;
+}
+
+
+- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier
+{
+    id<SDTableViewSectionDelegate>section = nil;
+
+    section = [self p_sectionInControllers:self.sectionControllers withIdentifier:identifier];
+
     return section;
 }
 
