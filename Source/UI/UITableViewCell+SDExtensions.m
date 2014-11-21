@@ -10,7 +10,8 @@
 
 @implementation UITableViewCell (SDExtensions)
 
-- (CGFloat)calculatedHeightForMultilineCellInTableview:(UITableView *)tableview
+- (CGFloat)calculatedHeightForCellInTableview:(UITableView *)tableview
+                              separatorHeight:(CGFloat)separatorHeight
 {
     [self setNeedsLayout];
     [self layoutIfNeeded];
@@ -22,13 +23,11 @@
     {
         cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize
                                 withHorizontalFittingPriority:UILayoutPriorityDefaultHigh
-                                      verticalFittingPriority:UILayoutPriorityFittingSizeLevel].height +
-                      [WalmartStyler tableViewCellSeparatorHeight]);
+                                      verticalFittingPriority:UILayoutPriorityFittingSizeLevel].height + separatorHeight);
     }
     else
     {
-        cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height +
-                      [WalmartStyler tableViewCellSeparatorHeight]);
+        cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height + separatorHeight);
     }
 
     return cellHeight;
