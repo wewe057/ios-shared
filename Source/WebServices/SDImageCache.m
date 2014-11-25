@@ -187,7 +187,11 @@
         UIImage *diskCachedImage = [UIImage imageWithData:cachedResponse.responseData];
         if (diskCachedImage)
         {
-            [self didFetchImage:diskCachedImage atURL:url error:nil withCompletionBlock:completionBlock];
+            UIImage *decodedImage = nil;
+            if (diskCachedImage)
+                decodedImage = [SDImageCache decodedImageWithImage:diskCachedImage];
+
+            [self didFetchImage:decodedImage atURL:url error:nil withCompletionBlock:completionBlock];
             success = YES;
         }
     }
