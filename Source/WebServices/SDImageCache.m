@@ -161,8 +161,25 @@
         return;
     }
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [_decodeQueue addOperationWithBlock:^
+    {
+        BOOL foundInCache = [self fetchImageFromCacheAtURL:url completionBlock:completionBlock];
+        if (!foundInCache)
+        {
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^
+            {
+                [self fetchImageFromNetworkAtURL:url completionBlock:completionBlock];
+            }];
+        }
+    }];
 
+}
+
+- (BOOL)fetchImageFromCacheAtURL:(NSURL *)url completionBlock:(UIImageViewURLCompletionBlock)completionBlock
+{
+    BOOL success = NO;
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSURLCache *urlCache = [NSURLCache sharedURLCache];
     NSCachedURLResponse *cachedResponse = [urlCache validCachedResponseForRequest:request forTime:60 removeIfInvalid:YES];
     if (cachedResponse)
@@ -170,42 +187,50 @@
         UIImage *diskCachedImage = [UIImage imageWithData:cachedResponse.responseData];
         if (diskCachedImage)
         {
-            [self addImageToMemoryCache:diskCachedImage withURL:url];
-            //SDLog(@"image found in disk cache: %@", url);
-            if (completionBlock)
-                completionBlock(diskCachedImage, nil);
-            return;
+            [self didFetchImage:diskCachedImage atURL:url error:nil withCompletionBlock:completionBlock];
+            success = YES;
         }
     }
 
+    return success;
+}
+
+- (void)fetchImageFromNetworkAtURL:(NSURL *)url completionBlock:(UIImageViewURLCompletionBlock)completionBlock
+{
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
     SDURLConnection *urlConnection = [SDURLConnection sendAsynchronousRequest:request withResponseHandler:^(SDURLConnection *connection, NSURLResponse *response, NSData *responseData, NSError *error) {
         UIImage *image = nil;
         if (responseData && responseData.length > 0)
             image = [UIImage imageWithData:responseData];
-
+        
         if ([response isKindOfClass:[NSHTTPURLResponse class]])
         {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
             if (httpResponse.statusCode >= 400)
                 error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:nil];
         }
-
+        
         [_decodeQueue addOperationWithBlock:^{
             UIImage *decodedImage = nil;
             if (image)
                 decodedImage = [SDImageCache decodedImageWithImage:image];
-            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                [self addImageToMemoryCache:decodedImage withURL:url];
-                if (completionBlock)
-                    completionBlock(decodedImage, error);
-                if (decodedImage.size.width == 0 || decodedImage.size.height == 0)
-                    [self removeImageURLFromCache:url];
-            }];
+            [self didFetchImage:decodedImage atURL:url error:error withCompletionBlock:completionBlock];
         }];
     }];
-
+    
     if (urlConnection)
         [_activeConnections setObject:urlConnection forKey:[url absoluteString]];
+}
+
+- (void)didFetchImage:(UIImage *)decodedImage atURL:(NSURL *)url error:(NSError *)error withCompletionBlock:(UIImageViewURLCompletionBlock)completionBlock
+{
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self addImageToMemoryCache:decodedImage withURL:url];
+        if (completionBlock)
+            completionBlock(decodedImage, error);
+        if (decodedImage.size.width == 0 || decodedImage.size.height == 0)
+            [self removeImageURLFromCache:url];
+    }];
 }
 
 - (void)cancelFetchForURL:(NSURL *)url
