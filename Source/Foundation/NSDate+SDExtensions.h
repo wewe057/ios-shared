@@ -75,4 +75,9 @@
  */
 - (BOOL)isToday;
 
+/**
+ Returns number of days since the argument ignoring any time component
+ */
+- (NSInteger) calendarDaysRelativeToDate:(NSDate *) date;
+
 @end

@@ -127,6 +127,17 @@ typedef void (^SDQuantityEditViewDoneEditingBlock)(NSDecimalNumber *originalQuan
 - (void)createDoneAndRemoveButtons;
 
 /**
+ There are uses of the quantity editor where it makes sense to limit the minimum quantity
+ to the step amount (e.g. 1 for units, 0.1 for kg) instead of 0. For instance, the product
+ details view controller will show the editor for items not in the cart with an 'Add'
+ button, but it does not make sense to add zero items to the cart, so we need to limit the
+ minimum value to the step amount.
+
+ Most uses of the editor will be fine with a zero minimum so that is the default value.
+ */
+@property (nonatomic, assign) BOOL limitMinimumQuantityOnNewItemsToStepAmount;
+
+/**
  Creates a SDQuantityEditView
  @return a new SDQuantityEditView
  */

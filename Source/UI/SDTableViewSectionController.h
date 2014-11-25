@@ -143,6 +143,7 @@
 
 // "Delegate" methods
 @optional
+- (BOOL)sectionController:(SDTableViewSectionController *)sectionController shouldHighlightRow:(NSInteger)row;
 - (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
 
 @optional

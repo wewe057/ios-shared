@@ -180,6 +180,23 @@
 
 #pragma mark Managing Selections
 
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_IOS(6_0)
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    
+    // Respect the IB settings.
+    BOOL highlight = [tableView isEditing] ? [tableView allowsSelectionDuringEditing] : [tableView allowsSelection];
+    
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
+    if ([sectionController respondsToSelector:@selector(sectionController:shouldHighlightRow:)])
+    {
+        highlight = [sectionController sectionController:self shouldHighlightRow:row];
+    }
+    
+    return highlight;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSInteger section = indexPath.section;
