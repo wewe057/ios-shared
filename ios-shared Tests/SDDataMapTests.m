@@ -23,7 +23,7 @@
 @property (nonatomic, assign) NSInteger blah7;
 @property (nonatomic, strong) NSString *subBlah8;
 @property (nonatomic, assign) BOOL shouldBeInvalid;
-
+@property (nonatomic, assign) BOOL transformed;
 @end
 
 @implementation MyObject
@@ -40,7 +40,8 @@
              @"blah2": sdmo_key(self.blah2),
              @"blah7": sdmo_key(self.blah7),
              @"subBlah8": sdmo_selector(@selector(setSubBlah8:)),
-             @"shouldBeInvalid": sdmo_key(self.shouldBeInvalid)
+             @"shouldBeInvalid": sdmo_key(self.shouldBeInvalid),
+             @"transformed": sdmo_transformed_key(self.transformed, NSNegateBooleanTransformerName),
              };
 }
 
@@ -93,6 +94,7 @@
     inputObject.blah3 = [[MyObject alloc] init];
     inputObject.blah7 = 1337;
     inputObject.subBlah8 = @"this is subBlah8";
+    inputObject.transformed = NO;
     
     MyObject *outputObject = [[MyObject alloc] init];
     
@@ -102,6 +104,7 @@
     XCTAssertTrue([outputObject.blah2 isEqualToString:@"this is blah2"], "outputObject.blah1 is supposed to have 3 items!");
     XCTAssertTrue(outputObject.blah7 == 1337, "outputObject.blah7 has the wrong value!");
     XCTAssertTrue([outputObject.subBlah8 isEqualToString:@"this is subBlah8"], @"outputObject.subBlah8 isn't set right!");
+    XCTAssert(outputObject.transformed == YES);
 }
 
 - (void)testBasicMappingNamesMatch
@@ -482,6 +485,24 @@
     XCTAssertTrue((output.count == 2), @"dummyObject should only have 2 items!");
     XCTAssertTrue([[output objectAtIndex:0] isKindOfClass:[MyObject class]], @"The items in the output array aren't of MyObject!");
     XCTAssertTrue([[[output objectAtIndex:1] valueForKey:@"blah2"] isEqualToString:@"object3"], @"blah2 on item 1 should be 'object3'!");
+}
+
+- (void)testSDDMTransformedMacro
+{
+    MyObject *object = [MyObject new];
+    NSString *result = sddm_transformed_key(object, object.shouldBeInvalid, NSNegateBooleanTransformerName);
+    XCTAssert([result isEqualToString:@"@transformed(shouldBeInvalid,NSNegateBoolean)"]);
+}
+
+- (void)testMapWithTransformsActuallyTransformsValues
+{
+    NSDictionary *data = @{@"shouldBeInvalid": @YES};
+    MyObject *object = [MyObject new];
+    NSDictionary *map = @{@"shouldBeInvalid": sddm_transformed_key(object, object.shouldBeInvalid, NSNegateBooleanTransformerName)};
+    SDDataMap *mapper = [SDDataMap mapForDictionary:map];
+    [mapper mapObject:data toObject:object];
+
+    XCTAssert(object.shouldBeInvalid == NO);
 }
 
 @end
