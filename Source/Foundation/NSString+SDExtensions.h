@@ -146,4 +146,15 @@ GENERICSABLE(NSString)
 /** Returns the inverse of #isEmpty:. */
 + (BOOL) isNotEmpty:(NSString *)string;
 
+/**
+ *  This method will create a new string from binary NSData
+ *  by base 64 encoding it.
+ *
+ *  @param data   The data to be encoded
+ *  @param length The length of the data to be encoded
+ *
+ *  @return A base 64 encoded version of the data.
+ */
++ (NSString *)base64StringFromData:(NSData *)data length:(NSUInteger)length;
+
 @end
