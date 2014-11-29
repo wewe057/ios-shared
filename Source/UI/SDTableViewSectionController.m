@@ -126,6 +126,18 @@
                                     [sectionControllersPrime insertObject:sectionAdded atIndex:(NSUInteger)command.resolvedIndexPath.section];
                                     break;
                                 }
+                                case kSDTableCommandUpdateRow:
+                                {
+                                    id outgoingSection =  [self p_sectionInControllers:self.outgoingSectionControllers withIdentifier:command.sectionIdentifier];
+                                    id incomingSection =  [self p_sectionInControllers:self.sectionControllers withIdentifier:command.sectionIdentifier];
+                                    NSInteger index = [self p_indexOfSection:outgoingSection inControllers:sectionControllersPrime];
+                                    if (index != NSNotFound)
+                                    {
+                                        [sectionControllersPrime removeObject:outgoingSection];
+                                        [sectionControllersPrime insertObject:incomingSection atIndex:index];
+                                    }
+                                    break;
+                                }
                                 default:
                                     // Ignore other commands
                                     break;
