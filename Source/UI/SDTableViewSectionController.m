@@ -123,7 +123,10 @@
                                 case kSDTableCommandAddSection:
                                 {
                                     id sectionAdded = [self p_sectionInControllers:self.sectionControllers withIdentifier:command.sectionIdentifier];
-                                    [sectionControllersPrime insertObject:sectionAdded atIndex:(NSUInteger)command.resolvedIndexPath.section];
+                                    if (sectionAdded)
+                                    {
+                                        [sectionControllersPrime insertObject:sectionAdded atIndex:(NSUInteger)command.resolvedIndexPath.section];
+                                    }
                                     break;
                                 }
                                 case kSDTableCommandUpdateRow:
@@ -134,7 +137,10 @@
                                     if (index != NSNotFound)
                                     {
                                         [sectionControllersPrime removeObject:outgoingSection];
-                                        [sectionControllersPrime insertObject:incomingSection atIndex:index];
+                                        if (incomingSection)
+                                        {
+                                            [sectionControllersPrime insertObject:incomingSection atIndex:index];
+                                        }
                                     }
                                     break;
                                 }
