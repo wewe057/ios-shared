@@ -19,8 +19,19 @@
 
 - (void)testDateAtBeginningOfMonthForDate
 {
-    NSDate *taxDay = [NSDate dateFromRFC822String:@"2014-04-15T07:00:00-0000"];
-    NSDate *aprilFoolsDay = [NSDate dateFromRFC822String:@"2014-04-01T07:00:00-0000"];
+    NSTimeZone *currentTimeZone = [NSTimeZone systemTimeZone];
+    NSCalendar *gregorianCalendar = [NSCalendar calendarWithIdentifier:NSGregorianCalendar];
+
+    NSDateComponents *dateComponents = [NSDateComponents new];
+    dateComponents.year = 2014;
+    dateComponents.month = 4;
+    dateComponents.day = 15;
+    dateComponents.timeZone = currentTimeZone;
+    NSDate *taxDay = [gregorianCalendar dateFromComponents:dateComponents];
+
+    dateComponents.day = 1;
+    NSDate *aprilFoolsDay = [gregorianCalendar dateFromComponents:dateComponents];
+
     NSDate *convertedFirstDayOfMonth = [NSDate dateAtBeginningOfMonthForDate:taxDay];
     XCTAssertTrue([convertedFirstDayOfMonth isEqualToDate:aprilFoolsDay]);
 }

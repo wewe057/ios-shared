@@ -14,6 +14,10 @@
 
 @interface SDSearchDisplayController()
 @property (nonatomic, assign) BOOL addingSearchTableView;
+
+/// This overrides the internal addingSearchTableView lock in setActive:animated:. Only use this override if you are certain you need to.
+@property (nonatomic, assign) BOOL shouldOverrideBlock;
+
 @end
 
 @implementation SDSearchDisplayController
@@ -151,7 +155,7 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 
 - (void)setActive:(BOOL)visible animated:(BOOL)animated
 {
-    if (self.addingSearchTableView) {
+    if (self.addingSearchTableView && !self.shouldOverrideBlock) {
         return;
     }
     
@@ -170,7 +174,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         if (!searchHistory)
             searchHistory = [[NSMutableArray alloc] init];
        
-        self.searchResultsTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
     
         UITableView *defaultTableView = self.searchResultsTableView;
         
@@ -183,6 +186,13 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
         recentSearchTableView.frame = CGRectMake(0, 44, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height - 280);
         recentSearchTableView.alpha = 0;
         [superview addSubview:recentSearchTableView];
+        
+        // if our subclass wants to color background of simple results tables, do so with simpleResultsTableBackgroundColor
+        if (self.simpleResultsTableBackgroundColor)
+        {
+            self.searchResultsTableView.backgroundColor = self.simpleResultsTableBackgroundColor;
+            recentSearchTableView.backgroundColor = self.simpleResultsTableBackgroundColor;
+        }
         
         if (animated)
         {
@@ -197,7 +207,6 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
             recentSearchTableView.alpha = 1.0;
             self.addingSearchTableView = NO;
         }
-        recentSearchTableView.backgroundColor = [UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1];
     }
     else {
         if (!visible && recentSearchTableView && !self.addingSearchTableView)
@@ -226,6 +235,14 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 			searchHistory = nil;
 		}
     }
+}
+
+- (void)forceInactive
+{
+    // To make sure this works, we turn the override on, change the state (which calls setActive:), and then turn the override back off
+    self.shouldOverrideBlock = YES;
+    self.active = NO;
+    self.shouldOverrideBlock = NO;
 }
 
 - (NSUInteger)recentSearchesSectionNumber
@@ -370,6 +387,16 @@ static NSString *kSDSearchUserDefaultsKey = @"kSDSearchUserDefaultsKey";
 - (void)updateSearchHistory
 {
     searchHistory = [[[NSUserDefaults standardUserDefaults] arrayForKey:self.userDefaultsKey] mutableCopy];
+}
+
+#pragma mark - UIScrollView delegate
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    self.isTableViewScrolling = YES;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    self.isTableViewScrolling = NO;
 }
 
 @end

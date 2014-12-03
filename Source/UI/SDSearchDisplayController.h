@@ -33,11 +33,22 @@
 @property (nonatomic, strong) id selectedSearchItem;
 @property (nonatomic, readonly, strong) UITableView *recentSearchTableView;
 @property (nonatomic, readwrite) BOOL showsClearRecentSearchResultsRow; /** Shows a 'Clear Search Results' row at the bottom of results. Default is NO. */
+@property (nonatomic, strong) UIColor *simpleResultsTableBackgroundColor UI_APPEARANCE_SELECTOR;
 
 - (void)addStringToHistory:(NSString *)string;
 - (void)removeSearchItemFromHistory:(NSString*)string;
 - (NSUInteger)recentSearchesSectionNumber; /** Provides subclass customization if needed */
 - (void)updateSearchHistory;
+
+/**
+ *
+ * This method forces the searchController into an inactive state, regardless of whether or not there are locks in place.
+ *
+ */
+- (void)forceInactive;
+
+/// This is related to forceInactive. Scrolling through the typeAhead list ends editing on the searchBar, but shouldn't ever call forceInactive.
+@property (nonatomic, assign) BOOL isTableViewScrolling;
 
 @end
 
