@@ -13,23 +13,30 @@
 - (CGFloat)calculatedHeightForCellInTableview:(UITableView *)tableview
                               separatorHeight:(CGFloat)separatorHeight
 {
+    // Set the temporary sizing bounds so that we can use systemLayoutSizeFittingSize:
+    // Note the contentView width is used. This helps with cells that could have a
+    // manipulated contentView width or have an accessory view. If this isn't accounted
+    // for than multi-line labels could be incorrectly calculated since the entire
+    // width of the cell would be used during the calculation.
+    self.bounds = CGRectMake(0.0f, 0.0f, self.contentView.size.width, CGRectGetHeight(tableview.bounds));
+//    self.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableview.bounds), CGRectGetHeight(tableview.bounds));
+//    
     [self setNeedsLayout];
     [self layoutIfNeeded];
-    
-    self.bounds = CGRectMake(0.0f, 0.0f, CGRectGetWidth(tableview.bounds), CGRectGetHeight(tableview.bounds));
     
     CGFloat cellHeight;
     if ([UIDevice systemMajorVersion] >= 8.0)
     {
-        cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize
-                                withHorizontalFittingPriority:UILayoutPriorityDefaultHigh
-                                      verticalFittingPriority:UILayoutPriorityFittingSizeLevel].height + separatorHeight);
+        CGSize tempSize = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize
+                              withHorizontalFittingPriority:UILayoutPriorityDefaultHigh
+                                    verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+        cellHeight = (tempSize.height + separatorHeight);
     }
     else
     {
         cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height + separatorHeight);
     }
-
+    
     return cellHeight;
 }
 
