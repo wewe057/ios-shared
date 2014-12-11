@@ -16,15 +16,15 @@
     // Grab the original bounds, so that it can be reset later
     CGRect originalBoundsToBeReset = self.bounds;
     
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+    
     // Set the temporary sizing bounds so that we can use systemLayoutSizeFittingSize:
     // Note the contentView width is used. This helps with cells that could have a
     // manipulated contentView width or have an accessory view. If this isn't accounted
     // for than multi-line labels could be incorrectly calculated since the entire
     // width of the cell would be used during the calculation. CB-2666 / CB-2631 cgarvin
     self.bounds = CGRectMake(0.0f, 0.0f, self.contentView.size.width, CGRectGetHeight(tableview.bounds));
-
-    [self setNeedsLayout];
-    [self layoutIfNeeded];
     
     CGFloat cellHeight;
     if ([UIDevice systemMajorVersion] >= 8.0)
