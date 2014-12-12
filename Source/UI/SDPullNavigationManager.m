@@ -201,21 +201,28 @@
 - (UIControl*)barItemController:(id)controller
 {
     UIControl* foundControl = nil;
-    
-    UINavigationItem *navigationItem = [self topLevelViewController:controller].navigationItem;
+
+    UIViewController *topViewController = self.globalPullNavController.selectedViewController;
+    if ([topViewController isKindOfClass:[UINavigationController class]]) {
+        topViewController = [(UINavigationController*)topViewController topViewController];
+    }
+    UINavigationItem *navigationItem = topViewController.navigationItem;
     NSArray* barItems = [navigationItem.leftBarButtonItems arrayByAddingObjectsFromArray:navigationItem.rightBarButtonItems];
-    for(UIView* item in barItems)
+    for (UIBarButtonItem *item in barItems)
     {
-        Class pullNavigationAutomationClass = item.pullNavigationAutomationClass;
+        if (!item.customView) continue;
+
+        Class pullNavigationAutomationClass = item.customView.pullNavigationAutomationClass;
         if(pullNavigationAutomationClass)
         {
             if(pullNavigationAutomationClass == controller || pullNavigationAutomationClass == [controller class])
             {
                 // We found the barItem that we want to automate.
 
-                if([item isKindOfClass:[UIControl class]])
-                    foundControl = (UIControl*)item;
-                break;
+                if ([item.customView isKindOfClass:[UIControl class]]) {
+                    foundControl = (UIControl*)item.customView;
+                    break;
+                }
             }
         }
     }
