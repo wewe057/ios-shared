@@ -208,6 +208,7 @@
 		F8BD64E11A3F60080090D65E /* SDWebServiceMockResponseRequestMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BD64E01A3F60080090D65E /* SDWebServiceMockResponseRequestMapping.m */; };
 		F8BD64E21A3F60080090D65E /* SDWebServiceMockResponseRequestMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BD64E01A3F60080090D65E /* SDWebServiceMockResponseRequestMapping.m */; };
 		F8BD64E41A3F63190090D65E /* SDWebServiceMockResponseRequestMappingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BD64E31A3F63190090D65E /* SDWebServiceMockResponseRequestMappingTests.m */; };
+		F8BD64E61A3F81540090D65E /* SDWebServiceMockResponseMapProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BD64E51A3F81540090D65E /* SDWebServiceMockResponseMapProviderTests.m */; };
 		F8F3E5361A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json in Resources */ = {isa = PBXBuildFile; fileRef = F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */; };
 /* End PBXBuildFile section */
 
@@ -493,6 +494,7 @@
 		F8BD64DF1A3F60080090D65E /* SDWebServiceMockResponseRequestMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebServiceMockResponseRequestMapping.h; sourceTree = "<group>"; };
 		F8BD64E01A3F60080090D65E /* SDWebServiceMockResponseRequestMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockResponseRequestMapping.m; sourceTree = "<group>"; };
 		F8BD64E31A3F63190090D65E /* SDWebServiceMockResponseRequestMappingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockResponseRequestMappingTests.m; sourceTree = "<group>"; };
+		F8BD64E51A3F81540090D65E /* SDWebServiceMockResponseMapProviderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockResponseMapProviderTests.m; sourceTree = "<group>"; };
 		F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SDWebServiceMockTest_bundleA.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -934,6 +936,7 @@
 				F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */,
 				F8BD64D91A3F50320090D65E /* SDWebServiceValidateDeprecatedMockProviderTests.m */,
 				F8BD64E31A3F63190090D65E /* SDWebServiceMockResponseRequestMappingTests.m */,
+				F8BD64E51A3F81540090D65E /* SDWebServiceMockResponseMapProviderTests.m */,
 			);
 			path = SDWebServicesMocks;
 			sourceTree = "<group>";
@@ -1108,6 +1111,7 @@
 				CA0E77A618284DD600B4398F /* SDNumberTextField.m in Sources */,
 				CA0E778E18284DD600B4398F /* MKMapView+SDExtensions.m in Sources */,
 				CA0E77B218284DD600B4398F /* SDSearchDisplayController.m in Sources */,
+				F8BD64E61A3F81540090D65E /* SDWebServiceMockResponseMapProviderTests.m in Sources */,
 				CA0E77CF18284DD600B4398F /* NSURLCache+SDExtensions.m in Sources */,
 				CA0E77C718284DD600B4398F /* UIView+SDExtensions.m in Sources */,
 				CA0E77DD18284DD600B4398F /* SDWebService.m in Sources */,

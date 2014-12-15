@@ -7,10 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SDWebServiceMockResponseProvider.h"
 
 @class SDWebServiceMockResponseRequestMapping;
 
-@interface SDWebServiceMockResponseMapProvider : NSObject
+@interface SDWebServiceMockResponseMapProvider : NSObject<SDWebServiceMockResponseProvider>
 
 - (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forRequestMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping frequency:(NSUInteger) frequency;
 - (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forPath:(NSString *) path;
