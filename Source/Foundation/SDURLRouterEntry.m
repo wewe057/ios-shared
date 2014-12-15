@@ -80,6 +80,12 @@
     NSMutableDictionary *parameters = nil;
     
     NSString *urlString = [url absoluteString];
+    NSString *query = [url query];
+    if ( [query length] > 0 )
+    {
+        urlString = [urlString substringToIndex:[urlString length] - [query length] - 1];
+    }
+    
     NSArray *matches = [self.matchRegularExpression matchesInString:urlString options:0 range:NSMakeRange(0, [urlString length])];
     
     if ( [matches count] == 1 )
@@ -91,6 +97,24 @@
             NSRange valueRange = [result rangeAtIndex:idx + 1];
             parameters[parameterName] = [urlString substringWithRange:valueRange];
         }];
+        [parameters addEntriesFromDictionary:[self parametersFromQuery:query]];
+    }
+    
+    return parameters;
+}
+
+- (NSDictionary *) parametersFromQuery:(NSString *)query
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+
+    NSArray *keyValuePairs = [[query stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] componentsSeparatedByString:@"&"];
+    for (NSString *keyValuePair in keyValuePairs)
+    {
+        NSArray *pair = [keyValuePair componentsSeparatedByString:@"="];
+        if ( [pair count] != 2 )
+            continue;
+        
+        parameters[pair[0]] = pair[1];
     }
     
     return parameters;
