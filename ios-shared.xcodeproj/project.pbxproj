@@ -199,6 +199,7 @@
 		E2EDC79218A59D4F00E7E416 /* NSShadow+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */; };
 		F812F9581A11454F00312E52 /* SDWebServiceMockQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */; };
 		F812F95C1A1146CB00312E52 /* SDWebServiceMockTests.plist in Resources */ = {isa = PBXBuildFile; fileRef = F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */; };
+		F8BD64D31A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json in Resources */ = {isa = PBXBuildFile; fileRef = F8BD64D21A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json */; };
 		F8F3E5361A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json in Resources */ = {isa = PBXBuildFile; fileRef = F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */; };
 /* End PBXBuildFile section */
 
@@ -474,6 +475,7 @@
 		E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSShadow+SDExtensions.m"; sourceTree = "<group>"; };
 		F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockQueueTests.m; sourceTree = "<group>"; };
 		F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SDWebServiceMockTests.plist; sourceTree = "<group>"; };
+		F8BD64D21A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SDWebServiceMockTest_bundleB.json; sourceTree = "<group>"; };
 		F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SDWebServiceMockTest_bundleA.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -904,6 +906,7 @@
 			children = (
 				F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */,
 				F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */,
+				F8BD64D21A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json */,
 				F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */,
 			);
 			path = SDWebServicesMocks;
@@ -997,6 +1000,7 @@
 				CA0E77AE18284DD600B4398F /* SDPickerModalViewController.xib in Resources */,
 				F812F95C1A1146CB00312E52 /* SDWebServiceMockTests.plist in Resources */,
 				48EB6B2E19DCBFFC0054662E /* SpanTest_basic.txt in Resources */,
+				F8BD64D31A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json in Resources */,
 				CA0E776A18284DD600B4398F /* README.md in Resources */,
 				CAAB5A3318564CEE006737D4 /* json1.txt in Resources */,
 				CA01F1B817D7A6F000E7C553 /* InfoPlist.strings in Resources */,

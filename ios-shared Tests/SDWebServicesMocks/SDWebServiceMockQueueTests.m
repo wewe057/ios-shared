@@ -27,10 +27,7 @@
     self.webService.maxConcurrentOperationCount = 1; // to ensure predictable testing
 }
 
-- (void)testDefaultAutoPop;
-{
-    XCTAssertTrue(self.webService.autoPopMocks);
-}
+#pragma mark - pragma helper methods
 
 - (void) checkWebServiceWithBlock:(void (^)(NSData *responseData, NSError *error)) block;
 {
@@ -52,16 +49,25 @@
     return [NSData dataWithContentsOfFile:filepath];
 }
 
+#pragma mark - miscellaneous tests
+
+- (void)testDefaultAutoPop;
+{
+    XCTAssertTrue(self.webService.autoPopMocks);
+}
+
+#pragma mark - single response tests
+
 - (void)testSingleMockResponseWithAutoPop;
 {
-    NSData *checkData = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
+    NSData *checkDataA = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
 
     [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
-        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
     }];
 
     [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
-        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
+        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from any mock response");
     }];
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
@@ -69,16 +75,16 @@
 
 - (void)testSingleMockResponseWithNoAutoPop;
 {
-    NSData *checkData = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
+    NSData *checkDataA = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
 
     self.webService.autoPopMocks = NO;
 
     [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
-        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
     }];
 
     [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
-        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
     }];
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
@@ -86,16 +92,95 @@
 
 - (void)testSingleMockResponseWithManualPop;
 {
-    NSData *checkData = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
+    NSData *checkDataA = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
+
+    self.webService.autoPopMocks = NO;
 
     [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
-        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
     }];
 
     [self.webService popMockResponseFile];
 
     [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
-        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
+        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from any mock response");
+    }];
+
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+#pragma mark - multiple response tests
+
+- (void)testMultipleMockResponseWithAutoPop;
+{
+    NSData *checkDataA = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
+    NSData *checkDataB = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleB.json"];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
+    }];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataB, responseData, @"mock should supply data from mock response B pushed above");
+    }];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from any mock response");
+    }];
+
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+- (void)testMultipleMockResponseWithNoAutoPop;
+{
+    NSData *checkDataA = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
+
+    self.webService.autoPopMocks = NO;
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
+    }];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
+    }];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
+    }];
+
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+- (void)testMultipleMockResponseWithManualPop;
+{
+    NSData *checkDataA = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
+    NSData *checkDataB = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleB.json"];
+
+    self.webService.autoPopMocks = NO;
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
+    }];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A pushed above");
+    }];
+
+    [self.webService popMockResponseFile];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataB, responseData, @"mock should supply data from mock response B pushed above");
+    }];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkDataB, responseData, @"mock should supply data from mock response B pushed above");
+    }];
+
+    [self.webService popMockResponseFile];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from any mock response");
     }];
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
