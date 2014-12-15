@@ -43,6 +43,12 @@
     self.webService = [[TestSDWebServiceB alloc] initWithSpecification:@"SDWebServiceMockTests" host:@"testhost" path:@"/"];
 }
 
+- (void)testCheckForMockResponseQueueProvider;
+{
+    id result = [self.webService checkForMockResponseQueueProvider];
+    XCTAssertTrue([result isKindOfClass:[SDWebServiceMockResponseQueueProvider class]]);
+}
+
 - (void)testCallAutoPopMocksGetter
 {
     XCTAssertTrue(self.webService.autoPopMocks);
