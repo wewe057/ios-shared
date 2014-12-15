@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "SDURLConnection.h"
 #import "Reachability.h"
+#import "SDWebServiceMockResponseProvider.h"
 
 typedef id (^SDWebServiceDataCompletionBlock)(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error);
 typedef void (^SDWebServiceUICompletionBlock)(id dataObject, NSError *error);
@@ -243,7 +244,14 @@ typedef enum
 #define NSBundleForTestCase [NSBundle bundleForClass:[self class]]
 
 /**
+ Allows for multiple mock response provider implementations
+*/
+@property (atomic,strong) id<SDWebServiceMockResponseProvider> mockResponseProvider;
+
+/**
  Enables/Disables auto-popping of the mocks stack.  The default value is YES.
+ 
+ @warning This method is deprecated, using it will trigger a check for mockResponseProvider, and if it is not an instance of SDWebServiceMockResponseQueueProvider, it will replace it with one.
  */
 @property (atomic, assign) BOOL autoPopMocks;
 
@@ -252,16 +260,22 @@ typedef enum
  will use index 0.  If autoPopMocks is enabled, they'll be automatically pulled off
  of the stack as tey are accessed.  If autoPopMocks is disabled, one needs to manually
  call popMockResponseFile as appropriate.
+
+ @warning This method is deprecated, using it will trigger a check for mockResponseProvider, and if it is not an instance of SDWebServiceMockResponseQueueProvider, it will replace it with one.
  */
 - (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle;
 
 /**
  Adds several mock response files at once.
+
+ @warning This method is deprecated, using it will trigger a check for mockResponseProvider, and if it is not an instance of SDWebServiceMockResponseQueueProvider, it will replace it with one.
  */
 - (void)pushMockResponseFiles:(NSArray *)filenames bundle:(NSBundle *)bundle;
 
 /**
  Pops the index 0 mock off of the stack.
+
+ @warning This method is deprecated, using it will trigger a check for mockResponseProvider, and if it is not an instance of SDWebServiceMockResponseQueueProvider, it will replace it with one.
  */
 - (void)popMockResponseFile;
 

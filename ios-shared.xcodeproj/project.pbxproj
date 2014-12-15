@@ -200,6 +200,9 @@
 		F812F9581A11454F00312E52 /* SDWebServiceMockQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */; };
 		F812F95C1A1146CB00312E52 /* SDWebServiceMockTests.plist in Resources */ = {isa = PBXBuildFile; fileRef = F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */; };
 		F8BD64D31A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json in Resources */ = {isa = PBXBuildFile; fileRef = F8BD64D21A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json */; };
+		F8BD64D71A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BD64D61A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.m */; };
+		F8BD64D81A3F4DDF0090D65E /* SDWebServiceMockResponseQueueProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BD64D61A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.m */; };
+		F8BD64DA1A3F50320090D65E /* SDWebServiceValidateDeprecatedMockProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F8BD64D91A3F50320090D65E /* SDWebServiceValidateDeprecatedMockProviderTests.m */; };
 		F8F3E5361A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json in Resources */ = {isa = PBXBuildFile; fileRef = F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */; };
 /* End PBXBuildFile section */
 
@@ -476,6 +479,10 @@
 		F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockQueueTests.m; sourceTree = "<group>"; };
 		F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SDWebServiceMockTests.plist; sourceTree = "<group>"; };
 		F8BD64D21A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SDWebServiceMockTest_bundleB.json; sourceTree = "<group>"; };
+		F8BD64D41A3F445B0090D65E /* SDWebServiceMockResponseProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebServiceMockResponseProvider.h; sourceTree = "<group>"; };
+		F8BD64D51A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDWebServiceMockResponseQueueProvider.h; sourceTree = "<group>"; };
+		F8BD64D61A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockResponseQueueProvider.m; sourceTree = "<group>"; };
+		F8BD64D91A3F50320090D65E /* SDWebServiceValidateDeprecatedMockProviderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceValidateDeprecatedMockProviderTests.m; sourceTree = "<group>"; };
 		F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SDWebServiceMockTest_bundleA.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -811,6 +818,9 @@
 				CA0E776218284DD600B4398F /* SDWebService+SDProcessingBlocks.m */,
 				CA0E776318284DD600B4398F /* SDWebService.h */,
 				CA0E776418284DD600B4398F /* SDWebService.m */,
+				F8BD64D41A3F445B0090D65E /* SDWebServiceMockResponseProvider.h */,
+				F8BD64D51A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.h */,
+				F8BD64D61A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.m */,
 				CA0E776518284DD600B4398F /* UIImageView+SDExtensions.h */,
 				CA0E776618284DD600B4398F /* UIImageView+SDExtensions.m */,
 			);
@@ -908,6 +918,7 @@
 				F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */,
 				F8BD64D21A3F38F80090D65E /* SDWebServiceMockTest_bundleB.json */,
 				F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */,
+				F8BD64D91A3F50320090D65E /* SDWebServiceValidateDeprecatedMockProviderTests.m */,
 			);
 			path = SDWebServicesMocks;
 			sourceTree = "<group>";
@@ -1019,6 +1030,7 @@
 				CA0E77A218284DD600B4398F /* SDImageButton.m in Sources */,
 				CA0E777418284DD600B4398F /* NSError+SDExtensions.m in Sources */,
 				CA0E777618284DD600B4398F /* NSMutableAttributedString+SDExtensions.m in Sources */,
+				F8BD64DA1A3F50320090D65E /* SDWebServiceValidateDeprecatedMockProviderTests.m in Sources */,
 				CA0E777818284DD600B4398F /* NSNumber+SDExtensions.m in Sources */,
 				CA0E77B918284DD600B4398F /* UIActivityIndicatorView+SDExtensions.m in Sources */,
 				CA0E777C18284DD600B4398F /* NSString+SDExtensions.m in Sources */,
@@ -1054,6 +1066,7 @@
 				48EB6B2B19DCBCED0054662E /* SDSpanParserTests.m in Sources */,
 				CAA3E936182C183E00602210 /* SDTextField.m in Sources */,
 				CA0E779E18284DD600B4398F /* SDDragDropGestureRecognizer.m in Sources */,
+				F8BD64D81A3F4DDF0090D65E /* SDWebServiceMockResponseQueueProvider.m in Sources */,
 				CA0E778818284DD600B4398F /* SDTimer.m in Sources */,
 				CA0E778418284DD600B4398F /* SDModelObject.m in Sources */,
 				08EFCA2818FEFAC6006547E0 /* NSDictionary+SDExtensionsTests.m in Sources */,
@@ -1127,6 +1140,7 @@
 				E21C3B3418CFAFD400BD380D /* SDCompletionGroup.m in Sources */,
 				CA0E77BE18284DD600B4398F /* UIColor+SDExtensions.m in Sources */,
 				CA0E77C818284DD600B4398F /* UIViewController+SDExtensions.m in Sources */,
+				F8BD64D71A3F45B80090D65E /* SDWebServiceMockResponseQueueProvider.m in Sources */,
 				CA0E779918284DD600B4398F /* SDContainerViewController.m in Sources */,
 				CA0E77D218284DD600B4398F /* Reachability.m in Sources */,
 				E2C8A21E1853E660000DD265 /* SDPullNavigationBarControlsView.m in Sources */,

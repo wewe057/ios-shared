@@ -12,6 +12,7 @@
 #import "NSCachedURLResponse+LeakFix.h"
 #import "NSData+SDExtensions.h"
 #import "NSURLRequest+SDExtensions.h"
+#import "SDWebServiceMockResponseQueueProvider.h"
 
 NSString *const SDWebServiceError = @"SDWebServiceError";
 
@@ -50,9 +51,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSDictionary *_serviceSpecification;
     NSUInteger _requestCount;
     NSOperationQueue *_dataProcessingQueue;
-
-    // always access the mutable array inside of @synchronized(self)
-    NSMutableArray *_mockStack;
 }
 
 #pragma mark - Singleton bits
@@ -72,10 +70,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     _singleRequests = [[NSMutableDictionary alloc] init];
     _normalRequests = [[NSMutableDictionary alloc] init];
     
-#ifdef DEBUG
-    _autoPopMocks = YES;
-#endif
-    
     self.timeout = 60; // 1-minute default.
 	
     NSString *specFile = [[NSBundle bundleForClass:[self class]] pathForResource:specificationName ofType:@"plist"];
@@ -90,8 +84,6 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 
     _cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
 
-    _mockStack = [NSMutableArray array];
-    
 #ifdef DEBUG
     _disableCaching = [[NSUserDefaults standardUserDefaults] boolForKey:@"kWMDisableCaching"];
 #endif
@@ -723,7 +715,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     // attempt to find any mock data if available, we need it going forward.
     NSData *mockData = nil;
 #ifdef DEBUG
-    mockData = [self getNextMockResponse];
+    mockData = [self.mockResponseProvider getMockResponseForRequest:request];
 #endif
 
     // check the cache if we're not working with a mock.
@@ -864,91 +856,58 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #pragma mark - Unit Testing
 
 #ifdef DEBUG
-- (NSData *)getNextMockResponse
+- (SDWebServiceMockResponseQueueProvider *)checkForMockResponseQueueProvider
 {
     @synchronized(self)
     {
-        if (_mockStack.count == 0)
-            return nil;
-        
-        NSData *result = [_mockStack objectAtIndex:0];
-        if (self.autoPopMocks)
-            [self popMockResponseFile];
-        
-        return result;
+        if (![self.mockResponseProvider isKindOfClass:[SDWebServiceMockResponseQueueProvider class]]) {
+            if (self.mockResponseProvider == nil) {
+                SDLog(@"Setting mockResponseProvider to instance of SDWebServiceMockResponseQueueProvider");
+            } else {
+                SDLog(@"Replacing current mockResponseProvider (%@) with instance of SDWebServiceMockResponseQueueProvider", NSStringFromClass([self.mockResponseProvider class]));
+            }
+            self.mockResponseProvider = [[SDWebServiceMockResponseQueueProvider alloc] init];
+        }
     }
+    return self.mockResponseProvider;
+}
+
+- (BOOL)autoPopMocks
+{
+    SDWebServiceMockResponseQueueProvider *mockResponseQueueProvider = [self checkForMockResponseQueueProvider];
+    return mockResponseQueueProvider.autoPopMocks;
+}
+
+- (void)setAutoPopMocks:(BOOL)autoPopMocks
+{
+    SDWebServiceMockResponseQueueProvider *mockResponseQueueProvider = [self checkForMockResponseQueueProvider];
+    mockResponseQueueProvider.autoPopMocks = autoPopMocks;
 }
 
 - (void)pushMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle
 {
-    @synchronized(self)
-    {
-        // remove a any prepended paths in case they can't read the documentation.
-        NSString *safeFilename = [filename lastPathComponent];
-        NSString *finalPath = [bundle pathForResource:safeFilename ofType:nil];
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSData *mockData = nil;
-        
-        if (finalPath && [fileManager fileExistsAtPath:finalPath])
-        {
-            SDLog(@"*** Using mock data file '%@'", safeFilename);
-            mockData = [NSData dataWithContentsOfFile:finalPath];
-        }
-        else
-            SDLog(@"*** Unable to find mock file '%@'", safeFilename);
-
-        if (mockData)
-            [_mockStack addObject:mockData];
-    }
+    SDWebServiceMockResponseQueueProvider *mockResponseQueueProvider = [self checkForMockResponseQueueProvider];
+    [mockResponseQueueProvider pushMockResponseFile:filename bundle:bundle];
 }
 
 - (void)pushMockResponseFiles:(NSArray *)filenames bundle:(NSBundle *)bundle
 {
-    @synchronized(self)
-    {
-        for (NSUInteger index = 0; index < filenames.count; index++)
-        {
-            id object = [filenames objectAtIndex:index];
-            if (object && [object isKindOfClass:[NSString class]])
-            {
-                NSString *filename = object;
-                
-                // remove a any prepended paths in case they can't read the documentation.
-                NSString *safeFilename = [filename lastPathComponent];
-                NSString *finalPath = [bundle pathForResource:safeFilename ofType:nil];
-                NSFileManager *fileManager = [NSFileManager defaultManager];
-                NSData *mockData = nil;
-        
-                if (finalPath && [fileManager fileExistsAtPath:finalPath])
-                {
-                    SDLog(@"*** Using mock data file '%@'", safeFilename);
-                    mockData = [NSData dataWithContentsOfFile:finalPath];
-                }
-                else
-                    SDLog(@"*** Unable to find mock file '%@'", safeFilename);
-                
-                if (mockData)
-                    [_mockStack addObject:mockData];
-            }
-        }
-    }
+    SDWebServiceMockResponseQueueProvider *mockResponseQueueProvider = [self checkForMockResponseQueueProvider];
+    [mockResponseQueueProvider pushMockResponseFiles:filenames bundle:bundle];
 }
 
 - (void)popMockResponseFile
 {
-    @synchronized(self)
-    {
-        if (_mockStack.count > 0)
-            [_mockStack removeObjectAtIndex:0];
-    }
+    SDWebServiceMockResponseQueueProvider *mockResponseQueueProvider = [self checkForMockResponseQueueProvider];
+    [mockResponseQueueProvider popMockResponseFile];
 }
 
-- (NSInteger) maxConcurrentOperationCount;
+- (NSInteger) maxConcurrentOperationCount
 {
     return _dataProcessingQueue.maxConcurrentOperationCount;
 }
 
-- (void) setMaxConcurrentOperationCount:(NSInteger) maxConcurrentOperationCount;
+- (void) setMaxConcurrentOperationCount:(NSInteger) maxConcurrentOperationCount
 {
     _dataProcessingQueue.maxConcurrentOperationCount = maxConcurrentOperationCount;
 }
