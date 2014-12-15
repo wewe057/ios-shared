@@ -40,6 +40,7 @@
     NSString *testResponseFilepath = [self.bundle pathForResource:testResponseFilename ofType:nil];
     NSData *checkData = [NSData dataWithContentsOfFile:testResponseFilepath];
     [self.webService pushMockResponseFile:testResponseFilename bundle:self.bundle];
+
     [self.webService performRequestWithMethod:@"testGETNoRouteParams"
                                       headers:nil
                             routeReplacements:nil
@@ -55,6 +56,37 @@
                             routeReplacements:nil
                           dataProcessingBlock:^id(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
                               XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
+                              [secondWebServiceExpectation fulfill];
+                              return nil;
+                          } uiUpdateBlock:nil];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+- (void)testSingleMockResponseWithNoAutoPop;
+{
+    XCTestExpectation *firstWebServiceExpectation = [self expectationWithDescription:@"firstWebServiceExpectation"];
+
+    NSString *testResponseFilename = @"SDWebServiceMockTest_bundleA.json";
+    NSString *testResponseFilepath = [self.bundle pathForResource:testResponseFilename ofType:nil];
+    NSData *checkData = [NSData dataWithContentsOfFile:testResponseFilepath];
+    [self.webService pushMockResponseFile:testResponseFilename bundle:self.bundle];
+
+    self.webService.autoPopMocks = NO;
+    [self.webService performRequestWithMethod:@"testGETNoRouteParams"
+                                      headers:nil
+                            routeReplacements:nil
+                          dataProcessingBlock:^id(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+                              XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+                              [firstWebServiceExpectation fulfill];
+                              return nil;
+                          } uiUpdateBlock:nil];
+
+    XCTestExpectation *secondWebServiceExpectation = [self expectationWithDescription:@"secondWebServiceExpectation"];
+    [self.webService performRequestWithMethod:@"testGETNoRouteParams"
+                                      headers:nil
+                            routeReplacements:nil
+                          dataProcessingBlock:^id(NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
+                              XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
                               [secondWebServiceExpectation fulfill];
                               return nil;
                           } uiUpdateBlock:nil];
