@@ -942,6 +942,17 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             [_mockStack removeObjectAtIndex:0];
     }
 }
+
+- (NSInteger) maxConcurrentOperationCount;
+{
+    return _dataProcessingQueue.maxConcurrentOperationCount;
+}
+
+- (void) setMaxConcurrentOperationCount:(NSInteger) maxConcurrentOperationCount;
+{
+    _dataProcessingQueue.maxConcurrentOperationCount = maxConcurrentOperationCount;
+}
+
 #endif
 
 

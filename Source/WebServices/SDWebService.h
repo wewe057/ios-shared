@@ -265,6 +265,11 @@ typedef enum
  */
 - (void)popMockResponseFile;
 
+/**
+ Sets the maximumConcurrentOperations to enable predictability for testing
+ */
+@property (nonatomic,assign) NSInteger maxConcurrentOperationCount;
+
 #endif
 
 @end
