@@ -30,6 +30,17 @@
     _sddm_selector(self, selector)
 
 /**
+ sdmo_transformed_key is similar to sdmo_key but accepts the name of an NSValueTransformer that will convert a value from source data.
+ 
+ ie: `BOOL theOppositeOfWhatYouSaid` via sdmo_transformed_key(self.theOppositeOfWhatYouSaid, NSNegateBooleanTransformerName)
+     becomes @"transformed(theOppositeOfWhatYouSaid,NSNegateBoolean)"
+ 
+ Note: A reference to 'self' is implicit.
+ */
+#define sdmo_transformed_key(property, transformerClassName) \
+    _sddm_transformed_key(self, variable_name(property), transformerClassName)
+
+/**
  *  SDModelObject is a base modeling class which ideally works in conjunction with SDDataMap.
  *  
  *  SDModelObject's mapFromObject will generate a new instance of this class/subclass and then
