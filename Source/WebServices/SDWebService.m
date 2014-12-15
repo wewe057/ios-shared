@@ -858,6 +858,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 #ifdef DEBUG
 - (SDWebServiceMockResponseQueueProvider *)checkForMockResponseQueueProvider
 {
+    SDWebServiceMockResponseQueueProvider *result = nil;
     @synchronized(self)
     {
         if (![self.mockResponseProvider isKindOfClass:[SDWebServiceMockResponseQueueProvider class]]) {
@@ -868,8 +869,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             }
             self.mockResponseProvider = [[SDWebServiceMockResponseQueueProvider alloc] init];
         }
+        result = self.mockResponseProvider;
     }
-    return self.mockResponseProvider;
+    return result;
 }
 
 - (BOOL)autoPopMocks

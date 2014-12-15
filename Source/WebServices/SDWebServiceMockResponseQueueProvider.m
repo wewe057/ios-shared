@@ -18,11 +18,10 @@
 
 - (instancetype) init
 {
-    self = [super init];
-    
-    _autoPopMocks = YES;
-    _mockStack = [NSMutableArray array];
-    
+    if ((self = [super init])) {
+        _autoPopMocks = YES;
+        _mockStack = [NSMutableArray array];
+    }
     return self;
 }
 
@@ -31,12 +30,16 @@
     @synchronized(self)
     {
         if (_mockStack.count == 0)
+        {
             return nil;
+        }
 
         NSData *result = [_mockStack objectAtIndex:0];
         if (self.autoPopMocks)
+        {
             [self popMockResponseFile];
-
+        }
+        
         return result;
     }
 }
@@ -60,7 +63,9 @@
             SDLog(@"*** Unable to find mock file '%@'", safeFilename);
 
         if (mockData)
+        {
             [_mockStack addObject:mockData];
+        }
     }
 }
 
@@ -90,7 +95,9 @@
                     SDLog(@"*** Unable to find mock file '%@'", safeFilename);
 
                 if (mockData)
+                {
                     [_mockStack addObject:mockData];
+                }
             }
         }
     }
@@ -101,7 +108,9 @@
     @synchronized(self)
     {
         if (_mockStack.count > 0)
+        {
             [_mockStack removeObjectAtIndex:0];
+        }
     }
 }
 
