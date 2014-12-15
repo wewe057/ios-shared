@@ -10,18 +10,24 @@
 
 @interface SDWebServiceMockResponseRequestMapping()
 @property (nonatomic,copy) NSString *pathPattern;
+@property (nonatomic,assign) BOOL exactMatchPath;
 @property (nonatomic,copy) NSDictionary *queryParameterPatterns;
+@property (nonatomic,assign) BOOL exactMatchQueryValues;
 @end
 
 @implementation SDWebServiceMockResponseRequestMapping
 
-- (instancetype)initWithPatternsForPath:(NSString *) pathPattern
-                        queryParameters:(NSDictionary *) queryParameterPatterns
+- (instancetype)initWithPath:(NSString *) pathPattern
+              exactMatchPath:(BOOL) exactMatchPath
+             queryParameters:(NSDictionary *) queryParameterPatterns
+       exactMatchQueryValues:(BOOL) exactMatchQueryValues
 {
     if ((self = [super init]))
     {
         _pathPattern = [pathPattern copy];
+        _exactMatchPath = exactMatchPath;
         _queryParameterPatterns = [queryParameterPatterns copy];
+        _exactMatchQueryValues = exactMatchQueryValues;
     }
     return self;
 }
@@ -31,9 +37,25 @@
     NSMutableString *result = [NSMutableString stringWithString:NSStringFromClass([self class])];
     if ([self.pathPattern length] > 0) {
         [result appendFormat:@"\npathPattern: %@", self.pathPattern];
+        if (self.exactMatchPath)
+        {
+            [result appendString:@" (exact match)"];
+        }
+        else
+        {
+            [result appendString:@" (pattern match)"];
+        }
     }
     if ([self.queryParameterPatterns count] > 0) {
         [result appendString:@"\nqueryParameterPatterns"];
+        if (self.exactMatchQueryValues)
+        {
+            [result appendString:@" (exact matches)"];
+        }
+        else
+        {
+            [result appendString:@" (pattern matches)"];
+        }
         [self.queryParameterPatterns enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             [result appendFormat:@"\n  %@=%@", key, obj];
         }];
@@ -41,25 +63,36 @@
     return result;
 }
 
-- (BOOL) matchesRequest:(NSURLRequest *) request
+- (BOOL) pattern:(NSString *) pattern matchesValue:(NSString *) value exactly:(BOOL) exactly
 {
     BOOL result = NO;
-    if (request.URL == nil)
+    if ([pattern length] == 0)
     {
-        result = (self.pathPattern == nil);
+        // specifying exact match for empty pattern means the value should be nil/empty
+        result = exactly ? ([value length] == 0) : YES;
     }
     else
     {
-        if ([self.pathPattern length] == 0)
+        if (exactly)
         {
-            result = (request.URL != nil) && ([request.URL.path length] == 0);
+            result = [pattern isEqualToString:value];
+        }
+        else if ([value length] == 0)
+        {
+            result = NO;
         }
         else
         {
-            NSRange range = [request.URL.path rangeOfString:self.pathPattern];
+            NSRange range = [value rangeOfString:pattern];
             result = (range.location != NSNotFound);
         }
     }
+    return result;
+}
+
+- (BOOL) matchesRequest:(NSURLRequest *) request
+{
+    BOOL result = [self pattern:self.pathPattern matchesValue:request.URL.path exactly:self.exactMatchPath];
 
     if (result && ([self.queryParameterPatterns count] > 0))
     {
@@ -75,8 +108,7 @@
             NSString *checkValue = unmatchedQueryParameterPatterns[queryParameter];
             if (checkValue != nil)
             {
-                NSRange range = [queryValue rangeOfString:checkValue];
-                if (range.location != NSNotFound)
+                if ([self pattern:checkValue matchesValue:queryValue exactly:self.exactMatchQueryValues])
                 {
                     // found parameter whose value does match the pattern
                     [unmatchedQueryParameterPatterns removeObjectForKey:queryParameter];

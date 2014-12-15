@@ -16,10 +16,10 @@
 
 }
 
-- (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forPathPattern:(NSString *) pathPattern
+- (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forPath:(NSString *) path
 {
     SDWebServiceMockResponseRequestMapping *requestMapping =
-    [[SDWebServiceMockResponseRequestMapping alloc] initWithPatternsForPath:pathPattern queryParameters:nil];
+    [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:path exactMatchPath:YES queryParameters:nil exactMatchQueryValues:NO];
     [self addMockResponseFile:filename bundle:bundle forRequestMapping:requestMapping frequency:NSIntegerMax];
 }
 

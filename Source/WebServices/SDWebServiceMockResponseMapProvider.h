@@ -13,7 +13,7 @@
 @interface SDWebServiceMockResponseMapProvider : NSObject
 
 - (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forRequestMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping frequency:(NSUInteger) frequency;
-- (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forPathPattern:(NSString *) pathPattern;
+- (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forPath:(NSString *) path;
 - (void)removeMockResponseFilename:(NSString *) filename;
 - (void)removeMockResponseFileForRequestMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping;
 
