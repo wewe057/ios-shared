@@ -199,6 +199,7 @@
 		E2EDC79218A59D4F00E7E416 /* NSShadow+SDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */; };
 		F812F9581A11454F00312E52 /* SDWebServiceMockQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */; };
 		F812F95C1A1146CB00312E52 /* SDWebServiceMockTests.plist in Resources */ = {isa = PBXBuildFile; fileRef = F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */; };
+		F8F3E5361A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json in Resources */ = {isa = PBXBuildFile; fileRef = F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -473,6 +474,7 @@
 		E2EDC79118A59D4F00E7E416 /* NSShadow+SDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSShadow+SDExtensions.m"; sourceTree = "<group>"; };
 		F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDWebServiceMockQueueTests.m; sourceTree = "<group>"; };
 		F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SDWebServiceMockTests.plist; sourceTree = "<group>"; };
+		F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SDWebServiceMockTest_bundleA.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -901,6 +903,7 @@
 			isa = PBXGroup;
 			children = (
 				F812F95B1A1146CB00312E52 /* SDWebServiceMockTests.plist */,
+				F8F3E5351A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json */,
 				F812F9571A11454F00312E52 /* SDWebServiceMockQueueTests.m */,
 			);
 			path = SDWebServicesMocks;
@@ -986,6 +989,7 @@
 				487BE86C19DCD2CC009D295E /* SpanTest_missingclose.txt in Resources */,
 				487BE86E19DCD2CC009D295E /* SpanTest_missingopen.txt in Resources */,
 				487BE86D19DCD2CC009D295E /* SpanTest_extraspace.txt in Resources */,
+				F8F3E5361A3B53DA00B14095 /* SDWebServiceMockTest_bundleA.json in Resources */,
 				487BE86B19DCD2CC009D295E /* SpanTest_missingclass.txt in Resources */,
 				CA0E77AB18284DD600B4398F /* SDPickerModalViewController-iOS7.xib in Resources */,
 				487BE87019DCD2CC009D295E /* SpanTest_multispans.txt in Resources */,
