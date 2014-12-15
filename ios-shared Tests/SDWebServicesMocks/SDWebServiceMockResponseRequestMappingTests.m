@@ -14,17 +14,25 @@ NSString * const kTest_rootPath = @"/";
 NSString * const kTest_partialPath = @"path1";
 NSString * const kTest_pathA = @"/path1/path2";
 NSString * const kTest_pathB = @"/path2/path1";
-NSString * const kTest_query = @"?param1=a&param2=b";
+
+NSString * const kTest_queryParam1 = @"param1";
+NSString * const kTest_queryParam2 = @"param2";
+NSString * const kTest_queryParam3 = @"param3";
+NSString * const kTest_queryValue1 = @"abcdef";
+NSString * const kTest_queryValue2 = @"1001";
+NSString * const kTest_queryValue3 = @"noparam";
 
 NSString * const kTest_urlString_nil = nil;
 NSString * const kTest_urlString_bareNoQuery = @"http://example.com";
 NSString * const kTest_urlString_rootNoQuery = @"http://example.com/";
-NSString * const kTest_urlString_fullANoQuery = @"http://example.com/path1/path2";
-NSString * const kTest_urlString_fullBNoQuery = @"http://example.com/path2/path1";
-NSString * const kTest_urlString_bareWithQuery = @"http://example.com?param1=a&param2=b";
-NSString * const kTest_urlString_rootWithQuery = @"http://example.com/?param1=a&param2=b";
-NSString * const kTest_urlString_fullAWithQuery = @"http://example.com/path1/path2?param1=a&param2=b";
-NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/path1?param1=a&param2=b";
+NSString * const kTest_urlString_pathANoQuery = @"http://example.com/path1/path2";
+NSString * const kTest_urlString_pathBNoQuery = @"http://example.com/path2/path1";
+NSString * const kTest_urlString_bareWithQueryA = @"http://example.com?param1=abcdef&param2=1001";
+NSString * const kTest_urlString_rootWithQueryA = @"http://example.com/?param1=abcdef&param2=1001";
+NSString * const kTest_urlString_pathAWithQueryA = @"http://example.com/path1/path2?param1=abcdef&param2=1001";
+NSString * const kTest_urlString_pathBWithQueryA = @"http://example.com/path2/path1?param1=abcdef&param2=1001";
+NSString * const kTest_urlString_pathAWithQueryB = @"http://example.com/path1/path2?param1=abcdefghij&param2=1001234";
+NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/path2?param1=abcdef&param2=1001234";
 
 #define expect(E,M,U) \
 { \
@@ -66,12 +74,12 @@ NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/pat
     expect(YES,mapping,kTest_urlString_nil);
     expect(YES,mapping,kTest_urlString_bareNoQuery);
     expect(YES,mapping,kTest_urlString_rootNoQuery);
-    expect(YES,mapping,kTest_urlString_fullANoQuery);
-    expect(YES,mapping,kTest_urlString_fullBNoQuery);
-    expect(YES,mapping,kTest_urlString_bareWithQuery);
-    expect(YES,mapping,kTest_urlString_rootWithQuery);
-    expect(YES,mapping,kTest_urlString_fullAWithQuery);
-    expect(YES,mapping,kTest_urlString_fullBWithQuery);
+    expect(YES,mapping,kTest_urlString_pathANoQuery);
+    expect(YES,mapping,kTest_urlString_pathBNoQuery);
+    expect(YES,mapping,kTest_urlString_bareWithQueryA);
+    expect(YES,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathBWithQueryA);
 }
 
 - (void)testRootPathExactMatch
@@ -80,12 +88,12 @@ NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/pat
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(YES,mapping,kTest_urlString_rootNoQuery);
-    expect(NO,mapping,kTest_urlString_fullANoQuery);
-    expect(NO,mapping,kTest_urlString_fullBNoQuery);
-    expect(NO,mapping,kTest_urlString_bareWithQuery);
-    expect(YES,mapping,kTest_urlString_rootWithQuery);
-    expect(NO,mapping,kTest_urlString_fullAWithQuery);
-    expect(NO,mapping,kTest_urlString_fullBWithQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(YES,mapping,kTest_urlString_rootWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathBWithQueryA);
 }
 
 - (void)testRootPathPattern
@@ -94,12 +102,12 @@ NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/pat
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(YES,mapping,kTest_urlString_rootNoQuery);
-    expect(YES,mapping,kTest_urlString_fullANoQuery);
-    expect(YES,mapping,kTest_urlString_fullBNoQuery);
-    expect(NO,mapping,kTest_urlString_bareWithQuery);
-    expect(YES,mapping,kTest_urlString_rootWithQuery);
-    expect(YES,mapping,kTest_urlString_fullAWithQuery);
-    expect(YES,mapping,kTest_urlString_fullBWithQuery);
+    expect(YES,mapping,kTest_urlString_pathANoQuery);
+    expect(YES,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(YES,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathBWithQueryA);
 }
 
 - (void)testPathAExactMatch
@@ -108,12 +116,12 @@ NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/pat
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
-    expect(YES,mapping,kTest_urlString_fullANoQuery);
-    expect(NO,mapping,kTest_urlString_fullBNoQuery);
-    expect(NO,mapping,kTest_urlString_bareWithQuery);
-    expect(NO,mapping,kTest_urlString_rootWithQuery);
-    expect(YES,mapping,kTest_urlString_fullAWithQuery);
-    expect(NO,mapping,kTest_urlString_fullBWithQuery);
+    expect(YES,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(NO,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathBWithQueryA);
 }
 
 - (void)testPathAPattern
@@ -122,12 +130,12 @@ NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/pat
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
-    expect(YES,mapping,kTest_urlString_fullANoQuery);
-    expect(NO,mapping,kTest_urlString_fullBNoQuery);
-    expect(NO,mapping,kTest_urlString_bareWithQuery);
-    expect(NO,mapping,kTest_urlString_rootWithQuery);
-    expect(YES,mapping,kTest_urlString_fullAWithQuery);
-    expect(NO,mapping,kTest_urlString_fullBWithQuery);
+    expect(YES,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(NO,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathBWithQueryA);
 }
 
 - (void)testPartialPathExactMatch
@@ -136,12 +144,12 @@ NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/pat
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
-    expect(NO,mapping,kTest_urlString_fullANoQuery);
-    expect(NO,mapping,kTest_urlString_fullBNoQuery);
-    expect(NO,mapping,kTest_urlString_bareWithQuery);
-    expect(NO,mapping,kTest_urlString_rootWithQuery);
-    expect(NO,mapping,kTest_urlString_fullAWithQuery);
-    expect(NO,mapping,kTest_urlString_fullBWithQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(NO,mapping,kTest_urlString_rootWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathBWithQueryA);
 }
 
 - (void)testPartialPathPattern
@@ -150,12 +158,136 @@ NSString * const kTest_urlString_fullBWithQuery = @"http://example.com/path2/pat
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
-    expect(YES,mapping,kTest_urlString_fullANoQuery);
-    expect(YES,mapping,kTest_urlString_fullBNoQuery);
-    expect(NO,mapping,kTest_urlString_bareWithQuery);
-    expect(NO,mapping,kTest_urlString_rootWithQuery);
-    expect(YES,mapping,kTest_urlString_fullAWithQuery);
-    expect(YES,mapping,kTest_urlString_fullBWithQuery);
+    expect(YES,mapping,kTest_urlString_pathANoQuery);
+    expect(YES,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(NO,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathBWithQueryA);
+}
+
+- (void)testQueryOneParamExactMatch
+{
+    NSDictionary *queryParameters =
+    @{
+      kTest_queryParam1:kTest_queryValue1
+      };
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:YES];
+    expect(NO,mapping,kTest_urlString_nil);
+    expect(NO,mapping,kTest_urlString_bareNoQuery);
+    expect(NO,mapping,kTest_urlString_rootNoQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(YES,mapping,kTest_urlString_bareWithQueryA);
+    expect(YES,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathBWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryB);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryC);
+}
+
+- (void)testQueryOneParamPattern
+{
+    NSDictionary *queryParameters =
+    @{
+      kTest_queryParam1:kTest_queryValue1
+      };
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:NO];
+    expect(NO,mapping,kTest_urlString_nil);
+    expect(NO,mapping,kTest_urlString_bareNoQuery);
+    expect(NO,mapping,kTest_urlString_rootNoQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(YES,mapping,kTest_urlString_bareWithQueryA);
+    expect(YES,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryB);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryC);
+}
+
+- (void)testQueryTwoParamsExactMatch
+{
+    NSDictionary *queryParameters =
+    @{
+      kTest_queryParam1:kTest_queryValue1,
+      kTest_queryParam2:kTest_queryValue2
+      };
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:YES];
+    expect(NO,mapping,kTest_urlString_nil);
+    expect(NO,mapping,kTest_urlString_bareNoQuery);
+    expect(NO,mapping,kTest_urlString_rootNoQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(YES,mapping,kTest_urlString_bareWithQueryA);
+    expect(YES,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathBWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryB);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryC);
+}
+
+- (void)testQueryTwoParamsPattern
+{
+    NSDictionary *queryParameters =
+    @{
+      kTest_queryParam1:kTest_queryValue1,
+      kTest_queryParam2:kTest_queryValue2
+      };
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:NO];
+    expect(NO,mapping,kTest_urlString_nil);
+    expect(NO,mapping,kTest_urlString_bareNoQuery);
+    expect(NO,mapping,kTest_urlString_rootNoQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(YES,mapping,kTest_urlString_bareWithQueryA);
+    expect(YES,mapping,kTest_urlString_rootWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryA);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryB);
+    expect(YES,mapping,kTest_urlString_pathAWithQueryC);
+}
+
+
+- (void)testQueryThreeParamsExactMatch
+{
+    NSDictionary *queryParameters =
+    @{
+      kTest_queryParam1:kTest_queryValue1,
+      kTest_queryParam2:kTest_queryValue2,
+      kTest_queryParam3:kTest_queryValue3
+      };
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:YES];
+    expect(NO,mapping,kTest_urlString_nil);
+    expect(NO,mapping,kTest_urlString_bareNoQuery);
+    expect(NO,mapping,kTest_urlString_rootNoQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(NO,mapping,kTest_urlString_rootWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathBWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryB);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryC);
+}
+
+- (void)testQueryThreeParamsPattern
+{
+    NSDictionary *queryParameters =
+    @{
+      kTest_queryParam1:kTest_queryValue1,
+      kTest_queryParam2:kTest_queryValue2,
+      kTest_queryParam3:kTest_queryValue3
+      };
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:NO];
+    expect(NO,mapping,kTest_urlString_nil);
+    expect(NO,mapping,kTest_urlString_bareNoQuery);
+    expect(NO,mapping,kTest_urlString_rootNoQuery);
+    expect(NO,mapping,kTest_urlString_pathANoQuery);
+    expect(NO,mapping,kTest_urlString_pathBNoQuery);
+    expect(NO,mapping,kTest_urlString_bareWithQueryA);
+    expect(NO,mapping,kTest_urlString_rootWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryA);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryB);
+    expect(NO,mapping,kTest_urlString_pathAWithQueryC);
 }
 
 @end
