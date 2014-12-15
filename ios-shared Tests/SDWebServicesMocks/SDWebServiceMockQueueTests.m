@@ -32,8 +32,7 @@
     XCTAssertTrue(self.webService.autoPopMocks);
 }
 
-- (void) checkWebService:(SDWebService *) webService
-         withBlock:(void (^)(NSData *responseData, NSError *error)) block;
+- (void) checkWebServiceWithBlock:(void (^)(NSData *responseData, NSError *error)) block;
 {
     XCTestExpectation *expectation = [self expectationWithDescription:@"webService request completed"];
     [self.webService performRequestWithMethod:@"testGETNoRouteParams"
@@ -46,66 +45,58 @@
                           } uiUpdateBlock:nil];
 }
 
+- (NSData *) pushMockResponseWithFilename:(NSString *) filename;
+{
+    [self.webService pushMockResponseFile:filename bundle:self.bundle];
+    NSString *filepath = [self.bundle pathForResource:filename ofType:nil];
+    return [NSData dataWithContentsOfFile:filepath];
+}
+
 - (void)testSingleMockResponseWithAutoPop;
 {
-    NSString *testResponseFilename = @"SDWebServiceMockTest_bundleA.json";
-    NSString *testResponseFilepath = [self.bundle pathForResource:testResponseFilename ofType:nil];
-    NSData *checkData = [NSData dataWithContentsOfFile:testResponseFilepath];
-    [self.webService pushMockResponseFile:testResponseFilename bundle:self.bundle];
+    NSData *checkData = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
 
-    [self checkWebService:self.webService
-                withBlock:^(NSData *responseData, NSError *error) {
-                    XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
-                }];
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+    }];
 
-    [self checkWebService:self.webService
-                withBlock:^(NSData *responseData, NSError *error) {
-                    XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
-                }];
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
+    }];
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 - (void)testSingleMockResponseWithNoAutoPop;
 {
-    NSString *testResponseFilename = @"SDWebServiceMockTest_bundleA.json";
-    NSString *testResponseFilepath = [self.bundle pathForResource:testResponseFilename ofType:nil];
-    NSData *checkData = [NSData dataWithContentsOfFile:testResponseFilepath];
-    [self.webService pushMockResponseFile:testResponseFilename bundle:self.bundle];
+    NSData *checkData = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
 
     self.webService.autoPopMocks = NO;
-    
-    [self checkWebService:self.webService
-                withBlock:^(NSData *responseData, NSError *error) {
-                    XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
-                }];
 
-    [self checkWebService:self.webService
-                withBlock:^(NSData *responseData, NSError *error) {
-                    XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
-                }];
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+    }];
+
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+    }];
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 - (void)testSingleMockResponseWithManualPop;
 {
-    NSString *testResponseFilename = @"SDWebServiceMockTest_bundleA.json";
-    NSString *testResponseFilepath = [self.bundle pathForResource:testResponseFilename ofType:nil];
-    NSData *checkData = [NSData dataWithContentsOfFile:testResponseFilepath];
-    [self.webService pushMockResponseFile:testResponseFilename bundle:self.bundle];
+    NSData *checkData = [self pushMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json"];
 
-    [self checkWebService:self.webService
-                withBlock:^(NSData *responseData, NSError *error) {
-                    XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
-                }];
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
+    }];
 
     [self.webService popMockResponseFile];
 
-    [self checkWebService:self.webService
-                withBlock:^(NSData *responseData, NSError *error) {
-                    XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
-                }];
+    [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+        XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
+    }];
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
