@@ -49,6 +49,17 @@
     return [NSData dataWithContentsOfFile:filepath];
 }
 
+- (NSArray *) pushMockResponsesWithFilenames:(NSArray *) filenames;
+{
+    [self.webService pushMockResponseFiles:filenames bundle:self.bundle];
+    NSMutableArray *dataArray = [NSMutableArray arrayWithCapacity:[filenames count]];
+    for (NSString *filename in filenames) {
+        NSString *filepath = [self.bundle pathForResource:filename ofType:nil];
+        [dataArray addObject:[NSData dataWithContentsOfFile:filepath]];
+    }
+    return [dataArray copy];
+}
+
 #pragma mark - miscellaneous tests
 
 - (void)testDefaultAutoPop;
@@ -185,5 +196,22 @@
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
+
+- (void)testMultipleMockResponseWithPushingMultipleFilenanes;
+{
+    NSArray *filenames = @[@"SDWebServiceMockTest_bundleA.json", @"SDWebServiceMockTest_bundleB.json"];
+    NSArray *dataArray = [self pushMockResponsesWithFilenames:filenames];
+    XCTAssertEqual([filenames count], [dataArray count]);
+
+    for (NSUInteger idx=0; idx<[dataArray count]; idx++) {
+        NSData *checkData = dataArray[idx];
+        [self checkWebServiceWithBlock:^(NSData *responseData, NSError *error) {
+            XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response %ld pushed above", (long)idx);
+        }];
+    }
+
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
 
 @end
