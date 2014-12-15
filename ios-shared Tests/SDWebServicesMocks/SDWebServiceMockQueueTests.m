@@ -47,8 +47,7 @@
                               XCTAssertEqualObjects(checkData, responseData, @"mock should supply data from mock response pushed above");
                               [firstWebServiceExpectation fulfill];
                               return nil;
-                          } uiUpdateBlock:^(id dataObject, NSError *error) {
-                          }];
+                          } uiUpdateBlock:nil];
 
     XCTestExpectation *secondWebServiceExpectation = [self expectationWithDescription:@"secondWebServiceExpectation"];
     [self.webService performRequestWithMethod:@"testGETNoRouteParams"
@@ -58,11 +57,8 @@
                               XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from mock response pushed above");
                               [secondWebServiceExpectation fulfill];
                               return nil;
-                          } uiUpdateBlock:^(id dataObject, NSError *error) {
-                          }];
-    [self waitForExpectationsWithTimeout:5.0 handler:^(NSError *error) {
-        NSLog(@"waitForExpectationsWithTimeout: %@", error);
-    }];
+                          } uiUpdateBlock:nil];
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 @end
