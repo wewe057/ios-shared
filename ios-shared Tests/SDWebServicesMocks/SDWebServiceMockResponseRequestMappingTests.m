@@ -39,4 +39,13 @@
     [self expect:YES forMapping:mapping urlString:@"http://example.com/path1/path2?param1=a&param2=b"];
 }
 
+- (void)testFullPath
+{
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPatternsForPath:@"/path1/path2" queryParameters:nil];
+    [self expect:NO forMapping:mapping urlString:nil];
+    [self expect:NO forMapping:mapping urlString:@"http://example.com"];
+    [self expect:NO forMapping:mapping urlString:@"http://example.com?param1=a&param2=b"];
+    [self expect:YES forMapping:mapping urlString:@"http://example.com/path1/path2?param1=a&param2=b"];
+}
+
 @end

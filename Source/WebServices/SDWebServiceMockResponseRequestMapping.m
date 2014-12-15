@@ -26,17 +26,41 @@
     return self;
 }
 
+- (NSString *) description
+{
+    NSMutableString *result = [NSMutableString stringWithString:NSStringFromClass([self class])];
+    if ([self.pathPattern length] > 0) {
+        [result appendFormat:@"\npathPattern: %@", self.pathPattern];
+    }
+    if ([self.queryParameterPatterns count] > 0) {
+        [result appendString:@"\nqueryParameterPatterns"];
+        [self.queryParameterPatterns enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            [result appendFormat:@"\n  %@=%@", key, obj];
+        }];
+    }
+    return result;
+}
+
 - (BOOL) matchesRequest:(NSURLRequest *) request
 {
-    BOOL result = YES;
-    if ([self.pathPattern length] > 0)
+    BOOL result = NO;
+    if (request.URL == nil)
     {
-        NSRange range = [request.URL.path rangeOfString:self.pathPattern];
-        if (range.location == NSNotFound)
+        result = (self.pathPattern == nil);
+    }
+    else
+    {
+        if ([self.pathPattern length] == 0)
         {
-            result = NO;
+            result = (request.URL != nil) && ([request.URL.path length] == 0);
+        }
+        else
+        {
+            NSRange range = [request.URL.path rangeOfString:self.pathPattern];
+            result = (range.location != NSNotFound);
         }
     }
+
     if (result && ([self.queryParameterPatterns count] > 0))
     {
         NSMutableDictionary *unmatchedQueryParameterPatterns = [self.queryParameterPatterns mutableCopy];
