@@ -9,6 +9,12 @@
 #import <Foundation/Foundation.h>
 #import "SDWebServiceMockResponseProvider.h"
 
+/**
+ Default implementation of SDWebServiceMockResponseProvider for SDWebService.  
+ 
+ Defaults to returning response data in FIFO manner, but also allows tester to 
+ explicitly control when responses are popped from the queue.
+ */
 @interface SDWebServiceMockResponseQueueProvider : NSObject<SDWebServiceMockResponseProvider>
 
 /**
