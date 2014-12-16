@@ -11,6 +11,11 @@
 
 @implementation SDWebServiceMockResponseMapProvider
 
+- (NSData *) getMockResponseForRequest:(NSURLRequest *)request
+{
+    return nil;
+}
+
 - (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forRequestMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping frequency:(NSUInteger) frequency
 {
 
@@ -19,7 +24,7 @@
 - (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forPath:(NSString *) path
 {
     SDWebServiceMockResponseRequestMapping *requestMapping =
-    [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:path exactMatchPath:YES queryParameters:nil exactMatchQueryValues:NO];
+    [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:path queryParameters:nil];
     [self addMockResponseFile:filename bundle:bundle forRequestMapping:requestMapping frequency:NSIntegerMax];
 }
 

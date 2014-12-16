@@ -48,6 +48,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
     } \
 }
 
+#define exactRegex(S) [NSString stringWithFormat:@"^%@$", S]
 
 @interface SDWebServiceMockResponseRequestMappingTests : XCTestCase
 @end
@@ -70,7 +71,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 - (void)testEmptyMapping
 {
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:nil exactMatchPath:NO queryParameters:nil exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:nil queryParameters:nil];
     expect(YES,mapping,kTest_urlString_nil);
     expect(YES,mapping,kTest_urlString_bareNoQuery);
     expect(YES,mapping,kTest_urlString_rootNoQuery);
@@ -84,7 +85,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 - (void)testRootPathExactMatch
 {
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_rootPath exactMatchPath:YES queryParameters:nil exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:exactRegex(kTest_rootPath) queryParameters:nil];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(YES,mapping,kTest_urlString_rootNoQuery);
@@ -98,7 +99,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 - (void)testRootPathPattern
 {
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_rootPath exactMatchPath:NO queryParameters:nil exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_rootPath queryParameters:nil];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(YES,mapping,kTest_urlString_rootNoQuery);
@@ -112,7 +113,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 - (void)testPathAExactMatch
 {
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_pathA exactMatchPath:YES queryParameters:nil exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:exactRegex(kTest_pathA) queryParameters:nil];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -126,7 +127,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 - (void)testPathAPattern
 {
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_pathA exactMatchPath:NO queryParameters:nil exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_pathA queryParameters:nil];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -140,7 +141,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 - (void)testPartialPathExactMatch
 {
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_partialPath exactMatchPath:YES queryParameters:nil exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:exactRegex(kTest_partialPath) queryParameters:nil];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -154,7 +155,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 - (void)testPartialPathPattern
 {
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_partialPath exactMatchPath:NO queryParameters:nil exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_partialPath queryParameters:nil];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -170,9 +171,9 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 {
     NSDictionary *queryParameters =
     @{
-      kTest_queryParam1:kTest_queryValue1
+      kTest_queryParam1:exactRegex(kTest_queryValue1)
       };
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:YES];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil queryParameters:queryParameters];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -192,7 +193,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
     @{
       kTest_queryParam1:kTest_queryValue1
       };
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil queryParameters:queryParameters];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -209,10 +210,10 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 {
     NSDictionary *queryParameters =
     @{
-      kTest_queryParam1:kTest_queryValue1,
-      kTest_queryParam2:kTest_queryValue2
+      kTest_queryParam1:exactRegex(kTest_queryValue1),
+      kTest_queryParam2:exactRegex(kTest_queryValue2)
       };
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:YES];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil queryParameters:queryParameters];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -233,7 +234,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
       kTest_queryParam1:kTest_queryValue1,
       kTest_queryParam2:kTest_queryValue2
       };
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil queryParameters:queryParameters];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -251,11 +252,11 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 {
     NSDictionary *queryParameters =
     @{
-      kTest_queryParam1:kTest_queryValue1,
-      kTest_queryParam2:kTest_queryValue2,
-      kTest_queryParam3:kTest_queryValue3
+      kTest_queryParam1:exactRegex(kTest_queryValue1),
+      kTest_queryParam2:exactRegex(kTest_queryValue2),
+      kTest_queryParam3:exactRegex(kTest_queryValue3)
       };
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:YES];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil queryParameters:queryParameters];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);
@@ -277,7 +278,7 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
       kTest_queryParam2:kTest_queryValue2,
       kTest_queryParam3:kTest_queryValue3
       };
-    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil exactMatchPath:NO queryParameters:queryParameters exactMatchQueryValues:NO];
+    SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:kTest_urlString_nil queryParameters:queryParameters];
     expect(NO,mapping,kTest_urlString_nil);
     expect(NO,mapping,kTest_urlString_bareNoQuery);
     expect(NO,mapping,kTest_urlString_rootNoQuery);

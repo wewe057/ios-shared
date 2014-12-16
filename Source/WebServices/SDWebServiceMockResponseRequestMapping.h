@@ -11,9 +11,7 @@
 @interface SDWebServiceMockResponseRequestMapping : NSObject
 
 - (instancetype)initWithPath:(NSString *) pathPattern
-              exactMatchPath:(BOOL) exactMatchPath
-             queryParameters:(NSDictionary *) queryParameterPatterns
-       exactMatchQueryValues:(BOOL) exactMatchQueryValues;
+             queryParameters:(NSDictionary *) queryParameterPatterns;
 
 - (BOOL) matchesRequest:(NSURLRequest *) request;
 
