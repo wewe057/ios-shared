@@ -89,7 +89,8 @@
 
 - (void)removeMockResponseFileForRequestMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping
 {
-    for (RequestMappingEntry *entry in self.requestMappings)
+    NSArray *requestMappings = [self.requestMappings copy];
+    for (RequestMappingEntry *entry in requestMappings)
     {
         if ([entry.requestMapping isEqual:requestMapping])
         {
