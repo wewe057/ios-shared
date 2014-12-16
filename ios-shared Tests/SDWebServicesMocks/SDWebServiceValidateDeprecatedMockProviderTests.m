@@ -40,7 +40,7 @@
 
     self.bundle = [NSBundle bundleForClass:[self class]];
 
-    self.webService = [[TestSDWebServiceB alloc] initWithSpecification:@"SDWebServiceMockTests" host:@"testhost" path:@"/"];
+    self.webService = [[TestSDWebServiceB alloc] initWithSpecification:@"SDWebServiceMockTests"];
 }
 
 - (void)testCheckForMockResponseQueueProvider;

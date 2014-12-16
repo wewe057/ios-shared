@@ -37,7 +37,7 @@
 
     self.bundle = [NSBundle bundleForClass:[self class]];
 
-    self.webService = [[TestSDWebServiceA alloc] initWithSpecification:@"SDWebServiceMockTests" host:@"testhost" path:@"/"];
+    self.webService = [[TestSDWebServiceA alloc] initWithSpecification:@"SDWebServiceMockTests"];
     self.webService.testCase = self;
     self.webService.maxConcurrentOperationCount = 1; // to ensure predictable testing
 
@@ -71,7 +71,8 @@
 {
     [self.mockResponseQueueProvider pushMockResponseFiles:filenames bundle:self.bundle];
     NSMutableArray *dataArray = [NSMutableArray arrayWithCapacity:[filenames count]];
-    for (NSString *filename in filenames) {
+    for (NSString *filename in filenames)
+    {
         NSString *filepath = [self.bundle pathForResource:filename ofType:nil];
         [dataArray addObject:[NSData dataWithContentsOfFile:filepath]];
     }

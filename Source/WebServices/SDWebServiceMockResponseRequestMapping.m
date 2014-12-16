@@ -9,8 +9,8 @@
 #import "SDWebServiceMockResponseRequestMapping.h"
 
 @interface SDWebServiceMockResponseRequestMapping()
-@property (nonatomic,copy) NSString *pathPattern;
-@property (nonatomic,copy) NSDictionary *queryParameterPatterns;
+@property (nonatomic,copy,readwrite) NSString *pathPattern;
+@property (nonatomic,copy,readwrite) NSDictionary *queryParameterPatterns;
 @end
 
 @implementation SDWebServiceMockResponseRequestMapping
@@ -24,6 +24,11 @@
         _queryParameterPatterns = [queryParameterPatterns copy];
     }
     return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:self.pathPattern queryParameters:self.queryParameterPatterns];
 }
 
 - (NSString *) description
