@@ -16,6 +16,7 @@
 /**
  *  Used to calculate the appropriate height for a cell. Takes into account 
  *  multi-line labels, custom constraints, tableview bounds and other autolayout fun.
+ *  Takes into account sizing with accessory views enabled.
  *
  *  @param tableview - The main tableview that the cell is housed in.
  *
