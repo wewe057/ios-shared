@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 SetDirection. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 #import "SDWebService.h"
 #import "SDWebServiceMockResponseProvider.h"
@@ -40,7 +40,7 @@
 
     self.bundle = [NSBundle bundleForClass:[self class]];
 
-    self.webService = [[TestSDWebServiceB alloc] initWithSpecification:@"SDWebServiceMockTests" host:@"testhost" path:@"/"];
+    self.webService = [[TestSDWebServiceB alloc] initWithSpecification:@"SDWebServiceMockTests"];
 }
 
 - (void)testCheckForMockResponseQueueProvider;

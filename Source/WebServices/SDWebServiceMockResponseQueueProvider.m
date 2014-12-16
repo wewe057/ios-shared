@@ -8,9 +8,6 @@
 
 #import "SDWebServiceMockResponseQueueProvider.h"
 
-@interface  SDWebServiceMockResponseQueueProvider()
-@end
-
 @implementation SDWebServiceMockResponseQueueProvider {
     // always access the mutable array inside of @synchronized(self)
     NSMutableArray *_mockStack;
@@ -18,7 +15,8 @@
 
 - (instancetype) init
 {
-    if ((self = [super init])) {
+    if ((self = [super init]))
+    {
         _autoPopMocks = YES;
         _mockStack = [NSMutableArray array];
     }
