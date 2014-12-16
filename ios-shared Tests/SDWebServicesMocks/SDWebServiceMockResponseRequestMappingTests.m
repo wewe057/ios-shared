@@ -55,20 +55,6 @@ NSString * const kTest_urlString_pathAWithQueryC = @"http://example.com/path1/pa
 
 @implementation SDWebServiceMockResponseRequestMappingTests
 
-- (void) expect:(BOOL) expect forMapping:(SDWebServiceMockResponseRequestMapping *) mapping urlString:(NSString *) urlString
-{
-    NSURL *url = [NSURL URLWithString:urlString];
-    BOOL actual = [mapping matchesRequest:[NSURLRequest requestWithURL:url]];
-    if (expect)
-    {
-        XCTAssertTrue(actual, @"expect mapping (%@) to match URL (%@)", mapping, urlString);
-    }
-    else
-    {
-        XCTAssertFalse(actual, @"expect mapping (%@) to NOT match URL (%@)", mapping, urlString);
-    }
-}
-
 - (void)testEmptyMapping
 {
     SDWebServiceMockResponseRequestMapping *mapping = [[SDWebServiceMockResponseRequestMapping alloc] initWithPath:nil queryParameters:nil];

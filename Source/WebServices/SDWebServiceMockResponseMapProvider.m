@@ -9,7 +9,7 @@
 #import "SDWebServiceMockResponseMapProvider.h"
 #import "SDWebServiceMockResponseRequestMapping.h"
 
-@interface RequestMappingEntry : NSObject
+@interface SDWebServiceMockResponseRequestMappingEntry : NSObject
 @property (nonatomic,strong) SDWebServiceMockResponseRequestMapping *requestMapping;
 @property (nonatomic,copy) NSString *filename;
 @property (nonatomic,strong) NSBundle *bundle;
@@ -17,11 +17,11 @@
 @property (nonatomic,assign) NSUInteger matchCount;
 @end
 
-@implementation RequestMappingEntry
+@implementation SDWebServiceMockResponseRequestMappingEntry
 
-+ (RequestMappingEntry *) requestMappingEntry:(SDWebServiceMockResponseRequestMapping *) requestMapping withFilename:(NSString *)filename bundle:(NSBundle *) bundle maximumResponses:(NSUInteger) maximumResponses;
++ (SDWebServiceMockResponseRequestMappingEntry *) entryWithMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping withFilename:(NSString *)filename bundle:(NSBundle *) bundle maximumResponses:(NSUInteger) maximumResponses;
 {
-    RequestMappingEntry *result = [[RequestMappingEntry alloc] init];
+    SDWebServiceMockResponseRequestMappingEntry *result = [[SDWebServiceMockResponseRequestMappingEntry alloc] init];
     result.requestMapping = requestMapping;
     result.filename = filename;
     result.bundle = bundle;
@@ -66,7 +66,7 @@
 - (NSData *) getMockResponseForRequest:(NSURLRequest *)request
 {
     NSData *result = nil;
-    for (RequestMappingEntry *entry in self.requestMappings)
+    for (SDWebServiceMockResponseRequestMappingEntry *entry in self.requestMappings)
     {
         if ([entry matchesRequest:request])
         {
@@ -79,7 +79,7 @@
 
 - (void)addMockResponseFile:(NSString *)filename bundle:(NSBundle *)bundle forRequestMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping maximumResponses:(NSUInteger) maximumResponses
 {
-    RequestMappingEntry *entry = [RequestMappingEntry requestMappingEntry:requestMapping withFilename:filename bundle:bundle maximumResponses:maximumResponses];
+    SDWebServiceMockResponseRequestMappingEntry *entry = [SDWebServiceMockResponseRequestMappingEntry entryWithMapping:requestMapping withFilename:filename bundle:bundle maximumResponses:maximumResponses];
     [self.requestMappings addObject:entry];
 }
 
@@ -93,7 +93,7 @@
 - (void)removeMockResponseFileForRequestMapping:(SDWebServiceMockResponseRequestMapping *) requestMapping
 {
     NSArray *requestMappings = [self.requestMappings copy];
-    for (RequestMappingEntry *entry in requestMappings)
+    for (SDWebServiceMockResponseRequestMappingEntry *entry in requestMappings)
     {
         if ([entry.requestMapping isEqual:requestMapping])
         {
