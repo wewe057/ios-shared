@@ -34,10 +34,12 @@
 - (NSString *) description
 {
     NSMutableString *result = [NSMutableString stringWithString:NSStringFromClass([self class])];
-    if ([self.pathPattern length] > 0) {
+    if ([self.pathPattern length] > 0)
+    {
         [result appendFormat:@"\npathPattern: %@", self.pathPattern];
     }
-    if ([self.queryParameterPatterns count] > 0) {
+    if ([self.queryParameterPatterns count] > 0)
+    {
         [result appendString:@"\nqueryParameterPatterns"];
         [self.queryParameterPatterns enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
             [result appendFormat:@"\n  %@=%@", key, obj];
@@ -93,7 +95,8 @@
                 }
             }
         }
-        if ([unmatchedQueryParameterPatterns count] > 0) {
+        if ([unmatchedQueryParameterPatterns count] > 0)
+        {
             result = NO;
         }
 

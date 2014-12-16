@@ -18,6 +18,7 @@
 @end
 
 @implementation RequestMappingEntry
+
 + (RequestMappingEntry *) requestMappingEntry:(SDWebServiceMockResponseRequestMapping *) requestMapping withFilename:(NSString *)filename bundle:(NSBundle *) bundle maximumResponses:(NSUInteger) maximumResponses;
 {
     RequestMappingEntry *result = [[RequestMappingEntry alloc] init];
@@ -31,7 +32,8 @@
 - (BOOL) matchesRequest:(NSURLRequest *) request;
 {
     BOOL result = NO;
-    if ([self.requestMapping matchesRequest:request]) {
+    if ([self.requestMapping matchesRequest:request])
+    {
         self.matchCount += 1;
         result = (self.matchCount <= self.maximumResponses);
     }
@@ -54,7 +56,8 @@
 
 - (instancetype) init
 {
-    if ((self = [super init])) {
+    if ((self = [super init]))
+    {
         _requestMappings = [NSMutableArray array];
     }
     return self;
