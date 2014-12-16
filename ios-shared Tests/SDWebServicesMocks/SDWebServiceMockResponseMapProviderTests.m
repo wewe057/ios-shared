@@ -70,7 +70,7 @@
     return [NSData dataWithContentsOfFile:filepath];
 }
 
-#pragma mark - single response tests
+#pragma mark - simple match response tests
 
 - (void)testSingleSimpleMockResponse
 {
@@ -124,6 +124,38 @@
                               block:^(NSData *responseData, NSError *error) {
                                   XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from any mock response");
                               }];
+
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+}
+
+#pragma mark - compound match response tests
+
+- (void)testCompoundMockResponse
+{
+    SDWebServiceMockResponseRequestMapping *mapping =
+    [[SDWebServiceMockResponseRequestMapping alloc]
+     initWithPath:@"^/api/route$"
+     queryParameters:@{@"routeParam1":@"matchAny",@"routeParam2":@"^exactMatch$"}];
+    NSData *checkDataA = [self mapMockResponseWithFilename:@"SDWebServiceMockTest_bundleA.json" mapping:mapping maximumResponses:NSIntegerMax];
+
+    [self checkWebServiceWithMethod:@"testGETTwoRouteParams"
+                       replacements:@{@"routeParam1":@"AAA matchAny BBB",@"routeParam2":@"exactMatch"}
+                              block:^(NSData *responseData, NSError *error) {
+                                  XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A mapped above");
+                              }];
+
+    [self checkWebServiceWithMethod:@"testGETTwoRouteParams"
+                       replacements:@{@"routeParam1":@"AAA matchAny BBB",@"routeParam2":@"NOTexactMatch"}
+                              block:^(NSData *responseData, NSError *error) {
+                                  XCTAssertEqual(0, [responseData length], @"mock should NOT supply data from any mock response");
+                              }];
+
+    [self checkWebServiceWithMethod:@"testGETTwoRouteParams"
+                       replacements:@{@"routeParam1":@"XYZ matchAny ZZZ",@"routeParam2":@"exactMatch"}
+                              block:^(NSData *responseData, NSError *error) {
+                                  XCTAssertEqualObjects(checkDataA, responseData, @"mock should supply data from mock response A mapped above");
+                              }];
+
 
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }

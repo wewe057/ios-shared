@@ -17,13 +17,20 @@
 			<key>routeFormat</key>
 			<string>route</string>
 		</dict>
-		<key>testGETOneRouteParam</key>
-		<dict>
-			<key>method</key>
-			<string>GET</string>
-			<key>routeFormat</key>
-			<string>route?routeParam1={routeParam1}</string>
-		</dict>
+        <key>testGETOneRouteParam</key>
+        <dict>
+            <key>method</key>
+            <string>GET</string>
+            <key>routeFormat</key>
+            <string>route?routeParam1={routeParam1}</string>
+        </dict>
+        <key>testGETTwoRouteParams</key>
+        <dict>
+            <key>method</key>
+            <string>GET</string>
+            <key>routeFormat</key>
+            <string>route?routeParam1={routeParam1}&amp;routeParam2={routeParam2}</string>
+        </dict>
 		<key>testPOSTNoRouteParamsNoBodyParams</key>
 		<dict>
 			<key>method</key>
