@@ -10,6 +10,17 @@
 static const CGFloat kCircularButtonWidth = 29.0f;
 static const CGFloat kCircularButtonHeight = 29.0f;
 
+@interface SDShapeView : UIView;
+@end
+
+@implementation SDShapeView
++ (Class)layerClass
+{
+    return [CAShapeLayer class];
+}
+
+@end
+
 @interface SDCircularMinusButton()
 @end
 
@@ -49,25 +60,23 @@ static const CGFloat kCircularButtonHeight = 29.0f;
     //// Btn-Dec
     {
         //// TrolleyPaddle-CircDec Drawing
-        UIBezierPath* trolleyPaddleCircDecPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0.5, 0.5, 28, 28)];
-        [white setFill];
+        UIBezierPath* trolleyPaddleCircDecPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, 29, 29)];
+        [strokeColor setFill];
         [trolleyPaddleCircDecPath fill];
-        [strokeColor setStroke];
-        trolleyPaddleCircDecPath.lineWidth = 1;
-        [trolleyPaddleCircDecPath stroke];
         
         
         //// TrolleyPaddle-Icn-Minus Drawing
-        UIBezierPath* trolleyPaddleIcnMinusPath = [UIBezierPath bezierPath];
+        UIBezierPath* trolleyPaddleIcnMinusPath = UIBezierPath.bezierPath;
         [trolleyPaddleIcnMinusPath moveToPoint: CGPointMake(8, 13)];
         [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(21, 13)];
         [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(21, 16)];
         [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(8, 16)];
         [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(8, 13)];
         [trolleyPaddleIcnMinusPath closePath];
-        [strokeColor setFill];
+        [white setFill];
         [trolleyPaddleIcnMinusPath fill];
-    }}
+    }
+}
 
 - (void)drawButtonNormal
 {
@@ -89,24 +98,21 @@ static const CGFloat kCircularButtonHeight = 29.0f;
     //// Btn-DecPressed
     {
         //// TrolleyPaddle-CircDec2 Drawing
-        UIBezierPath* trolleyPaddleCircDec2Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0.0f, 0.0f, 28.5f, 28.5f)];
+        UIBezierPath* trolleyPaddleCircDec2Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, 29, 29)];
         [pressesGray setFill];
         [trolleyPaddleCircDec2Path fill];
-        [white setStroke];
-        trolleyPaddleCircDec2Path.lineWidth = 1;
-        [trolleyPaddleCircDec2Path stroke];
         
         
         //// TrolleyPaddle-Icn-Minus 4 Drawing
-        UIBezierPath* trolleyPaddleIcnMinusPath = [UIBezierPath bezierPath];
-        [trolleyPaddleIcnMinusPath moveToPoint: CGPointMake(8, 13)];
-        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(21, 13)];
-        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(21, 16)];
-        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(8, 16)];
-        [trolleyPaddleIcnMinusPath addLineToPoint: CGPointMake(8, 13)];
-        [trolleyPaddleIcnMinusPath closePath];
+        UIBezierPath* trolleyPaddleIcnMinus4Path = UIBezierPath.bezierPath;
+        [trolleyPaddleIcnMinus4Path moveToPoint: CGPointMake(8, 13)];
+        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(21, 13)];
+        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(21, 16)];
+        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(8, 16)];
+        [trolleyPaddleIcnMinus4Path addLineToPoint: CGPointMake(8, 13)];
+        [trolleyPaddleIcnMinus4Path closePath];
         [white setFill];
-        [trolleyPaddleIcnMinusPath fill];
+        [trolleyPaddleIcnMinus4Path fill];
     }
 }
 
@@ -151,17 +157,14 @@ static const CGFloat kCircularButtonHeight = 29.0f;
     
     //// Btn-Inc
     {
-        //// TrolleyPaddle-CircInc Drawing
-        UIBezierPath* trolleyPaddleCircIncPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0.5, 0.5, 28, 28)];
-        [white setFill];
-        [trolleyPaddleCircIncPath fill];
-        [strokeColor setStroke];
-        trolleyPaddleCircIncPath.lineWidth = 1;
-        [trolleyPaddleCircIncPath stroke];
+        //// Oval 2 Drawing
+        UIBezierPath* oval2Path = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, 29, 29)];
+        [strokeColor setFill];
+        [oval2Path fill];
         
         
         //// TrolleyPaddle-Icn-Plus Drawing
-        UIBezierPath* trolleyPaddleIcnPlusPath = [UIBezierPath bezierPath];
+        UIBezierPath* trolleyPaddleIcnPlusPath = UIBezierPath.bezierPath;
         [trolleyPaddleIcnPlusPath moveToPoint: CGPointMake(7, 13)];
         [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(22, 13)];
         [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(22, 16)];
@@ -174,7 +177,7 @@ static const CGFloat kCircularButtonHeight = 29.0f;
         [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(13, 7)];
         [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(16, 7)];
         [trolleyPaddleIcnPlusPath closePath];
-        [strokeColor setFill];
+        [white setFill];
         [trolleyPaddleIcnPlusPath fill];
     }
 }
@@ -198,33 +201,108 @@ static const CGFloat kCircularButtonHeight = 29.0f;
     //// Btn-IncPressed
     {
         //// Oval Drawing
-        UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0.5f, 0.5f, 28.0f, 28.0f)];
+        UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, 29, 29)];
         [pressesGray setFill];
         [ovalPath fill];
-        [white setStroke];
-        ovalPath.lineWidth = 1;
-        [ovalPath stroke];
         
         
         //// TrolleyPaddle-Icn-Plus 6 Drawing
-        UIBezierPath* trolleyPaddleIcnPlusPath = [UIBezierPath bezierPath];
-        [trolleyPaddleIcnPlusPath moveToPoint: CGPointMake(7, 13)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(22, 13)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(22, 16)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(7, 16)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(7, 13)];
-        [trolleyPaddleIcnPlusPath closePath];
-        [trolleyPaddleIcnPlusPath moveToPoint: CGPointMake(16, 7)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(16, 22)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(13, 22)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(13, 7)];
-        [trolleyPaddleIcnPlusPath addLineToPoint: CGPointMake(16, 7)];
-        [trolleyPaddleIcnPlusPath closePath];
+        UIBezierPath* trolleyPaddleIcnPlus6Path = UIBezierPath.bezierPath;
+        [trolleyPaddleIcnPlus6Path moveToPoint: CGPointMake(7, 13)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(22, 13)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(22, 16)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(7, 16)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(7, 13)];
+        [trolleyPaddleIcnPlus6Path closePath];
+        [trolleyPaddleIcnPlus6Path moveToPoint: CGPointMake(16, 7)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(16, 22)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(13, 22)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(13, 7)];
+        [trolleyPaddleIcnPlus6Path addLineToPoint: CGPointMake(16, 7)];
+        [trolleyPaddleIcnPlus6Path closePath];
         [white setFill];
-        [trolleyPaddleIcnPlusPath fill];
+        [trolleyPaddleIcnPlus6Path fill];
     }
 }
 
+
+@end
+
+@implementation SDPaddleView
+
+- (instancetype) init
+{
+    self = [super init];
+    if ( self != nil )
+    {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype) initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if ( self != nil )
+    {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (instancetype) initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if ( self != nil )
+    {
+        [self commonInit];
+    }
+    return self;
+}
+
+- (void) commonInit
+{
+    self.backgroundColor = [UIColor clearColor];
+    self.opaque = NO;
+    
+    _fillColor = [UIColor colorWithRed: 0.098 green: 0.098 blue: 0.098 alpha: 1];
+}
+
+- (void) drawRect:(CGRect)rect
+{
+    CGFloat width = CGRectGetWidth(self.bounds); // default = 67
+    
+    //// Paddle-Resting
+    {
+        //// Bezier Drawing
+        UIBezierPath* bezierPath = UIBezierPath.bezierPath;
+        [bezierPath moveToPoint: CGPointMake(width - 8.0, 14.5)];
+        [bezierPath addCurveToPoint: CGPointMake(width - 2.9, 2.1) controlPoint1: CGPointMake(width - 8.0, 9.8) controlPoint2: CGPointMake(width - 6.2, 5.4)];
+        [bezierPath addCurveToPoint: CGPointMake(width - 0.3, 0) controlPoint1: CGPointMake(width - 2.1, 1.3) controlPoint2: CGPointMake(width - 1.2, 0.6)];
+        [bezierPath addLineToPoint: CGPointMake(0.3, 0)];
+        [bezierPath addCurveToPoint: CGPointMake(2.9, 2.1) controlPoint1: CGPointMake(1.2, 0.6) controlPoint2: CGPointMake(2.1, 1.3)];
+        [bezierPath addCurveToPoint: CGPointMake(8, 14.5) controlPoint1: CGPointMake(6.2, 5.4) controlPoint2: CGPointMake(8, 9.8)];
+        [bezierPath addCurveToPoint: CGPointMake(2.9, 26.9) controlPoint1: CGPointMake(8, 19.2) controlPoint2: CGPointMake(6.2, 23.6)];
+        [bezierPath addCurveToPoint: CGPointMake(0.3, 29) controlPoint1: CGPointMake(2.1, 27.7) controlPoint2: CGPointMake(1.2, 28.4)];
+        [bezierPath addLineToPoint: CGPointMake(width - 0.3, 29)];
+        [bezierPath addCurveToPoint: CGPointMake(width - 2.9, 26.9) controlPoint1: CGPointMake(width - 1.2, 28.4) controlPoint2: CGPointMake(width - 2.1, 27.7)];
+        [bezierPath addCurveToPoint: CGPointMake(width - 8.0, 14.5) controlPoint1: CGPointMake(width - 6.2, 23.6) controlPoint2: CGPointMake(width - 8.0, 19.2)];
+        [bezierPath closePath];
+        bezierPath.miterLimit = 4;
+        
+        [self.fillColor setFill];
+        [bezierPath fill];
+    }
+}
+
+- (void) setFillColor:(UIColor *)fillColor
+{
+    if ( _fillColor != fillColor )
+    {
+        _fillColor = fillColor;
+        [self setNeedsDisplay];
+    }
+}
 
 @end
 
@@ -234,17 +312,14 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 @property (nonatomic, assign) BOOL hasSetupConstraints;
 @property (nonatomic, strong, readwrite) SDCircularPlusButton *incrementButton;
 @property (nonatomic, strong, readwrite) SDCircularMinusButton *decrementButton;
+@property (nonatomic, strong, readwrite) SDPaddleView *paddleView;
 @property (nonatomic, strong, readwrite) UIImageView *rightImageView;
 @property (nonatomic, strong, readwrite) UILabel *quantityLabel;
 @property (nonatomic, strong) NSLayoutConstraint *labelWidthConstraint;
+@property (nonatomic, strong) SDShapeView *shapeView;
 @end
 
 @implementation SDQuantityView
-
-+ (Class)layerClass
-{
-    return [CAShapeLayer class];
-}
 
 + (instancetype)quantityView
 {
@@ -255,6 +330,13 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)setup
 {
+    _shapeView = [[SDShapeView alloc] init];
+    [self addSubview:_shapeView];
+
+    _paddleView = [[SDPaddleView alloc] init];
+    _paddleView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:_paddleView];
+    
     _incrementButton = [SDCircularPlusButton circularPlusButtonWithStrokeColor:_fillColor];
     _incrementButton.highlightedColor = [UIColor lightGrayColor];
     
@@ -319,7 +401,9 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_incrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_incrementButton)]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_decrementButton(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_decrementButton)]];
-        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_paddleView(29)]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_paddleView)]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(24)-[_paddleView]-(24)-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_paddleView)]];
+
         if (self.rightImageView.image)
         {
             [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_rightImageView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_rightImageView)]];
@@ -370,7 +454,7 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
 
 - (void)setupLayer
 {
-    CAShapeLayer *layer = (CAShapeLayer *)self.layer;
+    CAShapeLayer *layer = (CAShapeLayer *)self.shapeView.layer;
     CGRect bgRect = CGRectInset(self.bounds, kSDQuantityViewBackgroundWidthInset, 0.0f);
     bgRect.origin.y += 0.5f;
     bgRect.size.height -= 1.0f;
@@ -379,8 +463,8 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     layer.path = path;
     CGPathRelease(path);
     
-    layer.fillColor = self.fillColor.CGColor;
-    layer.strokeColor = self.fillColor.CGColor;
+    layer.fillColor = nil;
+    layer.strokeColor = nil;
 }
 
 - (void) setBounds:(CGRect)bounds
@@ -388,6 +472,25 @@ static const CGFloat kSDQuantityViewBackgroundWidthInset = 14.0f;
     [super setBounds:bounds];
     if (self.rightImageView.image)
         [self setNeedsUpdateConstraints];
+}
+
+#pragma mark - alpha override for ios 6
+
+- (void) setAlpha:(CGFloat)alpha;
+{
+    if( floor( NSFoundationVersionNumber ) > NSFoundationVersionNumber_iOS_6_1 ) {
+        [super setAlpha:alpha];
+    } else {
+        self.shapeView.alpha = alpha;
+        self.quantityLabel.alpha = alpha;
+
+        // Override alpha handling for ios 6
+        // using CAShapeLayer and paint code buttons appear to have an issue with combined opacity.
+        CGFloat r, g, b, a;
+        [self.fillColor getRed:&r green:&g blue:&b alpha:&a];
+        self.incrementButton.strokeColor = [UIColor colorWithRed:r green:g blue:b alpha:alpha];
+        self.decrementButton.strokeColor = [UIColor colorWithRed:r green:g blue:b alpha:alpha];
+    }
 }
 
 @end

@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSString *propertyType;
 @property (nonatomic, strong) NSString *propertySubtype;
 @property (nonatomic, assign) SEL propertySelector;
+@property (nonatomic, copy) NSString *transformerClassName;
 
 @property (nonatomic, readonly) Class propertyTypeClass;
 @property (nonatomic, readonly) Class propertySubtypeClass;
@@ -144,9 +145,9 @@ static dispatch_once_t __formatterOnceToken = 0;
         }
         else
         {
-            if (!destProperty.propertyType)
+            if (!destProperty.propertyType || destProperty.transformerClassName.length > 0)
             {
-                // it doesn't have a subtype, so just set it.
+                // it doesn't have a subtype or uses a value transformer, so just set it.
                 [self setValue:value destProperty:destProperty targetObject:object2];
             }
             else
@@ -441,7 +442,15 @@ static dispatch_once_t __formatterOnceToken = 0;
 - (id)convertValue:(id)value forProperty:(SDObjectProperty *)property
 {
     id newValue = value;
-    
+
+    if (property.transformerClassName != nil) {
+        NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:property.transformerClassName];
+        NSAssert(transformer != nil, @"Unabled to find a value transformer with the specified name: %@. Check your data mapping!", property.transformerClassName);
+        newValue = [transformer transformedValue:value];
+        // no further conversion if we used an NSValueTransformer
+        return newValue;
+    }
+    else
     if ([property.propertyType isEqualToString:@"NSDecimalNumber"])
     {
         if ([value isKindOfClass:[NSNumber class]])
@@ -449,7 +458,7 @@ static dispatch_once_t __formatterOnceToken = 0;
             newValue = [NSDecimalNumber decimalNumberWithDecimal:[value decimalValue]];
         }
     }
-    
+
     return [self convertValue:newValue forType:property.propertyType];
 }
 
@@ -755,9 +764,22 @@ static dispatch_once_t __formatterOnceToken = 0;
      <RxObject>blah
      (RxObject)blah
      @selector(booya:)
+     @transformed(blah, WMOptimusPrimeTransformer)
      */
     
-    BOOL isSelector = ([path rangeOfString:@"@"].location != NSNotFound);
+    BOOL isSelector = ([path rangeOfString:@"@selector"].location != NSNotFound);
+    NSRange transformedRange = [path rangeOfString:@"@transformed("];
+    BOOL isTransformed = transformedRange.location != NSNotFound;
+    if (isTransformed)
+    {
+        // massage the path a bit get rid of the wrapper
+        path = [path substringFromIndex:NSMaxRange(transformedRange)];
+        path = [path substringToIndex:MAX(0, [path length] - 1)];
+        NSArray *pathComponents = [path componentsSeparatedByString:@","];
+        NSAssert(pathComponents.count == 2, @"Expected a string of the form \"@transformed(property,transformerName)\"");
+        path = pathComponents[0];
+        self.transformerClassName = pathComponents[1];
+    }
 
     NSString *propertyName = [path stringByReplacingOccurrencesOfString:@"\\((.*)(<.*>)\\)|<(.*)>|\\((.*)\\)" withString:@"" options:NSRegularExpressionSearch range:NSMakeRange(0, path.length)];
 
@@ -1000,4 +1022,9 @@ NSString *_sddm_selector(id object, SEL selector)
     
     NSString *selectorString = [NSString stringWithFormat:@"@selector(%s)", selectorName];
     return selectorString;
+}
+
+NSString *_sddm_transformed_key(id object, NSString *propertyName, NSString *transformerClassName)
+{
+    return [NSString stringWithFormat:@"@transformed(%@,%@)", _sddm_key(object, propertyName), transformerClassName];
 }

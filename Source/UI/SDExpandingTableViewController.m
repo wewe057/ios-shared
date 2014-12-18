@@ -47,16 +47,22 @@ static const CGFloat kMaxHeightPadding = 20.f;
         _selectedColumnColor = [UIColor whiteColor];
         _nonselectedColumnColor = [UIColor colorWithRed:.95f green:.95f blue:.95f alpha:1.f];
         
+        // Typically we're embedded in a popover controller, which doesn't play
+        //  nice with autolayout. If we turn off autoresizing and setup autolayout
+        //  constraints on the scroll view, nothing happens if the popover is
+        //  resized for some reason, such as keyboard appearing/disappearing. So
+        //  kick it old school; SPRINGS AND STRUTS 4 LYFE.
         _scrollView = [[UIScrollView alloc] initWithFrame:CGRectZero];
-        _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        CGRect screenBounds = [UIScreen mainScreen].bounds;
-        _maxSizePortrait = screenBounds.size;
-        _maxSizePortrait.width -= kMaxWidthPadding * 2;
-        _maxSizePortrait.height -= kMaxHeightPadding * 2;
-        
-        _maxSizeLandscape = CGSizeMake(_maxSizePortrait.height, _maxSizePortrait.width);
-    
+        _scrollView.translatesAutoresizingMaskIntoConstraints = YES;
+        _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+
+        // UIScreen bounds doesn't seem to always report what you expect in terms of landscape/portrait
+        CGSize screenSize = [UIScreen mainScreen].bounds.size;
+        CGFloat narrowDimension = MIN(screenSize.width,screenSize.height) - kMaxWidthPadding*2;
+        CGFloat wideDimension = MAX(screenSize.width,screenSize.height) - kMaxHeightPadding*2;
+        _maxSizePortrait = CGSizeMake(narrowDimension,wideDimension);
+        _maxSizeLandscape = CGSizeMake(wideDimension,narrowDimension);
+
     }
     return self;
 }
@@ -64,6 +70,8 @@ static const CGFloat kMaxHeightPadding = 20.f;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.scrollView.frame = self.view.bounds;
     [self.view addSubview:self.scrollView];
     
     @weakify(self);
@@ -226,10 +234,7 @@ static const CGFloat kMaxHeightPadding = 20.f;
                 index++;
             }
             [horizontalConstraints appendFormat:@"-(%f)-|", self.tableContainerPaddingInsets.right];
-            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:horizontalConstraints options:0 metrics:nil views:views]];
-            
-            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_scrollView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_scrollView)]];
-            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_scrollView]|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_scrollView)]];
+            [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:horizontalConstraints options:0 metrics:nil views:views]];            
         }
         
     }
