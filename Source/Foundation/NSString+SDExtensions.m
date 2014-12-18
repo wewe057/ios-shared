@@ -447,6 +447,5 @@ GENERICSABLE_IMPLEMENTATION(NSString)
     return (string && [string length] > 0);
 }
 
-
 @end
 
