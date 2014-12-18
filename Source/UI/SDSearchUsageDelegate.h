@@ -12,9 +12,14 @@
 
 @protocol SDSearchUsageDelegate <NSObject>
 
+@required
 - (void) searchUserTappedSearchField:(SDNavigationBarSearchField *)field;
 - (void) searchTypedInWithTerm:(NSString *)term;
 - (void) searchSuggestionWithTerm:(NSString *)term;
 - (void) searchRecentWithTerm:(NSString *)term;
+
+@optional
+- (void) searchField:(SDNavigationBarSearchField *)searchField willShowSuggestionsPopover:(UIPopoverController *)popover;
+- (void) searchField:(SDNavigationBarSearchField *)searchField willDismissSuggestionsPopover:(UIPopoverController *)popover;
 
 @end

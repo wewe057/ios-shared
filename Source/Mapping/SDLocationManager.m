@@ -12,11 +12,17 @@
 
 #import <objc/message.h>
 
-#define LocLog(frmt,...) SDLog(@"SDLocationManager: %@",[NSString stringWithFormat:frmt, ##__VA_ARGS__])
 
-#define kSDLocationManagerTrace DEBUG && 1
-#if kSDLocationManagerTrace
-    #define LocTrace(frmt,...) LocLog(frmt, ##__VA_ARGS__)
+
+
+#if defined(DEBUG)
+#define LocLog(frmt,...) { if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SDLocationManager_Log"]) SDLog(@"SDLocationManager: %@",[NSString stringWithFormat:frmt, ##__VA_ARGS__]); }
+#else
+#define LocLog(x...)
+#endif
+
+#if defined(DEBUG)
+    #define LocTrace(frmt,...) { if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SDLocationManager_Trace"]) LocLog(frmt, ##__VA_ARGS__) ; }
 #else
     #define LocTrace(frmt,...)
 #endif
@@ -438,14 +444,14 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 	if (self.locationManager.location) {
         CLLocation *location = self.locationManager.location;
         NSArray *locations = @[location];
-        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateLocations:) argumentAddresses:(void *)&self, &locations];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateLocations:) argumentAddresses:(void *)&(self->_locationManager), &locations];
         //REMOVE: when all usages of the now deprecated locationManager:didUpdateToLocation:fromLocation: are cleared.
-        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&self, &location, &location];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToLocation:fromLocation:) argumentAddresses:(void *)&(self->_locationManager), &location, &location];
 	}
 	else {
 		// otherwise, lets simulate a failure...
         NSError *error = [NSError errorWithDomain:kCLErrorDomain code:0 userInfo:nil];
-        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&self, &error];
+        [self.delegates makeObjectsPerformSelector:@selector(locationManager:didFailWithError:) argumentAddresses:(void *)&(self->_locationManager), &error];
 	}
 }
 
@@ -490,7 +496,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 	if ([newLocation.timestamp timeIntervalSinceDate:_timestamp] < 0) {
 		LocLog(@"This location was cached.");
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&self, &newLocation, &oldLocation];
+            [self.delegates makeObjectsPerformSelector:@selector(locationManager:didUpdateToInaccurateLocation:fromLocation:) argumentAddresses:(void *)&(self->_locationManager), &newLocation, &oldLocation];
         });
         _previousLocation = newLocation;
         return; // this one is cached, lets wait for a good one.
@@ -557,7 +563,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 		return; // this one is cached, lets wait for a good one.
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &newHeading];
+        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&(self->_locationManager), &newHeading];
     });
 }
 
@@ -568,7 +574,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
         // Make a copy of the delegates just in case some other code deregisters them before this thread has a chance to execute
         NSArray *blockDelegates = [self.delegates copy];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [blockDelegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &error];
+            [blockDelegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&(self->_locationManager), &error];
         });
     }
 }
@@ -576,21 +582,21 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region {
     LocTrace(@"%@",NSStringFromSelector(_cmd));
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
+        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&(self->_locationManager), &region];
     });
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region {
     LocTrace(@"%@",NSStringFromSelector(_cmd));
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region];
+        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&(self->_locationManager), &region];
     });
 }
 
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error {
     LocTrace(@"%@",NSStringFromSelector(_cmd));
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &region, &error];
+        [self.delegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&(self->_locationManager), &region, &error];
     });
 }
 
@@ -604,7 +610,7 @@ NSString *kSDLocationManagerHasReceivedLocationUpdateDefaultsKey = @"SDLocationM
     LocLog(@"%@",NSStringFromSelector(_cmd));
     NSArray *blockDelegates = [self.delegates copy];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [blockDelegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&self, &status];
+        [blockDelegates makeObjectsPerformSelector:_cmd argumentAddresses:(void *)&(self->_locationManager), &status];
     });
     if (status == kCLAuthorizationStatusDenied || status == kCLAuthorizationStatusRestricted) {
         [self stopUpdatingLocationForAllDelegates];

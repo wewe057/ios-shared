@@ -84,4 +84,33 @@ typedef void(^SDAlertViewCompletionBlock)(UIAlertView *alertView, NSInteger tapp
  */
 + (SDAlertView *)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles completion:(SDAlertViewCompletionBlock)completionBlock;
 
+/**
+ *  Show an alert view.
+ *
+ *  @param title             Title of the alert view.
+ *  @param message           Message to be shown in the alert view.
+ *  @param cancelButtonTitle Title to be used for the cancel button (index 0).
+ *  @param otherButtonTitles An array of other button titles (indexes > 0).
+ *  @param placeholderText   If not nil, the alert will show as a prompt with the specified placeholder text.
+ *  @param completionBlock   Completion block to be executed when a selection is made.
+ *
+ *  @return An instance of SDAlertView.
+ */
++ (SDAlertView *)showAlertWithPromptAndWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitle:(NSString *)otherButtonTitle promptPlaceholderText:(NSString *)placeholderText completion:(SDAlertViewCompletionBlock)completionBlock;
+
+
+/**
+ *  Show an alert view with optional prompt and placeholder text.
+ *
+ *  @param title             Title of the alert view.
+ *  @param message           Message to be shown in the alert view.
+ *  @param cancelButtonTitle Title to be used for the cancel button (index 0).
+ *  @param otherButtonTitles An array of other button titles (indexes > 0).
+ *  @param placeholderText   If not nil, the alert will show as a prompt with the specified placeholder text.
+ *  @param completionBlock   Completion block to be executed when a selection is made.
+ *
+ *  @return An instance of SDAlertView.
+ */
++ (SDAlertView *)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles promptPlaceholderText:(NSString *)placeholderText completion:(SDAlertViewCompletionBlock)completionBlock;
+
 @end
