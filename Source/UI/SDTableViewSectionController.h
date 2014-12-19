@@ -164,8 +164,8 @@
 
 // "Delegate" methods
 @optional
-- (void)sectionController:(SDTableViewSectionController *)sectionController
-             didSelectRow:(NSInteger)row;
+- (BOOL)sectionController:(SDTableViewSectionController *)sectionController shouldHighlightRow:(NSInteger)row;
+- (void)sectionController:(SDTableViewSectionController *)sectionController didSelectRow:(NSInteger)row;
 
 @optional
 // Configuring Rows for the Table View

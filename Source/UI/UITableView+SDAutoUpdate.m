@@ -46,6 +46,9 @@
 
 - (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationTypes:(NSDictionary *)animationTypes updateBlock:(SDUpdateTableDataBlock)updateBlock commandCallbackblock:(SDTableCommandCallbackBlock)commandCallbackBlock
 {
+    // Protect ourself from errant calls to reloadData.
+    [self beginUpdates];
+
     // get the data that is about to be updated
     NSArray *outdatedSections = [[updateDataSource sectionsForPass:kSDTableViewAutoUpdatePassBeforeUpdate] copy];
     NSMutableDictionary *outdatedRowData = [NSMutableDictionary dictionary];
@@ -83,7 +86,6 @@
     
     if ([manager hasCommands])
     {
-        [self beginUpdates];
         [manager runCommands:self withAnimationTypes:animationTypes callback:commandCallbackBlock];
         [self endUpdates];
     }

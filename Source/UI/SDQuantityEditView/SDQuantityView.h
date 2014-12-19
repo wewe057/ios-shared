@@ -27,6 +27,13 @@
 @end
 
 /**
+ A circular button with a - in the center.  Used in the SDQuantityView
+ */
+@interface SDPaddleView : UIView
+@property (nonatomic, strong) UIColor *fillColor;
+@end
+
+/**
  A simple view that displays an increment and decrement button with a label in the center
  to create a simple quantity changing control.
  */
@@ -35,6 +42,7 @@
 @property (nonatomic, strong, readonly) UILabel *quantityLabel;
 @property (nonatomic, strong, readonly) SDCircularPlusButton *incrementButton;
 @property (nonatomic, strong, readonly) SDCircularMinusButton *decrementButton;
+@property (nonatomic, strong, readonly) SDPaddleView *paddleView;
 
 /**
  The background color that "connects" the increment and decrement button.  Note this is
