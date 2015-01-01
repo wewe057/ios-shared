@@ -31,6 +31,18 @@
     return self;
 }
 
+- (instancetype) initWithRouteRegex:(NSRegularExpression *)routeRegex handler:(id<SDURLRouteHandler>)handler
+{
+    self = [super init];
+    if (self != nil)
+    {
+        _handler = handler;
+        _parameterNames = [NSMutableArray array];
+        _matchRegularExpression = routeRegex;
+    }
+    return self;
+}
+
 - (void) initMatchRegularExpressionWithTemplate:(NSString *)route
 {
     static NSString *SDURLSegmentMatchingPattern = @"([^\\/\\?\n\r]+)";
@@ -75,7 +87,7 @@
     _matchRegularExpression = [NSRegularExpression regularExpressionWithPattern:matchingString options:0 error:nil];
 }
 
-- (NSDictionary *) matchesURL:(NSURL *)url
+- (NSDictionary *) matchesURL:(NSURL *)url matches:(NSArray **)pMatches
 {
     NSMutableDictionary *parameters = nil;
     
@@ -100,6 +112,9 @@
         [parameters addEntriesFromDictionary:[self parametersFromQuery:query]];
     }
     
+    if (pMatches) {
+        *pMatches = matches;
+    }
     return parameters;
 }
 
@@ -120,9 +135,9 @@
     return parameters;
 }
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters
+- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters matches:(NSArray *)matches
 {
-    [self.handler handleURL:url withParameters:parameters];
+    [self.handler handleURL:url withParameters:parameters matches:matches];
 }
 
 @end

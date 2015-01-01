@@ -14,8 +14,10 @@
 
 - (instancetype) initWithRoute:(NSString *)routeTemplate handler:(id<SDURLRouteHandler>)handler;
 
-- (NSDictionary *) matchesURL:(NSURL *)url;
+- (instancetype) initWithRouteRegex:(NSRegularExpression *)routeRegex handler:(id<SDURLRouteHandler>)handler;
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters;
+- (NSDictionary *) matchesURL:(NSURL *)url matches:(NSArray **)pMatches;
+
+- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters matches:(NSArray *)matches;
 
 @end
