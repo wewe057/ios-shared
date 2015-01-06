@@ -9,6 +9,10 @@
 #import "SDURLRouterEntry.h"
 #import "SDURLRouteHandler.h"
 
+@implementation SDURLMatchResult
+
+@end
+
 @interface SDURLRouterEntry ()
 
 @property (nonatomic, strong) id<SDURLRouteHandler> handler;
@@ -87,8 +91,9 @@
     _matchRegularExpression = [NSRegularExpression regularExpressionWithPattern:matchingString options:0 error:nil];
 }
 
-- (NSDictionary *) matchesURL:(NSURL *)url matches:(NSArray **)pMatches
+- (SDURLMatchResult *) matchesURL:(NSURL *)url
 {
+    SDURLMatchResult *matchResult = [SDURLMatchResult new];
     NSMutableDictionary *parameters = nil;
     
     NSString *urlString = [url absoluteString];
@@ -100,6 +105,10 @@
     
     NSArray *matches = [self.matchRegularExpression matchesInString:urlString options:0 range:NSMakeRange(0, [urlString length])];
     
+    if ( [matches count] >= 1 )
+    {
+        matchResult.isMatch = YES;
+    }
     if ( [matches count] == 1 )
     {
         NSTextCheckingResult *result = matches[0];
@@ -112,10 +121,9 @@
         [parameters addEntriesFromDictionary:[self parametersFromQuery:query]];
     }
     
-    if (pMatches) {
-        *pMatches = matches;
-    }
-    return parameters;
+    matchResult.matches = matches;
+    matchResult.parameters = parameters;
+    return matchResult;
 }
 
 - (NSDictionary *) parametersFromQuery:(NSString *)query
@@ -135,9 +143,9 @@
     return parameters;
 }
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters matches:(NSArray *)matches
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult
 {
-    [self.handler handleURL:url withParameters:parameters matches:matches];
+    [self.handler handleURL:url withMatchResult:matchResult];
 }
 
 @end

@@ -13,7 +13,7 @@
 @interface SDBlockURLRouteHandler : NSObject <SDURLRouteHandler>
 
 - (instancetype) initWithBlock:(SDURLRouteHandlerBlock)block;
-- (instancetype) initWithRegexBlock:(SDURLRegexRouteHandlerBlock)block;
+- (instancetype) initWithRegexBlock:(SDURLRouteHandlerBlock)block;
 
 @end
 
@@ -40,7 +40,7 @@
     [self.entries addObject:[[SDURLRouterEntry alloc] initWithRouteRegex:routeRegex handler:handler]];
 }
 
-- (void) addRegexRoute:(NSRegularExpression *)routeRegex withBlock:(SDURLRegexRouteHandlerBlock)block
+- (void) addRegexRoute:(NSRegularExpression *)routeRegex withBlock:(SDURLRouteHandlerBlock)block
 {
     [self addRegexRoute:routeRegex withHandler:[[SDBlockURLRouteHandler alloc] initWithRegexBlock:block]];
 }
@@ -60,11 +60,10 @@
     BOOL handled = NO;
     for (SDURLRouterEntry *entry in self.entries)
     {
-        NSArray *matches = nil;
-        NSDictionary *parameters = [entry matchesURL:url matches:&matches];
-        if (parameters != nil)
+        SDURLMatchResult *matchResult = [entry matchesURL:url];
+        if (matchResult.isMatch)
         {
-            [entry handleURL:url withParameters:parameters matches:matches];
+            [entry handleURL:url withMatchResult:matchResult];
             handled = YES;
             break;
         }
@@ -76,7 +75,7 @@
 
 @implementation SDBlockURLRouteHandler {
     SDURLRouteHandlerBlock _block;
-    SDURLRegexRouteHandlerBlock _regexBlock;
+    SDURLRouteHandlerBlock _regexBlock;
 }
 
 - (instancetype) initWithBlock:(SDURLRouteHandlerBlock)block
@@ -89,7 +88,7 @@
     return self;
 }
 
-- (instancetype) initWithRegexBlock:(SDURLRegexRouteHandlerBlock)block
+- (instancetype) initWithRegexBlock:(SDURLRouteHandlerBlock)block
 {
     self = [super init];
     if ( self != nil )
@@ -99,15 +98,15 @@
     return self;
 }
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters matches:(NSArray *)matches
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult
 {
     if ( _block != nil )
     {
-        _block(url, parameters);
+        _block(url, matchResult);
     }
     else if ( _regexBlock != nil )
     {
-        _regexBlock(url, matches);
+        _regexBlock(url, matchResult);
     }
 }
 
