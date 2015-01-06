@@ -27,6 +27,8 @@
 
 #import "SDTextField.h"
 
+SDTextFieldValidationBlock SDTextFieldOptionalFieldValidationBlock = ^(SDTextField *textField){ return YES; };
+
 @interface SDTextField ()
 @property (nonatomic, strong, readonly) UILabel *floatingLabel;
 @property (nonatomic, strong, readonly) UIToolbar *accessoryToolbar;
@@ -300,6 +302,12 @@
     return _accessoryToolbar;
 }
 
+- (void) setToolbarTintColor:(UIColor *)toolbarTintColor
+{
+    _toolbarTintColor = toolbarTintColor;
+    [self updateAccessoryButtons];
+}
+
 #pragma mark - Accessory navigation
 
 - (void)selectAdjacentResponder:(UISegmentedControl *)sender
@@ -361,6 +369,14 @@
     {
         _nextItem.enabled = NO;
         [_segmentedControl setEnabled:NO forSegmentAtIndex:1];
+    }
+    
+    if ( self.toolbarTintColor != nil )
+    {
+        NSDictionary *titleColor = @{NSForegroundColorAttributeName: self.toolbarTintColor};
+        [_prevItem setTitleTextAttributes:titleColor forState:UIControlStateNormal];
+        [_nextItem setTitleTextAttributes:titleColor forState:UIControlStateNormal];
+        [_doneItem setTitleTextAttributes:titleColor forState:UIControlStateNormal];
     }
 }
 
@@ -491,6 +507,14 @@
     }
     
     return fieldsAreValid;
+}
+
+- (BOOL) validate
+{
+    BOOL isValid = [self internalValidate];
+    if (!isValid)
+        [self showFloatingLabel];
+    return isValid;
 }
 
 - (void)resetTextWithoutValidate

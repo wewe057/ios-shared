@@ -41,6 +41,27 @@
 
 + (instancetype)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles completion:(SDAlertViewCompletionBlock)completionBlock
 {
+    return [[self class] showAlertWithTitle:title message:message cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitles promptPlaceholderText:nil completion:completionBlock];
+}
+
++ (instancetype)showAlertWithPromptAndWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitle:(NSString *)otherButtonTitle promptPlaceholderText:(NSString *)placeholderText completion:(SDAlertViewCompletionBlock)completionBlock
+{
+    return [[self class] showAlertWithTitle:title message:message cancelButtonTitle:cancelButtonTitle otherButtonTitles:@[otherButtonTitle] promptPlaceholderText:placeholderText completion:completionBlock];
+}
+
++ (instancetype)showAlertWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles promptPlaceholderText:(NSString *)placeholderText completion:(SDAlertViewCompletionBlock)completionBlock
+{
+    // AIOS-570 - iOS 8 hack.  For iOS 8, Apple appears to be pushing us towards always using a title and message.
+    // Their punishment if you only provide a message is a really ugly alert.  It looks better if you only
+    // provide a title, so we will hijack things here and if title is nil but a message is given, move the message
+    // to the title
+    if ([UIDevice systemMajorVersion] >= 8) {
+        if (!title && message && message.length > 0) {
+            title = message;
+            message = nil;
+        }
+    }
+
     SDAlertView *alertView = [[[self class] alloc] initWithTitle:title ? title : @"" message:message delegate:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
     alertView.delegate = alertView;
 
@@ -48,6 +69,11 @@
         [alertView addButtonWithTitle:buttonTitle];
 
     alertView.completionBlock = completionBlock;
+    
+    if (placeholderText) {
+        alertView.alertViewStyle = UIAlertViewStylePlainTextInput;
+        [[alertView textFieldAtIndex: 0] setPlaceholder: placeholderText];
+    }
 
     [alertView show];
 

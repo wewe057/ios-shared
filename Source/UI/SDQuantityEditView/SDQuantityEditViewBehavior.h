@@ -40,6 +40,11 @@ typedef void (^SDQuantityEditViewBehaviorDidChangeQuantityBlock)(BOOL increment)
  */
 - (UILabel *)totalWeightLabel;
 
+/**
+ Returns the EditView's value for limitMinimumQuantityOnNewItemsToStepAmount
+ */
+@property (nonatomic, assign) BOOL limitMinimumQuantityOnNewItemsToStepAmount;
+
 @optional
 /**
  Returns the EditView's UIImageView that displays the background image
