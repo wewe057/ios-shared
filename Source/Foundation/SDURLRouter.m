@@ -13,7 +13,6 @@
 @interface SDBlockURLRouteHandler : NSObject <SDURLRouteHandler>
 
 - (instancetype) initWithBlock:(SDURLRouteHandlerBlock)block;
-- (instancetype) initWithRegexBlock:(SDURLRouteHandlerBlock)block;
 
 @end
 
@@ -42,7 +41,7 @@
 
 - (void) addRegexRoute:(NSRegularExpression *)routeRegex withBlock:(SDURLRouteHandlerBlock)block
 {
-    [self addRegexRoute:routeRegex withHandler:[[SDBlockURLRouteHandler alloc] initWithRegexBlock:block]];
+    [self addRegexRoute:routeRegex withHandler:[[SDBlockURLRouteHandler alloc] initWithBlock:block]];
 }
 
 - (void) addRoute:(NSString *)route withHandler:(id<SDURLRouteHandler>)handler
@@ -75,7 +74,6 @@
 
 @implementation SDBlockURLRouteHandler {
     SDURLRouteHandlerBlock _block;
-    SDURLRouteHandlerBlock _regexBlock;
 }
 
 - (instancetype) initWithBlock:(SDURLRouteHandlerBlock)block
@@ -103,10 +101,6 @@
     if ( _block != nil )
     {
         _block(url, matchResult);
-    }
-    else if ( _regexBlock != nil )
-    {
-        _regexBlock(url, matchResult);
     }
 }
 
