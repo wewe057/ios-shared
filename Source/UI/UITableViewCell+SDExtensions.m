@@ -43,6 +43,10 @@
     // besides here.
     self.bounds = originalBoundsToBeReset;
     
+    // Redraw again to make sure that the bounds reset takes place immediately. CB-2693
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+    
     return cellHeight;
 }
 
