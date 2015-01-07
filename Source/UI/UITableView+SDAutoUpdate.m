@@ -46,9 +46,6 @@
 
 - (void)updateWithAutoUpdateDataSource:(id<SDTableViewAutoUpdateDataSource>)updateDataSource withRowAnimationTypes:(NSDictionary *)animationTypes updateBlock:(SDUpdateTableDataBlock)updateBlock commandCallbackblock:(SDTableCommandCallbackBlock)commandCallbackBlock
 {
-    // Protect ourself from errant calls to reloadData.
-    [self beginUpdates];
-
     // get the data that is about to be updated
     NSArray *outdatedSections = [[updateDataSource sectionsForPass:kSDTableViewAutoUpdatePassBeforeUpdate] copy];
     NSMutableDictionary *outdatedRowData = [NSMutableDictionary dictionary];
@@ -84,8 +81,15 @@
         [manager addCommandsForOutdatedData:outdatedRowData[sectionIdentifier] newData:updatedRowData[sectionIdentifier] forSectionIdentifier:sectionIdentifier];
     }
     
-    [manager runCommands:self withAnimationTypes:animationTypes callback:commandCallbackBlock];
-    [self endUpdates];
+    if ([manager hasCommands])
+    {
+        // Moving beginUpdates back to here because we only want this to run if we actually have work to do
+        // Also, beginUpdates was sometimes being called without a matching endUpdates
+        // We do not want to *always* call these methods because they trigger unneccessary side effects like heightForRow: being called on existing cells
+        [self beginUpdates];
+        [manager runCommands:self withAnimationTypes:animationTypes callback:commandCallbackBlock];
+        [self endUpdates];
+    }
 }
 
 @end
