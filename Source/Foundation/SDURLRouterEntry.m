@@ -9,6 +9,10 @@
 #import "SDURLRouterEntry.h"
 #import "SDURLRouteHandler.h"
 
+@implementation SDURLMatchResult
+
+@end
+
 @interface SDURLRouterEntry ()
 
 @property (nonatomic, strong) id<SDURLRouteHandler> handler;
@@ -27,6 +31,18 @@
         _handler = handler;
         _parameterNames = [NSMutableArray array];
         [self initMatchRegularExpressionWithTemplate:routeTemplate];
+    }
+    return self;
+}
+
+- (instancetype) initWithRouteRegex:(NSRegularExpression *)routeRegex handler:(id<SDURLRouteHandler>)handler
+{
+    self = [super init];
+    if (self != nil)
+    {
+        _handler = handler;
+        _parameterNames = [NSMutableArray array];
+        _matchRegularExpression = routeRegex;
     }
     return self;
 }
@@ -75,8 +91,9 @@
     _matchRegularExpression = [NSRegularExpression regularExpressionWithPattern:matchingString options:0 error:nil];
 }
 
-- (NSDictionary *) matchesURL:(NSURL *)url
+- (SDURLMatchResult *) matchesURL:(NSURL *)url
 {
+    SDURLMatchResult *matchResult = [SDURLMatchResult new];
     NSMutableDictionary *parameters = nil;
     
     NSString *urlString = [url absoluteString];
@@ -88,6 +105,10 @@
     
     NSArray *matches = [self.matchRegularExpression matchesInString:urlString options:0 range:NSMakeRange(0, [urlString length])];
     
+    if ( [matches count] >= 1 )
+    {
+        matchResult.isMatch = YES;
+    }
     if ( [matches count] == 1 )
     {
         NSTextCheckingResult *result = matches[0];
@@ -100,7 +121,9 @@
         [parameters addEntriesFromDictionary:[self parametersFromQuery:query]];
     }
     
-    return parameters;
+    matchResult.matches = matches;
+    matchResult.parameters = parameters;
+    return matchResult;
 }
 
 - (NSDictionary *) parametersFromQuery:(NSString *)query
@@ -120,9 +143,9 @@
     return parameters;
 }
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult
 {
-    [self.handler handleURL:url withParameters:parameters];
+    [self.handler handleURL:url withMatchResult:matchResult];
 }
 
 @end

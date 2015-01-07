@@ -7,16 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "SDURLRouterEntry.h"
 
-@protocol SDURLRouteHandler;
-
-typedef void (^SDURLRouteHandlerBlock)(NSURL *url, NSDictionary *parameters);
+typedef void (^SDURLRouteHandlerBlock)(NSURL *url, SDURLMatchResult *matchResult);
 
 @interface SDURLRouter : NSObject
 
 - (void) addRoute:(NSString *)route withHandler:(id<SDURLRouteHandler>)handler;
 - (void) addRoute:(NSString *)route withBlock:(SDURLRouteHandlerBlock)block;
+- (void) addRegexRoute:(NSRegularExpression *)routeRegex withHandler:(id<SDURLRouteHandler>)handler;
+- (void) addRegexRoute:(NSRegularExpression *)routeRegex withBlock:(SDURLRouteHandlerBlock)block;
 
-- (void) routeURL:(NSURL *)url;
+- (BOOL) routeURL:(NSURL *)url;
 
 @end

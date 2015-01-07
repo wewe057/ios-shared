@@ -8,14 +8,29 @@
 
 #import <Foundation/Foundation.h>
 
+@interface SDURLMatchResult : NSObject
+
+/// The URL parameters as key/value pairs
+@property (nonatomic, strong) NSDictionary *parameters;
+
+/// An array of NSTextCheckingResult objects (as returned by NSRegularExpression -matchesInString:options:range:)
+@property (nonatomic, strong) NSArray *matches;
+
+/// Whether a match was found against the regex
+@property (nonatomic) BOOL isMatch;
+
+@end
+
 @protocol SDURLRouteHandler;
 
 @interface SDURLRouterEntry : NSObject
 
 - (instancetype) initWithRoute:(NSString *)routeTemplate handler:(id<SDURLRouteHandler>)handler;
 
-- (NSDictionary *) matchesURL:(NSURL *)url;
+- (instancetype) initWithRouteRegex:(NSRegularExpression *)routeRegex handler:(id<SDURLRouteHandler>)handler;
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters;
+- (SDURLMatchResult *) matchesURL:(NSURL *)url;
+
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult;
 
 @end
