@@ -34,6 +34,16 @@
     return self;
 }
 
+- (void) addRegexRoute:(NSRegularExpression *)routeRegex withHandler:(id<SDURLRouteHandler>)handler
+{
+    [self.entries addObject:[[SDURLRouterEntry alloc] initWithRouteRegex:routeRegex handler:handler]];
+}
+
+- (void) addRegexRoute:(NSRegularExpression *)routeRegex withBlock:(SDURLRouteHandlerBlock)block
+{
+    [self addRegexRoute:routeRegex withHandler:[[SDBlockURLRouteHandler alloc] initWithBlock:block]];
+}
+
 - (void) addRoute:(NSString *)route withHandler:(id<SDURLRouteHandler>)handler
 {
     [self.entries addObject:[[SDURLRouterEntry alloc] initWithRoute:route handler:handler]];
@@ -44,17 +54,20 @@
     [self addRoute:route withHandler:[[SDBlockURLRouteHandler alloc] initWithBlock:block]];
 }
 
-- (void) routeURL:(NSURL *)url
+- (BOOL) routeURL:(NSURL *)url
 {
+    BOOL handled = NO;
     for (SDURLRouterEntry *entry in self.entries)
     {
-        NSDictionary *parameters = [entry matchesURL:url];
-        if (parameters != nil)
+        SDURLMatchResult *matchResult = [entry matchesURL:url];
+        if (matchResult.isMatch)
         {
-            [entry handleURL:url withParameters:parameters];
+            [entry handleURL:url withMatchResult:matchResult];
+            handled = YES;
             break;
         }
     }
+    return handled;
 }
 
 @end
@@ -73,11 +86,21 @@
     return self;
 }
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters
+- (instancetype) initWithRegexBlock:(SDURLRouteHandlerBlock)block
+{
+    self = [super init];
+    if ( self != nil )
+    {
+        _block = [block copy];
+    }
+    return self;
+}
+
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult
 {
     if ( _block != nil )
     {
-        _block(url, parameters);
+        _block(url, matchResult);
     }
 }
 

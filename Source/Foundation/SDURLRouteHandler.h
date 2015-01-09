@@ -10,6 +10,6 @@
 
 @protocol SDURLRouteHandler <NSObject>
 
-- (void) handleURL:(NSURL *)url withParameters:(NSDictionary *)parameters;
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult;
 
 @end
