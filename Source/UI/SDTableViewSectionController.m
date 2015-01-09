@@ -18,7 +18,7 @@
 // Define SDTABLEVIEWSECTIONCONTROLLER_INCLUDE_ESTIMATEDHEIGHTFORROW in your project to have SDTableViewSectionController implement
 // estimatedHeightForRow.  This method is flaky, so beware!
 
-@interface SDTableViewSectionController () <UITableViewDataSource, UITableViewDelegate>
+@interface SDTableViewSectionController () <UITableViewDataSource, UITableViewDelegate, SDTableViewAutoUpdateDataSource>
 {
 #ifdef USES_RESPONDS_TO_SELECTOR_SHORTCUT
     // Private flags
@@ -39,8 +39,9 @@
 #endif
 }
 
-@property (nonatomic, weak)   UITableView *tableView;
-@property (nonatomic, strong) NSArray     *sectionControllers;
+@property (nonatomic, weak)   UITableView       *tableView;
+@property (nonatomic, strong) NSArray           *sectionControllers;
+@property (nonatomic, strong) NSArray           *outgoingSectionControllers;
 @end
 
 @implementation SDTableViewSectionController
@@ -67,7 +68,7 @@
 
 - (void)reloadWithSectionControllers:(NSArray *)sectionControllers animated:(BOOL)animated
 {
-    NSArray *outgoingSectionControllers = self.sectionControllers;  // Hold onto until we are at the end of this method so when the delegate is swapped, they are not immediately dealloced
+    self.outgoingSectionControllers = self.sectionControllers;  // Hold onto until we are at the end of this method so when the delegate is swapped, they are not immediately dealloced
     // This is an attempt to "fix" the unreproducible crashes:
     //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539ad53ae3de5099ba56db1e
     //      https://www.crashlytics.com/walmartlabs/ios/apps/com.walmart.electronics/issues/539a7a35e3de5099ba568723
@@ -92,15 +93,71 @@
     
     if (animated)
     {
-        // Placeholder for future animated work
-        // Currently allows for people to call reload without a tableView reloadData, but can still get the flags updated
-    }
+        // Debug only check to make sure we're doing the right thing
+        [self p_sections:sectionControllers conformToProtocol:@protocol(SDTableSectionProtocol)];
+
+        NSDictionary *animationTypes = @{SDTableCommandAddRowAnimationKey : @(UITableViewRowAnimationTop),
+                                         SDTableCommandAddSectionAnimationKey : @(UITableViewRowAnimationTop),
+                                         SDTableCommandRemoveRowAnimationKey : @(UITableViewRowAnimationBottom),
+                                         SDTableCommandRemoveSectionAnimationKey : @(UITableViewRowAnimationBottom),
+                                         SDTableCommandUpdateRowAnimationKey : @(UITableViewRowAnimationFade)};
+
+        // First copy the outgoing array of controllers into a mutable array, so we can mutate it
+        // Cannot just call mutableCopy because outgoingSectionControllers may be nil
+        NSMutableArray *sectionControllersPrime = [NSMutableArray arrayWithCapacity:10];
+        [sectionControllersPrime addObjectsFromArray:self.outgoingSectionControllers];
+
+        [strongTableView updateWithAutoUpdateDataSource:self
+                       withRowAnimationTypes:animationTypes
+                                 updateBlock:^{
+                                 }
+                        commandCallbackblock:^(SDTableViewCommand *command) {
+                            switch (command.commandType)
+                            {
+                                case kSDTableCommandRemoveSection:
+                                {
+                                    // Remove all the section from prime
+                                    [sectionControllersPrime removeObjectAtIndex:(NSUInteger)command.resolvedIndexPath.section];
+                                    break;
+                                }
+                                case kSDTableCommandAddSection:
+                                {
+                                    id sectionAdded = [self p_sectionInControllers:self.sectionControllers withIdentifier:command.sectionIdentifier];
+                                    if (sectionAdded)
+                                    {
+                                        [sectionControllersPrime insertObject:sectionAdded atIndex:(NSUInteger)command.resolvedIndexPath.section];
+                                    }
+                                    break;
+                                }
+                                case kSDTableCommandUpdateRow:
+                                {
+                                    id outgoingSection =  [self p_sectionInControllers:self.outgoingSectionControllers withIdentifier:command.sectionIdentifier];
+                                    id incomingSection =  [self p_sectionInControllers:self.sectionControllers withIdentifier:command.sectionIdentifier];
+                                    NSInteger index = [self p_indexOfSection:outgoingSection inControllers:sectionControllersPrime];
+                                    if (index != NSNotFound)
+                                    {
+                                        [sectionControllersPrime removeObject:outgoingSection];
+                                        if (incomingSection)
+                                        {
+                                            [sectionControllersPrime insertObject:incomingSection atIndex:index];
+                                        }
+                                    }
+                                    break;
+                                }
+                                default:
+                                    // Ignore other commands
+                                    break;
+                            }
+                        }];
+        // Set section controllers to the updated array
+        self.sectionControllers = [sectionControllersPrime copy];
+     }
     else
     {
         [strongTableView reloadData];
     }
-    
-    outgoingSectionControllers = nil; // Just to shut up the compiler
+    self.outgoingSectionControllers = nil;
+
 }
 
 #pragma mark - UITableView DataSource
@@ -179,6 +236,23 @@
 #pragma mark - UITableView Delegate
 
 #pragma mark Managing Selections
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath NS_AVAILABLE_IOS(6_0)
+{
+    NSInteger section = indexPath.section;
+    NSInteger row = indexPath.row;
+    
+    // Respect the IB settings.
+    BOOL highlight = [tableView isEditing] ? [tableView allowsSelectionDuringEditing] : [tableView allowsSelection];
+    
+    id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
+    if ([sectionController respondsToSelector:@selector(sectionController:shouldHighlightRow:)])
+    {
+        highlight = [sectionController sectionController:self shouldHighlightRow:row];
+    }
+    
+    return highlight;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -365,6 +439,16 @@
 
 #pragma mark - SectionController Methods
 
+- (void)refreshTable
+{
+    @strongify(self.delegate, delegate);
+    if ([delegate respondsToSelector:@selector(refreshTableForSectionController:)])
+    {
+        [delegate refreshTableForSectionController:self];
+    }
+}
+
+
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     @strongify(self.delegate, delegate);
@@ -410,27 +494,45 @@
     }
 }
 
-- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
+- (NSUInteger)p_indexOfSection:(id<SDTableViewSectionDelegate>)section inControllers:(NSArray *)controllers
 {
-    NSUInteger sectionIndex = [self.sectionControllers indexOfObject:section];
+    NSUInteger sectionIndex = [controllers indexOfObject:section];
     return sectionIndex;
 }
 
-- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier
+
+- (NSUInteger)indexOfSection:(id<SDTableViewSectionDelegate>)section
+{
+    NSUInteger sectionIndex = [self p_indexOfSection:section inControllers:self.sectionControllers];
+    return sectionIndex;
+}
+
+// Private method to find a section within an array of controllers
+- (id<SDTableViewSectionDelegate>)p_sectionInControllers:(NSArray *)controllers withIdentifier:(NSString *)identifier
 {
     id<SDTableViewSectionDelegate>section = nil;
-    
-    NSUInteger indexOfSection = [self.sectionControllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
+
+    NSUInteger indexOfSection = [controllers indexOfObjectPassingTest:^BOOL(id<SDTableViewSectionDelegate> obj, NSUInteger idx, BOOL *stop) {
         BOOL sectionAlreadyInArray = [obj.identifier isEqualToString: identifier];
         *stop = sectionAlreadyInArray;
         return sectionAlreadyInArray;
     }];
-    
+
     if (indexOfSection != NSNotFound)
     {
-        section = [self.sectionControllers objectAtIndex:indexOfSection];
+        section = controllers[indexOfSection];
     }
-    
+
+    return section;
+}
+
+
+- (id<SDTableViewSectionDelegate>)sectionWithIdentifier:(NSString *)identifier
+{
+    id<SDTableViewSectionDelegate>section = nil;
+
+    section = [self p_sectionInControllers:self.sectionControllers withIdentifier:identifier];
+
     return section;
 }
 
@@ -753,6 +855,48 @@
     }
 }
 
+/// This is a runtime check to make sure sections are being passed in properly
+- (void)p_sections:(NSArray *)sections conformToProtocol:(Protocol *)protocol
+{
+#if DEBUG
+    for (id section in sections)
+    {
+        NSAssert([section conformsToProtocol:protocol], @"Section %@ does not implement %@", section, protocol);
+    }
+#endif
+}
 
+#pragma mark - SDTableViewAutoUpdateDataSource methods
+
+- (NSArray *)sectionsForPass:(SDTableViewAutoUpdatePass)pass
+{
+    NSArray *sections;
+    
+    switch (pass)
+    {
+        case kSDTableViewAutoUpdatePassBeforeUpdate:
+            sections = self.outgoingSectionControllers;
+            break;
+        case kSDTableViewAutoUpdatePassAfterUpdate:
+            sections = self.sectionControllers;
+            break;
+    }
+    return sections;
+}
+
+// Section should be a SDTableViewSectionDelegate
+- (NSArray *)rowsForSection:(id<SDTableSectionProtocol>)section pass:(SDTableViewAutoUpdatePass)pass
+{
+    NSArray *rows;
+    
+    NSAssert([section conformsToProtocol:@protocol(SDTableViewSectionDelegate)], @"Section %@ does not conform to SDTableViewSectionDelegate", section);
+    id <SDTableViewSectionDelegate> sectionDelegate = (id<SDTableViewSectionDelegate>)section;
+    
+    rows = [sectionDelegate sectionControllerAutoUpdateRows];
+    
+    NSAssert(rows != nil, @"Rows cannot be nil");
+    
+    return rows;
+}
 
 @end

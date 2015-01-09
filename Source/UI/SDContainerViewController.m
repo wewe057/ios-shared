@@ -125,6 +125,10 @@
         _selectedViewController.view.frame = self.containerView.bounds;
         [_selectedViewController.view setNeedsUpdateConstraints];
 
+        UINavigationController *nc = [_selectedViewController isKindOfClass:[UINavigationController class]] ? (id) _selectedViewController : nil;
+        if (nc) {
+            [nc.delegate navigationController:nc willShowViewController:_selectedViewController animated:YES];
+        }
         [self.containerView addSubview:_selectedViewController.view];
         [_selectedViewController didMoveToParentViewController:self];
     }

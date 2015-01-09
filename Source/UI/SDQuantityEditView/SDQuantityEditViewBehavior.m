@@ -87,7 +87,10 @@ static char kObserveQuantityContext;
         
         if(_adjustQuantityMethod == kAdjustableItemQuantityMethod_Both && [adjustableItem respondsToSelector:@selector(averageWeight)])
         {
-            _avgWeight = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem averageWeight]];
+            // This is a workaround for bad data. This method would otherwise crash the app when averageWeight is not set.
+            // Use an arbitrary value for avgWeight. I've chosen 1.
+            NSDecimalNumber *avg = [NSDecimalNumber decimalNumberWithCurrencyString:[adjustableItem averageWeight]];
+            _avgWeight = ![avg isEqualToNumber:[NSDecimalNumber notANumber]] ? avg : [NSDecimalNumber one];
             _maxQuantity = [_maxQuantity decimalNumberByDividingBy:_avgWeight];
             _pricePerUnit = [_pricePerUnit decimalNumberByMultiplyingBy:_avgWeight];
         }
@@ -130,7 +133,7 @@ static char kObserveQuantityContext;
     NSMutableString *weightLabelText = [NSMutableString stringWithString:value.stringValue];
     if ([self.weightSuffix length])
     {
-        [weightLabelText appendFormat:@" %@", self.weightSuffix];
+        [weightLabelText appendFormat:@"%@", self.weightSuffix];
     }
     if ([self.quantitySuffix length])
     {
@@ -186,7 +189,7 @@ static char kObserveQuantityContext;
     // if originalQuantity is zero, that means we are adding a new item
     // if so, it does not make sense to allow stepper to be lower than one
     // "Add zero items" is a useless concept
-    NSDecimalNumber *minimumQuantity = [self.originalQuantity isEqual:[NSDecimalNumber zero]] ? [NSDecimalNumber one] : [NSDecimalNumber zero];
+    NSDecimalNumber *minimumQuantity = [self.originalQuantity isEqual:[NSDecimalNumber zero]] && viewDelegate.limitMinimumQuantityOnNewItemsToStepAmount ? self.stepAmount : [NSDecimalNumber zero];
     // minus on only if quantity is more than the min
     NSComparisonResult minResult = [minimumQuantity compare:self.currentQuantity];
     viewDelegate.minusButton.enabled = ( minResult == NSOrderedAscending);

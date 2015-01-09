@@ -168,4 +168,40 @@
     return isToday;
 }
 
+#pragma mark - additional methods
+
+- (NSDate *) dateWithYear:(NSNumber *) year month:(NSNumber *) month day:(NSNumber *) day hour:(NSNumber *) hour minute:(NSNumber *) minute second:(NSNumber *) second;
+{
+    NSDateComponents *dateComponents = [[NSCalendar currentCalendar] components:(NSYearCalendarUnit|NSMonthCalendarUnit|NSDayCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit|NSSecondCalendarUnit) fromDate:self];
+    if (year != nil) {
+        dateComponents.year = [year integerValue];
+    }
+    if (month != nil) {
+        dateComponents.month = [month integerValue];
+    }
+    if (day != nil) {
+        dateComponents.day = [day integerValue];
+    }
+    if (hour != nil) {
+        dateComponents.hour = [hour integerValue];
+    }
+    if (minute != nil) {
+        dateComponents.minute = [minute integerValue];
+    }
+    if (second != nil) {
+        dateComponents.second = [second integerValue];
+    }
+    return [[NSCalendar currentCalendar] dateFromComponents:dateComponents];
+}
+
+- (NSInteger) calendarDaysRelativeToDate:(NSDate *) argDate;
+{
+    NSDate *argDateAtMidnight = [argDate dateWithYear:nil month:nil day:nil hour:@0 minute:@0 second:@0];
+    NSDate *selfAtMidnight = [self dateWithYear:nil month:nil day:nil hour:@0 minute:@0 second:@0];
+    NSTimeInterval timeInterval = [selfAtMidnight timeIntervalSinceDate:argDateAtMidnight];
+    static NSTimeInterval oneDay = (24.0*60.0*60.0);
+    NSInteger days = (int) ((timeInterval + ((timeInterval < 0) ? -1 : 1)) / oneDay);
+    return days;
+}
+
 @end

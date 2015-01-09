@@ -54,7 +54,7 @@
     _quantityView.translatesAutoresizingMaskIntoConstraints = NO;
     _quantityView.fillColor = [UIColor lightGrayColor];
     _quantityView.quantityLabel.textColor = [UIColor darkTextColor];
-    
+
     [_doneButton addTarget:self action:@selector(doneTapped:) forControlEvents:UIControlEventTouchUpInside];
     [_removeButton addTarget:self action:@selector(removeTapped:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -105,11 +105,15 @@
     _totalPriceLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _totalPriceLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [_totalPriceLabel setFont:[UIFont boldSystemFontOfSize:16.0f]];
+    _totalPriceLabel.minimumScaleFactor = .65;
+    _totalPriceLabel.adjustsFontSizeToFitWidth = YES;
     [self addSubview:_totalPriceLabel];
     
     _weightLabel = [[UILabel alloc] initWithFrame:CGRectZero];
     _weightLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [_weightLabel setFont:[UIFont systemFontOfSize:12.0f]];
+    _weightLabel.minimumScaleFactor = .65;
+    _weightLabel.adjustsFontSizeToFitWidth = YES;
     [self addSubview:_weightLabel];
     
     _quantityView = [SDQuantityView quantityView];
@@ -141,10 +145,13 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-(43)-[quantityView]" options:0 metrics:nil views:@{@"quantityView":self.quantityView}]];
         
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[totalLabel]-(10)-[quantityView(>=110)]-(12)-[removeButton]-(13)-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(6)-[totalLabel]-(10)-[quantityView(>=90)]-(8)-[removeButton]-(6)-|"
                                                                      options:0
                                                                      metrics:nil
                                                                        views:@{@"totalLabel":self.totalPriceLabel, @"quantityView":self.quantityView, @"removeButton":self.removeButton}]];
+        // This is required for iOS 7 & 7.1 when building for iOS 8.
+        [[self totalPriceLabel] setContentHuggingPriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+        
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[quantityView]-(20)-[doneButton]-(21)-|"
                                                                      options:0
                                                                      metrics:nil
@@ -154,7 +161,7 @@
                                                                      metrics:nil
                                                                        views:@{@"spinner":self.activitingIndicator}]];
 
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[weightLabel]-(10)-[quantityView]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[weightLabel]-(10)-[quantityView]"
                                                                      options:0
                                                                      metrics:nil
                                                                        views:@{@"weightLabel":self.weightLabel, @"quantityView":self.quantityView}]];
@@ -240,7 +247,6 @@
             break;
             
     }
-    [self layoutIfNeeded];
 }
 
 - (void)setCommitting:(BOOL)committing
