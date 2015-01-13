@@ -80,6 +80,10 @@
     
     self.sectionControllers = sectionControllers;
     
+    // Send sectionDidLoad to all new controllers because
+    // These new controllers will come into play if:
+    // 1) The section is new
+    // 2) The section has rows that are added, removed, or updated
     [self p_sendSectionDidLoad:self.sectionControllers];
     
 #ifdef USES_RESPONDS_TO_SELECTOR_SHORTCUT
@@ -130,7 +134,11 @@
                                     break;
                                 }
                                 case kSDTableCommandUpdateRow:
+                                case kSDTableCommandAddRow:
+                                case kSDTableCommandRemoveRow:
                                 {
+                                    // If a row is updated, added, or removed, we need to make sure that the new section controller
+                                    // replaces the old section controller
                                     id outgoingSection =  [self p_sectionInControllers:self.outgoingSectionControllers withIdentifier:command.sectionIdentifier];
                                     id incomingSection =  [self p_sectionInControllers:self.sectionControllers withIdentifier:command.sectionIdentifier];
                                     NSInteger index = [self p_indexOfSection:outgoingSection inControllers:sectionControllersPrime];
