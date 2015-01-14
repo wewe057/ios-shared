@@ -56,13 +56,18 @@
 
 - (BOOL) routeURL:(NSURL *)url
 {
+    return [self routeURL:url userInfo:nil];
+}
+
+- (BOOL) routeURL:(NSURL *)url userInfo:(NSDictionary *)userInfo
+{
     BOOL handled = NO;
     for (SDURLRouterEntry *entry in self.entries)
     {
         SDURLMatchResult *matchResult = [entry matchesURL:url];
         if (matchResult.isMatch)
         {
-            [entry handleURL:url withMatchResult:matchResult];
+            [entry handleURL:url withMatchResult:matchResult userInfo:userInfo];
             handled = YES;
             break;
         }
@@ -96,11 +101,11 @@
     return self;
 }
 
-- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult userInfo:(NSDictionary *)userInfo
 {
     if ( _block != nil )
     {
-        _block(url, matchResult);
+        _block(url, matchResult, userInfo);
     }
 }
 
