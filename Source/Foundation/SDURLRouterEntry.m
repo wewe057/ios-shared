@@ -143,9 +143,9 @@
     return parameters;
 }
 
-- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult
+- (void) handleURL:(NSURL *)url withMatchResult:(SDURLMatchResult *)matchResult userInfo:(NSDictionary *)userInfo
 {
-    [self.handler handleURL:url withMatchResult:matchResult];
+    [self.handler handleURL:url withMatchResult:matchResult userInfo:userInfo];
 }
 
 @end
