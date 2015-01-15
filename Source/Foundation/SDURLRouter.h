@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "SDURLRouterEntry.h"
 
-typedef void (^SDURLRouteHandlerBlock)(NSURL *url, SDURLMatchResult *matchResult);
+typedef void (^SDURLRouteHandlerBlock)(NSURL *url, SDURLMatchResult *matchResult, NSDictionary *userInfo);
 
 @interface SDURLRouter : NSObject
 
@@ -19,5 +19,6 @@ typedef void (^SDURLRouteHandlerBlock)(NSURL *url, SDURLMatchResult *matchResult
 - (void) addRegexRoute:(NSRegularExpression *)routeRegex withBlock:(SDURLRouteHandlerBlock)block;
 
 - (BOOL) routeURL:(NSURL *)url;
+- (BOOL) routeURL:(NSURL *)url userInfo:(NSDictionary *)userInfo;
 
 @end
