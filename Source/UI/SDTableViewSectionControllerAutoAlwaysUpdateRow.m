@@ -8,10 +8,6 @@
 
 #import "SDTableViewSectionControllerAutoAlwaysUpdateRow.h"
 
-@interface SDTableViewSectionControllerAutoAlwaysUpdateRow()
-@property (nonatomic, assign) NSInteger incrementingAttributeHash;
-@end
-
 @implementation SDTableViewSectionControllerAutoAlwaysUpdateRow
 
 + (NSInteger)incrementingAttributeHash
