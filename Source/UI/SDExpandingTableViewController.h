@@ -17,6 +17,12 @@
  *  @return An unique ID for this column
  */
 - (NSString *)identifier;
+
+/**
+ *  @return A display name for this column
+ */
+- (NSString *)displayName;
+
 @end
 
 /**
