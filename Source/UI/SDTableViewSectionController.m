@@ -825,6 +825,20 @@
     }
 }
 
+- (void)reloadRow:(NSUInteger)row inSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation
+{
+    id<SDTableViewSectionDelegate> section = [self sectionWithIdentifier:identifier];
+    if (section) {
+        NSUInteger sectionIndex = [self indexOfSection:section];
+        if (sectionIndex != NSNotFound)
+        {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:sectionIndex];
+            @strongify(self.tableView, tableView);
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:animation];
+        }
+    }
+}
+
 // This current relies on a side effect of endUpdates refreshing the table view
 - (void)refreshCellHeights
 {
