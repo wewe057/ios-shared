@@ -204,4 +204,55 @@
     return days;
 }
 
++ (NSString *)timeStringFromSeconds:(NSTimeInterval)totalSeconds
+{
+    NSUInteger hoursLeft = (NSUInteger)totalSeconds / (60*60);
+    NSUInteger hoursRemainder = (NSUInteger)totalSeconds % (60*60);
+    NSUInteger minutesLeft = hoursRemainder / 60;
+    NSUInteger minutesRemainder = hoursRemainder % 60;
+    NSUInteger secondsLeft = minutesRemainder;
+    if (secondsLeft > 29) {
+        ++minutesLeft;
+        if (minutesLeft == 60) {
+            minutesLeft = 0;
+            ++hoursLeft;
+        }
+    }
+    NSString *timeString = nil;
+    if (hoursLeft && minutesLeft) { // hours and minutes
+        NSString *minutes = nil;
+        NSString *hours = nil;
+        if (minutesLeft > 1) { // minutes
+            minutes = [NSString stringWithFormat:@"%lu minutes", (unsigned long)minutesLeft];
+        }
+        else {
+            minutes = [NSString stringWithFormat:@"%lu minute", (unsigned long)minutesLeft];
+        }
+        if (hoursLeft > 1) { // hours
+            hours = [NSString stringWithFormat:@"%lu hours", (unsigned long)hoursLeft];
+        }
+        else {
+            hours = [NSString stringWithFormat:@"%lu hour", (unsigned long)hoursLeft];
+        }
+        timeString = [NSString stringWithFormat:@"%@ %@", hours, minutes];
+    }
+    else if (hoursLeft && !minutesLeft) { // exact number of hours
+        if (hoursLeft == 1) {
+            timeString = [NSString stringWithFormat:@"%lu hour", (unsigned long)hoursLeft];
+        }
+        else {
+            timeString = [NSString stringWithFormat:@"%lu hours", (unsigned long)hoursLeft];
+        }
+    }
+    else if (!hoursLeft && minutesLeft) { // just minutes
+        if (minutesLeft == 1) {
+            timeString = [NSString stringWithFormat:@"%lu minute", (unsigned long)minutesLeft];
+        }
+        else {
+            timeString = [NSString stringWithFormat:@"%lu minutes", (unsigned long)minutesLeft];
+        }
+    }
+    return timeString;
+}
+
 @end

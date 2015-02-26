@@ -85,4 +85,9 @@
  */
 - (NSInteger) calendarDaysRelativeToDate:(NSDate *) date;
 
+/**
+ Returns a formatted string of hours and minutes from an NSTimeInterval
+ */
++ (NSString *)timeStringFromSeconds:(NSTimeInterval)totalSeconds;
+
 @end
