@@ -370,6 +370,8 @@
  */
 - (void)reloadSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation;
 
+- (void)reloadRow:(NSUInteger)row inSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation;
+
 /**
  *
  * Attemps to refresh the heights of the cells of the table view
