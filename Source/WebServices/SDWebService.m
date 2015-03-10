@@ -542,10 +542,18 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             if ([post isKindOfClass:[NSData class]])
                 // It's a kind of NSData
                 postData = post;
-            else
+            else if ([post isKindOfClass:[NSString class]])
                 // It's a kind of NSString
                 postData = [post dataUsingEncoding:NSUTF8StringEncoding];
-
+            else if ([post isKindOfClass:[NSDictionary class]]) {
+                // It's a kind of NSDictionary
+                NSError *jsonSerializationError = nil;
+                NSData *jsonData = [NSJSONSerialization dataWithJSONObject:post
+                                                                   options:NSJSONWritingPrettyPrinted error:&jsonSerializationError];
+                if (jsonData && !jsonSerializationError) {
+                    postData = jsonData;
+                }
+            }
 			[request setValue:[NSString stringWithFormat:@"%ld", (long)[postData length]] forHTTPHeaderField:@"Content-Length"];
 			[request setHTTPBody:postData];
 		}
@@ -687,6 +695,9 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
             {
                 if (dataProcessingBlock)
                     dataObject = dataProcessingBlock(response, code, responseData, error);
+            }
+            else {
+                SDLog(@"NSURLErrorCancelled");
             }
             
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
