@@ -7,6 +7,8 @@
 //
 
 #import "UITableViewCell+SDExtensions.h"
+#import "UIView+SDExtensions.h"
+#import "UIDevice+machine.h"
 
 @implementation UITableViewCell (SDExtensions)
 

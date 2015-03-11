@@ -7,6 +7,7 @@
 //
 
 #import "SDSearchDisplayController.h"
+#import "SDLog.h"
 
 @interface SDSearchDisplayController(Private)
 - (void)setup;

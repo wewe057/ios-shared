@@ -7,6 +7,7 @@
 //
 
 #import "SDWebServiceMockResponseQueueProvider.h"
+#import "SDLog.h"
 
 @implementation SDWebServiceMockResponseQueueProvider {
     // always access the mutable array inside of @synchronized(self)
