@@ -146,4 +146,12 @@ GENERICSABLE(NSString)
 /** Returns the inverse of #isEmpty:. */
 + (BOOL) isNotEmpty:(NSString *)string;
 
+/**
+ A "nil aware" string comparison.
+ @param stringOrNil First string to compare or nil
+ @param anotherStringOrNil Second string to compare or nil
+ @return Returns true is either both strings are the same OR both are nil.
+ */
++ (BOOL)string:(NSString *)stringOrNil equalsString:(NSString *)anotherStringOrNil;
+
 @end

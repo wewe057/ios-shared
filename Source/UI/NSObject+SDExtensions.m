@@ -252,4 +252,18 @@ static dispatch_semaphore_t __asyncSemaphore = nil;
 	return [object_getClass((id)self) swizzleMethod:originalSelector withMethod:alternateSelector error:error];
 }
 
++ (BOOL)object:(NSObject *)objectOrNil equals:(NSObject *)anotherObjectOrNil {
+    BOOL result = NO;
+    // Don't use isEqualToString unless both strings are non-nil
+    if (objectOrNil && anotherObjectOrNil)
+    {
+        result = [objectOrNil isEqual:anotherObjectOrNil];
+    }
+    else if (!objectOrNil && !anotherObjectOrNil) { // both nil
+        result = YES;
+    }
+    
+    return result;
+}
+
 @end
