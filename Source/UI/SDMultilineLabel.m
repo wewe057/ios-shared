@@ -21,10 +21,24 @@
     return self;
 }
 
-// This allows the label to layout properly with auto layout
+// This allows the label to lay out properly with auto layout. It works on iOS 7 and iOS 8.1+
 - (void)layoutSubviews
 {
     self.preferredMaxLayoutWidth = self.frame.size.width;
     [super layoutSubviews];
 }
+
+// The use of setFrame/setBounds is for iOS 8.0, where layoutSubviews is not called, oddly enough.
+- (void)setFrame:(CGRect)frame;
+{
+    [super setFrame:frame];
+    self.preferredMaxLayoutWidth = CGRectGetWidth(frame);
+}
+
+- (void)setBounds:(CGRect)bounds;
+{
+    [super setBounds:bounds];
+    self.preferredMaxLayoutWidth = CGRectGetWidth(bounds);
+}
+
 @end

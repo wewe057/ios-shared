@@ -8,6 +8,7 @@
 //
 
 #import "SDTableViewSectionController.h"
+#import "SDMacros.h"
 
 // Define USES_RESPONDS_TO_SELECTOR_SHORTCUT in your project to have SDTableViewSectionController figure out which methods are actually implemented by
 // sections.  This code, while more "proper' in terms of what is actually implemented, appears to be causing
@@ -80,6 +81,10 @@
     
     self.sectionControllers = sectionControllers;
     
+    // Send sectionDidLoad to all new controllers because
+    // These new controllers will come into play if:
+    // 1) The section is new
+    // 2) The section has rows that are added, removed, or updated
     [self p_sendSectionDidLoad:self.sectionControllers];
     
 #ifdef USES_RESPONDS_TO_SELECTOR_SHORTCUT
@@ -130,7 +135,11 @@
                                     break;
                                 }
                                 case kSDTableCommandUpdateRow:
+                                case kSDTableCommandAddRow:
+                                case kSDTableCommandRemoveRow:
                                 {
+                                    // If a row is updated, added, or removed, we need to make sure that the new section controller
+                                    // replaces the old section controller
                                     id outgoingSection =  [self p_sectionInControllers:self.outgoingSectionControllers withIdentifier:command.sectionIdentifier];
                                     id incomingSection =  [self p_sectionInControllers:self.sectionControllers withIdentifier:command.sectionIdentifier];
                                     NSInteger index = [self p_indexOfSection:outgoingSection inControllers:sectionControllersPrime];
@@ -821,6 +830,20 @@
             NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sectionIndex];
             @strongify(self.tableView, tableView);
             [tableView reloadSections:indexSet withRowAnimation:animation];
+        }
+    }
+}
+
+- (void)reloadRow:(NSUInteger)row inSectionWithIdentifier:(NSString *)identifier withRowAnimation:(UITableViewRowAnimation)animation
+{
+    id<SDTableViewSectionDelegate> section = [self sectionWithIdentifier:identifier];
+    if (section) {
+        NSUInteger sectionIndex = [self indexOfSection:section];
+        if (sectionIndex != NSNotFound)
+        {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:sectionIndex];
+            @strongify(self.tableView, tableView);
+            [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:animation];
         }
     }
 }
