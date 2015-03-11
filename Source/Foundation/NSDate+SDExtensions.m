@@ -25,6 +25,21 @@
 	return [sFormatter dateFromString:argDateString];
 }
 
++ (NSDate *)dateFromISO8601StringWithMilliseconds:(NSString *)argDateString
+{
+    static NSDateFormatter *sFormatter = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        sFormatter = [[NSDateFormatter alloc] init];
+        [sFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [sFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"];
+    });
+    
+	return [sFormatter dateFromString:argDateString];
+}
+
+
 + (NSDate *)dateFromRFC822String:(NSString *)argDateString
 {
 	static NSDateFormatter *sFormatter = nil;
@@ -187,6 +202,57 @@
     static NSTimeInterval oneDay = (24.0*60.0*60.0);
     NSInteger days = (int) ((timeInterval + ((timeInterval < 0) ? -1 : 1)) / oneDay);
     return days;
+}
+
++ (NSString *)timeStringFromSeconds:(NSTimeInterval)totalSeconds
+{
+    NSUInteger hoursLeft = (NSUInteger)totalSeconds / (60*60);
+    NSUInteger hoursRemainder = (NSUInteger)totalSeconds % (60*60);
+    NSUInteger minutesLeft = hoursRemainder / 60;
+    NSUInteger minutesRemainder = hoursRemainder % 60;
+    NSUInteger secondsLeft = minutesRemainder;
+    if (secondsLeft > 29) {
+        ++minutesLeft;
+        if (minutesLeft == 60) {
+            minutesLeft = 0;
+            ++hoursLeft;
+        }
+    }
+    NSString *timeString = nil;
+    if (hoursLeft && minutesLeft) { // hours and minutes
+        NSString *minutes = nil;
+        NSString *hours = nil;
+        if (minutesLeft > 1) { // minutes
+            minutes = [NSString stringWithFormat:@"%lu minutes", (unsigned long)minutesLeft];
+        }
+        else {
+            minutes = [NSString stringWithFormat:@"%lu minute", (unsigned long)minutesLeft];
+        }
+        if (hoursLeft > 1) { // hours
+            hours = [NSString stringWithFormat:@"%lu hours", (unsigned long)hoursLeft];
+        }
+        else {
+            hours = [NSString stringWithFormat:@"%lu hour", (unsigned long)hoursLeft];
+        }
+        timeString = [NSString stringWithFormat:@"%@ %@", hours, minutes];
+    }
+    else if (hoursLeft && !minutesLeft) { // exact number of hours
+        if (hoursLeft == 1) {
+            timeString = [NSString stringWithFormat:@"%lu hour", (unsigned long)hoursLeft];
+        }
+        else {
+            timeString = [NSString stringWithFormat:@"%lu hours", (unsigned long)hoursLeft];
+        }
+    }
+    else if (!hoursLeft && minutesLeft) { // just minutes
+        if (minutesLeft == 1) {
+            timeString = [NSString stringWithFormat:@"%lu minute", (unsigned long)minutesLeft];
+        }
+        else {
+            timeString = [NSString stringWithFormat:@"%lu minutes", (unsigned long)minutesLeft];
+        }
+    }
+    return timeString;
 }
 
 @end

@@ -7,6 +7,8 @@
 //
 
 #import "UITableViewCell+SDExtensions.h"
+#import "UIView+SDExtensions.h"
+#import "UIDevice+machine.h"
 
 @implementation UITableViewCell (SDExtensions)
 
@@ -30,8 +32,8 @@
     if ([UIDevice systemMajorVersion] >= 8.0)
     {
         CGSize tempSize = [self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize
-                              withHorizontalFittingPriority:UILayoutPriorityDefaultHigh
-                                    verticalFittingPriority:UILayoutPriorityFittingSizeLevel];
+                              withHorizontalFittingPriority:UILayoutPriorityRequired
+                                    verticalFittingPriority:UILayoutPriorityDefaultHigh];
         cellHeight = (tempSize.height + separatorHeight);
     }
     else
