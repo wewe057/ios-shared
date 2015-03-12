@@ -110,5 +110,12 @@ typedef void (^NSObjectPerformBlock)();
  */
 + (BOOL)swizzleClassMethod:(SEL)originalSelector withClassMethod:(SEL)alternateSelector error:(NSError**)error;
 
+/**
+ A "nil aware" object comparison.
+ @param objectOrNil First object to compare or nil
+ @param anotherObjectOrNil Second object to compare or nil
+ @return Returns true is either both objects are the same OR both are nil.
+ */
++ (BOOL)object:(NSObject *)objectOrNil equals:(NSObject *)anotherObjectOrNil;
 
 @end

@@ -448,5 +448,19 @@ GENERICSABLE_IMPLEMENTATION(NSString)
     return (string && [string length] > 0);
 }
 
++ (BOOL)string:(NSString *)stringOrNil equalsString:(NSString *)anotherStringOrNil {
+    BOOL result = NO;
+    // Don't use isEqualToString unless both strings are non-nil
+    if (stringOrNil && anotherStringOrNil)
+    {
+        result = [stringOrNil isEqualToString:anotherStringOrNil];
+    }
+    else if (!stringOrNil && !anotherStringOrNil) { // both nil
+        result = YES;
+    }
+    
+    return result;
+}
+
 @end
 
