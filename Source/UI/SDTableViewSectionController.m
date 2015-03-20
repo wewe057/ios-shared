@@ -265,6 +265,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // DEV NOTE: disable user interaction temporarily here to prevent button mashing issues.
+    tableView.userInteractionEnabled = NO;
+    
     NSInteger section = indexPath.section;
     NSInteger row = indexPath.row;
     id<SDTableViewSectionDelegate>sectionController = [self p_sectionAtIndex:section];
@@ -272,6 +275,9 @@
     {
         [sectionController sectionController:self didSelectRow:row];
     }
+    
+    // re-enable user interaction.
+    tableView.userInteractionEnabled = YES;
 }
 
 
