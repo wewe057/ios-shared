@@ -15,9 +15,9 @@ void SDLogRT( NSString* format, ... );
 #endif
 
 #ifndef SDLog
-#if defined(TESTFLIGHT)
+#if defined(QADEPLOYMENT)
 #define SDLog(__FORMAT__, ...) NSLog((@"%s [Line %zd] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
-#elif defined(DEBUG) && !defined(TESTFLIGHT)
+#elif defined(DEBUG) && !defined(QADEPLOYMENT)
 #define SDLog(__FORMAT__, ...) SDLogRT(__FORMAT__, ##__VA_ARGS__)
 #define SDTrace(__FORMAT__, ...) SDLogRT((@"Trace: %s [Line %zd] " __FORMAT__), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define SDStack() SDLogRT(@"%@", [NSThread callStackSymbols])
