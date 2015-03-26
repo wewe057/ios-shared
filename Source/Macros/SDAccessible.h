@@ -8,20 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
-/// Redefinition of NSAssert to allow checking if assertions should run while
-/// in debug mode. @see SDAssertProcess
-#if defined(DEBUG)
+/// Convenience definition for Appium testing to add accessibility only in those
+/// cases when APPIUM is defined.
+#if defined(APPIUM)
 #define SDAccessible(view, accessibilityLabel)	\
     do {				\
         __PRAGMA_PUSH_NO_EXTRA_ARG_WARNINGS \
-        if (!(condition) && !SDAssertProcess()) {		\
-[[NSAssertionHandler currentHandler] handleFailureInMethod:_cmd \
-object:self file:[NSString stringWithUTF8String:__FILE__] \
-lineNumber:__LINE__ description:(desc), ##__VA_ARGS__]; \
-}				\
+        [view setIsAccessibilityElement:YES]; \
+        [view setAccessibilityLabel:accessibilityLabel]; \
         __PRAGMA_POP_NO_EXTRA_ARG_WARNINGS \
     } while(0)
 
 #else
-#define SDAssert(x...)
+#define SDAccessible(x...)
 #endif
