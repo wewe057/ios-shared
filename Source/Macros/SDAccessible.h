@@ -20,5 +20,5 @@
     } while(0)
 
 #else
-#define SDAccessible(view, accessibilityLabel) SDLog(@"View %@ with label %@: not enabled for appium", view, accessibilityLabel);
+#define SDAccessible(view, x...) [view setIsAccessibilityElement:NO]
 #endif
