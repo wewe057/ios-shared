@@ -111,9 +111,7 @@
 
     SDWebServiceDataCompletionBlock completionBlock = ^id (NSURLResponse *response, NSInteger responseCode, NSData *responseData, NSError *error) {
         
-#ifndef APPIUM
         SDLog(@"%@: %zd:\n%@", response, responseCode, [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
-#endif
 
         id responseObject = [responseData JSONObject];
 

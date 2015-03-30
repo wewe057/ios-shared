@@ -27,7 +27,10 @@ void SDLogRT( NSString* format, ... )
     {
         va_list args;
         va_start( args, format );
+// Don't log anything for Function testing via Appium due to timing issues
+#ifndef APPIUM
         NSLogv( format, args );
+#endif
         va_end( args );
     }
 }
