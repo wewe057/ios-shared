@@ -17,6 +17,7 @@
 #import "ObjectiveCGenerics.h"
 #import "SDLog.h"
 #import "SDAssert.h"
+#import "SDAccessible.h"
 
 // Foundation Extensions
 #import "NSError+SDExtensions.h"
