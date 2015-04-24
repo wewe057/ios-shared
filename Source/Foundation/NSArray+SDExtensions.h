@@ -14,6 +14,8 @@
 /** Randomizes the indexes of the objects in the receiver. */
 - (void)shuffle;
 
+- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex;
+
 @end
 
 @interface NSArray (SDExtensions)

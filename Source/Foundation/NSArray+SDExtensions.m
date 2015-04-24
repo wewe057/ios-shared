@@ -18,6 +18,17 @@
     }
 }
 
+- (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
+{
+    if (fromIndex < toIndex) {
+        toIndex--;
+    }
+
+    id object = [self objectAtIndex:fromIndex];
+    [self removeObjectAtIndex:fromIndex];
+    [self insertObject:object atIndex:toIndex];
+}
+
 @end
 
 
@@ -242,5 +253,6 @@ Returns a deepCopy of an array. It will recursively deepCopy contained arrays to
 	return indexPathForObject;
 }
 
-
 @end
+
+
