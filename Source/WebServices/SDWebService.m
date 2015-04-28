@@ -593,6 +593,20 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSString *basePath = [self basePathInServiceSpecification];
 	NSDictionary *requestList = [_serviceSpecification objectForKey:@"requests"];
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
+    
+    // Look for custom headers that may have been passed via plist
+    NSDictionary *requestDetailsHeaders = [requestDetails dictionaryForKey:@"headers"];
+    if (requestDetailsHeaders && [requestDetailsHeaders isKindOfClass:[NSDictionary class]])
+    {
+        // merge the headers
+        NSDictionary *newHeaders = [headers mutableCopy];
+        for (NSString *key in requestDetailsHeaders.allKeys)
+        {
+            [newHeaders setValue:[requestDetailsHeaders stringForKey:key] forKey:key];
+        }
+        
+        headers = [NSDictionary dictionaryWithDictionary:newHeaders];
+    }
 
     NSMutableURLRequest *request = [self buildRequestForScheme:baseScheme headers:headers host:baseHost path:basePath details:requestDetails replacements:replacements];
 
