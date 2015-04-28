@@ -20,5 +20,5 @@
     } while(0)
 
 #else
-#define SDAccessible(view, x...) [view setIsAccessibilityElement:NO]
+#define SDAccessible(view, x...) [view self]
 #endif
