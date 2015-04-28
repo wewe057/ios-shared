@@ -598,11 +598,20 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
     NSDictionary *requestDetailsHeaders = [requestDetails dictionaryForKey:@"headers"];
     if (requestDetailsHeaders && [requestDetailsHeaders isKindOfClass:[NSDictionary class]])
     {
+        // Grab any potential user replacements
+        NSDictionary *userReplacements = [requestDetails objectForKey:@"routeReplacement"];
+        if (!userReplacements)
+        {
+            userReplacements = [NSDictionary dictionary];
+        }
+        
         // merge the headers
         NSDictionary *newHeaders = [headers mutableCopy];
         for (NSString *key in requestDetailsHeaders.allKeys)
         {
-            [newHeaders setValue:[requestDetailsHeaders stringForKey:key] forKey:key];
+            NSString *processedHeaderValue = [requestDetailsHeaders stringForKey:key];
+            processedHeaderValue = [self performReplacements:replacements andUserReplacements:userReplacements withFormat:processedHeaderValue];
+            [newHeaders setValue:processedHeaderValue forKey:key];
         }
         
         headers = [NSDictionary dictionaryWithDictionary:newHeaders];
