@@ -595,7 +595,7 @@ NSString *const SDWebServiceError = @"SDWebServiceError";
 	NSDictionary *requestDetails = [requestList objectForKey:requestName];
     
     // Look for custom headers that may have been passed via plist
-    NSDictionary *requestDetailsHeaders = [requestDetails dictionaryForKey:@"headers"];
+    NSDictionary *requestDetailsHeaders = [requestDetails dictionaryForKey:@"customHeaders"];
     if (requestDetailsHeaders && [requestDetailsHeaders isKindOfClass:[NSDictionary class]])
     {
         // Grab any potential user replacements
