@@ -218,7 +218,9 @@ typedef NS_ENUM(NSUInteger, SDPickerViewMode)
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
-        [theBar setItems:[NSArray arrayWithObjects:cancelButton, spacer, doneButton, nil] animated:NO];
+        UIBarButtonItem *fixedSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        fixedSpacer.width = 8.0f;
+        [theBar setItems:[NSArray arrayWithObjects:fixedSpacer,cancelButton, spacer, doneButton, fixedSpacer, nil] animated:NO];
         self.pickerBar = theBar;
     }
     
