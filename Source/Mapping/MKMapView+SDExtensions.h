@@ -9,6 +9,9 @@
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
 
+#define CLCOORDINATE_EPSILON 0.00000001f
+#define CLCOORDINATES_EQUAL2( coord1, coord2 ) (fabs(coord1.latitude - coord2.latitude) < CLCOORDINATE_EPSILON && fabs(coord1.longitude - coord2.longitude) < CLCOORDINATE_EPSILON)
+
 typedef NSObject<MKAnnotation> SDAnnotation;
 
 @interface MKMapView(SDExtensions)
@@ -21,7 +24,7 @@ typedef NSObject<MKAnnotation> SDAnnotation;
 - (NSArray *) annotationsByDistanceToLocation:(CLLocation *)location;
 
 - (CLLocationCoordinate2D)centerCoordinateForAnnotations:(NSArray *)annotationArray;
-- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location;
+- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location padding:(double)padding;
 - (void) recenterAroundLocation:(CLLocation *)location showAnnotations:(NSArray *)annotationArray;
 
 - (NSSet *)visibleAnnotations;
