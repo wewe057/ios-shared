@@ -33,9 +33,7 @@
 	{
 		CLLocation *endPoint = [[CLLocation alloc] initWithLatitude:annotation.coordinate.latitude longitude:annotation.coordinate.longitude];
 		CLLocationDistance thisDistance = [location distanceFromLocation:endPoint];
-		if ((thisDistance < shortestDistance) &&
-			(location.coordinate.latitude != annotation.coordinate.latitude) &&
-			(location.coordinate.longitude != annotation.coordinate.longitude))
+		if ((thisDistance < shortestDistance) && !CLCOORDINATES_EQUAL2(location.coordinate, annotation.coordinate)) // changed to not compare doubles with !=
 		{
 			shortestDistance = thisDistance;
 			result = annotation;
@@ -112,7 +110,7 @@
 	return newCenter;
 }
 
-- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location
+- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location padding:(CLLocationDegrees)padding
 {
 	CLLocationCoordinate2D maxCoord = {-90.0f, -180.0f};
 	CLLocationCoordinate2D minCoord = {90.0f, 180.0f};
@@ -148,8 +146,8 @@
 	
 	region.center.longitude = (minCoord.longitude + maxCoord.longitude) / 2.0;
 	region.center.latitude = (minCoord.latitude + maxCoord.latitude) / 2.0;
-	region.span.longitudeDelta = (maxCoord.longitude - minCoord.longitude) + 0.035;
-	region.span.latitudeDelta = (maxCoord.latitude - minCoord.latitude) + 0.035;
+	region.span.longitudeDelta = (maxCoord.longitude - minCoord.longitude) + padding;
+	region.span.latitudeDelta = (maxCoord.latitude - minCoord.latitude) + padding;
 	
 	[self setRegionThatFits:region animated:YES];
 }
