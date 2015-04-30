@@ -24,7 +24,7 @@ typedef NSObject<MKAnnotation> SDAnnotation;
 - (NSArray *) annotationsByDistanceToLocation:(CLLocation *)location;
 
 - (CLLocationCoordinate2D)centerCoordinateForAnnotations:(NSArray *)annotationArray;
-- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location padding:(double)padding;
+- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location padding:(CLLocationDegrees)padding;
 - (void) recenterAroundLocation:(CLLocation *)location showAnnotations:(NSArray *)annotationArray;
 
 - (NSSet *)visibleAnnotations;

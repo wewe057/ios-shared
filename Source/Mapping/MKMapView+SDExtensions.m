@@ -110,7 +110,7 @@
 	return newCenter;
 }
 
-- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location padding:(double)padding
+- (void) recenterMapForAnnotations:(NSArray *)annotationArray withLocation:(CLLocation *)location padding:(CLLocationDegrees)padding
 {
 	CLLocationCoordinate2D maxCoord = {-90.0f, -180.0f};
 	CLLocationCoordinate2D minCoord = {90.0f, 180.0f};
