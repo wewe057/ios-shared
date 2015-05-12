@@ -15,7 +15,12 @@
 // Low level bits
 #import "SDMacros.h"
 #import "ObjectiveCGenerics.h"
+
+// Only include SDLog if told to
+#ifdef SDLOG
 #import "SDLog.h"
+#endif
+
 #import "SDAssert.h"
 #import "SDAccessible.h"
 
