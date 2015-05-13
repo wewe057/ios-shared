@@ -16,7 +16,7 @@
 #import "SDMacros.h"
 #import "ObjectiveCGenerics.h"
 
-// Only include SDLog if told to
+// Only include ios-shared SDLog is needed and defined
 #ifdef SDLOG
 #import "SDLog.h"
 #endif
