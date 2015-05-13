@@ -12,13 +12,13 @@
 @implementation SDModelObject (REST)
 
 #pragma mark Template method
-- (NSDictionary *)requestIdMap {
++ (NSDictionary *)requestIdMap {
     [NSException raise:@"Missing implementation" format:nil];
     return @{};
 }
 
 // A Pangea subclass will override this and it "should" just work using new service requests in the plist file
-- (NSString *)serviceMethodNameForRequestId:(NSString *)requestId {
++ (NSString *)serviceMethodNameForRequestId:(NSString *)requestId {
     if (!requestId) {
         return nil;
     }
