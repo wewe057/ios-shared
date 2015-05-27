@@ -52,7 +52,6 @@
 {
     BOOL pushEnabled;
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0 // Deployment target < iOS 8.0
-    BOOL pushEnabled;
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {
         pushEnabled = [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
