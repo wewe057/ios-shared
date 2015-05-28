@@ -195,10 +195,11 @@ typedef NS_ENUM(NSUInteger, SDPickerViewMode)
 
 -(void)configureSharedViewsWithPicker:(UIView *)thePicker
 {
-    // Set the picker frame first so other can adjust properly.
-    thePicker.frame = CGRectMake(0, 44, 320, 216);
-    
     UIWindow *mainWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
+
+    // Set the picker frame first so other can adjust properly.
+    thePicker.frame = CGRectMake(0, 44, mainWindow.frame.size.width, 216);
+
     if (!self.modalScreenView)
     {
         UIView *bgView = [[UIView alloc] initWithFrame:mainWindow.frame];
