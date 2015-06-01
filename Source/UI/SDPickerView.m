@@ -195,10 +195,11 @@ typedef NS_ENUM(NSUInteger, SDPickerViewMode)
 
 -(void)configureSharedViewsWithPicker:(UIView *)thePicker
 {
-    // Set the picker frame first so other can adjust properly.
-    thePicker.frame = CGRectMake(0, 44, 320, 216);
-    
     UIWindow *mainWindow = [[[UIApplication sharedApplication] windows] objectAtIndex:0];
+
+    // Set the picker frame first so other can adjust properly.
+    thePicker.frame = CGRectMake(0, 44, mainWindow.frame.size.width, 216);
+
     if (!self.modalScreenView)
     {
         UIView *bgView = [[UIView alloc] initWithFrame:mainWindow.frame];
@@ -218,7 +219,9 @@ typedef NS_ENUM(NSUInteger, SDPickerViewMode)
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
-        [theBar setItems:[NSArray arrayWithObjects:cancelButton, spacer, doneButton, nil] animated:NO];
+        UIBarButtonItem *fixedSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+        fixedSpacer.width = 8.0f;
+        [theBar setItems:[NSArray arrayWithObjects:fixedSpacer,cancelButton, spacer, doneButton, fixedSpacer, nil] animated:NO];
         self.pickerBar = theBar;
     }
     
