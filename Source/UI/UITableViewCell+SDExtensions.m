@@ -38,7 +38,7 @@
     }
     else
     {
-        cellHeight = ([self systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height + separatorHeight);
+        cellHeight = ([self.contentView systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height + separatorHeight);
     }
     
     // Set the original bounds back, just in case it was changed by another area
